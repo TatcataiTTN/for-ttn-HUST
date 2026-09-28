@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Bài tập trên slide gốc · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Tài liệu bổ sung</div>
+<h1>20 bài tập áp dụng trực tiếp lên slide gốc</h1>
+<p>Slide gốc <i>streaming-algorithms-vi.pdf</i> trình bày lần lượt: Morris → F0 (FM/KMV/lấy mẫu hình học) →
+Quantiles (q-digest/MRL/KLL) → Linear sketching (CountMin/CountSketch) → Graph sketching (AGM/SupportFind) →
+Norm estimation (AMS/p-stable). 20 bài dưới đây yêu cầu chứng minh lại từng bổ đề cốt lõi của slide, có ghi
+rõ số trang tham chiếu.</p></div>
+<details class="ex" open><summary>20 bài (đủ 6 chủ đề của slide)</summary><ol class="exlist"><li>**(tr. 10–13, Morris)** Trình bày lại thuật toán Morris và chứng minh 𝔼[2^{X_n}] = n+1 bằng quy nạp (tự viết lại không nhìn slide).</li>
+<li>**(tr. 13, Morris)** Từ 𝔼[2^{2X_n}] = (3/2)n² + (3/2)n + 1, suy ra Var[ñ] &lt; (1/2)n² với ñ = 2^{X_n} − 1, rồi dùng Chebyshev suy ra ℙ(|ñ−n| &gt; εn) &lt; 1/(2ε²).</li>
+<li>**(tr. 14, Morris+)** Giải thích tại sao lấy trung bình s = Θ(1/(ε²δ)) bản sao độc lập của Morris đưa xác suất lỗi từ 1/(2ε²) xuống dưới δ. Viết lại phép tính phương sai của trung bình s bản sao.</li>
+<li>**(tr. 15, Morris++)** Trình bày kỹ thuật "trung vị của trung bình": tại sao chạy t = Θ(log(1/δ)) bản sao Morris+ (mỗi bản có xác suất lỗi 1/3) rồi lấy trung vị lại tốt hơn tăng s trực tiếp lên Θ(1/(ε²δ))?</li>
+<li>**(tr. 16, độ phức tạp Morris++)** Giải thích lập luận union bound trong slide: tại sao với xác suất 1−δ, không bộ đếm nào trong s·t bộ đếm cơ sở vượt quá log(stn/δ)?</li>
+<li>**(tr. 18–20, FM lý tưởng hoá)** Chứng minh lại 𝔼X = 1/(t+1) cho X = min_{i∈luồng} h(i) với h(i) ~ Uniform(0,1) độc lập, dùng công thức tail integral.</li>
+<li>**(tr. 20, FM)** Chứng minh 𝔼X² = 2/((t+1)(t+2)) và từ đó suy ra Var[X] &lt; (𝔼X)² = 1/(t+1)².</li>
+<li>**(tr. 22–25, KMV)** Giải thích tại sao KMV giữ k giá trị băm nhỏ nhất (thay vì chỉ 1 giá trị như FM) lại cho phương sai nhỏ hơn nhiều. Trình bày lại (bằng lời của bạn) ý tưởng chứng minh chặn trên của biến cố t̃ &gt; (1+ε)t bằng Chebyshev với biến chỉ báo Yᵢ.</li>
+<li>**(tr. 26–29, lấy mẫu hình học)** Giải thích cấu trúc "log n + 1 luồng con S₀,…,S_{log n}" trong kỹ thuật lấy mẫu hình học, và tại sao kỳ vọng số phần tử phân biệt ở mức r là t/2^r.</li>
+<li>**(tr. 30, tổng kết F0)** Lập bảng so sánh (không gian, độ chính xác) của 5 thuật toán F0 trong slide (Tầm thường, FM lý tưởng, KMV, lấy mẫu hình học, HyperLogLog) bằng lời của bạn, không copy nguyên văn.</li>
+<li>**(tr. 33–36, q-digest)** Trình bày lại điều kiện nén "c[p[v]] + c[v] + c[s[v]] ≤ εn/L" và giải thích tại sao điều kiện này đảm bảo tổng sai số tích luỹ tại rank(x) không vượt quá εn (mỗi tổ tiên đóng góp tối đa εn/L, có L tổ tiên).</li>
+<li>**(tr. 37–38, MRL)** Giải thích cơ chế "bộ nén" (compactor): tại sao phần tử ở mức j mang trọng số 2^j, và chứng minh lại chặn sai số E(x) ≤ n·L/k trong slide.</li>
+<li>**(tr. 39, KLL)** Giải thích tại sao việc "chọn ngẫu nhiên đều giữa vị trí lẻ và vị trí chẵn" khi nén (thay vì luôn cố định như MRL) biến sai số thành dạng tổng có dấu ngẫu nhiên η·σ·2^j, và tại sao đây chính là điều kiện để áp dụng bất đẳng thức Khintchine.</li>
+<li>**(tr. 39, KLL)** Từ ‖x‖₂² ≤ (n/k)² trong slide, áp dụng Khintchine để suy ra chặn xác suất ℙ(|E(x)| &gt; εn) ≤ 2e^{-ε²k²/4}, rồi suy ra k = O(ε⁻¹√(log(1/δ))) đủ để đạt xác suất lỗi δ.</li>
+<li>**(tr. 45–46, CountMin)** Chứng minh lại bổ đề CountMin: với B = 2k, chặn ℙ(E &gt; ‖x‖₁/k) &lt; 1/2 bằng Markov (dùng 𝔼Zⱼ = 1/B cho j ≠ i, chỉ cần hàm băm 2-wise independent).</li>
+<li>**(tr. 52–53, CountSketch)** So sánh CountMin và CountSketch: giải thích tại sao thêm dấu ngẫu nhiên σᵣ(i) làm cho các số hạng nhiễu "triệt tiêu lẫn nhau" (kỳ vọng bằng 0) thay vì luôn cộng dồn một chiều như CountMin, và tại sao điều này cho bảo đảm ℓ2 thay vì chỉ ℓ1.</li>
+<li>**(tr. 49–50, thủ thuật dyadic)** Trình bày lại cấu trúc cây nhị phân trong thủ thuật dyadic để tăng tốc truy vấn heavy hitters, và giải thích tại sao thời gian truy vấn giảm từ O(n log(n/δ)) xuống O(k log(n/δ) log n).</li>
+<li>**(tr. 55, khôi phục 1-thưa)** Với ba bộ đếm tuyến tính s₀, s₁, s₂ trong slide, chứng minh lại: nếu x = v·eⱼ thì j = s₁/s₀, v = s₀, và kiểm tra s₂ = s₀z^j xác nhận đúng giả thuyết 1-thưa (trừ xác suất lỗi ≤ n/p theo Schwartz–Zippel).</li>
+<li>**(tr. 57–58, sketch AGM)** Chứng minh lại mệnh đề "support(∑_{i∈S} aᵢ) = E(S, V\S)" và giải thích cách thuật toán AGM dùng vòng lặp kiểu Borůvka + SupportFind để tìm thành phần liên thông trong O(log N) vòng, O(N log³N) bit tổng cộng.</li>
+<li>**(tr. 59–60, AMS/F2)** Chứng minh lại: với σᵢ Rademacher độc lập bậc bốn, Y = ∑σᵢxᵢ có 𝔼Y² = ‖x‖₂² (không chệch), và Var[Y²] ≤ 2‖x‖₂⁴ (khai triển 𝔼Y⁴ cần độc lập bậc bốn — giải thích tại sao 2-wise independent như CountMin là không đủ ở đây).</li></ol></details>
+<div class="callout good"><div class="lbl">Cách dùng</div>Làm sau khi đã hoàn thành 14 buổi module — đây là
+bài tập tổng hợp áp dụng trực tiếp lên đúng thứ tự trình bày của slide gốc, không phải bài tập nền tảng.</div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

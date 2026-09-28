@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lưu trữ & xử lý dữ liệu lớn — Streaming & Sketching Algorithms</title>
+<link rel="stylesheet" href="../_shared/common.css">
+<link rel="stylesheet" href="../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero">
+<div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
+<h1>Lưu trữ &amp; xử lý dữ liệu lớn</h1>
+<p>Streaming &amp; Sketching Algorithms — 14 buổi tự học bám sát giáo trình <i>Sketching Algorithms</i>
+(Jelani Nelson), tích hợp trọn bộ 580 bài tập đã soạn (420 nền tảng có kiểm chứng bằng code Python + 140
+bài tự luận + 20 bài áp dụng slide gốc). Mỗi buổi có slide-deck tương tác, quiz tự chấm, và notebook Python.</p>
+</div>
+<div class="callout good"><div class="lbl">Cách dùng lộ trình 2 tuần / 14 buổi</div>
+Mỗi ngày học đúng 1 buổi: đọc slide-deck (điều hướng bằng phím ← →) → mở accordion bài tập, làm 20 bài nền
+tảng rồi 10 bài Python rồi 10 bài tự luận → làm quiz tự kiểm tra → tải notebook để chạy thử code. Sau khi
+xong cả 14 buổi, làm 20 bài tổng hợp áp dụng trực tiếp lên slide gốc.</div>
+<h2>14 buổi học</h2>
+<div class="grid"><a class="mod-card" href="modules/01-ky-vong/index.html">
+<span class="kicker">Buổi 01</span>
+<h3>Biến ngẫu nhiên, kỳ vọng, tuyến tính kỳ vọng</h3>
+<span class="tag">Xác suất cơ bản</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/02-markov/index.html">
+<span class="kicker">Buổi 02</span>
+<h3>Phương sai, độc lập, bất đẳng thức Markov</h3>
+<span class="tag">Bất đẳng thức tập trung</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/03-chebyshev/index.html">
+<span class="kicker">Buổi 03</span>
+<h3>Bất đẳng thức Chebyshev</h3>
+<span class="tag">Bất đẳng thức tập trung</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/04-chernoff/index.html">
+<span class="kicker">Buổi 04</span>
+<h3>Bất đẳng thức Chernoff</h3>
+<span class="tag">Bất đẳng thức tập trung</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/05-hoeffding-union/index.html">
+<span class="kicker">Buổi 05</span>
+<h3>Bất đẳng thức Hoeffding & Union bound</h3>
+<span class="tag">Bất đẳng thức tập trung</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/06-quy-nap/index.html">
+<span class="kicker">Buổi 06</span>
+<h3>Quy nạp toán học & ước lượng không chệch</h3>
+<span class="tag">Công cụ chứng minh</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/07-tail-taylor/index.html">
+<span class="kicker">Buổi 07</span>
+<h3>Tail integral & khai triển Taylor</h3>
+<span class="tag">Công cụ giải tích</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/08-vector-chuan/index.html">
+<span class="kicker">Buổi 08</span>
+<h3>Vector, tích trong, chuẩn $\ell_p$</h3>
+<span class="tag">Đại số tuyến tính</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/09-ma-tran-sketch/index.html">
+<span class="kicker">Buổi 09</span>
+<h3>Ma trận, nhân ma trận-vector, phép chiếu</h3>
+<span class="tag">Đại số tuyến tính</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/10-rademacher-khintchine/index.html">
+<span class="kicker">Buổi 10</span>
+<h3>Biến Rademacher & bất đẳng thức Khintchine</h3>
+<span class="tag">Xác suất nâng cao</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/11-ham-bam/index.html">
+<span class="kicker">Buổi 11</span>
+<h3>Hàm băm & k-wise independence</h3>
+<span class="tag">Cấu trúc rời rạc</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/12-cay-nhi-phan/index.html">
+<span class="kicker">Buổi 12</span>
+<h3>Cấu trúc cây nhị phân & rank/order statistics</h3>
+<span class="tag">Cấu trúc dữ liệu</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/13-do-thi-boruvka/index.html">
+<span class="kicker">Buổi 13</span>
+<h3>Đồ thị cơ bản, liên thông & Borůvka</h3>
+<span class="tag">Cấu trúc rời rạc</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/14-truong-huu-han/index.html">
+<span class="kicker">Buổi 14</span>
+<h3>Số học $\mathbb F_p$, đa thức & Schwartz–Zippel</h3>
+<span class="tag">Cấu trúc rời rạc</span>
+<div class="go">Mở bài giảng →</div></a></div>
+<h2>Tài liệu bổ sung</h2>
+<div class="grid"><a class="mod-card" href="modules/00-slide-goc/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Bổ sung</span><h3>20 bài áp dụng trực tiếp lên slide gốc</h3>
+<span class="tag">Morris · FM · KMV · CountMin · AGM · AMS</span>
+<div class="go">Mở →</div></a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../_shared/theme.js"></script>
+<script src="../_shared/info.js"></script>
+<script src="../_shared/deck.js"></script>
+<script src="../_shared/quiz.js"></script>
+
+</body></html>

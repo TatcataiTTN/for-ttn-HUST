@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 4: Bất đẳng thức Chernoff · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 04 / 14</div>
+<h1>Bất đẳng thức Chernoff</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 04 · Bất đẳng thức tập trung</div><h2>Bất đẳng thức Chernoff</h2><p>Chặn dạng hàm mũ — mạnh hơn Chebyshev rất nhiều khi cần xác suất lỗi cực nhỏ.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Chernoff bound</h2>
+<ul class="part-list"><li>Ý tưởng: áp Markov cho $e^{tX}$</li>
+<li>Chặn giảm theo hàm mũ theo $\lambda^2$</li>
+<li>So sánh với Chebyshev ($1/\lambda^2$)</li></ul></div><div class="mdeck-slide"><h2>Kỹ thuật MGF</h2>
+     <p>Thay vì áp Markov trực tiếp cho $X$, áp cho $e^{tX}$ với $t>0$ tối ưu — chặn thu được giảm theo
+     <b>hàm mũ</b> theo độ lệch, mạnh hơn hẳn Chebyshev (chỉ giảm theo $1/\lambda^2$).</p>
+     <div class="pd-formula"><div class="pd-formula-label">Chernoff (2 phía, $X=\sum X_i$, $X_i\in[0,1]$ độc lập)</div>
+     <div class="pd-formula-math">$\mathbb P(|X-\mu|>\lambda\mu) < 2e^{-\lambda^2\mu/3}$</div></div></div><div class="mdeck-slide"><h2>Median trick</h2>
+     <p>Vì Chernoff/Hoeffding cho chặn hàm mũ theo <i>số bản sao</i> $t$, chỉ cần $t=\Theta(\log(1/\delta))$
+     bản sao (mỗi bản sao đúng với xác suất $\ge 2/3$) rồi lấy <b>trung vị</b> để đạt xác suất lỗi $\delta$
+     tuỳ ý — rẻ hơn rất nhiều so với $\Theta(1/\delta)$ của Chebyshev thuần.</p>
+     <div class="callout good"><div class="lbl">Khuôn mẫu hoàn chỉnh</div>
+     Không chệch → Chebyshev (trung bình $s=O(1/\varepsilon^2)$ bản sao, lỗi $\le 1/3$) → Chernoff/Hoeffding
+     (lặp $t=O(\log 1/\delta)$ lần, lấy trung vị) = "Morris++", "FM++"...</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: Morris++ / FM++</h2>
+<ul class="part-list"><li>Morris+ = trung bình s bản sao Morris</li>
+<li>Morris++ = trung vị của t bản sao Morris+</li>
+<li>Không gian tổng: $O(\varepsilon^{-2}\log(1/\delta))$</li></ul></div><div class="mdeck-slide"><h2>Từ Morris đến Morris++</h2>
+     <p><b>Morris+</b>: chạy $s=\Theta(1/\varepsilon^2)$ bản sao Morris độc lập, lấy trung bình → Chebyshev
+     cho xác suất lỗi $\le 1/3$ với sai số $\varepsilon$. <b>Morris++</b>: chạy $t=\Theta(\log(1/\delta))$
+     bản sao Morris+ độc lập, lấy <b>trung vị</b> → Hoeffding cho xác suất lỗi $\delta$ tuỳ ý.</p>
+     <div class="callout warn"><div class="lbl">Bẫy</div>Nhầm lẫn phổ biến: tưởng cần tăng $s$ (không phải $t$)
+     để giảm $\delta$ — sẽ tốn $\Theta(1/\delta)$ thay vì $\Theta(\log 1/\delta)$. Luôn tách 2 tham số:
+     $\varepsilon$ (độ chính xác, do $s$ quyết định) và $\delta$ (độ tin cậy, do $t$ quyết định).</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Phát biểu Chernoff tổng quát cho $X=\sum X_i$, $X_i\in[0,1]$ độc lập; viết `def chernoff_upper(lam, mu):`.</li>
+<li>Chứng minh bước dùng Markov trên $e^{tX}$; minh hoạ bằng code so sánh Markov áp trực tiếp vs.\ áp cho $e^{tX}$ trên dữ liệu nhị thức mô phỏng.</li>
+<li>Với $X\sim\text{Binomial}(n,p)$ tổng quát, viết Chernoff theo $n,p,\lambda$; lập bảng test với nhiều $(n,p)$.</li>
+<li>So sánh tốc độ giảm Chernoff ($e^{-\Omega(\lambda^2\mu)}$) và Chebyshev ($1/\lambda^2$) bằng code, lập bảng cho $\lambda=1,\dots,10$.</li>
+<li>Monte Carlo: với $n=1000$ đồng xu, ước lượng $\Prob(X&gt;550)$ bằng $10^4$ mô phỏng, so với `chernoff_upper`.</li>
+<li>Tổng quát hoá câu 5: viết hàm tìm $\lambda$ nhỏ nhất để chặn Chernoff $&lt;10^{-6}$ cho $\mu$ cho trước (dò tuyến tính hoặc nhị phân).</li>
+<li>Chứng minh + minh hoạ median trick: $Y_i=\mathbf 1[\text{bản sao }i\text{ thành công}]$, mô phỏng $t$ bản sao, đo $\Prob(\text{trung vị sai})$ thực nghiệm.</li>
+<li>Viết `def t_needed(delta): return ceil(18*log(1/delta))`; lập bảng $t$ theo $\delta=0.1,\dots,10^{-9}$.</li>
+<li>Chứng minh $1+a\le e^a$ bằng đạo hàm (khảo sát $g(a)=e^a-1-a$); kiểm tra số trị trên $a\in[-5,5]$.</li>
+<li>Mô phỏng bài toán streaming rút gọn (đếm xấp xỉ kiểu Morris): chạy $t$ bản sao độc lập, dùng Chernoff/Hoeffding ước lượng $t$ cần thiết, kiểm chứng bằng tần suất lỗi thực nghiệm.</li>
+<li>Chứng minh dạng 2 phía $\Prob(|X-\mu|&gt;\lambda\mu)&lt;2e^{-\lambda^2\mu/3}$; kiểm tra đúng cho $X\sim$Binomial mô phỏng.</li>
+<li>Viết `def binomial_tail_exact(n,p,k):` dùng `math.comb` tính $\Prob(X\ge k)$ chính xác; so sánh với chặn Chernoff cho nhiều $k$.</li>
+<li>Giải thích + code: mô phỏng phản ví dụ khi $X_i$ phụ thuộc mạnh (tất cả bằng nhau) làm chặn Chernoff sai (vượt chặn).</li>
+<li>Tổng quát hoá: với $X_i\in[0,1]$ không nhất thiết Bernoulli, mô phỏng Chernoff cho $X_i\sim$Uniform(0,1) độc lập.</li>
+<li>Viết `def chernoff_lower(lam,mu):` cho lower tail; kiểm tra bằng mô phỏng.</li>
+<li>So sánh 3 chặn (Markov, Chebyshev, Chernoff) trên cùng phân phối nhị thức bằng code; in bảng theo $\lambda$.</li>
+<li>Viết code dò thực nghiệm: với $\delta$ cho trước, $\mu$ tối thiểu bao nhiêu để chặn Chernoff (1 phía, $\lambda=0.1$) $&lt;\delta$.</li>
+<li>Chứng minh $\ln(1+x)\ge x-x^2/2$ với $x\ge0$ nhỏ; kiểm tra bằng code trên $[0,1]$.</li>
+<li>Viết `def monte_carlo_tail(dist_fn, threshold, trials):` tổng quát ước lượng $\Prob(X&gt;\text{threshold})$ cho hàm sinh mẫu `dist_fn` bất kỳ.</li>
+<li>Áp dụng hàm câu 19 cho 3 phân phối (tổng Bernoulli, tổng Uniform, Poisson mô phỏng bằng `random`), so sánh với chặn Chernoff tương ứng.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết `import math` rồi tính `math.exp(1)`, `math.exp(2)`.</li>
+<li>Viết hàm `def chernoff_bound(lam, mu): return 2*math.exp(-lam**2*mu/3)`. Test với `lam=0.1, mu=500`.</li>
+<li>Viết vòng lặp `for` chạy 1000 thử nghiệm độc lập, mỗi thử nghiệm tung 1000 đồng xu (`random.randint(0,1)`), đếm số lần ngửa, lưu vào 1 danh sách `results`.</li>
+<li>Từ `results` ở câu 3, đếm bao nhiêu thử nghiệm có kết quả $&gt;550$ (lệch 10% so với $\mu=500$).</li>
+<li>So sánh tỉ lệ thực nghiệm ở câu 4 (chia cho 1000) với `chernoff_bound(0.1, 500)` tính ở câu 2.</li>
+<li>Viết hàm `def repeat_trials(f, t):` chạy hàm `f()` (không tham số) `t` lần, trả về danh sách kết quả.</li>
+<li>Dùng `repeat_trials`, chạy 100 lần hàm mô phỏng "tung xúc xắc rồi trả về 1 nếu ra mặt 6".</li>
+<li>Từ kết quả câu 7, đếm số lần thành công (giá trị 1), tính tỉ lệ thành công thực nghiệm.</li>
+<li>Viết hàm `def one_minus_a_leq_e_neg_a(a): return (1+a &lt;= math.exp(a))`. Test với `a` chạy từ $-2$ đến $2$ (bước 0.5), in `True/False` — kiểm chứng bất đẳng thức $1+a\le e^a$.</li>
+<li>Viết vòng lặp thử các giá trị `mu` từ 10 đến 1000 (bước 100), in cặp `(mu, chernoff_bound(0.1, mu))` — quan sát chặn giảm nhanh thế nào khi `mu` tăng.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Phát biểu định lý Chernoff bound cho tổng n biến độc lập Xᵢ ∈ [0,1] (dạng nhân, upper tail).</li>
+<li>Giải thích ý tưởng chính của chứng minh Chernoff: dùng Markov áp dụng cho biến e^{tX} với t &gt; 0 tối ưu, thay vì áp dụng trực tiếp cho X.</li>
+<li>Cho X₁,…,Xₙ i.i.d. Bernoulli(p), đặt X = ∑Xᵢ, μ = 𝔼X = np. Viết công thức Chernoff cho ℙ(X &gt; (1+λ)μ).</li>
+<li>So sánh định tính: với cùng độ lệch tuyệt đối, chặn Chernoff giảm theo hàm mũ e^{-Ω(λ²μ)} còn Chebyshev chỉ giảm theo 1/λ². Giải thích vì sao Chernoff mạnh hơn nhiều khi ta cần xác suất lỗi δ rất nhỏ.</li>
+<li>n = 1000 đồng xu cân đối được tung độc lập, X là số lần ngửa, μ = 500. Dùng dạng Chernoff ℙ(|X−μ| &gt; λμ) &lt; 2e^{-λ²μ/3} để chặn ℙ(X &gt; 550) (λ = 0.1).</li>
+<li>Từ câu 5, muốn xác suất lỗi nhỏ hơn 10⁻⁶, cần λ tối thiểu bao nhiêu (giữ μ = 500)? Giải một bất phương trình đơn giản.</li>
+<li>Giải thích tại sao trong kỹ thuật "lấy trung vị của t bản sao độc lập" (median trick), ta định nghĩa Yᵢ = 1 nếu bản sao thứ i "thành công" rồi áp dụng Chernoff/Hoeffding cho ∑Yᵢ thay vì áp dụng trực tiếp cho ước lượng gốc.</li>
+<li>Cho t bản sao độc lập, mỗi bản sao thất bại với xác suất ≤ 1/3. Dùng lập luận kiểu Chernoff/Hoeffding, giải thích trực giác vì sao chỉ cần t = Θ(log(1/δ)) bản sao để trung vị đúng với xác suất ≥ 1 − δ (không cần tính hằng số chính xác).</li>
+<li>Chứng minh bất đẳng thức 1 + a ≤ e^a với mọi a thực (bước kỹ thuật quan trọng dùng trong chứng minh Chernoff).</li>
+<li>Nêu một tình huống thực tế trong thuật toán streaming (ví dụ đếm xấp xỉ hoặc đếm phần tử phân biệt) mà việc chạy nhiều bản sao độc lập rồi dùng Chernoff/Hoeffding là cần thiết, và giải thích ngắn gọn lý do.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/04_04-chernoff.ipynb" download>⬇️ Tải notebook Python buổi 4 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Ý tưởng cốt lõi của chứng minh Chernoff là gì?", "opts": ["Áp Markov trực tiếp cho X", "Áp Markov cho $e^{tX}$ với t tối ưu", "Dùng Chebyshev hai lần", "Tính chính xác phân phối của X"], "correct": 1, "explain": "Đây là kỹ thuật hàm sinh moment (MGF), nguồn gốc của chặn dạng hàm mũ."}, {"q": "Chặn Chernoff giảm theo tốc độ nào khi độ lệch $\\lambda$ tăng?", "opts": ["Tuyến tính", "$1/\\lambda^2$ như Chebyshev", "Hàm mũ $e^{-\\Omega(\\lambda^2\\mu)}$", "Không đổi"], "correct": 2, "explain": "Đây chính là ưu điểm vượt trội của Chernoff so với Chebyshev khi cần xác suất lỗi rất nhỏ."}, {"q": "Trong 'median trick', vai trò của tham số $t$ (số bản sao lặp lại) là gì?", "opts": ["Quyết định độ chính xác $\\varepsilon$", "Quyết định xác suất tin cậy $1-\\delta$", "Không có vai trò gì", "Quyết định bộ nhớ mỗi bản sao"], "correct": 1, "explain": "t (số lần lặp lấy trung vị) điều khiển delta; s (số bản sao lấy trung bình) điều khiển epsilon — hai tham số tách biệt."}, {"q": "Vì sao chỉ cần $t=\\Theta(\\log(1/\\delta))$ thay vì $\\Theta(1/\\delta)$ để đạt xác suất lỗi $\\delta$?", "opts": ["Vì median trick dùng Chernoff/Hoeffding (chặn hàm mũ) cho biến chỉ báo 'bản sao đúng/sai'", "Vì Morris tự động chính xác", "Vì không cần trung vị nữa", "Đây là một sai lầm, thực ra vẫn cần 1/δ"], "correct": 0, "explain": "Chặn xác suất 'đa số t bản sao sai' giảm theo hàm mũ theo t nhờ Hoeffding, nên t chỉ cần log(1/δ)."}, {"q": "Morris++ kết hợp đúng thứ tự nào?", "opts": ["Trung vị trước, trung bình sau", "Trung bình s bản sao (Morris+), rồi trung vị t bản sao Morris+ (Morris++)", "Chỉ cần trung bình, không cần trung vị", "Chỉ cần trung vị, không cần trung bình"], "correct": 1, "explain": "Đúng thứ tự 2 tầng: trung bình để giảm phương sai (Chebyshev), trung vị để giảm xác suất lỗi (Chernoff/Hoeffding)."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../03-chebyshev/index.html">◀ Buổi 3: Bất đẳng thức Chebyshev</a><a href="../05-hoeffding-union/index.html">Buổi 5: Bất đẳng thức Hoeffding & Union bound ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

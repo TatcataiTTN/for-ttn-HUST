@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 9: Ma trận, nhân ma trận-vector, phép chiếu · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 09 / 14</div>
+<h1>Ma trận, nhân ma trận-vector, phép chiếu</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 09 · Đại số tuyến tính</div><h2>Ma trận, nhân ma trận-vector, phép chiếu</h2><p>Một sketch tuyến tính đơn giản là $\Pi x$ — bộ nhớ $m\ll n$ chiều, cập nhật được tức thời khi luồng thay đổi.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Sketch tuyến tính $\Pi x$</h2>
+<ul class="part-list"><li>Tính tuyến tính cho phép cập nhật tức thời</li>
+<li>Tính hợp nhất: $\Pi x + \Pi x' = \Pi(x+x')$</li>
+<li>Cột thứ $i$ của $\Pi$ là $\Pi e_i$</li></ul></div><div class="mdeck-slide"><h2>Vì sao 'sketch tuyến tính' là chìa khoá của streaming</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Cập nhật turnstile</div>
+     <div class="pd-formula-math">$x \leftarrow x+\Delta e_i \implies \Pi x \leftarrow \Pi x + \Delta\cdot\Pi^{(i)}$</div></div>
+     <p>Vì phép nhân ma trận-vector tuyến tính, một cập nhật đơn lẻ vào luồng ($x_i \mathrel{+}= \Delta$, kể
+     cả $\Delta$ âm — mô hình "turnstile") chỉ cần cộng $\Delta$ lần cột $i$ của $\Pi$ vào sketch hiện có —
+     không cần đọc lại toàn bộ $x$.</p></div><div class="mdeck-slide"><h2>Tính hợp nhất (mergeability)</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Hợp nhất 2 sketch</div>
+     <div class="pd-formula-math">$\Pi x + \Pi x' = \Pi(x+x')$</div></div>
+     <div class="callout good"><div class="lbl">Ứng dụng</div>Cho phép tính phân tán: 2 máy chủ xử lý 2 phần
+     luồng riêng, mỗi máy tính sketch riêng, rồi CỘNG 2 sketch lại = sketch của toàn bộ luồng gộp — không cần
+     truyền dữ liệu gốc.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: CountMin là 1 sketch tuyến tính</h2>
+<ul class="part-list"><li>Mỗi hàng CountMin = ma trận 0/1 'chọn'</li>
+<li>Hàm băm quyết định vị trí giá trị 1 mỗi cột</li>
+<li>$(Ax)_i = x_{h(i)}$ khi A là ma trận chọn</li></ul></div><div class="mdeck-slide"><h2>CountMin nhìn dưới góc độ ma trận</h2>
+     <p>Một hàng của CountMin là ma trận $A\in\{0,1\}^{B\times n}$: cột $i$ của $A$ có đúng 1 giá trị 1
+     tại hàng $h(i)$ (còn lại 0). Khi đó $(Ax)_j = \sum_{i: h(i)=j} x_i$ — chính xác là "bộ đếm gộp" của
+     CountMin tại ô $j$. Đây là minh chứng cụ thể nhất cho khái niệm "sketch tuyến tính": CountMin, CountSketch,
+     AMS, JL transform đều chỉ là các lựa chọn khác nhau của ma trận $\Pi$.</p><p><img src="../../../assets/diagrams/sketch-matrix.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh tính tuyến tính $\Pi(x+y)=\Pi x+\Pi y$, $\Pi(cx)=c\Pi x$ tổng quát cho $\Pi$ kích thước $m\times n$ bất kỳ; viết `matvec(A,x)` tổng quát, kiểm tra bằng vector/ma trận ngẫu nhiên.</li>
+<li>Viết `def random_matrix(m,n):`; kiểm tra tính tuyến tính (câu 1) trên 100 bộ $(A,x,y)$ ngẫu nhiên bằng `assert`.</li>
+<li>Chứng minh $(AB)x=A(Bx)$ tổng quát; viết `matmul(A,B)` (vòng lặp 3 lớp), kiểm tra với `matvec`.</li>
+<li>Chứng minh $Ix=x$ tổng quát cho $I$ đơn vị $n\times n$ bất kỳ; viết `identity(n)`, kiểm tra $n=2,5,10,50$.</li>
+<li>Chứng minh cột $i$ của $A$ chính là $Ae_i$ tổng quát; kiểm tra bằng code cho ma trận $m\times n$ ngẫu nhiên, mọi $i$.</li>
+<li>Chứng minh $\lVert Qx\rVert_2=\lVert x\rVert_2$ khi $Q^\top Q=I$; viết `def is_orthogonal(Q):`, test với ma trận xoay góc $\theta$ tuỳ ý.</li>
+<li>Viết `transpose(A)` tổng quát; kiểm tra $(A^\top)^\top=A$ và $(AB)^\top=B^\top A^\top$ trên ma trận ngẫu nhiên.</li>
+<li>Chứng minh $\text{tr}(AB)=\text{tr}(BA)$ tổng quát; viết `trace(A)`, kiểm tra trên ma trận vuông ngẫu nhiên.</li>
+<li>Viết `def random_sign_matrix(m,n):` (giá trị $\pm1/\sqrt m$); kiểm tra thực nghiệm $\E\lVert\Pi x\rVert_2^2\approx\lVert x\rVert_2^2$ (lặp nhiều lần, ma trận mới mỗi lần, lấy trung bình).</li>
+<li>Test câu 9 với $m=10,50,200$ ($n=1000$ cố định), quan sát phương sai của $\lVert\Pi x\rVert_2^2$ giảm khi $m$ tăng.</li>
+<li>Chứng minh: $x\leftarrow x+\Delta e_i\Rightarrow\Pi x\leftarrow\Pi x+\Delta\Pi^{(i)}$ tổng quát; viết mô phỏng streaming: duy trì `y = matvec(Pi, x)` qua nhiều bước cập nhật, so với tính lại từ đầu.</li>
+<li>Viết `get_column(A,j)`; kiểm tra tính đúng của thuật toán streaming câu 11 (`y` cuối khớp `matvec(A, x_final)`).</li>
+<li>Chứng minh tính hợp nhất $\Pi x+\Pi x'=\Pi(x+x')$; kiểm tra trên 2 "luồng con" độc lập rồi hợp nhất sketch, so với sketch của luồng gộp.</li>
+<li>Định nghĩa định thức $2\times2$: $\det=ad-bc$; viết `det2(A)`, giải thích ý nghĩa hình học (diện tích) bằng 1 ví dụ.</li>
+<li>Viết `inverse2(A)` (khi $\det\ne0$); kiểm tra $A\cdot A^{-1}\approx I$.</li>
+<li>Chứng minh $Q^\top=Q^{-1}$ với $Q$ hoán vị; kiểm tra bằng ví dụ hoán vị ngẫu nhiên $n\times n$ (`random.shuffle` trên `identity(n)`).</li>
+<li>Viết `def matvec_sparse(rows,cols,vals,x,m):` cho $A$ thưa; so sánh kết quả và thời gian chạy với `matvec` thường trên ma trận thưa lớn ($m=n=1000$, vài trăm phần tử khác 0).</li>
+<li>Chứng minh: nếu mỗi hàng $A$ chỉ có đúng 1 giá trị $1$ (ma trận "chọn"), thì $(Ax)_i=x_{j(i)}$; kiểm tra bằng code, liên hệ "hàm băm chọn 1 bộ đếm" trong CountMin.</li>
+<li>Viết `def hash_selection_matrix(n,B,hash_fn):` tạo ma trận $B\times n$ của 1 hàng CountMin; kiểm tra `matvec` cho đúng mảng bộ đếm.</li>
+<li>Viết module `linalg_basic.py` gồm `matvec, matmul, transpose, trace, identity, is_orthogonal` với bộ `assert` kiểm tra toàn bộ tính chất buổi này.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết ma trận dưới dạng `A = [[1,0,1],[0,1,1]]` (danh sách các hàng).</li>
+<li>Viết hàm `def matvec(A, x):` tính $Ax$ bằng vòng lặp lồng nhau (`for row in A: ... for j in range(len(x)): ...`), dùng `dot`.</li>
+<li>Test `matvec([[1,0,1],[0,1,1]], [2,3,1])`.</li>
+<li>Viết hàm `def identity(n):` tạo ma trận đơn vị $n\times n$ (danh sách lồng, `1` trên đường chéo, `0` chỗ khác).</li>
+<li>Kiểm tra `matvec(identity(3), [7,8,9])` trả về đúng `[7,8,9]`.</li>
+<li>Viết hàm `def add_mat(A, B):` cộng 2 ma trận cùng kích thước (vòng lặp lồng).</li>
+<li>Kiểm tra tính phân phối: `matvec(add_mat(A,B), x) == add_vec(matvec(A,x), matvec(B,x))` với `A, B, x` tự chọn.</li>
+<li>Viết hàm `def get_column(A, j):` trả về cột thứ `j` của ma trận `A` (danh sách các `row[j]`).</li>
+<li>Kiểm tra: với `e_i` là vector đơn vị thứ `i` (toàn 0 trừ vị trí `i` bằng 1), `matvec(A, e_i)` phải bằng `get_column(A, i)`.</li>
+<li>Viết hàm `def transpose(A):` tính ma trận chuyển vị $A^\top$ bằng vòng lặp lồng.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa phép nhân ma trận Π (kích thước m×n) với vector x ∈ ℝⁿ: (Πx)ᵢ = ∑ⱼΠᵢⱼxⱼ. Tính Πx với Π = [[1,0,1],[0,1,1]], x = (2,3,1).</li>
+<li>Chứng minh tính tuyến tính của phép nhân ma trận-vector: Π(x + y) = Πx + Πy và Π(cx) = cΠx.</li>
+<li>Giải thích tại sao tính chất ở câu 2 cho phép cập nhật "tăng dần" (incremental): nếu x cập nhật x ← x + Δeᵢ (eᵢ là vector đơn vị thứ i), thì Πx cập nhật thành Πx + Δ·Π^{(i)} với Π^{(i)} là cột thứ i của Π.</li>
+<li>Cho Π₁, Π₂ cùng kích thước. Chứng minh Π₁x + Π₂x' = (nối các cấu trúc) không đổi khi x, x' được cộng lại: Πx + Πx' = Π(x+x'). Giải thích ý nghĩa "tính hợp nhất" (mergeability) của sketch tuyến tính.</li>
+<li>Định nghĩa ma trận trực giao: Q^TQ = I. Kiểm tra Q = [[cos θ, −sin θ],[sin θ, cos θ]] là ma trận trực giao.</li>
+<li>Chứng minh phép nhân với ma trận trực giao bảo toàn chuẩn ℓ2: ‖Qx‖₂ = ‖x‖₂.</li>
+<li>Định nghĩa phép chiếu trực giao lên một không gian con span(u) (u đơn vị): proj_u(x) = ⟨x,u⟩u. Tính proj_u(x) với u = (1,0), x = (3,5).</li>
+<li>Giải thích trực giác vì sao trong "sketch tuyến tính" của streaming, việc lưu Πx (m ≪ n chiều) thay vì lưu x đầy đủ giúp tiết kiệm bộ nhớ, và tại sao tính tuyến tính (câu 2–4) là điều kiện cần để sketch hoạt động được trên luồng dữ liệu cập nhật liên tục.</li>
+<li>Cho ma trận Π ngẫu nhiên m×n với các phần tử i.i.d ±1 (Rademacher), chuẩn hoá 1/√m. Giải thích (không cần chứng minh) tại sao 𝔼‖Πx‖₂² = ‖x‖₂² là điều ta mong muốn khi dùng Π để ước lượng chuẩn.</li>
+<li>Cho biết Π^(i) ký hiệu cột thứ i của ma trận Π. Viết lại quy tắc cập nhật turnstile tổng quát (x ← x + Δeᵢ ⟹ y ← y + Δ·Π^{(i)}) và giải thích vì sao quy tắc này cũng đúng khi Δ âm.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/09_09-ma-tran-sketch.ipynb" download>⬇️ Tải notebook Python buổi 9 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Tính chất nào của phép nhân ma trận-vector cho phép cập nhật sketch tức thời khi 1 phần tử luồng thay đổi?", "opts": ["Tính đối xứng", "Tính tuyến tính: $\\Pi(x+\\Delta e_i)=\\Pi x+\\Delta\\Pi^{(i)}$", "Tính khả nghịch", "Tính trực giao"], "correct": 1, "explain": "Nhờ tuyến tính, chỉ cần cộng thêm Δ lần cột i của Π, không cần tính lại từ đầu."}, {"q": "Tính hợp nhất (mergeability) $\\Pi x+\\Pi x'=\\Pi(x+x')$ có ứng dụng thực tiễn nào?", "opts": ["Giảm độ dài luồng", "Cho phép tính phân tán: cộng trực tiếp 2 sketch từ 2 máy khác nhau", "Tăng độ chính xác tự động", "Không có ứng dụng thực tế"], "correct": 1, "explain": "Đây là cơ sở để streaming/sketching mở rộng ra tính toán phân tán (distributed/parallel)."}, {"q": "Cột thứ $i$ của ma trận $\\Pi$ bằng biểu thức nào?", "opts": ["$\\Pi \\mathbf 1$", "$\\Pi e_i$ (e_i là vector đơn vị thứ i)", "$\\Pi^\\top$", "$\\Pi^{-1}$"], "correct": 1, "explain": "Nhân ma trận với vector đơn vị e_i luôn trích ra đúng cột thứ i."}, {"q": "Trong CountMin, một hàng có thể biểu diễn bằng ma trận 0/1 loại nào?", "opts": ["Ma trận đơn vị", "Ma trận 'chọn': mỗi cột có đúng 1 giá trị 1 tại vị trí do hàm băm quyết định", "Ma trận trực giao đầy đủ", "Ma trận tam giác"], "correct": 1, "explain": "Mỗi phần tử i được 'chọn' vào đúng 1 ô đếm h(i) — đây là bản chất ma trận của CountMin."}, {"q": "Vì sao mô hình 'turnstile' (cho phép cả cộng và trừ $\\Delta$) vẫn hoạt động được với sketch tuyến tính?", "opts": ["Vì tuyến tính đúng với mọi $\\Delta$, kể cả âm", "Vì turnstile không dùng được với sketch tuyến tính", "Vì cần thêm cấu trúc dữ liệu khác cho Δ âm", "Vì Δ âm bị bỏ qua"], "correct": 0, "explain": "Công thức Πx+ΔΠ^{(i)} đúng với mọi Δ thực, không riêng Δ dương — đây là điểm mạnh của sketch tuyến tính so với các cấu trúc chỉ-chèn."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../08-vector-chuan/index.html">◀ Buổi 8: Vector, tích trong, chuẩn $\ell_p$</a><a href="../10-rademacher-khintchine/index.html">Buổi 10: Biến Rademacher & bất đẳng thức Khintchine ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

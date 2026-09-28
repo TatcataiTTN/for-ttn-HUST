@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 6: Quy nạp toán học & ước lượng không chệch · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 06 / 14</div>
+<h1>Quy nạp toán học & ước lượng không chệch</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 06 · Công cụ chứng minh</div><h2>Quy nạp toán học & ước lượng không chệch</h2><p>Công cụ chứng minh các công thức 'sau n bước cập nhật' — và khái niệm trung tâm của mọi ước lượng streaming: không chệch.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Quy nạp & ước lượng không chệch</h2>
+<ul class="part-list"><li>Cơ sở + bước quy nạp</li>
+<li>Định nghĩa $\mathbb E[\tilde X]=\theta$</li>
+<li>Trung bình các ước lượng không chệch vẫn không chệch</li></ul></div><div class="mdeck-slide"><h2>Vì sao quy nạp xuất hiện khắp môn học</h2>
+     <p>Streaming cập nhật <i>từng bước một</i> (mỗi phần tử tới, cập nhật trạng thái) — công thức kiểu
+     "$\mathbb E[f(X_n)]=g(n)$ sau $n$ bước" gần như luôn chứng minh bằng quy nạp theo $n$: giả sử đúng ở
+     bước $n$, tính $\mathbb E[f(X_{n+1})]$ bằng cách lấy kỳ vọng có điều kiện theo $X_n$.</p></div><div class="mdeck-slide"><h2>Ước lượng không chệch</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Định nghĩa</div>
+     <div class="pd-formula-math">$\tilde X$ không chệch cho $\theta$ $\iff$ $\mathbb E[\tilde X] = \theta$</div></div>
+     <div class="callout good"><div class="lbl">Tính chất cộng được</div>
+     Nếu $\tilde X_1,\dots,\tilde X_k$ đều không chệch cho cùng $\theta$, thì trung bình của chúng cũng
+     không chệch (theo tuyến tính kỳ vọng, buổi 1) — đây là lý do "lấy trung bình nhiều bản sao" (buổi 3)
+     không làm hỏng tính không chệch, chỉ giảm phương sai.</div>
+     <div class="callout warn"><div class="lbl">Bẫy</div>Không chệch KHÔNG đồng nghĩa "tốt" — một ước lượng
+     luôn trả về hằng số cố định có thể không chệch tình cờ ở 1 giá trị $\theta$ cụ thể, nhưng vô dụng nói chung.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: quy nạp trong Morris</h2>
+<ul class="part-list"><li>$\mathbb E[2^{X_{n+1}}\mid X_n=j]$ tính được cụ thể</li>
+<li>Quy nạp: $\mathbb E[2^{X_n}]=n+1$ với mọi n</li>
+<li>Đây là bằng chứng KMV/FM cũng dùng lại</li></ul></div><div class="mdeck-slide"><h2>Chứng minh quy nạp cho Morris</h2>
+     <p>Bước quy nạp của Morris: với $X_n=j$, xác suất tăng là $1/2^j$, nên
+     $\mathbb E[2^{X_{n+1}}\mid X_n{=}j] = 2^j(1-\tfrac1{2^j}) + \tfrac1{2^j}\cdot 2^{j+1} = 2^j+1$.
+     Lấy kỳ vọng theo phân phối của $X_n$: $\mathbb E[2^{X_{n+1}}] = \mathbb E[2^{X_n}]+1$. Cơ sở $n=0$:
+     $\mathbb E[2^{X_0}]=1$. Suy ra $\mathbb E[2^{X_n}]=n+1$ — sơ đồ quy nạp này lặp lại ở FM (buổi 7) và
+     nhiều thuật toán khác có cập nhật theo bước.</p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh đầy đủ bằng quy nạp $\sum_{i=1}^n i=n(n+1)/2$ (nêu rõ cơ sở + bước quy nạp); viết `rec_sum(n)` đệ quy và `sum_n(n)` công thức, kiểm tra khớp mọi $n\le1000$.</li>
+<li>Chứng minh quy nạp $\sum_{i=0}^n 2^i=2^{n+1}-1$; viết đệ quy `power_sum(n)`, kiểm tra với công thức đóng cho $n\le30$.</li>
+<li>Định nghĩa ước lượng không chệch tổng quát $\E\tilde X=\theta$; mô phỏng 1 ước lượng không chệch (trung bình mẫu) và 1 ước lượng chệch (hằng số cố định), so sánh $\E$ thực nghiệm với $\theta$ thật.</li>
+<li>Viết `def expected_by_induction(n, base, step_fn):` tính $g(n)$ theo truy hồi $g(n)=\text{step\_fn}(g(n-1))$; test với $g(n)=g(n-1)+1$.</li>
+<li>Chứng minh quy nạp $\E[2^{X_n}]=n+1$ cho quy tắc Morris; viết mô phỏng Monte Carlo Morris thật (không lý tưởng hoá) kiểm chứng $\E[2^{X_n}]\approx n+1$ với $n=100$, lặp 10000 lần.</li>
+<li>Chứng minh trung bình $k$ ước lượng không chệch độc lập vẫn không chệch; mô phỏng $k=1,2,5,20$, quan sát phương sai giảm dần.</li>
+<li>Thiết kế bằng code 1 ước lượng chệch $\E\tilde X=\theta+c$ ($c\ne0$); đo độ chệch thực nghiệm bằng mô phỏng.</li>
+<li>Chứng minh quy nạp mạnh khác quy nạp thường ở giả thiết (dùng mọi trường hợp trước, không chỉ liền trước); minh hoạ qua Fibonacci đệ quy (`fib(n)` cần `fib(n-1)` VÀ `fib(n-2)`).</li>
+<li>Chứng minh $n^2\ge n$ với $n\ge1$ bằng quy nạp; kiểm tra bằng vòng lặp $n=1..10^6$, đếm phản ví dụ (phải bằng 0).</li>
+<li>Viết đệ quy `factorial(n)` có đếm độ sâu đệ quy, thử `n` tăng dần đến khi Python báo `RecursionError`, ghi lại giới hạn thực tế.</li>
+<li>Chứng minh: nếu $\tilde X_1,\dots,\tilde X_k$ không chệch, độc lập, cùng phương sai $V$, thì $\Var[\bar{\tilde X}]=V/k$; kiểm chứng bằng mô phỏng $k=1,10,100$.</li>
+<li>Viết `def is_unbiased_empirically(estimator_fn, true_value, trials):` chạy nhiều lần, so sánh trung bình thực nghiệm với `true_value`.</li>
+<li>Test hàm câu 12 với 2 ước lượng phương sai: $\frac1n\sum(x_i-\bar x)^2$ (chệch) và $\frac1{n-1}\sum(x_i-\bar x)^2$ (không chệch), mẫu nhỏ $n=5$.</li>
+<li>Chứng minh Morris tổng quát cơ số $1+\alpha$: $\E\left[\frac{(1+\alpha)^{X_n}-1}{\alpha}\right]=n$; mô phỏng kiểm chứng với $\alpha=0.5,0.1,0.01$.</li>
+<li>Viết đệ quy tính số Catalan $C_n=\sum_{i=0}^{n-1}C_iC_{n-1-i}$; kiểm tra với công thức đóng $C_n=\binom{2n}{n}/(n+1)$.</li>
+<li>Chứng minh quy nạp công thức cấp số nhân $\sum_{i=0}^n r^i=(r^{n+1}-1)/(r-1)$, $r\ne1$; kiểm tra số trị với $r=0.5,2,3$, $n\le20$.</li>
+<li>Viết Fibonacci có memoization (`dict` cache), so sánh thời gian chạy với bản đệ quy thường cho $n=30$.</li>
+<li>Chứng minh: $f(0)=c_0$, $f(n)=f(n-1)+d$ (cấp số cộng) $\Rightarrow f(n)=c_0+nd$ bằng quy nạp; viết đệ quy và công thức đóng, kiểm tra khớp.</li>
+<li>Tự thiết kế 1 công thức truy hồi mới (ví dụ $h(n)=2h(n-1)+1$), đoán công thức đóng, kiểm chứng bằng code cho $n\le20$.</li>
+<li>Viết `def verify_by_induction(recursive_fn, closed_form_fn, n_max):` tổng quát so sánh 2 hàm trên toàn bộ $n=0..n\_max$, dùng lại để kiểm tra tất cả các câu trên.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết hàm đệ quy `def factorial(n): return 1 if n==0 else n*factorial(n-1)`. Test `factorial(5)`.</li>
+<li>Viết hàm đệ quy `def rec_sum(n):` tính $1+2+\dots+n$ bằng đệ quy (không dùng vòng lặp), so sánh kết quả với `sum_n` ở buổi 1.</li>
+<li>Xác định "trường hợp cơ sở" (base case) và "bước đệ quy" trong hàm ở câu 2 — viết thành comment.</li>
+<li>Viết hàm đệ quy `def fib(n):` tính số Fibonacci thứ `n` (`fib(0)=0, fib(1)=1, fib(n)=fib(n-1)+fib(n-2)`).</li>
+<li>Test `fib(0), fib(1), ..., fib(10)`, in thành danh sách.</li>
+<li>Viết hàm đệ quy `def power2(n):` tính $2^n$ bằng đệ quy (`power2(0)=1`, `power2(n)=2*power2(n-1)`).</li>
+<li>So sánh `power2(n)` với `2**n` (toán tử luỹ thừa có sẵn) cho `n=0..10`.</li>
+<li>Viết hàm đệ quy `def count_down(n):` in ra các số từ `n` về `0` (mỗi lần gọi in 1 số rồi tự gọi lại với `n-1`).</li>
+<li>Giải thích bằng 1 dòng comment: nếu hàm đệ quy không có base case (điều kiện dừng), điều gì sẽ xảy ra khi chạy?</li>
+<li>Viết lại hàm `def morris_expected(n):` mô phỏng công thức $\mathbb E[2^{X_n}]=n+1$ bằng đệ quy: `morris_expected(0)=1`, `morris_expected(n)=morris_expected(n-1)+1`. Test với `n=0..5`.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Nhắc lại nguyên lý quy nạp toán học (cơ sở + bước quy nạp). Chứng minh 1 + 2 + … + n = n(n+1)/2 bằng quy nạp.</li>
+<li>Chứng minh bằng quy nạp: 2⁰ + 2¹ + … + 2ⁿ = 2^{n+1} − 1.</li>
+<li>Định nghĩa "ước lượng không chệch" (unbiased estimator) của một đại lượng θ: X̃ là ước lượng không chệch nếu 𝔼X̃ = θ.</li>
+<li>Cho một biến ngẫu nhiên X_n phụ thuộc vào n với quy tắc cập nhật xác suất X_{n} → X_{n+1}. Trình bày sơ đồ chung để chứng minh 𝔼[f(X_n)] = g(n) bằng quy nạp theo n (viết 𝔼[f(X_{n+1})] dưới dạng tổng có điều kiện theo X_n).</li>
+<li>Áp dụng sơ đồ ở câu 4: cho biết 𝔼[2^{X_{n+1}} | X_n = j] = 2^j(1 − 1/2^j) + (1/2^j)·2^{j+1}. Rút gọn biểu thức này.</li>
+<li>Từ kết quả câu 5, chứng minh bằng quy nạp rằng nếu 𝔼[2^{X_n}] = n+1 thì 𝔼[2^{X_{n+1}}] = n+2.</li>
+<li>Giải thích tại sao việc chứng minh 𝔼[2^{X_n}] = n + 1 (câu 6) tương đương với việc chỉ ra ước lượng ñ = 2^{X_n} − 1 là không chệch cho n.</li>
+<li>Cho hai ước lượng không chệch độc lập X̃₁, X̃₂ của cùng đại lượng θ. Chứng minh trung bình (X̃₁ + X̃₂)/2 cũng là ước lượng không chệch của θ.</li>
+<li>Cho một ước lượng có 𝔼X̃ = θ nhưng Var[X̃] rất lớn. Giải thích (không cần công thức) tại sao "không chệch" một mình chưa đủ để ước lượng hữu ích — cần thêm điều gì (liên hệ lại Chebyshev buổi 3)?</li>
+<li>Tìm một ví dụ đơn giản (tự nghĩ) về một ước lượng CHỆCH (biased) — tức 𝔼X̃ ≠ θ — và giải thích tại sao nó chệch.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/06_06-quy-nap.ipynb" download>⬇️ Tải notebook Python buổi 6 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Một chứng minh quy nạp cần đủ 2 thành phần nào?", "opts": ["Bước cơ sở và bước quy nạp", "Chỉ cần bước quy nạp", "Chỉ cần bước cơ sở", "Định lý Markov và Chebyshev"], "correct": 0, "explain": "Thiếu 1 trong 2 (đặc biệt là bước cơ sở) là lỗi chứng minh quy nạp phổ biến nhất."}, {"q": "Ước lượng $\\tilde X$ được gọi là 'không chệch' cho $\\theta$ khi nào?", "opts": ["$\\tilde X = \\theta$ luôn đúng", "$\\mathbb E[\\tilde X]=\\theta$", "$\\mathrm{Var}[\\tilde X]=0$", "$\\tilde X \\ge \\theta$"], "correct": 1, "explain": "Không chệch là tính chất về kỳ vọng, không phải về từng lần chạy cụ thể."}, {"q": "Trung bình của $k$ ước lượng không chệch độc lập cho cùng $\\theta$ thì:", "opts": ["Vẫn không chệch cho $\\theta$", "Trở thành chệch", "Không xác định được", "Chỉ không chệch khi k=1"], "correct": 0, "explain": "Theo tuyến tính kỳ vọng: E[trung bình] = trung bình các E[.] = θ."}, {"q": "Trong chứng minh quy nạp của Morris, bước quy nạp dùng kỹ thuật nào từ buổi 1?", "opts": ["Bất đẳng thức Markov", "Kỳ vọng có điều kiện + tuyến tính kỳ vọng", "Bất đẳng thức Chebyshev", "Union bound"], "correct": 1, "explain": "Tính E[2^{X_{n+1}}] bằng cách lấy kỳ vọng có điều kiện theo X_n rồi dùng linearity."}, {"q": "Vì sao 'không chệch' một mình chưa đủ để đánh giá một ước lượng tốt?", "opts": ["Vì công thức có thể sai", "Vì cần thêm kiểm soát phương sai (độ phân tán quanh θ)", "Vì không chệch luôn kéo theo chính xác", "Không có lý do gì, không chệch là đủ"], "correct": 1, "explain": "Một ước lượng không chệch nhưng phương sai cực lớn vẫn có thể vô dụng trong thực tế — cần Chebyshev/Chernoff kiểm soát thêm."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../05-hoeffding-union/index.html">◀ Buổi 5: Bất đẳng thức Hoeffding & Union bound</a><a href="../07-tail-taylor/index.html">Buổi 7: Tail integral & khai triển Taylor ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

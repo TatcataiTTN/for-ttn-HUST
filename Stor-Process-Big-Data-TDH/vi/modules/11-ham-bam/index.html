@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 11: Hàm băm & k-wise independence · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 11 / 14</div>
+<h1>Hàm băm & k-wise independence</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 11 · Cấu trúc rời rạc</div><h2>Hàm băm & k-wise independence</h2><p>Hàm băm k-wise independent: đủ 'giả ngẫu nhiên' cho các chứng minh, nhưng rẻ hơn ngẫu nhiên hoàn toàn rất nhiều lần.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>k-wise independent hashing</h2>
+<ul class="part-list"><li>Định nghĩa: xác suất đúng $1/b^k$ cho mọi k chỉ số</li>
+<li>Xây bằng đa thức bậc $\le k-1$ trên $\mathbb F_p$</li>
+<li>Chỉ cần $k\log p$ bit thay vì $n\log n$</li></ul></div><div class="mdeck-slide"><h2>Định nghĩa k-wise independence</h2>
+     <div class="pd-formula"><div class="pd-formula-label">$k$-wise independent</div>
+     <div class="pd-formula-math">$\forall i_1,\dots,i_k$ phân biệt, $\forall j_1,\dots,j_k\in[b]$:
+     $\mathbb P_h(h(i_1){=}j_1\wedge\cdots\wedge h(i_k){=}j_k) = 1/b^k$</div></div>
+     <p>Yếu hơn "ngẫu nhiên hoàn toàn" (cần lưu $n\log b$ bit) nhưng đủ mạnh cho hầu hết chứng minh chỉ dùng
+     đến $\mathbb E, \mathrm{Var}$ (2-wise) hoặc moment bậc 4 (4-wise).</p></div><div class="mdeck-slide"><h2>Xây dựng bằng đa thức</h2>
+     <p>Họ $\mathcal H_{\text{poly}}$ gồm mọi đa thức bậc $\le k-1$ trên trường hữu hạn $\mathbb F_p$:
+     theo nội suy Lagrange, với $k$ cặp $(i_r,j_r)$ cho trước tồn tại <b>đúng một</b> đa thức bậc $\le k-1$
+     đi qua tất cả — đây chính xác là điều kiện $k$-wise independent, và mỗi hàm chỉ cần $k\log p$ bit để
+     lưu (hệ số đa thức), thay vì $n\log n$ bit của bảng tra cứu đầy đủ.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: CountMin/CountSketch chỉ cần 2-wise</h2>
+<ul class="part-list"><li>Phân tích phương sai CountMin chỉ dùng E, Var</li>
+<li>2-wise đủ để $\mathrm{Cov}(\mathbf1[h(i){=}v],\mathbf1[h(j){=}v])=0$</li>
+<li>Tiết kiệm bộ nhớ hàm băm đáng kể</li></ul></div><div class="mdeck-slide"><h2>Vì sao CountMin chỉ cần 2-wise independent</h2>
+     <p>Phân tích sai số CountMin (buổi 5, dùng Markov cho biến "nhiễu" $Z=\sum_{j\ne i}x_j\mathbf1[h(j){=}h(i)]$)
+     chỉ cần $\mathbb E[Z]$ — mà $\mathbb E[\mathbf1[h(j){=}h(i)]]=1/B$ chỉ đòi hỏi hàm băm 2-wise independent
+     (biết riêng từng cặp $(i,j)$ là đủ, không cần biết đồng thời hành vi của mọi phần tử). Đây là lý do
+     CountMin/CountSketch chỉ cần hàm băm tuyến tính $h(x)=(ax+b)\bmod p$ (2-wise), rẻ hơn nhiều so với
+     4-wise cần cho AMS (buổi 10).</p><p><img src="../../../assets/diagrams/countmin-hash.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh $\mathcal H_{\text{poly}}$ ($k$-wise independent trên $\F_p$) tổng quát (nội suy Lagrange); viết `def random_poly_hash(p, k):`.</li>
+<li>Viết `def test_k_wise(hash_family_fn, k, p, trials):` kiểm tra thực nghiệm tính $k$-wise (so sánh tần suất của $(h(i_1),\dots,h(i_k))$ với đều trên $[p]^k$).</li>
+<li>Test câu 2 với $k=2$ trên họ tuyến tính $h(x)=ax+b\bmod p$ — xác nhận gần đều.</li>
+<li>Test câu 2 với cùng họ tuyến tính nhưng $k=3$ — xác nhận KHÔNG đạt 3-wise (lệch rõ trong số liệu).</li>
+<li>Viết `def collision_probability(hash_fn, n, B, trials):`; so sánh thực nghiệm với lý thuyết $1/B$.</li>
+<li>Chứng minh số bit lưu 1 hàm $\mathcal H_{\text{poly}}$ bậc $k-1$ trên $\F_p$ là $k\log p$; viết `def storage_bits(k,p):`, so với $n\log n$ (bảng đầy đủ) cho $n=p=2^{20}$, $k=2,4,8$.</li>
+<li>Viết `def build_countmin(L,B):`, `cm_update`, `cm_query` (lấy min) đầy đủ.</li>
+<li>Test CountMin trên luồng mô phỏng (Zipf hoặc đều), so sánh với đếm đúng (`dict`), tính sai số trung bình.</li>
+<li>Viết `def cm_error_bound(B, l1_norm): return l1_norm/B`; so sánh với sai số thực nghiệm câu 8 khi thay đổi $B$.</li>
+<li>Chứng minh $\Prob(\text{CountMin sai ở mọi }L\text{ hàng})\le2^{-L}$ khi $B=2k$; đo tần suất lỗi thực nghiệm khi $L=1,3,5,10$.</li>
+<li>Viết `build_countsketch(L,B)`, `cs_update`, `cs_query` (lấy median) đầy đủ.</li>
+<li>Test CountSketch trên cùng luồng câu 8, so với CountMin, đặc biệt với dữ liệu có giá trị âm.</li>
+<li>Chứng minh + kiểm chứng bằng code (đếm trực tiếp trên mọi $(a,b)$ với $p$ nhỏ): $\Prob(h(x)=h(y))=1/p$ cho $x\ne y$ cố định, $a,b$ ngẫu nhiên.</li>
+<li>Viết `is_prime(n)` và `next_prime(n)`.</li>
+<li>Viết `def poly_hash(coeffs,x,p):` tổng quát (Horner), test với đa thức bậc 3 tuỳ ý.</li>
+<li>Viết `def k_wise_hash_family(k,p):` sinh ngẫu nhiên hệ số đa thức mỗi lần gọi; đo thời gian sinh 1000 hàm.</li>
+<li>Chứng minh: 4-wise independent $\Rightarrow$ 2-wise independent (lập luận biên); kiểm tra bằng code trên họ đa thức bậc 3.</li>
+<li>So sánh tốc độ băm ($10^6$ lần) giữa tuyến tính ($k=2$) và đa thức bậc cao ($k=8$).</li>
+<li>Mô phỏng "birthday paradox" tổng quát: $B$ ô, $m$ phần tử băm ngẫu nhiên (pairwise independent); so sánh số va chạm thực nghiệm với $\binom m2/B$.</li>
+<li>Viết module `hashing.py` đầy đủ (`linear_hash_family, poly_hash_family, count_min, count_sketch`) và benchmark sai số CountMin vs.\ CountSketch trên 3 loại luồng (đều, Zipf, có âm).</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết `table = {}`; thêm `table["a"] = 1`, `table["b"] = 2`; in `table`.</li>
+<li>Viết hàm `def linear_hash(x, a, b, p): return (a*x + b) % p`. Test `linear_hash(3, 2, 1, 5)`.</li>
+<li>Với `a=2, b=1, p=5`, tính `linear_hash(x, 2, 1, 5)` cho `x=0,1,2,3,4` — in danh sách kết quả.</li>
+<li>Kiểm tra kết quả câu 3 có phải là một hoán vị của `[0,1,2,3,4]` không (dùng `sorted(...) == [0,1,2,3,4]`).</li>
+<li>Viết hàm `def count_collisions(hash_fn, xs, b):` đếm số cặp `(i,j)` với `i&lt;j` mà `hash_fn(xs[i]) == hash_fn(xs[j])`.</li>
+<li>Test câu 5 với `xs = list(range(20))`, `hash_fn = lambda x: x % 5`.</li>
+<li>Viết hàm `def random_linear_hash(p):` trả về 1 hàm băm `lambda x: (a*x+b) % p` với `a,b` được chọn ngẫu nhiên bằng `random.randint(0, p-1)` (cố định `a,b` tại thời điểm tạo hàm).</li>
+<li>Sinh 5 hàm băm khác nhau bằng câu 7 (cùng `p=101`), tính `hash_fn(42)` cho mỗi hàm — quan sát các giá trị khác nhau.</li>
+<li>Viết hàm `def hash_table_count(xs, hash_fn, B):` mô phỏng CountMin đơn giản: tạo mảng đếm `counters = [0]*B`, với mỗi `x` trong `xs`, tăng `counters[hash_fn(x) % B]` thêm 1. Trả về `counters`.</li>
+<li>Test câu 9 với `xs = [1,1,2,3,3,3]`, `hash_fn = lambda x: x`, `B=4` — in `counters`, giải thích tại sao một số ô đếm bị "lẫn" nhiều phần tử khác nhau (collision).</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa họ hàm băm H ánh xạ [a] → [b] là k-wise independent: với mọi bộ k chỉ số phân biệt i₁,…,i_k và mọi j₁,…,j_k ∈ [b], ℙ_{h∈H}(h(i₁)=j₁ ∧ … ∧ h(i_k)=j_k) = 1/b^k.</li>
+<li>Giải thích tại sao "k-wise independent" yếu hơn (dễ đạt hơn) so với "h thực sự ngẫu nhiên hoàn toàn" (mọi h(i) độc lập tuyệt đối, cần lưu a giá trị ngẫu nhiên).</li>
+<li>Cho H_poly là tập mọi đa thức bậc ≤ k−1 trên trường hữu hạn 𝔽_q (q là luỹ thừa nguyên tố). Giải thích tại sao |H_poly| = q^k, và một đa thức h ∈ H_poly có thể lưu trong k log q bit.</li>
+<li>Chứng minh (nội suy Lagrange): với k cặp (i_r, j_r) cho trước (i_r phân biệt), tồn tại đúng một đa thức bậc ≤ k−1 trên 𝔽_q thoả h(i_r) = j_r với mọi r.</li>
+<li>Từ câu 4, suy ra H_poly là k-wise independent (đếm số đa thức thoả điều kiện trên tổng số đa thức).</li>
+<li>Với k = 2 (2-wise independent / pairwise independent), viết dạng cụ thể của một hàm băm tuyến tính h(x) = (ax + b) mod p trên 𝔽_p, và giải thích trực giác tại sao chọn a, b ngẫu nhiên đều trên 𝔽_p cho tính pairwise independent.</li>
+<li>Chứng minh: nếu H là 2-wise independent thì với i ≠ j cố định, 𝔼[h(i)·h(j)]... (dạng đơn giản: chứng minh Cov(𝟙[h(i)=v], 𝟙[h(j)=v]) = 0 cho v cố định, dùng định nghĩa 2-wise independent).</li>
+<li>Trong CountMin sketch, mỗi hàm băm hᵣ chỉ cần độc lập bậc hai (2-wise independent). Giải thích tại sao phân tích phương sai của "nhiễu" từ các phần tử khác (Var[Zⱼ] trong slide) chỉ cần dùng đến tính chất 2-wise independent chứ không cần hàm băm hoàn toàn ngẫu nhiên.</li>
+<li>Trong thuật toán KMV, hàm băm h chỉ cần 2-wise independent nhưng phân tích phương sai của thống kê thứ tự (k-th smallest) vẫn dùng được Chebyshev. Giải thích ngắn gọn tại sao "độc lập từng đôi" là đủ để Var[∑Yᵢ] = ∑Var[Yᵢ] (liên hệ lại bài 10, buổi 3).</li>
+<li>So sánh chi phí lưu trữ: hàm băm hoàn toàn ngẫu nhiên [a]→[b] cần a·log b bit; hàm băm k-wise independent (H_poly) chỉ cần k·log a bit. Với a = n = 2²⁰, b = n, k = 2, tính xấp xỉ số bit tiết kiệm được.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/11_11-ham-bam.ipynb" download>⬇️ Tải notebook Python buổi 11 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Họ hàm băm $k$-wise independent yêu cầu điều gì về xác suất đồng thời?", "opts": ["$\\mathbb P(h(i_1)=j_1\\wedge\\dots\\wedge h(i_k)=j_k)=1/b^k$ với mọi bộ $k$ chỉ số phân biệt", "Chỉ cần đúng khi k=n", "Xác suất luôn bằng 1", "Không có yêu cầu cụ thể"], "correct": 0, "explain": "Đây là định nghĩa chuẩn: hành vi của k chỉ số bất kỳ giống hệt như k hàm hoàn toàn độc lập ngẫu nhiên."}, {"q": "Họ đa thức bậc $\\le k-1$ trên $\\mathbb F_p$ đạt k-wise independent nhờ định lý nào?", "opts": ["Định lý Fermat nhỏ", "Nội suy Lagrange: k điểm xác định duy nhất 1 đa thức bậc ≤k-1", "Bất đẳng thức Cauchy-Schwarz", "Định lý giới hạn trung tâm"], "correct": 1, "explain": "Đúng 1 đa thức bậc ≤k-1 đi qua k điểm cho trước — đây là cơ sở đếm để suy ra xác suất đúng 1/p^k."}, {"q": "Một hàm trong $\\mathcal H_{\\text{poly}}$ bậc $k-1$ trên $\\mathbb F_p$ cần bao nhiêu bit để lưu?", "opts": ["$n\\log p$", "$k\\log p$", "$p\\log k$", "$\\log(np)$"], "correct": 1, "explain": "Chỉ cần lưu k hệ số của đa thức, mỗi hệ số trong F_p tốn log p bit."}, {"q": "CountMin/CountSketch chỉ cần hàm băm mấy-wise independent để phân tích đúng?", "opts": ["1-wise", "2-wise", "4-wise", "n-wise"], "correct": 1, "explain": "Phân tích chỉ dùng E[Z] của biến nhiễu (buổi 5), chỉ cần biết xác suất va chạm từng cặp — đủ với 2-wise."}, {"q": "Vì sao AMS sketch (buổi 10) cần độ độc lập cao hơn CountMin?", "opts": ["Vì AMS phân tích Var[Y²] cần E[Y⁴], đòi hỏi 4-wise independent", "Vì AMS dùng ma trận lớn hơn", "Vì AMS không dùng hàm băm", "Không có sự khác biệt thực sự"], "correct": 0, "explain": "Đây chính là điểm khác biệt kỹ thuật giữa hai loại sketch — mức độ độc lập cần thiết phụ thuộc bậc moment cần phân tích."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../10-rademacher-khintchine/index.html">◀ Buổi 10: Biến Rademacher & bất đẳng thức Khintchine</a><a href="../12-cay-nhi-phan/index.html">Buổi 12: Cấu trúc cây nhị phân & rank/order statistics ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

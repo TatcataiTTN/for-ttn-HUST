@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 14: Số học $\mathbb F_p$, đa thức & Schwartz–Zippel · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 14 / 14</div>
+<h1>Số học $\mathbb F_p$, đa thức & Schwartz–Zippel</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 14 · Cấu trúc rời rạc</div><h2>Số học $\mathbb F_p$, đa thức & Schwartz–Zippel</h2><p>Bổ đề nhỏ nhưng cực kỳ mạnh: đa thức khác 0 hiếm khi 'tình cờ' bằng 0 — nền tảng của khôi phục 1-thưa và hàm băm.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Trường hữu hạn & Schwartz–Zippel</h2>
+<ul class="part-list"><li>$\mathbb F_p$: số học modulo p</li>
+<li>Đa thức bậc d có tối đa d nghiệm</li>
+<li>Schwartz–Zippel: $\mathbb P(h(z)=0)\le d/p$</li></ul></div><div class="mdeck-slide"><h2>Bổ đề Schwartz–Zippel</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Schwartz–Zippel (1 biến)</div>
+     <div class="pd-formula-math">$h\ne 0$ bậc $d$ trên $\mathbb F_p$ $\implies \mathbb P_{z\sim\mathbb F_p}(h(z)=0)\le d/p$</div></div>
+     <p>Vì đa thức khác 0 bậc $d$ có tối đa $d$ nghiệm, chọn $z$ ngẫu nhiên trong $\mathbb F_p$ hiếm khi
+     "vô tình" trúng nghiệm — nếu $p\gg d$, xác suất này gần như bằng 0. Đây là công cụ kiểm tra đẳng thức
+     đa thức "giá rẻ" cực kỳ phổ biến trong khoa học máy tính lý thuyết.</p></div><div class="mdeck-slide"><h2>Ba bộ đếm tuyến tính cho khôi phục 1-thưa</h2>
+     <div class="pd-formula"><div class="pd-formula-label">SupportFind: $s_0,s_1,s_2$</div>
+     <div class="pd-formula-math">$s_0=\sum x_i,\ \ s_1=\sum i\cdot x_i,\ \ s_2=\sum x_i z^i \bmod p$</div></div>
+     <p>Nếu $x=v\cdot e_j$ (đúng 1 toạ độ khác 0): $j=s_1/s_0$, $v=s_0$. Kiểm tra $s_2\overset?=s_0z^j$ xác
+     nhận giả thuyết 1-thưa — nếu $x$ KHÔNG 1-thưa, xác suất kiểm tra vẫn "qua" (báo nhầm) bị chặn bởi
+     Schwartz–Zippel, $\le n/p$.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: k-wise hashing & SupportFind trong AGM</h2>
+<ul class="part-list"><li>Đa thức bậc k-1 = hàm băm k-wise (buổi 11)</li>
+<li>SupportFind là mảnh ghép cuối của sketch AGM (buổi 13)</li>
+<li>Cả môn học khép vòng tại đây</li></ul></div><div class="mdeck-slide"><h2>Điểm hội tụ của cả môn học</h2>
+     <p>Buổi cuối này khép lại một vòng tròn: đa thức trên $\mathbb F_p$ vừa là công cụ xây hàm băm $k$-wise
+     independent (buổi 11), vừa là công cụ kiểm tra đẳng thức trong SupportFind — chính mảnh ghép giúp sketch
+     AGM (buổi 13) tìm ra 1 cạnh cắt trong mỗi vòng Borůvka. Bốn thành phần hàm băm $k$-wise, cây nhị phân,
+     Borůvka, và Schwartz–Zippel kết hợp với nhau tạo nên một thuật toán streaming hoàn chỉnh cho bài toán
+     liên thông đồ thị động.</p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Phát biểu Fermat nhỏ $a^{p-1}\equiv1\pmod p$; kiểm chứng bằng code cho nhiều $a,p$ nguyên tố.</li>
+<li>Suy công thức nghịch đảo $a^{-1}\equiv a^{p-2}\pmod p$; viết `mod_inverse_fermat(a,p)`, so với cách thử mọi giá trị.</li>
+<li>Cài Euclid mở rộng `extended_gcd(a,b)`; viết `mod_inverse_euclid(a,p)` — cách thứ 3, so sánh với 2 cách trước.</li>
+<li>Đo thời gian 3 cách tính nghịch đảo cho $p$ lớn ($\approx10^9$).</li>
+<li>Phát biểu Schwartz–Zippel đa biến (2 biến); viết `eval_multivar_poly_mod` đơn giản, kiểm chứng thực nghiệm chặn $d/p$.</li>
+<li>Viết `count_roots_mod(coeffs, p)` tổng quát cho bậc bất kỳ; kiểm tra số nghiệm $\le$ bậc cho 20 đa thức bậc ngẫu nhiên (1–6).</li>
+<li>Viết `schwartz_zippel_test(coeffs, p, trials)` tổng quát; so tỉ lệ thực nghiệm với $d/p$ cho $d=1,\dots,10$.</li>
+<li>Cài đầy đủ `sparse_recovery_1(x, p, z)` (nhận $s_0,s_1,s_2$), trả $(j,v)$ hoặc "not 1-sparse".</li>
+<li>Test câu 8: $x$ thực sự 1-thưa $\Rightarrow$ khôi phục đúng 100%; $x$ có $\ge2$ toạ độ khác 0 $\Rightarrow$ đo tỉ lệ báo nhầm, so với $n/p$.</li>
+<li>Viết `eval_poly_horner(coeffs,x,p)`; đo thời gian so với cách "ngây thơ" cho đa thức bậc cao ($d=1000$).</li>
+<li>Chứng minh bậc của tổng/tích 2 đa thức; viết `poly_add`, `poly_mul` tổng quát, kiểm tra bậc kết quả.</li>
+<li>Cài `lagrange_interpolate(points, p)` tổng quát; kiểm tra bằng cách nội suy lại đa thức ngẫu nhiên từ $k$ điểm.</li>
+<li>Dùng câu 12 cài lại $\mathcal H_{\text{poly}}$ theo cách khác (chọn điểm ngẫu nhiên); so sánh phân phối 2 cách.</li>
+<li>Viết `polynomial_hash_rolling(string, p, base)` (Rabin–Karp); test tìm xâu con, so với `str.find`.</li>
+<li>Chứng minh xác suất collision rolling hash $\le$ (độ dài xâu)$/p$; đo tỉ lệ collision thực nghiệm với $p$ nhỏ và $p$ lớn.</li>
+<li>Viết `secret_sharing_shamir(secret, n, k, p)` và `reconstruct_secret(points, p)`.</li>
+<li>Test câu 16: khôi phục đúng từ bất kỳ $k$ trong $n$ điểm; với $&lt;k$ điểm thì không thể khôi phục.</li>
+<li>Viết `find_prime_near(n)`.</li>
+<li>Benchmark: xác suất lỗi thực nghiệm của `sparse_recovery_1` khi $p\approx n,n^2,n^3$ — xác nhận xu hướng giảm theo $n/p$.</li>
+<li>Viết module `finite_field.py` (`mod_inverse, eval_poly_horner, lagrange_interpolate, sparse_recovery_1`) và bộ `assert` kiểm tra toàn bộ tính chất buổi 14.<br><br>---</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Tính `pow(3, 5, 7)` (hàm `pow` có sẵn của Python hỗ trợ luỹ thừa modulo).</li>
+<li>Viết hàm tự cài `def my_pow_mod(a, b, p):` tính $a^b \bmod p$ bằng vòng lặp nhân dồn `b` lần (không dùng `pow` có sẵn), so sánh với câu 1.</li>
+<li>Viết hàm `def mod_inverse(a, p):` tìm nghịch đảo của `a` modulo `p` bằng cách thử tất cả `b` từ `1` đến `p-1` sao cho `(a*b) % p == 1`.</li>
+<li>Test `mod_inverse(3, 7)`.</li>
+<li>Viết hàm `def eval_poly_mod(coeffs, x, p):` đánh giá đa thức có hệ số `coeffs = [a0, a1, ..., ad]` tại điểm `x` modulo `p`, dùng quy tắc Horner: `result = 0; for c in reversed(coeffs): result = (result*x + c) % p`.</li>
+<li>Test `eval_poly_mod([1,0,1], 3, 7)` (đa thức $1+0\cdot x+x^2$ tại $x=3$, mod 7).</li>
+<li>Viết hàm `def count_roots_mod(coeffs, p):` đếm số nghiệm của đa thức `coeffs` trong $\mathbb F_p$ bằng vòng lặp thử mọi `x` từ `0` đến `p-1`, dùng `eval_poly_mod`.</li>
+<li>Test `count_roots_mod([6,-5,1], 7)` (đa thức $x^2-5x+6$) — kiểm tra kết quả có $\le 2$ nghiệm không (bậc đa thức bằng 2).</li>
+<li>Viết code mô phỏng Schwartz–Zippel: sinh `p=101`, đa thức bậc 3 ngẫu nhiên `coeffs = [random.randint(0,100) for _ in range(4)]` (khác đa thức 0), chạy 1000 lần chọn `z = random.randint(0,100)`, đếm tỉ lệ `eval_poly_mod(coeffs, z, p) == 0`.</li>
+<li>So sánh tỉ lệ thực nghiệm ở câu 9 với chặn lý thuyết $d/p = 3/101$ — giải thích bằng 1–2 dòng comment tại sao 2 số nên gần nhau.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa trường hữu hạn 𝔽_p (p nguyên tố): tập {0,1,…,p−1} với phép cộng/nhân modulo p. Kiểm tra 𝔽_5 có phải là trường (mọi phần tử khác 0 có nghịch đảo nhân) bằng cách liệt kê nghịch đảo của từng phần tử.</li>
+<li>Tính 3⁻¹ mod 7 (nghịch đảo nhân của 3 trong 𝔽_7).</li>
+<li>Định nghĩa đa thức bậc d trên 𝔽_p: h(x) = a_d x^d + … + a_1x + a_0 với các hệ số trong 𝔽_p. Một đa thức khác đa thức 0 có tối đa bao nhiêu nghiệm trong 𝔽_p?</li>
+<li>Phát biểu bổ đề Schwartz–Zippel (dạng đơn giản một biến): một đa thức khác 0 bậc d trên 𝔽_p có tối đa d nghiệm, do đó nếu chọn z ngẫu nhiên đều trong 𝔽_p thì ℙ(h(z) = 0) ≤ d/p.</li>
+<li>Áp dụng: trong thuật toán khôi phục 1-thưa (1-sparse recovery), ta kiểm tra đẳng thức s₂ ≟ s₀·z (với s₀,s₁,s₂ là ba bộ đếm tuyến tính, z ngẫu nhiên trong 𝔽_p). Giải thích tại sao nếu x KHÔNG 1-thưa, xác suất kiểm tra vẫn "qua" (báo nhầm là 1-thưa) bị chặn bởi Schwartz–Zippel.</li>
+<li>Trong bài 5, nếu ta chọn p ≈ n² (với n là kích thước không gian), chặn xác suất lỗi kiểm tra theo n.</li>
+<li>Giải thích tại sao ba bộ đếm tuyến tính s₀ = ∑xᵢ, s₁ = ∑ixᵢ, s₂ = ∑xᵢzⁱ mod p đều là hàm TUYẾN TÍNH của vector x, và vì sao tính tuyến tính này là điều kiện cần để duy trì các bộ đếm được trên một luồng turnstile (cập nhật cộng/trừ).</li>
+<li>Từ định nghĩa s₀, s₁: nếu x = v·eⱼ (chỉ có đúng 1 toạ độ j khác 0, giá trị v), chứng minh j = s₁/s₀ và v = s₀.</li>
+<li>Giải thích ý tưởng lấy mẫu hình học (geometric sampling) trong SupportFind: băm [n] vào các "mức" j với xác suất ℙ(mức = j) = 2^{-j-1}, sao cho tại mức j* ≈ log₂|supp(x)|, số toạ độ khác 0 còn sót lại kỳ vọng là Θ(1).</li>
+<li>Tổng hợp buổi 11–14: giải thích bằng lời (2–4 câu) cách bốn thành phần — hàm băm k-wise independent, cấu trúc cây nhị phân, thuật toán Borůvka, và bổ đề Schwartz–Zippel — được kết hợp với nhau để xây dựng sketch AGM cho bài toán liên thông đồ thị động (không cần chứng minh chi tiết, chỉ cần nêu đúng vai trò của từng thành phần).</li></ol></details>
+<p><a href="../../../data/notebooks/modules/14_14-truong-huu-han.ipynb" download>⬇️ Tải notebook Python buổi 14 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Một đa thức khác 0 bậc $d$ trên $\\mathbb F_p$ có tối đa bao nhiêu nghiệm?", "opts": ["$p$", "$d$", "$p/d$", "$d^2$"], "correct": 1, "explain": "Đây là tính chất đại số cơ bản: số nghiệm không vượt quá bậc đa thức."}, {"q": "Bổ đề Schwartz–Zippel cho chặn nào về xác suất $z$ ngẫu nhiên là nghiệm của đa thức khác 0 bậc $d$?", "opts": ["$\\le d/p$", "$= 1$", "$\\ge d/p$", "$\\le p/d$"], "correct": 0, "explain": "Chọn z ngẫu nhiên đều trong F_p, xác suất trúng 1 trong tối đa d nghiệm là ≤ d/p."}, {"q": "Trong SupportFind, nếu $x=v\\cdot e_j$, công thức nào cho $j$ từ $s_0,s_1$?", "opts": ["$j=s_0/s_1$", "$j=s_1/s_0$", "$j=s_0\\cdot s_1$", "$j=s_1-s_0$"], "correct": 1, "explain": "s0=v, s1=j·v, nên j = s1/s0 (chia được vì đang làm việc trên trường F_p)."}, {"q": "Vai trò của phép kiểm tra $s_2\\overset?=s_0z^j$ trong SupportFind là gì?", "opts": ["Tính lại giá trị v", "Xác nhận giả thuyết x thực sự 1-thưa, với xác suất báo nhầm bị chặn bởi Schwartz–Zippel", "Tìm hàm băm mới", "Không có vai trò gì đặc biệt"], "correct": 1, "explain": "Đây là bước kiểm chứng bắt buộc — nếu x không 1-thưa, xác suất s2 vẫn khớp (báo nhầm) là ≤ n/p."}, {"q": "Đa thức trên $\\mathbb F_p$ xuất hiện ở những vai trò nào xuyên suốt môn học?", "opts": ["Chỉ dùng cho SupportFind", "Xây hàm băm k-wise independent (buổi 11) VÀ kiểm tra đẳng thức trong SupportFind (buổi 14)", "Chỉ dùng cho CountMin", "Không liên quan gì đến các buổi khác"], "correct": 1, "explain": "Đây chính là điểm hội tụ khép vòng của môn học: cùng một công cụ toán học (đa thức trên F_p) phục vụ 2 mục đích khác nhau."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../13-do-thi-boruvka/index.html">◀ Buổi 13: Đồ thị cơ bản, liên thông & Borůvka</a><span></span></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

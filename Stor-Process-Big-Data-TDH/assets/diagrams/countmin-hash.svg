@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="ui-monospace,Menlo,monospace">
+<rect width="640" height="260" fill="#ffffff"/>
+<text x="20" y="26" font-size="15" font-weight="700" fill="#1a1d29">CountMin: L hàm băm độc lập, mỗi hàng B ô đếm</text>
+<text x="20" y="46" font-size="12.5" fill="#5b6072">Phần tử i → h₁(i), h₂(i), h₃(i) → tăng đúng 1 ô mỗi hàng</text>
+<g transform="translate(30,64)" font-size="11.5">
+<circle cx="0" cy="0" r="14" fill="#2b5ce6"/><text x="0" y="4" text-anchor="middle" fill="#fff" font-weight="700">i</text>
+<path d="M14,-4 L120,-40" stroke="#2b5ce6" fill="none"/>
+<path d="M14,0 L120,54" stroke="#2b5ce6" fill="none"/>
+<path d="M14,4 L120,130" stroke="#2b5ce6" fill="none"/>
+</g>
+<g transform="translate(150,10)">
+<!-- row 1 -->
+<g transform="translate(0,0)">
+<text x="0" y="4" fill="#5b6072">h₁</text>
+<g transform="translate(20,-10)">
+<rect width="40" height="30" x="0" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="40" fill="#2b5ce6" opacity=".3" stroke="#2b5ce6"/>
+<rect width="40" height="30" x="80" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="120" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="160" fill="#eef1fb" stroke="#c7cee8"/>
+</g></g>
+<!-- row 2 -->
+<g transform="translate(0,64)">
+<text x="0" y="4" fill="#5b6072">h₂</text>
+<g transform="translate(20,-10)">
+<rect width="40" height="30" x="0" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="40" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="80" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="120" fill="#2b5ce6" opacity=".3" stroke="#2b5ce6"/>
+<rect width="40" height="30" x="160" fill="#eef1fb" stroke="#c7cee8"/>
+</g></g>
+<!-- row 3 -->
+<g transform="translate(0,128)">
+<text x="0" y="4" fill="#5b6072">h₃</text>
+<g transform="translate(20,-10)">
+<rect width="40" height="30" x="0" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="40" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="80" fill="#2b5ce6" opacity=".3" stroke="#2b5ce6"/>
+<rect width="40" height="30" x="120" fill="#eef1fb" stroke="#c7cee8"/>
+<rect width="40" height="30" x="160" fill="#eef1fb" stroke="#c7cee8"/>
+</g></g>
+</g>
+<text x="150" y="210" font-size="12.5" fill="#1a1d29">query(i) = min qua L hàng của ô mà i được băm vào</text>
+<text x="150" y="230" font-size="12.5" fill="#1a1d29">→ ước lượng lệch ≤ ‖x‖₁/k, xác suất lỗi ≤ 2⁻ᴸ (union bound, buổi 5)</text>
+</svg>

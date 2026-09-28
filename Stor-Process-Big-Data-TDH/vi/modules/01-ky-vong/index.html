@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 1: Biến ngẫu nhiên, kỳ vọng, tuyến tính kỳ vọng · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 01 / 14</div>
+<h1>Biến ngẫu nhiên, kỳ vọng, tuyến tính kỳ vọng</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 01 · Xác suất cơ bản</div><h2>Biến ngẫu nhiên, kỳ vọng, tuyến tính kỳ vọng</h2><p>Nền tảng của mọi thuật toán streaming: mọi ước lượng đều bắt đầu từ một biến ngẫu nhiên và kỳ vọng của nó.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Biến ngẫu nhiên & kỳ vọng</h2>
+<ul class="part-list"><li>Không gian mẫu, biến ngẫu nhiên rời rạc</li>
+<li>Kỳ vọng là gì, tại sao cần nó</li>
+<li>Tuyến tính của kỳ vọng — công cụ mạnh nhất</li></ul></div><div class="mdeck-slide"><h2>Biến ngẫu nhiên là gì?</h2>
+      <p>Một <b>biến ngẫu nhiên</b> $X$ là một hàm gán mỗi kết quả trong không gian mẫu $\Omega$ với một số thực.
+      Trong streaming, $X$ thường là một đại lượng ta <i>đo được sau khi xử lý</i> một luồng dữ liệu — ví dụ
+      số phần tử phân biệt, hoặc giá trị của một bộ đếm ngẫu nhiên hoá.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Kỳ vọng (rời rạc)</div>
+      <div class="pd-formula-math">$\displaystyle \mathbb E[X] = \sum_{j} j \cdot \mathbb P(X=j)$</div></div>
+      <ul class="pd-legend"><li><b>$\mathbb E[X]$</b><span>giá trị trung bình "kỳ vọng" của $X$ qua vô số lần lặp</span></li>
+      <li><b>$\mathbb P(X=j)$</b><span>xác suất $X$ nhận đúng giá trị $j$</span></li></ul></div><div class="mdeck-slide"><h2>Tuyến tính của kỳ vọng</h2>
+      <p>Tính chất quan trọng nhất: <b>luôn đúng</b>, kể cả khi các biến ngẫu nhiên <i>không độc lập</i>.
+      Đây là lý do vì sao hầu hết chứng minh streaming bắt đầu bằng cách viết đại lượng cần tính thành
+      tổng các biến chỉ báo rồi áp linearity.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Tuyến tính của kỳ vọng</div>
+      <div class="pd-formula-math">$\mathbb E[X+Y] = \mathbb E[X] + \mathbb E[Y]$</div></div>
+      <div class="callout good"><div class="lbl">Mẹo dùng thường xuyên</div>
+      Muốn tính $\mathbb E$ của "số phần tử thoả điều kiện gì đó" trong luồng? Viết nó thành
+      $\sum_i \mathbf 1[\text{điều kiện tại } i]$ rồi lấy $\mathbb E$ từng số hạng — không cần độc lập.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: thuật toán Morris</h2>
+<ul class="part-list"><li>Bài toán đếm xấp xỉ trong $O(\log\log n)$ bit</li>
+<li>Ý tưởng: tăng bộ đếm $X$ theo xác suất $1/2^X$</li>
+<li>$\tilde n = 2^X - 1$ là ước lượng không chệch</li></ul></div><div class="mdeck-slide"><h2>Bài toán đếm xấp xỉ (Morris, 1978)</h2>
+      <p>Đếm chính xác $n$ sự kiện cần $\Theta(\log n)$ bit (một bộ đếm nhị phân thường). Morris đưa ra
+      thuật toán chỉ cần $O(\log\log n)$ bit bằng cách <b>không tăng bộ đếm mỗi lần</b>, mà tăng theo xác suất
+      giảm dần.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Thuật toán Morris</div>
+      <div class="pd-formula-math">Khởi tạo $X=0$. Mỗi <code>update()</code>: tăng $X$ thêm 1 với xác suất $1/2^X$.
+      Truy vấn: trả về $\tilde n = 2^X - 1$.</div></div></div><div class="mdeck-slide"><h2>Vì sao không chệch?</h2>
+      <p>Đây chính là case study cho <b>tuyến tính kỳ vọng + quy nạp</b> (sẽ gặp lại ở buổi 6): có thể chứng minh
+      bằng quy nạp rằng $\mathbb E[2^{X_n}] = n+1$ sau $n$ lần cập nhật, tức $\tilde n = 2^{X_n}-1$ là một
+      <b>ước lượng không chệch</b> của $n$ — nền tảng để mọi phân tích phương sai/xác suất lỗi phía sau dựa vào.</p>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>
+      Không chệch (unbiased) KHÔNG có nghĩa là chính xác ở mỗi lần chạy — chỉ có nghĩa đúng <i>trung bình</i>
+      qua nhiều lần chạy độc lập. Cần thêm Chebyshev (buổi 3) mới kiểm soát được độ lệch thực tế.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Với $n$ tuỳ ý, viết công thức số kết quả có thể khi tung 1 xúc xắc $n$ lần. Viết code Python đếm bằng `6**n` và kiểm chứng bằng vòng lặp lồng cho $n=2,3$.</li>
+<li>Định nghĩa xác suất cổ điển tổng quát $\Prob(A)=|A|/|\Omega|$. Viết `def classical_prob(favorable, total):` và test với ví dụ "ra mặt chẵn khi tung xúc xắc".</li>
+<li>Với 2 xúc xắc, viết công thức tổng quát $\Prob(\text{tổng}=k)$ theo $k\in\{2,\dots,12\}$ (đếm số cặp thoả). Viết code liệt kê đủ 36 cặp và tính toàn bộ phân phối (không chỉ $k=7$).</li>
+<li>Chứng minh $C(n,2)=n(n-1)/2$ bằng lập luận đếm tổng quát (không chỉ $n=5$). Viết `def comb2(n):` và so sánh với `math.comb(n,2)` cho nhiều $n$.</li>
+<li>Chứng minh công thức hoán vị $n!$ bằng lập luận đếm vị trí tổng quát. Viết hàm đệ quy `def perm(n):` tính $n!$; dùng `itertools.permutations` liệt kê và đếm hoán vị của $\{1,\dots,n\}$ để kiểm chứng với $n=4$.</li>
+<li>Tổng quát hoá bài bi: hộp có $r$ bi đỏ, $x$ bi xanh, chứng minh $\Prob(\text{đỏ})=r/(r+x)$. Viết code mô phỏng Monte Carlo 10000 lần kiểm chứng công thức với $(r,x)$ tự chọn.</li>
+<li>Định nghĩa biến ngẫu nhiên tổng quát $X:\Omega\to\mathbb R$. Viết code mô phỏng 2 ví dụ khác nhau (tổng 2 xúc xắc; số lần tung đến khi ra mặt 6) và ước lượng $\E X$ bằng trung bình mẫu lớn ($N=10^5$).</li>
+<li>Chứng minh công thức kỳ vọng của phân phối đều rời rạc trên $\{1,\dots,n\}$: $\E X=(n+1)/2$. Viết code kiểm chứng bằng mô phỏng với $n=6,20,100$.</li>
+<li>Viết $\sum_{i=1}^n i$ và chứng minh công thức Gauss $n(n+1)/2$ (quy nạp hoặc lập luận cặp đôi). Viết code so sánh vòng lặp trực tiếp với công thức đóng cho $n=10^6$, đo thời gian chạy bằng `time.time()`.</li>
+<li>Chứng minh $\sum_{i=1}^n i^2=n(n+1)(2n+1)/6$ bằng quy nạp. Viết code kiểm chứng đúng với mọi $n$ từ 1 đến 50 (vòng lặp so sánh 2 cách tính).</li>
+<li>Định nghĩa độc lập tổng quát $\Prob(A\cap B)=\Prob(A)\Prob(B)$. Viết code mô phỏng 1 cặp sự kiện độc lập (2 đồng xu) và 1 cặp phụ thuộc (tổng 2 xúc xắc chẵn, và xúc xắc thứ nhất là 6); ước lượng thực nghiệm $\Prob(A\cap B)$ và so với $\Prob(A)\Prob(B)$ trong cả 2 trường hợp.</li>
+<li>Với $n$ đồng xu, chứng minh $\Prob(\text{tất cả ngửa})=(1/2)^n$. Viết code mô phỏng kiểm chứng cho $n=2,5,10$.</li>
+<li>Định nghĩa hàm chỉ báo tổng quát, chứng minh $\E[\mathbf 1_A]=\Prob(A)$. Viết code ước lượng $\E[\mathbf 1_A]$ bằng trung bình mẫu cho $A=\{\text{ra mặt 6}\}$, so sánh với $1/6$.</li>
+<li>Chứng minh $\E X=\sum_{j\ge1}\Prob(X\ge j)$ cho $X$ nguyên không âm bất kỳ. Viết code kiểm chứng bằng cách tính cả 2 vế cho $X=$ số chấm xúc xắc.</li>
+<li>Giải phương trình tổng quát $ax+b=c$ theo $a,b,c$ (biện luận cả trường hợp $a=0$). Viết `def solve_linear(a,b,c):` xử lý đúng trường hợp vô nghiệm/vô số nghiệm.</li>
+<li>Tổng quát hoá: với phân phối đều trên $n$ giá trị, chứng minh tổng xác suất luôn bằng 1. Viết code kiểm tra bằng tần suất tương đối thực nghiệm cho $n=6,10,20$.</li>
+<li>Với lớp $n$ học sinh, $k$ nữ, viết công thức $k/n$ và giải thích đây là xác suất cổ điển. Viết code đọc 1 `list` giới tính (`"M"/"F"`) và tính tỉ lệ nữ bằng vòng lặp (không dùng `count`).</li>
+<li>Chứng minh: kỳ vọng của biến ngẫu nhiên rời rạc hữu hạn luôn nằm trong $[\min X,\max X]$. Viết code kiểm chứng bằng nhiều bộ (giá trị, xác suất) ngẫu nhiên tự sinh.</li>
+<li>Viết code mô phỏng tung xúc xắc $N$ lần với $N=10,100,10^4,10^6$, in sai số $|\text{tần suất}-1/6|$ — quan sát xu hướng giảm.</li>
+<li>Giải thích luật số lớn (law of large numbers) bằng code: vẽ (in bảng) trung bình mẫu tiến gần $\E X$ khi $N$ tăng, cho $X=$ số chấm xúc xắc.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết `x = 5` rồi `print(x)`.</li>
+<li>Chạy tay (trace) đoạn code sau, ghi lại giá trị `s` sau mỗi vòng lặp:<br>   ```python<br>   s = 0<br>   for i in range(1, 6):<br>       s = s + i<br>   ```</li>
+<li>Viết hàm `def sum_n(n):` trả về $1+2+\dots+n$ bằng vòng lặp `for`.</li>
+<li>Sửa hàm ở câu 3 thành `def sum_sq(n):` trả về $1^2+2^2+\dots+n^2$.</li>
+<li>Viết code dùng `random.randint(1,6)` để mô phỏng tung 1 xúc xắc, in kết quả.</li>
+<li>Viết vòng lặp tung xúc xắc 10000 lần (dùng câu 5), đếm số lần ra mặt 6, ước lượng xác suất bằng `count/10000`.</li>
+<li>Viết hàm `def average(lst):` trả về `sum(lst)/len(lst)`. Test với `lst = [1,2,3,4,5,6]`.</li>
+<li>Viết code đếm số phần tử bằng giá trị `v` trong 1 danh sách `lst` bằng vòng lặp và biến đếm (không dùng `lst.count(v)`).</li>
+<li>Viết hàm `def indicator(cond):` trả về `1` nếu `cond` đúng, `0` nếu sai. Test `indicator(3&gt;2)`.</li>
+<li>Viết vòng lặp mô phỏng tung xúc xắc $N$ lần với $N=100,1000,10000$, tính trung bình cộng kết quả mỗi lần, quan sát trung bình tiến gần $3.5$ khi $N$ tăng.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa kỳ vọng của một biến ngẫu nhiên rời rạc X. Tính 𝔼X khi X là số chấm xuất hiện khi tung một xúc xắc 6 mặt cân đối.</li>
+<li>Chứng minh tính tuyến tính của kỳ vọng: 𝔼(X + Y) = 𝔼X + 𝔼Y cho hai biến ngẫu nhiên bất kỳ (không giả sử độc lập).</li>
+<li>Tung đồng xu cân đối n lần độc lập. Gọi X là số lần ra mặt ngửa. Viết X = ∑ᵢXᵢ với Xᵢ là biến chỉ báo, rồi tính 𝔼X.</li>
+<li>Cho luồng dữ liệu i₁,…,i_m ∈ [n]. Với giá trị v cố định, gọi Xᵥ là số lần v xuất hiện trong luồng. Biểu diễn Xᵥ dưới dạng tổng các biến chỉ báo.</li>
+<li>Chứng minh công thức 𝔼X = ∑_{j≥1} ℙ(X ≥ j) cho biến ngẫu nhiên X nhận giá trị nguyên không âm.</li>
+<li>Cho X là biến chỉ báo của sự kiện A (X = 1 nếu A xảy ra, 0 nếu không). Chứng minh 𝔼X = ℙ(A) và 𝔼X² = 𝔼X.</li>
+<li>Hai biến ngẫu nhiên X, Y độc lập. Chứng minh 𝔼(XY) = 𝔼X · 𝔼Y. Cho một ví dụ cụ thể (không cần chứng minh chặt) cho thấy điều này có thể sai nếu X, Y không độc lập.</li>
+<li>Gọi Z là số lần lặp lại khi tung xúc xắc đến khi ra mặt 6 lần đầu tiên (phân phối hình học với p = 1/6). Tính 𝔼Z.</li>
+<li>Chứng minh: nếu X ≤ Y hầu chắc chắn (luôn đúng với mọi kết quả) thì 𝔼X ≤ 𝔼Y.</li>
+<li>Trong bài toán đếm số phần tử phân biệt của một luồng, giả sử ta gán cho mỗi phần tử phân biệt một biến chỉ báo "đã thấy chưa". Dùng tuyến tính kỳ vọng để viết công thức kỳ vọng của tổng số phần tử phân biệt đã đếm dưới dạng một tổng, và giải thích ngắn gọn ý nghĩa.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/01_01-ky-vong.ipynb" download>⬇️ Tải notebook Python buổi 1 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Tuyến tính của kỳ vọng $\\mathbb E[X+Y]=\\mathbb E[X]+\\mathbb E[Y]$ đòi hỏi điều kiện gì?", "opts": ["$X,Y$ phải độc lập", "Không cần điều kiện gì, luôn đúng", "$X,Y$ phải cùng phân phối", "$X,Y$ phải rời rạc"], "correct": 1, "explain": "Đây chính là sức mạnh của linearity: đúng vô điều kiện, kể cả khi X,Y phụ thuộc nhau."}, {"q": "Trong thuật toán Morris, bộ đếm $X$ tăng thêm 1 với xác suất nào?", "opts": ["$1/2$ cố định", "$1/2^X$", "$1/n$", "$X/n$"], "correct": 1, "explain": "Xác suất tăng giảm dần theo hàm mũ khi X lớn, giúp bộ đếm chỉ cần lưu O(log log n) bit."}, {"q": "Ước lượng $\\tilde n = 2^{X_n}-1$ của Morris có tính chất gì đã chứng minh được bằng quy nạp?", "opts": ["Luôn chính xác tuyệt đối", "Không chệch: $\\mathbb E[\\tilde n]=n$", "Luôn nhỏ hơn n", "Không phụ thuộc n"], "correct": 1, "explain": "$\\mathbb E[2^{X_n}]=n+1 \\Rightarrow \\mathbb E[\\tilde n]=n$: không chệch, không phải chính xác từng lần."}, {"q": "Công thức $\\mathbb E[X]=\\sum_j j\\cdot\\mathbb P(X=j)$ áp dụng cho loại biến ngẫu nhiên nào?", "opts": ["Chỉ liên tục", "Chỉ nhị phân", "Rời rạc", "Chỉ không âm"], "correct": 2, "explain": "Đây là công thức kỳ vọng chuẩn cho biến ngẫu nhiên rời rạc."}, {"q": "Viết 'số phần tử thoả điều kiện' thành tổng các biến chỉ báo rồi lấy kỳ vọng từng số hạng — kỹ thuật này tên là gì?", "opts": ["Phương pháp Monte Carlo", "Áp dụng tuyến tính kỳ vọng", "Quy nạp mạnh", "Bất đẳng thức Markov"], "correct": 1, "explain": "Đây chính là kỹ thuật đếm bằng chỉ báo + linearity of expectation, dùng lặp lại xuyên suốt môn."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><span></span><a href="../02-markov/index.html">Buổi 2: Phương sai, độc lập, bất đẳng thức Markov ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

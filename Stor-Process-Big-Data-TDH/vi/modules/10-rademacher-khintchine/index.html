@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 10: Biến Rademacher & bất đẳng thức Khintchine · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 10 / 14</div>
+<h1>Biến Rademacher & bất đẳng thức Khintchine</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 10 · Xác suất nâng cao</div><h2>Biến Rademacher & bất đẳng thức Khintchine</h2><p>Dấu ngẫu nhiên $\pm1$ là 'chất liệu' của AMS sketch, CountSketch, và Johnson–Lindenstrauss transform.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Rademacher & Khintchine</h2>
+<ul class="part-list"><li>$\sigma_i=\pm1$ độc lập, $\mathbb E\sigma_i=0$</li>
+<li>$\mathbb E[(\sum\sigma_ix_i)^2]=\|x\|_2^2$</li>
+<li>Khintchine: chặn hàm mũ cho tổng có dấu</li></ul></div><div class="mdeck-slide"><h2>Biến Rademacher</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Tính chất cơ bản</div>
+     <div class="pd-formula-math">$\mathbb E[\sigma_i]=0,\quad \mathbb E[\sigma_i\sigma_j]=0\ (i\ne j),\quad
+     \mathbb E\Big[\big(\textstyle\sum_i\sigma_ix_i\big)^2\Big]=\|x\|_2^2$</div></div>
+     <p>Dấu ngẫu nhiên có tính chất đẹp: bình phương tổng có dấu cho ra đúng $\|x\|_2^2$ — đây là "không
+     chệch" cho chuẩn Euclid, nền tảng của AMS sketch.</p></div><div class="mdeck-slide"><h2>Bất đẳng thức Khintchine</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Khintchine</div>
+     <div class="pd-formula-math">$\mathbb P\big(|\langle\sigma,x\rangle|>\lambda\big) \le 2e^{-\lambda^2/(2\|x\|_2^2)}$</div></div>
+     <div class="callout good"><div class="lbl">Ý nghĩa</div>Tổng có dấu ngẫu nhiên tập trung nhanh như một
+     biến chuẩn (Gaussian) có cùng phương sai $\|x\|_2^2$ — gọi là "dưới-Gauss" (subgaussian). Dùng để phân
+     tích sai số của KLL (quantile sketch, buổi 12) và CountSketch (buổi 11).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: AMS sketch cho $F_2$</h2>
+<ul class="part-list"><li>$Y=\sum\sigma_ix_i$, ước lượng $Y^2$</li>
+<li>Cần độc lập bậc 4 (không chỉ bậc 2 như CountMin)</li>
+<li>$\mathrm{Var}[Y^2]\le 2\|x\|_2^4$</li></ul></div><div class="mdeck-slide"><h2>AMS: ước lượng $F_2=\|x\|_2^2$</h2>
+     <p>Chọn $\sigma_1,\dots,\sigma_n$ độc lập bậc <b>bốn</b> (mạnh hơn 2-wise của CountMin), duy trì
+     $Y=\sum_i\sigma_ix_i$ tuyến tính khi luồng cập nhật. $\mathbb E[Y^2]=\|x\|_2^2$ (không chệch), và
+     $\mathrm{Var}[Y^2]\le 2\|x\|_2^4$ (cần khai triển $\mathbb E[Y^4]$, đòi hỏi độc lập bậc 4 — lý do
+     2-wise independent như trong CountMin KHÔNG đủ ở đây).</p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh $\E[\sigma_i\sigma_j]=0$ với $i\ne j$ độc lập tổng quát; viết `rademacher_vec(n)`, kiểm tra thực nghiệm cho nhiều cặp $(i,j)$.</li>
+<li>Chứng minh $\E[(\sum\sigma_ix_i)^2]=\sum x_i^2$ tổng quát theo $n$; viết `signed_sum(x)`, kiểm chứng bằng mô phỏng $n=2,10,100$.</li>
+<li>Viết `prob_exceeds(x, lam, trials)` tổng quát; so sánh với chặn Khintchine cho nhiều bộ $(x,\lambda)$, lập bảng tỉ lệ.</li>
+<li>Minh hoạ (không cần chứng minh) hội tụ về phân phối chuẩn khi $n$ tăng, $x_i=c/\sqrt n$; in histogram xấp xỉ cho $n=10,100,1000$.</li>
+<li>Chứng minh $\E e^{t\sigma}=\cosh(t)\le e^{t^2/2}$ (khai triển Taylor từng số hạng); kiểm tra số trị trên $t\in[-5,5]$.</li>
+<li>Viết `khintchine_bound(x, lam)`; viết hàm tự động kiểm tra chặn luôn $\ge$ `prob_exceeds` thực nghiệm (báo lỗi nếu vi phạm).</li>
+<li>Chứng minh $\Var[\ip\sigma x-\ip\sigma y]=\lVert x-y\rVert_2^2$ tổng quát; kiểm tra bằng mô phỏng với cùng 1 bộ $\sigma$ cho 2 vector $x,y$.</li>
+<li>Viết `def jl_sketch(x, m):` tạo $m$ tổng có dấu độc lập; kiểm tra $\frac1m\sum(\text{sketch}_i)^2\approx\lVert x\rVert_2^2$.</li>
+<li>Test câu 8 với $m=10,50,200$ trên $x$ chiều $n=1000$; đo sai số tương đối trung bình, quan sát giảm khi $m$ tăng.</li>
+<li>Chứng minh $\Var[\sum\sigma_ix_i]$ không đổi khi hoán vị $x_i$; kiểm tra bằng code với `x` và `x` xáo trộn.</li>
+<li>Viết `def rademacher_matrix(m,n):`, dùng làm sketch JL; kiểm tra bảo toàn khoảng cách $\lVert\text{sketch}(x)-\text{sketch}(y)\rVert_2\approx\lVert x-y\rVert_2$.</li>
+<li>Test câu 11 cho cặp $(x,y)$ với $m=50,n=1000$, lặp 100 lần, tính sai số tương đối trung bình.</li>
+<li>Kiểm chứng bằng Monte Carlo (không cần chứng minh đại số): $\E[(\sum\sigma_ix_i)^4]=3(\sum x_i^2)^2-2\sum x_i^4$.</li>
+<li>Viết `def variance_of_square(x, trials):` ước lượng $\Var[(\sum\sigma_ix_i)^2]$; so với chặn lý thuyết $2\lVert x\rVert_2^4$.</li>
+<li>So sánh 2 cách chặn (Markov trên $Y^2$ vs.\ Khintchine trực tiếp) bằng code — cách nào chặt hơn?</li>
+<li>Mô phỏng "biến dưới-Gauss": so sánh phân vị thực nghiệm của $Y=\sum\sigma_ix_i$ với phân vị $N(0,\lVert x\rVert_2^2)$.</li>
+<li>Chứng minh $x=(c,\dots,c)$ ($n$ toạ độ) có $\lVert x\rVert_2^2=nc^2$; kiểm tra bằng code cho $c,n$ tuỳ ý.</li>
+<li>Viết `def signed_sum_multi_query(x_list):` tính $\sum\sigma_ix_i$ cho NHIỀU vector dùng CHUNG 1 bộ $\sigma$; kiểm tra hiệp phương sai đúng theo công thức câu 7.</li>
+<li>Thí nghiệm: cố định ngân sách phép tính, so sánh "1 sketch chiều lớn" và "nhiều sketch chiều nhỏ + trung vị" về độ chính xác ước lượng $\lVert x\rVert_2^2$.</li>
+<li>Viết module `sketch_l2.py` với `estimate_norm2(x, m, t)` (dùng $m$ chiều, $t$ lần lấy trung vị) và test tự động: sai số $&lt;10\%$ với xác suất $&gt;0.9$ qua 100 lần chạy.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết `sigma = random.choice([-1,1])`, in giá trị.</li>
+<li>Chạy vòng lặp sinh 10000 giá trị `sigma`, tính trung bình cộng — quan sát gần bằng 0.</li>
+<li>Viết hàm `def rademacher_vec(n):` trả về danh sách `n` giá trị `random.choice([-1,1])` độc lập.</li>
+<li>Viết hàm `def signed_sum(x):` tính $\sum_i \sigma_i x_i$ với `sigma = rademacher_vec(len(x))` sinh mới mỗi lần gọi, dùng `dot`.</li>
+<li>Chạy `signed_sum([1,1,1,1])` 1000 lần, tính trung bình — so sánh với 0 (lý thuyết $\mathbb E=0$).</li>
+<li>Chạy `signed_sum([1,1,1,1])` 1000 lần, tính phương sai (dùng hàm `variance` buổi 2) — so sánh với $\lVert x\rVert_2^2 = 4$.</li>
+<li>Lặp lại câu 6 với `x=[1,2,3,4]` — so sánh phương sai thực nghiệm với $\lVert x\rVert_2^2 = 1+4+9+16=30$.</li>
+<li>Viết hàm `def prob_exceeds(x, lam, trials):` chạy `trials` lần `signed_sum(x)`, đếm tỉ lệ $|kết quả| &gt; lam$.</li>
+<li>So sánh kết quả câu 8 (với `x=[1,1,1,1], lam=3, trials=10000`) với chặn Khintchine $2e^{-\lambda^2/(2\lVert x\rVert_2^2)}$.</li>
+<li>Viết đoạn code (comment + code) giải thích: khi tăng `trials`, tỉ lệ thực nghiệm ở câu 8 tiến gần giá trị lý thuyết nào?</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa biến Rademacher: σ nhận giá trị +1 hoặc −1, mỗi giá trị với xác suất 1/2. Tính 𝔼σ và 𝔼σ².</li>
+<li>Cho σ₁,…,σₙ Rademacher độc lập, x ∈ ℝⁿ cố định. Định nghĩa Y = ∑σᵢxᵢ = ⟨σ,x⟩. Tính 𝔼Y.</li>
+<li>Tính Var[Y] = 𝔼Y² cho Y ở câu 2 (gợi ý: khai triển (∑σᵢxᵢ)² và dùng tính độc lập để loại các số hạng chéo).</li>
+<li>Phát biểu bất đẳng thức Khintchine: ∀λ&gt;0, ℙ(|⟨σ,x⟩| &gt; λ) ≤ 2e^{-λ²/(2‖x‖₂²)}.</li>
+<li>So sánh Khintchine với Chebyshev áp dụng cho cùng biến Y = ⟨σ,x⟩: giải thích tại sao Khintchine (chặn hàm mũ) mạnh hơn nhiều so với Chebyshev (chặn 1/λ²) khi λ lớn.</li>
+<li>Nêu ý tưởng chính trong chứng minh Khintchine: chặn hàm sinh moment 𝔼e^{t⟨σ,x⟩} = ∏ᵢ½(e^{-tσᵢxᵢ}... ) rồi dùng bất đẳng thức 1+a ≤ e^a (đã chứng minh ở buổi 7) cho từng nhân tử.</li>
+<li>Áp dụng Khintchine: x = (1,1,…,1) ∈ ℝⁿ (n toạ độ), ‖x‖₂ = √n. Viết chặn xác suất ℙ(|∑σᵢ| &gt; λ√n) theo Khintchine.</li>
+<li>Giải thích trực giác câu nói "∑σᵢxᵢ là biến dưới-Gauss (subgaussian) với phương sai ‖x‖₂²" — nghĩa là nó tập trung nhanh như một biến chuẩn (Gaussian) có cùng phương sai.</li>
+<li>Trong sketch KLL (nén ngẫu nhiên), sai số tại một mức j có dạng E_j(x) = ∑η·σ·2^j với σ Rademacher. Giải thích tại sao việc chặn ‖x‖₂² của vector các hệ số (m_j·2^j) là bước then chốt để áp dụng Khintchine và suy ra chặn xác suất cho sai số.</li>
+<li>Cho hai vector x, y ∈ ℝⁿ và cùng một bộ σ Rademacher. Giải thích (không cần chứng minh) tại sao Var[⟨σ,x⟩ − ⟨σ,y⟩] = ‖x−y‖₂² — liên hệ ý nghĩa với việc ước lượng khoảng cách giữa hai luồng dữ liệu.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/10_10-rademacher-khintchine.ipynb" download>⬇️ Tải notebook Python buổi 10 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Với $\\sigma_i$ Rademacher độc lập, $\\mathbb E[\\sigma_i\\sigma_j]$ với $i\\ne j$ bằng bao nhiêu?", "opts": ["1", "0", "-1", "1/2"], "correct": 1, "explain": "Do độc lập và mỗi σ có kỳ vọng 0: E[σ_iσ_j]=E[σ_i]E[σ_j]=0."}, {"q": "$\\mathbb E[(\\sum_i\\sigma_ix_i)^2]$ bằng đại lượng nào?", "opts": ["$\\|x\\|_1$", "$\\|x\\|_2^2$", "$\\|x\\|_0$", "$n$"], "correct": 1, "explain": "Khai triển bình phương, các số hạng chéo triệt tiêu (E[σ_iσ_j]=0), chỉ còn Σx_i²=‖x‖₂²."}, {"q": "Bất đẳng thức Khintchine cho biết tổng có dấu ngẫu nhiên tập trung giống loại phân phối nào?", "opts": ["Đều (Uniform)", "Nhị thức", "Dưới-Gauss (subgaussian), giống phân phối chuẩn", "Không tập trung, phân tán đều"], "correct": 2, "explain": "Đây chính là ý nghĩa 'dưới-Gauss' của Khintchine — đuôi giảm nhanh như Gaussian."}, {"q": "Vì sao AMS sketch (ước lượng $F_2$) cần hàm băm/dấu độc lập BẬC BỐN, không chỉ 2-wise như CountMin?", "opts": ["Vì cần tính $\\mathbb E[Y^4]$ để chặn $\\mathrm{Var}[Y^2]$, đòi hỏi độc lập bậc cao hơn", "Vì AMS dùng nhiều bộ nhớ hơn", "Vì đây chỉ là quy ước, không có lý do toán học", "Vì 2-wise không tồn tại"], "correct": 0, "explain": "Phân tích phương sai của Y² cần khai triển E[Y⁴], các số hạng chéo chỉ triệt tiêu đúng cách khi có độc lập bậc 4."}, {"q": "$Y=\\sum\\sigma_ix_i$ trong AMS sketch được duy trì như thế nào khi luồng cập nhật (turnstile)?", "opts": ["Phải tính lại từ đầu mỗi lần", "Cập nhật tuyến tính: $Y \\mathrel{+}= \\Delta\\cdot\\sigma_i$ khi $x_i\\mathrel{+}=\\Delta$", "Không thể cập nhật được trên turnstile", "Cần lưu toàn bộ x"], "correct": 1, "explain": "Y là một sketch tuyến tính (giống buổi 9), nên cập nhật tức thời theo từng Δ."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../09-ma-tran-sketch/index.html">◀ Buổi 9: Ma trận, nhân ma trận-vector, phép chiếu</a><a href="../11-ham-bam/index.html">Buổi 11: Hàm băm & k-wise independence ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

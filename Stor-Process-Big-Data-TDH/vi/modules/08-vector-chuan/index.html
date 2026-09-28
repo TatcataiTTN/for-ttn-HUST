@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 8: Vector, tích trong, chuẩn $\ell_p$ · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 08 / 14</div>
+<h1>Vector, tích trong, chuẩn $\ell_p$</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 08 · Đại số tuyến tính</div><h2>Vector, tích trong, chuẩn $\ell_p$</h2><p>Ngôn ngữ hình học của streaming: một luồng dữ liệu chính là một vector, và $F_0, F_1, F_2$ chính là các chuẩn của nó.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Chuẩn $\ell_p$</h2>
+<ul class="part-list"><li>$\ell_1,\ell_2$ và tổng quát $\ell_p$</li>
+<li>Cauchy–Schwarz</li>
+<li>Biểu đồ tần suất của luồng dữ liệu là 1 vector</li></ul></div><div class="mdeck-slide"><h2>Chuẩn của một vector</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Chuẩn $\ell_p$</div>
+     <div class="pd-formula-math">$\displaystyle \|x\|_p = \Big(\sum_i |x_i|^p\Big)^{1/p}$</div></div>
+     <ul class="pd-legend"><li><b>$\ell_0$</b><span>số toạ độ khác 0 (không phải chuẩn thật, hay gọi "giả chuẩn")</span></li>
+     <li><b>$\ell_1$</b><span>tổng trị tuyệt đối</span></li>
+     <li><b>$\ell_2$</b><span>độ dài Euclid, dùng nhiều nhất trong sketching</span></li></ul></div><div class="mdeck-slide"><h2>Vector tần suất trong streaming</h2>
+     <p>Với luồng dữ liệu trên miền $[n]$, định nghĩa $x\in\mathbb R^n$ với $x_i=$ số lần phần tử $i$ xuất
+     hiện. Khi đó:</p>
+     <div class="callout good"><div class="lbl">$F_0, F_1, F_2$ chính là các chuẩn</div>
+     $F_0=\|x\|_0$ (số phần tử phân biệt) · $F_1=\|x\|_1$ (tổng số phần tử, luôn = độ dài luồng nếu không âm)
+     · $F_2=\|x\|_2^2$ (bình phương chuẩn Euclid, đo "độ lệch" phân phối tần suất — AMS sketch buổi 10 ước
+     lượng đại lượng này).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: heavy hitters & chuẩn tail</h2>
+<ul class="part-list"><li>$x_{\text{tail}(k)}$: vector sau khi bỏ k toạ độ lớn nhất</li>
+<li>Đảm bảo $\ell_2$ mạnh hơn $\ell_1$ hẳn</li>
+<li>CountSketch dùng đảm bảo $\ell_2$, CountMin chỉ $\ell_1$</li></ul></div><div class="mdeck-slide"><h2>Vì sao bảo đảm $\ell_2$ mạnh hơn $\ell_1$</h2>
+     <p>Với $x_{\text{tail}(k)}$ là $x$ sau khi triệt tiêu $k$ toạ độ lớn nhất, luôn có
+     $\|x_{\text{tail}(k)}\|_2/\sqrt k \le \|x_{\text{tail}(k)}\|_1/k$ (hệ quả Cauchy–Schwarz). Điều này
+     giải thích tại sao CountSketch (đảm bảo kiểu $\ell_2$, buổi 10) phát hiện được nhiều phần tử "trội" hơn
+     CountMin (chỉ đảm bảo kiểu $\ell_1$) trên cùng ngân sách bộ nhớ, đặc biệt khi phân phối tần suất có
+     đuôi dài (nhiều phần tử nhỏ) như phân phối Zipf.</p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh Cauchy–Schwarz tổng quát cho $x,y\in\mathbb R^n$ bất kỳ; viết `dot(x,y)`, `norm2(x)`, kiểm tra $|dot(x,y)|\le norm2(x)\cdot norm2(y)$ trên 1000 cặp vector ngẫu nhiên.</li>
+<li>Chứng minh bất đẳng thức tam giác $\lVert x+y\rVert_2\le\lVert x\rVert_2+\lVert y\rVert_2$ tổng quát; kiểm tra bằng code trên vector ngẫu nhiên chiều $n=2,10,100$.</li>
+<li>Chứng minh $\lVert x\rVert_1\le\sqrt n\lVert x\rVert_2$ tổng quát theo $n$; kiểm tra tỉ lệ $\le1$ trên nhiều vector ngẫu nhiên chiều khác nhau.</li>
+<li>Chứng minh $\lVert x\rVert_2\le\lVert x\rVert_1$ tổng quát; kiểm tra bằng code.</li>
+<li>Viết `def norm_p(x, p):` tổng quát ($p\ge1$, và $p=$"inf" cho $\max|x_i|$); kiểm tra tính đơn điệu giảm theo $p$ tăng ($p=1,2,3,4,\infty$) trên vector cụ thể.</li>
+<li>Chứng minh $x+0=x$, $\lVert0\rVert=0$ tổng quát; kiểm tra bằng code.</li>
+<li>Viết `def gram_schmidt(vectors):` (2–3 vector) trực giao hoá; kiểm tra kết quả trực giao bằng `dot`.</li>
+<li>Định nghĩa $\ell_0$ "giả chuẩn" (số phần tử khác 0); tìm bằng code 1 phản ví dụ cho thấy $\ell_0$ không thoả bất đẳng thức tam giác như $\ell_p$ ($p\ge1$).</li>
+<li>Mô phỏng: sinh $x$ chiều $n=1000$ có $k$ toạ độ khác 0 (còn lại 0); kiểm tra $\lVert x\rVert_2\le\lVert x\rVert_1\le\sqrt k\lVert x\rVert_2$ (chặt hơn $\sqrt n$ khi thưa).</li>
+<li>Chứng minh $\lVert cx\rVert_p=|c|\cdot\lVert x\rVert_p$ tổng quát theo $c,p$; kiểm tra bằng code.</li>
+<li>Viết `def cosine_similarity(x,y):`, test vài cặp vector, giải thích ý nghĩa hình học.</li>
+<li>Chứng minh nếu $x\perp y$ thì $\lVert x+y\rVert_2^2=\lVert x\rVert_2^2+\lVert y\rVert_2^2$ (Pythagore tổng quát); kiểm tra trên vector trực giao từ Gram–Schmidt (câu 7).</li>
+<li>Viết code sinh vector ngẫu nhiên chiều $n$ trên mặt cầu đơn vị (Gaussian rồi chuẩn hoá); kiểm tra $\lVert x\rVert_2\approx1$.</li>
+<li>Chứng minh $\lVert x_{\text{tail}(k)}\rVert_2\le\lVert x_{\text{tail}(k)}\rVert_1/\sqrt k$ (gợi ý Cauchy–Schwarz); kiểm tra trên vector ngẫu nhiên.</li>
+<li>Viết `def tail(x, k):` zero-hoá $k$ toạ độ lớn nhất trị tuyệt đối; test với câu 14.</li>
+<li>Phát biểu bất đẳng thức Hölder $|\ip xy|\le\lVert x\rVert_p\lVert y\rVert_q$ ($1/p+1/q=1$); kiểm tra bằng code cho $p=q=2$ và $p=1,q=\infty$.</li>
+<li>Viết code tính "biểu đồ tần suất" $x$ của 1 chuỗi dữ liệu (`dict`), tính $\lVert x\rVert_0,\lVert x\rVert_1,\lVert x\rVert_2^2$ — liên hệ $F_0,F_1,F_2$.</li>
+<li>Test hàm câu 17 trên chuỗi tự sinh (10000 số ngẫu nhiên trong $[1,100]$), in $F_0,F_1,F_2$.</li>
+<li>Chứng minh $F_2\ge F_1^2/n$ khi $x$ có $n$ toạ độ khác 0 (Cauchy–Schwarz dạng khác); kiểm tra bằng code.</li>
+<li>Viết module nhỏ gồm `dot, norm_p, tail, cosine_similarity` và bộ `assert` kiểm tra toàn bộ tính chất đã chứng minh trong buổi.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết hàm `def dot(x, y):` tính tích trong 2 danh sách cùng độ dài bằng vòng lặp (không dùng `sum(a*b for a,b in zip(x,y))` — viết vòng lặp `for` tường minh).</li>
+<li>Test `dot([1,2,3], [4,-1,2])`.</li>
+<li>Viết hàm `def norm2(x):` tính $\lVert x\rVert_2$ bằng `math.sqrt(dot(x,x))`.</li>
+<li>Test `norm2([3,4])`.</li>
+<li>Viết hàm `def norm1(x):` tính $\lVert x\rVert_1 = \sum|x_i|$ (dùng `abs_val` ở buổi 2).</li>
+<li>Test `norm1([1,-2,2,-3])` và `norm2([1,-2,2,-3])`.</li>
+<li>Viết hàm `def add_vec(x, y):` cộng 2 vector cùng độ dài (trả về list mới).</li>
+<li>Viết hàm `def scale_vec(c, x):` nhân vector `x` với số `c`.</li>
+<li>Kiểm tra bất đẳng thức Cauchy–Schwarz bằng code: với `x=[1,2,3]`, `y=[4,5,6]`, kiểm tra `abs(dot(x,y)) &lt;= norm2(x)*norm2(y)`.</li>
+<li>Viết hàm `def nnz(x):` đếm số phần tử khác 0 trong `x` (liên hệ $\lVert x\rVert_0$). Test `nnz([0,3,0,0,5])`.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa tích trong (inner product) chuẩn của hai vector x, y ∈ ℝⁿ: ⟨x,y⟩ = ∑xᵢyᵢ. Tính ⟨x,y⟩ với x = (1,2,3), y = (4,−1,2).</li>
+<li>Định nghĩa chuẩn ℓ2: ‖x‖₂ = √(⟨x,x⟩). Tính ‖x‖₂ với x = (3,4).</li>
+<li>Định nghĩa chuẩn ℓ1: ‖x‖₁ = ∑|xᵢ| và chuẩn ℓp tổng quát: ‖x‖_p = (∑|xᵢ|^p)^{1/p}. Tính ‖x‖₁ và ‖x‖₂ với x = (1,−2,2,−3).</li>
+<li>Chứng minh bất đẳng thức Cauchy–Schwarz: |⟨x,y⟩| ≤ ‖x‖₂‖y‖₂ (có thể trình bày ý tưởng chứng minh qua xét ‖x − ty‖₂² ≥ 0 với t = ⟨x,y⟩/‖y‖₂²).</li>
+<li>Chứng minh bất đẳng thức tam giác cho chuẩn ℓ2: ‖x+y‖₂ ≤ ‖x‖₂ + ‖y‖₂, dùng Cauchy–Schwarz.</li>
+<li>Cho 1 ≤ p ≤ q. Phát biểu (không cần chứng minh đầy đủ) mối quan hệ ‖x‖_q ≤ ‖x‖_p, và kiểm tra bằng ví dụ số cụ thể x = (1,1,1,1) với p=1, q=2.</li>
+<li>Định nghĩa hai vector trực giao: ⟨x,y⟩ = 0. Tìm một vector y ≠ 0 trực giao với x = (1,2) trong ℝ².</li>
+<li>Cho x ∈ ℝⁿ là "biểu đồ tần suất" của một luồng dữ liệu (xᵢ = số lần phần tử i xuất hiện). Giải thích ý nghĩa của ‖x‖₀ (số phần tử khác 0), ‖x‖₁, và ‖x‖₂² trong ngữ cảnh streaming (liên hệ F₀, F₁, F₂).</li>
+<li>Chứng minh: với x ∈ ℝⁿ, ‖x‖₁ ≤ √n · ‖x‖₂ (gợi ý: dùng Cauchy–Schwarz với vector toàn 1).</li>
+<li>Cho x_tail(k) là vector x sau khi triệt tiêu k toạ độ lớn nhất theo trị tuyệt đối. Giải thích bằng lời tại sao ‖x_tail(k)‖₂/√k thường nhỏ hơn (hoặc bằng) ‖x_tail(k)‖₁/k (không cần chứng minh đầy đủ, chỉ cần trực giác — đây là ý tưởng cốt lõi giải thích vì sao đảm bảo ℓ2 mạnh hơn ℓ1).<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/08_08-vector-chuan.ipynb" download>⬇️ Tải notebook Python buổi 8 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Chuẩn $\\ell_2$ của vector $x$ được định nghĩa là gì?", "opts": ["$\\sum|x_i|$", "$\\sqrt{\\sum x_i^2}$", "$\\max|x_i|$", "Số toạ độ khác 0"], "correct": 1, "explain": "ℓ2 là căn bậc hai của tổng bình phương các toạ độ — độ dài Euclid."}, {"q": "Trong streaming, $F_0$ của một luồng dữ liệu chính là chuẩn nào của vector tần suất $x$?", "opts": ["$\\|x\\|_1$", "$\\|x\\|_2^2$", "$\\|x\\|_0$ (số toạ độ khác 0)", "$\\|x\\|_\\infty$"], "correct": 2, "explain": "F0 = số phần tử phân biệt = số toạ độ khác 0 của vector tần suất."}, {"q": "$F_2$ của một luồng dữ liệu tương ứng với đại lượng nào?", "opts": ["$\\|x\\|_1$", "$\\|x\\|_2^2$", "$\\|x\\|_0$", "Trung bình của x"], "correct": 1, "explain": "F2 = tổng bình phương tần suất = bình phương chuẩn Euclid, được AMS sketch ước lượng."}, {"q": "Vì sao đảm bảo kiểu $\\ell_2$ (như CountSketch) thường phát hiện heavy hitters tốt hơn kiểu $\\ell_1$ (CountMin)?", "opts": ["Vì $\\ell_2$ luôn nhỏ hơn $\\ell_1$ nên sai số tuyệt đối nhỏ hơn", "Vì bất đẳng thức Cauchy–Schwarz cho $\\|x_{tail(k)}\\|_2/\\sqrt k \\le \\|x_{tail(k)}\\|_1/k$, ngưỡng phát hiện chặt hơn", "Vì CountSketch dùng nhiều bộ nhớ hơn hẳn", "Không có lý do toán học, chỉ là thực nghiệm"], "correct": 1, "explain": "Đây chính là hệ quả Cauchy-Schwarz làm ngưỡng heavy hitter kiểu ℓ2 chặt hơn kiểu ℓ1."}, {"q": "'Giả chuẩn' $\\ell_0$ khác các chuẩn $\\ell_p$ ($p\\ge1$) thật sự ở điểm nào?", "opts": ["Không thoả bất đẳng thức tam giác như $\\ell_p$ thật", "Luôn bằng $\\ell_1$", "Chỉ định nghĩa được cho vector 2 chiều", "Không có gì khác biệt"], "correct": 0, "explain": "ℓ0 (đếm số toạ độ khác 0) không thoả bất đẳng thức tam giác thông thường, nên gọi là 'giả chuẩn'."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../07-tail-taylor/index.html">◀ Buổi 7: Tail integral & khai triển Taylor</a><a href="../09-ma-tran-sketch/index.html">Buổi 9: Ma trận, nhân ma trận-vector, phép chiếu ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

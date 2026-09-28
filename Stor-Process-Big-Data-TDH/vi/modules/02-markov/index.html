@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 2: Phương sai, độc lập, bất đẳng thức Markov · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 02 / 14</div>
+<h1>Phương sai, độc lập, bất đẳng thức Markov</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 02 · Bất đẳng thức tập trung</div><h2>Phương sai, độc lập, bất đẳng thức Markov</h2><p>Công cụ đầu tiên để biến 'không chệch' thành 'đáng tin cậy': chặn xác suất một biến ngẫu nhiên lệch quá xa.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Phương sai & độc lập</h2>
+<ul class="part-list"><li>Phương sai đo độ phân tán</li>
+<li>Độc lập giữa 2 biến ngẫu nhiên</li>
+<li>Var cộng được khi độc lập</li></ul></div><div class="mdeck-slide"><h2>Phương sai</h2>
+     <p>Phương sai đo mức độ $X$ "dao động" quanh kỳ vọng của nó — càng nhỏ, ước lượng càng đáng tin cậy.</p>
+     <div class="pd-formula"><div class="pd-formula-label">Phương sai</div>
+     <div class="pd-formula-math">$\mathrm{Var}[X] = \mathbb E[X^2] - (\mathbb E[X])^2$</div></div>
+     <div class="callout good"><div class="lbl">Vì sao Var cộng được khi độc lập</div>
+     $\mathrm{Var}[X+Y]=\mathrm{Var}[X]+\mathrm{Var}[Y]$ khi $X,Y$ độc lập — đây là lý do "chạy nhiều bản sao
+     độc lập rồi lấy trung bình" luôn làm giảm phương sai (buổi 3 sẽ dùng liên tục).</div></div><div class="mdeck-slide"><h2>Bất đẳng thức Markov</h2>
+     <p>Công cụ đơn giản nhất nhưng là nền của mọi bất đẳng thức tập trung khác (Chebyshev, Chernoff đều
+     suy ra từ Markov áp cho một biến biến đổi khéo léo).</p>
+     <div class="pd-formula"><div class="pd-formula-label">Markov (X ≥ 0)</div>
+     <div class="pd-formula-math">$\displaystyle \mathbb P(X > \lambda) < \frac{\mathbb E[X]}{\lambda}$</div></div>
+     <div class="callout warn"><div class="lbl">Bẫy</div>Markov chỉ dùng được cho $X \ge 0$, và thường cho chặn
+     rất lỏng khi $X$ tập trung quanh kỳ vọng — cần Chebyshev để chặt hơn.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: phân tích Morris cơ bản</h2>
+<ul class="part-list"><li>Var[2^{X_n}] tính được bằng quy nạp</li>
+<li>Chebyshev áp cho Morris cho sai số $O(1/\varepsilon^2)$</li>
+<li>Vì sao 1 bản sao Morris chưa đủ tin cậy</li></ul></div><div class="mdeck-slide"><h2>Markov không đủ mạnh cho Morris</h2>
+     <p>Nếu chỉ dùng Markov trực tiếp trên $|\tilde n - n|$, chặn thu được quá lỏng để hữu ích thực tế —
+     đây chính là động lực lịch sử để chuyển sang Chebyshev (buổi 3), phân tích qua $\mathrm{Var}[2^{X_n}]$
+     thay vì Markov đơn thuần.</p>
+     <div class="callout info"><div class="lbl">Liên hệ</div>Đây là mẫu hình lặp lại toàn môn: Markov cho biến
+     bậc 1 → Chebyshev cho biến bậc 2 (cần biết Var) → Chernoff/Hoeffding cho hàm mũ (cần độc lập nhiều biến).</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh $\Var[X]=\E X^2-(\E X)^2$ tổng quát (khai triển $(X-\E X)^2$). Viết `def variance(lst):` bằng công thức này, kiểm tra khớp với định nghĩa trực tiếp $\frac1n\sum(x_i-\bar x)^2$ trên `list` ngẫu nhiên.</li>
+<li>Chứng minh $\Var[aX+b]=a^2\Var[X]$ tổng quát theo $a,b$. Viết code kiểm chứng với `a,b` và `lst` tự chọn.</li>
+<li>Chứng minh $\Var[X+Y]=\Var[X]+\Var[Y]$ khi $X,Y$ độc lập; chỉ rõ bước nào cần độc lập. Mô phỏng: kiểm tra công thức đúng khi $X,Y$ độc lập (2 xúc xắc riêng), sai khi $Y=X$.</li>
+<li>Phát biểu và chứng minh đầy đủ Markov cho $X\ge0$ bất kỳ. Viết `markov_bound(EX,lam)`; mô phỏng kiểm tra $\Prob(X&gt;\lambda)_{\text{thực nghiệm}}\le$ chặn trên $\ge3$ phân phối khác nhau (đều, nhị thức, tự tạo lệch).</li>
+<li>Tìm phân phối 2 giá trị $\{0,M\}$ làm Markov chặt (đẳng thức xảy ra); kiểm chứng bằng code tính đúng 2 vế.</li>
+<li>Chứng minh hệ quả Markov $\Prob(X\ge k\mu)\le1/k$ với $\mu=\E X$, $k&gt;1$ tổng quát; kiểm chứng bằng mô phỏng cho $k=2,5,10$.</li>
+<li>Chứng minh $\Prob(|X|&gt;\lambda)\le\E|X|/\lambda$ tổng quát (không cần $X\ge0$). Kiểm chứng bằng mô phỏng biến có thể âm (hiệu 2 xúc xắc).</li>
+<li>$n$ người ném xúc xắc độc lập, $S=\sum X_i$: chứng minh $\E S=3.5n$, dùng Markov chặn $\Prob(S&gt;5n)$. Mô phỏng $S$ nhiều lần cho $n=10,50$, so sánh tần suất thực nghiệm với chặn.</li>
+<li>Chứng minh: nếu $X\in[0,M]$ thì $\Var[X]\le M^2/4$. Kiểm tra bằng code trên nhiều phân phối tự sinh trong $[0,M]$.</li>
+<li>Thiết kế bằng code 1 phân phối cụ thể mà chặn Markov rất lỏng (tỉ lệ chặn/thực tế lớn); in tỉ lệ đó.</li>
+<li>Chứng minh $\Prob(A)+\Prob(\overline A)=1$ tổng quát; kiểm chứng bằng tần suất thực nghiệm.</li>
+<li>Chứng minh với $c&gt;0$: $\Var[cX]=c^2\Var[X]$ và $\E[cX]=c\E X$ đồng thời; viết code kiểm cả hai.</li>
+<li>Với $0&lt;a\le b$, chứng minh $1/b\le1/a$; viết hàm kiểm tra tự động cho nhiều cặp $(a,b)$ ngẫu nhiên.</li>
+<li>Tổng quát hoá Markov cho hàm không giảm $\varphi\ge0$: $\Prob(X\ge a)\le\E[\varphi(X)]/\varphi(a)$; thử $\varphi(x)=x^2$ bằng code, so với Chebyshev (buổi sau).</li>
+<li>Điểm trung bình lớp $\mu$: viết Markov tổng quát theo $\mu,\lambda$; viết hàm nhận `mu,lam` trả chặn.</li>
+<li>Chứng minh xác suất luôn $\in[0,1]$ từ 3 tiên đề Kolmogorov cơ bản. Viết code kiểm tra 1 phân phối tự tạo có thoả 3 tiên đề không (tổng$=1$, mọi giá trị $\ge0$).</li>
+<li>Chứng minh: nếu $\Prob(A)\le p$ thì $\Prob(\overline A)\ge1-p$; viết hàm kiểm tra.</li>
+<li>Giải thích + code: khi nào Markov "vô nghĩa" (chặn $\ge1$)? Viết code tìm $\lambda$ nhỏ nhất để chặn Markov $&lt;1$ với $\E X$ cho trước.</li>
+<li>Viết hàm Newton's method tự cài `def my_sqrt(a, iters):` xấp xỉ $\sqrt a$, so sánh với `math.sqrt`.</li>
+<li>Viết `def average(lst):` tổng quát cho $n$ số bất kỳ, test với `list` độ dài ngẫu nhiên $n=1..1000$.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết `if x &gt; 0: print("dương") else: print("không dương")` với `x` tự chọn.</li>
+<li>Viết hàm `def variance(lst):` tính phương sai theo công thức $\mathbb E X^2-(\mathbb E X)^2$, dùng hàm `average` đã viết ở buổi 1.</li>
+<li>Test `variance([2,4,6,8,10])`.</li>
+<li>Viết hàm `def abs_val(x): return x if x&gt;=0 else -x` (tự cài lại hàm trị tuyệt đối).</li>
+<li>Test `abs_val(-7)`, `abs_val(7)`.</li>
+<li>Viết vòng lặp kiểm tra $|x-3|&lt;2$ cho `x` chạy từ 0 đến 6, in ra các `x` thoả mãn (dùng `abs_val`).</li>
+<li>Viết hàm `def markov_bound(EX, lam): return EX/lam`. Test với `EX=65, lam=90`.</li>
+<li>Viết vòng lặp mô phỏng: sinh 1000 điểm số ngẫu nhiên (`random.randint(0,100)`), đếm tỉ lệ điểm $\ge 90$, so sánh với chặn Markov ở câu 7.</li>
+<li>Viết hàm `def is_prime(n):` kiểm tra `n` có là số nguyên tố (vòng lặp thử chia từ 2 đến `n-1`).</li>
+<li>Dùng `is_prime`, in ra danh sách số nguyên tố từ 2 đến 20.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa phương sai Var[X] = 𝔼[(X − 𝔼X)²]. Chứng minh công thức tương đương Var[X] = 𝔼X² − (𝔼X)².</li>
+<li>Tính Var[X] khi X là biến chỉ báo Bernoulli(p) (X = 1 với xác suất p, 0 với xác suất 1−p).</li>
+<li>Chứng minh: nếu X, Y độc lập thì Var[X + Y] = Var[X] + Var[Y]. Nêu rõ bước nào dùng đến tính độc lập.</li>
+<li>Cho c là hằng số. Chứng minh Var[cX] = c²Var[X] và Var[X + c] = Var[X].</li>
+<li>Phát biểu và chứng minh bất đẳng thức Markov: nếu X ≥ 0 thì ∀λ &gt; 0, ℙ(X &gt; λ) &lt; 𝔼X/λ.</li>
+<li>Áp dụng Markov: một lớp có 100 sinh viên, điểm trung bình bài kiểm tra là 65 (thang 100, điểm ≥ 0). Chặn trên xác suất một sinh viên bất kỳ đạt ≥ 90 điểm.</li>
+<li>Cho X ≥ 0 với 𝔼X = 10. Có thể kết luận ℙ(X &gt; 5) ≤ bao nhiêu bằng Markov? So sánh với trường hợp X luôn bằng đúng 10 (Markov có chặt không trong ví dụ này?).</li>
+<li>Chứng minh Markov áp dụng cho |X| với λ bất kỳ: ℙ(|X| &gt; λ) ≤ 𝔼|X|/λ (không cần X ≥ 0).</li>
+<li>Giả sử n người ném xúc xắc độc lập, gọi S là tổng điểm. Tính 𝔼S và dùng Markov chặn ℙ(S &gt; 5n).</li>
+<li>Giải thích bằng lời (không cần chứng minh hình thức) tại sao Markov thường cho chặn rất lỏng khi biến ngẫu nhiên tập trung quanh kỳ vọng — liên hệ với lý do vì sao ta cần Chebyshev ở buổi sau.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/02_02-markov.ipynb" download>⬇️ Tải notebook Python buổi 2 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "$\\mathrm{Var}[X]=\\mathbb E[X^2]-(\\mathbb E[X])^2$ — biểu thức này luôn có giá trị gì?", "opts": ["Có thể âm", "Luôn không âm", "Luôn bằng 0", "Luôn bằng $\\mathbb E[X]$"], "correct": 1, "explain": "Phương sai là kỳ vọng của bình phương độ lệch, luôn ≥ 0."}, {"q": "Bất đẳng thức Markov áp dụng được cho biến ngẫu nhiên nào?", "opts": ["Chỉ biến rời rạc", "Chỉ biến có phân phối chuẩn", "Biến $X\\ge 0$ bất kỳ", "Chỉ biến có Var hữu hạn"], "correct": 2, "explain": "Markov chỉ cần X không âm và có kỳ vọng hữu hạn, không cần thêm điều kiện gì khác."}, {"q": "$\\mathrm{Var}[X+Y]=\\mathrm{Var}[X]+\\mathrm{Var}[Y]$ đòi hỏi điều kiện gì?", "opts": ["X,Y độc lập", "X,Y bằng nhau", "Không cần điều kiện", "X,Y đều dương"], "correct": 0, "explain": "Khác với kỳ vọng, cộng được phương sai CẦN tính độc lập (hoặc ít nhất pairwise independence)."}, {"q": "Vì sao Markov thường cho chặn 'lỏng' trong thực tế?", "opts": ["Vì chỉ dùng thông tin kỳ vọng, bỏ qua độ phân tán", "Vì công thức sai", "Vì chỉ áp dụng được cho n nhỏ", "Vì không tổng quát"], "correct": 0, "explain": "Markov chỉ dùng E[X], không biết gì về Var[X] nên không tận dụng được thông tin 'X tập trung' nếu có."}, {"q": "Trong phân tích Morris, việc chuyển từ Markov sang Chebyshev nhằm mục đích gì?", "opts": ["Giảm bộ nhớ thuật toán", "Có chặn xác suất chặt hơn nhờ dùng thêm thông tin Var", "Làm thuật toán chạy nhanh hơn", "Không có mục đích gì khác"], "correct": 1, "explain": "Chebyshev tận dụng thêm Var[2^{X_n}] đã tính được, cho chặn chặt hơn Markov đơn thuần."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../01-ky-vong/index.html">◀ Buổi 1: Biến ngẫu nhiên, kỳ vọng, tuyến tính kỳ vọng</a><a href="../03-chebyshev/index.html">Buổi 3: Bất đẳng thức Chebyshev ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

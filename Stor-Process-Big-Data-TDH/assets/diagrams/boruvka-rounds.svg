@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 240" font-family="ui-monospace,Menlo,monospace">
+<rect width="660" height="240" fill="#ffffff"/>
+<text x="20" y="24" font-size="15" font-weight="700" fill="#1a1d29">Borůvka: mỗi vòng số thành phần liên thông giảm ≥ một nửa</text>
+<!-- round 0: 8 isolated -->
+<g transform="translate(20,50)">
+<text x="0" y="-14" font-size="12" fill="#5b6072">Vòng 0: 8 thành phần</text>
+<g fill="#2b5ce6"><circle cx="10" cy="10" r="8"/><circle cx="40" cy="10" r="8"/><circle cx="70" cy="10" r="8"/><circle cx="100" cy="10" r="8"/>
+<circle cx="10" cy="40" r="8"/><circle cx="40" cy="40" r="8"/><circle cx="70" cy="40" r="8"/><circle cx="100" cy="40" r="8"/></g>
+</g>
+<text x="190" y="80" font-size="20" fill="#5b6072">→</text>
+<!-- round 1: 4 -->
+<g transform="translate(240,50)">
+<text x="0" y="-14" font-size="12" fill="#5b6072">Vòng 1: ≤4 thành phần</text>
+<g stroke="#2b5ce6" stroke-width="2"><line x1="10" y1="10" x2="40" y2="10"/><line x1="70" y1="10" x2="100" y2="10"/>
+<line x1="10" y1="40" x2="40" y2="40"/><line x1="70" y1="40" x2="100" y2="40"/></g>
+<g fill="#7c3aed"><circle cx="10" cy="10" r="8"/><circle cx="40" cy="10" r="8"/><circle cx="70" cy="10" r="8"/><circle cx="100" cy="10" r="8"/>
+<circle cx="10" cy="40" r="8"/><circle cx="40" cy="40" r="8"/><circle cx="70" cy="40" r="8"/><circle cx="100" cy="40" r="8"/></g>
+</g>
+<text x="410" y="80" font-size="20" fill="#5b6072">→</text>
+<!-- round 2: 2 -->
+<g transform="translate(460,50)">
+<text x="0" y="-14" font-size="12" fill="#5b6072">Vòng 2: ≤2 thành phần</text>
+<g stroke="#7c3aed" stroke-width="2"><line x1="10" y1="10" x2="100" y2="10"/><line x1="10" y1="40" x2="100" y2="40"/>
+<line x1="40" y1="10" x2="70" y2="10"/><line x1="40" y1="40" x2="70" y2="40"/></g>
+<g fill="#0f9d58"><circle cx="10" cy="10" r="8"/><circle cx="40" cy="10" r="8"/><circle cx="70" cy="10" r="8"/><circle cx="100" cy="10" r="8"/>
+<circle cx="10" cy="40" r="8"/><circle cx="40" cy="40" r="8"/><circle cx="70" cy="40" r="8"/><circle cx="100" cy="40" r="8"/></g>
+</g>
+<text x="20" y="150" font-size="13" fill="#1a1d29">8 → 4 → 2 → 1 : cần O(log N) vòng (buổi 13) — mỗi vòng dùng SupportFind</text>
+<text x="20" y="172" font-size="13" fill="#1a1d29">(khôi phục 1-thưa, buổi 14) để tìm 1 cạnh cắt cho mỗi siêu đỉnh, không cần lưu toàn bộ đồ thị.</text>
+<text x="20" y="200" font-size="12" fill="#5b6072">supp(Σ_{i∈S} aᵢ) = E(S, V\S) — tổng các vector cạnh-kề-có-dấu chỉ còn lại đúng cạnh cắt qua S</text>
+</svg>

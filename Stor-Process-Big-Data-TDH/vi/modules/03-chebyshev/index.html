@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 3: Bất đẳng thức Chebyshev · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 03 / 14</div>
+<h1>Bất đẳng thức Chebyshev</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 03 · Bất đẳng thức tập trung</div><h2>Bất đẳng thức Chebyshev</h2><p>Nâng cấp Markov bằng cách áp dụng cho $(X-\mathbb E X)^2$ — công cụ chuẩn để phân tích 'lấy trung bình nhiều mẫu'.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Chebyshev & khuôn mẫu trung bình hoá</h2>
+<ul class="part-list"><li>Chebyshev suy ra từ Markov thế nào</li>
+<li>Lấy trung bình $s$ bản sao giảm phương sai $s$ lần</li>
+<li>Khuôn mẫu 'trung vị của trung bình'</li></ul></div><div class="mdeck-slide"><h2>Bất đẳng thức Chebyshev</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Chebyshev</div>
+     <div class="pd-formula-math">$\displaystyle \mathbb P(|X-\mathbb E X| > \lambda) < \frac{\mathrm{Var}[X]}{\lambda^2}$</div></div>
+     <p>Chứng minh: áp Markov cho biến không âm $(X-\mathbb E X)^2$ với ngưỡng $\lambda^2$. Đây là ví dụ kinh điển
+     của kỹ thuật "biến đổi biến rồi áp Markov" sẽ lặp lại ở Chernoff (buổi 4).</p></div><div class="mdeck-slide"><h2>Lấy trung bình s bản sao</h2>
+     <p>Nếu chạy $s$ bản sao độc lập của một ước lượng không chệch có phương sai $V$, và lấy trung bình:</p>
+     <div class="pd-formula"><div class="pd-formula-label">Giảm phương sai qua trung bình</div>
+     <div class="pd-formula-math">$\mathrm{Var}\Big[\tfrac1s\sum_{i=1}^s X_i\Big] = \dfrac{V}{s}$</div></div>
+     <div class="callout good"><div class="lbl">Khuôn mẫu xuyên suốt môn</div>
+     Thiết kế ước lượng không chệch → lấy trung bình $s=\Theta(1/\varepsilon^2\delta)$ bản sao để Chebyshev
+     cho sai số $\varepsilon$ với xác suất $1-\delta$. Vấn đề: $s$ tỉ lệ nghịch với $\delta$ — rất tốn khi cần
+     $\delta$ nhỏ. Buổi 4-5 sẽ khắc phục bằng "trung vị của trung bình".</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: KMV cho bài toán $F_0$</h2>
+<ul class="part-list"><li>Giữ k giá trị băm nhỏ nhất thay vì chỉ 1</li>
+<li>Phương sai giảm mạnh khi k tăng</li>
+<li>Chebyshev cho sai số $(1\pm\varepsilon)$ với $k=\Theta(1/\varepsilon^2)$</li></ul></div><div class="mdeck-slide"><h2>KMV — k Minimum Values</h2>
+     <p>Bài toán đếm phần tử phân biệt ($F_0$): băm mỗi phần tử vào $[0,1]$, giữ lại $k$ giá trị băm nhỏ nhất
+     đã gặp. Nếu $X$ là giá trị nhỏ thứ $k$, ước lượng $\tilde t = kM/X$ (M là hệ số rời rạc hoá).</p>
+     <div class="callout info"><div class="lbl">Vì sao giữ k giá trị thay vì 1</div>
+     Thuật toán FM lý tưởng hoá (buổi 7) chỉ giữ giá trị nhỏ nhất — phương sai lớn, dễ bị 1 phần tử "may mắn"
+     làm lệch. KMV dùng thống kê thứ tự thứ $k$ (trung vị hoá tự nhiên) → theo Chebyshev, chọn
+     $k=\Theta(1/\varepsilon^2)$ đạt sai số $(1\pm\varepsilon)$ với xác suất hằng số.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh Chebyshev từ Markov (áp Markov cho $(X-\E X)^2$). Viết `chebyshev_bound(var,t)`; kiểm tra $\le$ Markov áp trực tiếp cho $(X-\mu)^2$ bằng code.</li>
+<li>Với $\E X=\mu,\Var X=\sigma^2$ tổng quát, viết $\Prob(|X-\mu|&gt;k\sigma)\le1/k^2$; test $k=2,3,5$ bằng mô phỏng.</li>
+<li>So sánh Chebyshev với Markov trực tiếp trên biến không âm; minh hoạ bằng code khi nào Chebyshev chặt hơn.</li>
+<li>Chứng minh $\Var[\sum_{i=1}^n X_i]=n\sigma^2$ khi độc lập cùng phân phối; viết Chebyshev cho tổng theo $n$ tổng quát; mô phỏng kiểm tra $n=10,100,1000$.</li>
+<li>Chứng minh $\Var[\bar X]=\sigma^2/n\to0$; viết code lập bảng $\Var[\bar X]$ thực nghiệm giảm theo $1/n$.</li>
+<li>Chứng minh: trung bình $s$ bản sao độc lập giảm phương sai còn $V/s$; viết `def mean_of_s_copies(sample_fn, s):` và kiểm tra phương sai thực nghiệm giảm đúng tỉ lệ $1/s$.</li>
+<li>Từ câu 6, suy công thức $s$ cần để giảm phương sai xuống $1/k$ lần; viết `def s_needed(k):`.</li>
+<li>Chứng minh dạng Chebyshev cho ước lượng không chệch $\tilde n$ của $n$: $\Prob(|\tilde n-n|&gt;\varepsilon n)&lt;\Var[\tilde n]/(\varepsilon n)^2$; viết code kiểm tra tổng quát với $\varepsilon$ tuỳ chọn.</li>
+<li>Giải thích + minh hoạ bằng code tại sao Chebyshev với 1 mẫu không đạt $\delta$ nhỏ tuỳ ý (lập bảng $1/(\varepsilon^2\delta)$ bùng nổ khi $\delta\to0$).</li>
+<li>Chứng minh $\Var[X]=\sum\Var[X_i]$ khi $X_i$ pairwise independent (không cần độc lập toàn phần); mô phỏng 1 ví dụ pairwise independent nhưng không độc lập toàn phần (3 biến XOR đôi một), kiểm tra công thức vẫn đúng.</li>
+<li>Rút gọn $n^2/(2n^2)$ tổng quát theo $n$; viết code kiểm tra giới hạn khi $n\to\infty$.</li>
+<li>Viết $1/(2\varepsilon^2)$ như hàm theo $\varepsilon$; in bảng giá trị khi $\varepsilon=0.5,0.1,0.01,0.001$.</li>
+<li>Viết `def confidence(delta): return 1-delta`; kiểm tra với $\delta=0.01,0.05,0.1$.</li>
+<li>Viết $\Prob(|X-\mu|&gt;t)\le V/t^2$ theo biến $t$; in bảng hàm giảm khi $t$ tăng bằng code.</li>
+<li>Chứng minh phương sai của phân phối đều rời rạc trên $\{1,\dots,n\}$ là $(n^2-1)/12$; kiểm chứng bằng mô phỏng cho $n=6,10,100$.</li>
+<li>Phát biểu (không cần chứng minh chặt) bất đẳng thức Cantelli 1 phía; minh hoạ bằng code so sánh với Chebyshev 2 phía trên cùng dữ liệu.</li>
+<li>Viết code Monte Carlo ước lượng $\Prob(|X-\mu|&gt;t)$ thực tế, so sánh với chặn Chebyshev cho nhiều $t$, in bảng tỉ lệ (chặn/thực tế).</li>
+<li>Chứng minh: tăng $n$ theo cấp số nhân chỉ giảm sai số theo $1/\sqrt n$; minh hoạ bằng code với $n=100,400,1600$ (tăng 4 lần, sai số giảm $\approx2$ lần).</li>
+<li>Từ câu 18, viết `def samples_needed(target_error, var):` tính số mẫu cần để đạt sai số mong muốn theo Chebyshev.</li>
+<li>Viết code so sánh trực tiếp 3 chặn (Markov, Chebyshev, thực nghiệm) trên cùng 1 phân phối, in bảng so sánh theo nhiều ngưỡng $t$.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết code cộng dồn tổng một danh sách bằng vòng lặp `for x in lst: s += x` (không dùng `sum()`).</li>
+<li>Viết hàm `def running_sum(lst):` trả về danh sách tổng dồn (`[lst[0], lst[0]+lst[1], ...]`).</li>
+<li>Test `running_sum([1,2,3,4])`, kết quả phải là `[1,3,6,10]`.</li>
+<li>Viết hàm `def running_avg(lst):` trả về danh sách trung bình cộng dồn tại mỗi bước (một-lượt-duyệt, không lưu lại toàn bộ dữ liệu cũ).</li>
+<li>Test `running_avg([2,4,6,8])`.</li>
+<li>Viết vòng lặp mô phỏng: sinh $s=100$ mẫu độc lập của biến "tung xúc xắc", tính trung bình cộng của $s$ mẫu, lặp lại thí nghiệm này 5 lần — quan sát các trung bình có gần nhau không.</li>
+<li>Viết hàm `def chebyshev_bound(var, t): return var/(t**2)`. Test với `var=25, t=10`.</li>
+<li>Viết vòng lặp: với `s` chạy qua các giá trị `[1,10,100,1000]`, tính `variance_of_mean = var/s` (giả sử `var=100`), in bảng kết quả.</li>
+<li>Viết code mô phỏng: sinh 1000 lần trung bình cộng của 50 mẫu ngẫu nhiên `random.randint(1,6)`, tính phương sai của 1000 trung bình đó bằng hàm `variance` (buổi 2), so sánh với `var/s` lý thuyết ($\mathrm{Var}[\text{1 mẫu}]/50$).</li>
+<li>Giải thích bằng 1–2 dòng comment Python (`# ...`) phía trên đoạn code câu 9: tại sao phương sai của trung bình lại nhỏ hơn phương sai của 1 mẫu đơn lẻ.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Phát biểu và chứng minh bất đẳng thức Chebyshev từ bất đẳng thức Markov, áp dụng Markov cho biến (X − 𝔼X)².</li>
+<li>Cho X có 𝔼X = 50, Var[X] = 25. Chặn ℙ(|X − 50| &gt; 10) bằng Chebyshev.</li>
+<li>So sánh chặn Chebyshev ở câu 2 với chặn Markov áp dụng trực tiếp cho X (giả sử X ≥ 0) — chặn nào chặt hơn?</li>
+<li>Cho X₁,…,Xₙ độc lập cùng phân phối, mỗi Xᵢ có phương sai σ². Gọi S = ∑Xᵢ. Tính Var[S] và dùng Chebyshev để chặn ℙ(|S − 𝔼S| &gt; t).</li>
+<li>Từ câu 4, đặt X̄ = S/n (trung bình mẫu). Chứng minh ℙ(|X̄ − 𝔼X| &gt; ε) ≤ σ²/(nε²), và giải thích tại sao chặn này tiến về 0 khi n → ∞.</li>
+<li>Chứng minh: nếu ta lấy trung bình của s bản sao độc lập của một ước lượng không chệch có phương sai V, thì phương sai của trung bình giảm còn V/s.</li>
+<li>Áp dụng ý tưởng câu 6: cần bao nhiêu bản sao độc lập s để phương sai giảm xuống còn 1/100 phương sai ban đầu?</li>
+<li>Cho một ước lượng không chệch X̃ của đại lượng n, với Var[X̃] &lt; (𝔼X̃)². Chứng minh ℙ(|X̃ − n| &gt; εn) &lt; 1/ε² (đây chính là dạng bất đẳng thức xuất hiện trong phân tích thuật toán Morris cơ bản).</li>
+<li>Giải thích tại sao chỉ dùng Chebyshev với một bản sao duy nhất thường không đủ để đạt xác suất thất bại δ nhỏ tuỳ ý, và nêu ý tưởng khắc phục (không cần chứng minh chi tiết — sẽ học ở buổi 5–6).</li>
+<li>Cho X là tổng của n biến chỉ báo pairwise independent (độc lập từng đôi, không nhất thiết độc lập toàn phần), mỗi biến có kỳ vọng p. Chứng minh Var[X] = ∑Var[Xᵢ] vẫn đúng trong trường hợp này (chỉ cần độc lập từng đôi).<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/03_03-chebyshev.ipynb" download>⬇️ Tải notebook Python buổi 3 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Chebyshev được chứng minh bằng cách áp Markov cho biến nào?", "opts": ["$X$", "$(X-\\mathbb E X)^2$", "$e^{tX}$", "$1/X$"], "correct": 1, "explain": "Áp Markov cho bình phương độ lệch rồi khai căn ra dạng Chebyshev quen thuộc."}, {"q": "Lấy trung bình $s$ bản sao độc lập của ước lượng có phương sai $V$ cho phương sai mới là bao nhiêu?", "opts": ["$V$", "$V/s$", "$V \\cdot s$", "$V/s^2$"], "correct": 1, "explain": "Var của trung bình s biến độc lập cùng phương sai V là V/s."}, {"q": "Trong KMV, tại sao giữ $k$ giá trị băm nhỏ nhất thay vì chỉ 1?", "opts": ["Để tiết kiệm bộ nhớ hơn", "Để giảm phương sai của ước lượng", "Để tránh dùng hàm băm", "Không có lý do đặc biệt"], "correct": 1, "explain": "Thống kê thứ tự thứ k ổn định hơn nhiều so với chỉ dùng giá trị nhỏ nhất (k=1)."}, {"q": "Nhược điểm chính của việc chỉ dùng Chebyshev + lấy trung bình để đạt xác suất lỗi $\\delta$ rất nhỏ là gì?", "opts": ["Không đạt được độ chính xác nào", "Số bản sao cần thiết tỉ lệ $1/\\delta$, rất tốn khi $\\delta$ nhỏ", "Chebyshev không dùng được cho ước lượng không chệch", "Phương sai sẽ tăng theo $s$"], "correct": 1, "explain": "Đây là động lực cho kỹ thuật median trick (Chernoff/Hoeffding, buổi 4-5) chỉ cần $s=\\Theta(\\log(1/\\delta))$."}, {"q": "Với KMV, chọn $k=\\Theta(1/\\varepsilon^2)$ để đạt điều gì?", "opts": ["Sai số $(1\\pm\\varepsilon)$ với xác suất hằng số", "Sai số bằng 0 tuyệt đối", "Bộ nhớ $O(1)$", "Không phụ thuộc $\\varepsilon$"], "correct": 0, "explain": "Đây chính là ứng dụng trực tiếp của Chebyshev: k càng lớn, phương sai càng nhỏ, càng gần đúng."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../02-markov/index.html">◀ Buổi 2: Phương sai, độc lập, bất đẳng thức Markov</a><a href="../04-chernoff/index.html">Buổi 4: Bất đẳng thức Chernoff ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

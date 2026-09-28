@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 5: Bất đẳng thức Hoeffding & Union bound · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 05 / 14</div>
+<h1>Bất đẳng thức Hoeffding & Union bound</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 05 · Bất đẳng thức tập trung</div><h2>Bất đẳng thức Hoeffding & Union bound</h2><p>Hoeffding tổng quát hoá Chernoff cho biến bị chặn bất kỳ; union bound gộp nhiều sự kiện lỗi lại thành một.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Hoeffding & Union bound</h2>
+<ul class="part-list"><li>Hoeffding: không cần Bernoulli, chỉ cần bị chặn khoảng</li>
+<li>Union bound: $\mathbb P(\cup A_i)\le\sum\mathbb P(A_i)$</li>
+<li>Chia đều ngân sách lỗi $\delta/n$</li></ul></div><div class="mdeck-slide"><h2>Bất đẳng thức Hoeffding</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Hoeffding ($X_i$ i.i.d. Bernoulli(p))</div>
+     <div class="pd-formula-math">$\mathbb P\Big(\sum X_i > (p+\varepsilon)n\Big) < e^{-2\varepsilon^2 n}$</div></div>
+     <p>Tổng quát hơn Chernoff: không đòi hỏi phân phối Bernoulli cụ thể, chỉ cần mỗi $X_i$ bị chặn trong
+     một khoảng $[a_i,b_i]$ — dùng được cho hầu hết mọi ước lượng streaming.</p></div><div class="mdeck-slide"><h2>Union bound</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Union bound</div>
+     <div class="pd-formula-math">$\displaystyle \mathbb P\Big(\bigcup_i A_i\Big) \le \sum_i \mathbb P(A_i)$</div></div>
+     <div class="callout good"><div class="lbl">Kỹ thuật phổ biến nhất môn học</div>
+     Có $n$ sự kiện xấu tiềm năng (vd n bộ đếm có thể sai)? Chia đều ngân sách lỗi: mỗi sự kiện được phép
+     xác suất $\delta/n$, tổng theo union bound vẫn $\le \delta$. Xuất hiện trong CountMin, q-digest, mọi
+     cấu trúc có nhiều thành phần cần đồng thời đúng.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: CountMin & heavy hitters</h2>
+<ul class="part-list"><li>L hàng độc lập, mỗi hàng lỗi xác suất 1/2</li>
+<li>Union bound: xác suất TẤT CẢ hàng cùng sai $\le 2^{-L}$</li>
+<li>Thủ thuật dyadic dùng union bound qua O(log n) tầng</li></ul></div><div class="mdeck-slide"><h2>CountMin: bao nhiêu hàng là đủ?</h2>
+     <p>CountMin dùng $L$ hàm băm độc lập, mỗi hàng cho ước lượng lệch $\le \|x\|_1/k$ với xác suất $\ge 1/2$
+     (Markov). Lấy <b>min</b> qua $L$ hàng: xác suất TẤT CẢ hàng đều sai $\le 2^{-L}$ — chỉ cần
+     $L=O(\log(1/\delta))$ hàng để đạt độ tin cậy $1-\delta$.</p>
+     <div class="callout info"><div class="lbl">Liên hệ dyadic trick</div>
+     Thủ thuật cây dyadic tìm heavy hitters cần union bound qua $O(\log n)$ tầng của cây nhị phân — mỗi tầng
+     được cấp một phần ngân sách lỗi $\delta/O(\log n)$ để tổng lỗi vẫn $\le \delta$.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Phát biểu Hoeffding tổng quát cho $X_i\in[a_i,b_i]$ độc lập; viết `def hoeffding_bound(t, ranges):` theo $2\exp(-2t^2/\sum(b_i-a_i)^2)$.</li>
+<li>Chứng minh union bound tổng quát cho $k$ sự kiện bất kỳ bằng quy nạp; viết `def union_bound(probs): return sum(probs)`.</li>
+<li>Mô phỏng: $k$ sự kiện xấu độc lập mỗi xác suất $p$, so sánh $\Prob(\text{có}\ge1)$ thực nghiệm với union bound và với công thức đúng $1-(1-p)^k$.</li>
+<li>Với $n$ vị trí lỗi mỗi vị trí xác suất $\delta/n$, chứng minh tổng xác suất lỗi $\le\delta$; kiểm tra bằng mô phỏng cho $n=10,100,1000$.</li>
+<li>Chứng minh median trick tổng quát: mỗi bản sao đúng với xác suất $\ge2/3$ thì cần $t=\Theta(\log(1/\delta))$; đo thực nghiệm $t$ nhỏ nhất để đạt lỗi $&lt;\delta$ cho vài $\delta$.</li>
+<li>Viết `def median_trick(sample_fn, t):` chạy `t` bản sao độc lập (trả 0/1), trả `1` nếu đa số là `1`.</li>
+<li>Test hàm câu 6 với `sample_fn` giả lập ước lượng đúng xác suất $p$ (tham số hoá); đo tần suất thành công của `median_trick` với nhiều `t`, lập bảng.</li>
+<li>Chứng minh 2 chặn thất bại độc lập $\delta_1,\delta_2$ (2 phía) union bound thành $\delta_1+\delta_2$; kiểm tra bằng mô phỏng 2 lỗi độc lập.</li>
+<li>Viết `def median(lst):` tổng quát xử lý đúng cả chẵn/lẻ; test với nhiều `list` ngẫu nhiên so với `statistics.median`.</li>
+<li>Viết pipeline hoàn chỉnh kiểm chứng khuôn mẫu "không chệch → giảm sai số qua lấy trung bình → union bound + trung vị hoá đạt $\delta$": sinh mẫu → trung bình $s$ mẫu → lặp $t$ lần → lấy trung vị → đo tỉ lệ thành công thực nghiệm.</li>
+<li>Viết `def hoeffding_t(delta, c=18):`; thử với hằng số $c$ khác nhau, kiểm tra bằng mô phỏng xem $c$ nhỏ hơn có còn "an toàn" không.</li>
+<li>Chứng minh union bound đúng cho $p_1,\dots,p_n$ bất kỳ (không cần bằng nhau); kiểm tra bằng code với $p_i$ ngẫu nhiên khác nhau.</li>
+<li>So sánh union bound với xác suất đúng khi các sự kiện ĐỘC LẬP ($1-\prod(1-p_i)$) bằng code — union bound lỏng hơn bao nhiêu khi $p_i$ lớn?</li>
+<li>Phát biểu Bonferroni bậc 2: $\Prob(\cup A_i)\ge\sum\Prob(A_i)-\sum_{i&lt;j}\Prob(A_i\cap A_j)$; minh hoạ bằng code so sánh 2 chặn trên ví dụ cụ thể.</li>
+<li>Tự thiết kế bằng code: hệ $n$ bộ đếm, mỗi bộ lỗi độc lập xác suất $p$; tìm thực nghiệm $p$ tối đa để xác suất hệ có lỗi $&lt;0.01$ khi $n=1000$, so với dự đoán từ union bound.</li>
+<li>Đo thời gian chạy (`time.time()`) của "1 bản sao lớn" so với "nhiều bản sao nhỏ + trung vị" cho cùng độ chính xác.</li>
+<li>Chứng minh quy nạp đầy đủ union bound cho $n$ sự kiện (viết rõ bước cơ sở + bước quy nạp).</li>
+<li>Mô phỏng: $n$ biến độc lập mỗi biến "lỗi" xác suất nhỏ, so sánh xác suất "có lỗi" thực nghiệm khi $n=10,100,1000,10000$ với union bound.</li>
+<li>Viết `def confidence_interval(samples, delta):` trả khoảng tin cậy dựa trên Hoeffding cho trung bình mẫu.</li>
+<li>Test hàm câu 19 với mẫu tung xúc xắc; mô phỏng lặp 1000 lần kiểm tra tỉ lệ khoảng tin cậy "chứa đúng giá trị thật" có $\ge1-\delta$.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết hàm `def my_sorted(lst):` sắp xếp danh sách tăng dần (có thể dùng `sorted()` có sẵn).</li>
+<li>Viết hàm `def median(lst):` trả về trung vị (dùng `my_sorted`, xử lý cả trường hợp `len(lst)` chẵn/lẻ).</li>
+<li>Test `median([1,3,5,7,9])` và `median([2,4,6,8])`.</li>
+<li>Viết hàm `def union_bound(probs): return sum(probs)`. Test với `probs=[0.01]*5`.</li>
+<li>Viết vòng lặp: chạy `t=21` bản sao độc lập của 1 "ước lượng" (giả lập bằng `random.random() &lt; 2/3` — đúng với xác suất 2/3), đếm số bản sao đúng, lấy trung vị bằng cách kiểm tra `count &gt; t/2`.</li>
+<li>Lặp lại thí nghiệm câu 5 100 lần (dùng `repeat_trials` ở buổi 4), tính tỉ lệ lần "trung vị đúng" (tức `count &gt; t/2`).</li>
+<li>Viết hàm `def hoeffding_t(delta): return math.ceil(18*math.log(1/delta))`. Test với `delta=0.01, 0.001, 0.0001` — in bảng.</li>
+<li>So sánh giá trị `1/delta` với `hoeffding_t(delta)` ở câu 7 cho cùng các `delta` — quan sát chênh lệch lớn thế nào.</li>
+<li>Viết hàm `def median_of_means(samples, s, t):` chia `samples` (danh sách $s\times t$ số) thành `t` nhóm mỗi nhóm `s` phần tử, tính trung bình mỗi nhóm, trả về trung vị của `t` trung bình đó.</li>
+<li>Test hàm câu 9 với `samples = [random.randint(1,6) for _ in range(500)]`, `s=50, t=10`.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Phát biểu bất đẳng thức Hoeffding cho X₁,…,Xₙ i.i.d. Bernoulli(p).</li>
+<li>So sánh Hoeffding với Chernoff: chỉ ra điểm giống (cùng dạng chặn hàm mũ) và điểm khác (Hoeffding không yêu cầu biến Bernoulli, chỉ cần bị chặn trong một khoảng).</li>
+<li>Phát biểu union bound: ℙ(A₁ ∪ … ∪ Aₖ) ≤ ∑ℙ(Aᵢ). Chứng minh cho trường hợp k = 2 từ tiên đề xác suất cơ bản.</li>
+<li>Có k = 100 sự kiện xấu, mỗi sự kiện xảy ra với xác suất ≤ δ/100. Dùng union bound, chặn xác suất có ít nhất một sự kiện xấu xảy ra.</li>
+<li>Trong thuật toán "chạy t bản sao độc lập rồi lấy trung vị", định nghĩa Yᵢ = 1 nếu bản sao i thất bại. Giả sử 𝔼∑Yᵢ ≤ t/3. Dùng Hoeffding, chặn ℙ(∑Yᵢ ≥ t/2) (trung vị thất bại nghĩa là ít nhất một nửa số bản sao thất bại).</li>
+<li>Từ câu 5, tìm t (theo δ) đủ để ℙ(trung vị thất bại) ≤ δ, dùng dạng chặn e^{-2λ²t}.</li>
+<li>Có n vị trí trong một cấu trúc dữ liệu (ví dụ n bộ đếm), mỗi bộ đếm lỗi độc lập với xác suất δ/n. Dùng union bound, chặn xác suất tồn tại ít nhất một bộ đếm lỗi trong toàn bộ cấu trúc.</li>
+<li>Giải thích vì sao kỹ thuật "chia đều xác suất lỗi δ cho n sự kiện, mỗi sự kiện được phép lỗi δ/n" là một cách dùng union bound rất phổ biến trong phân tích thuật toán streaming.</li>
+<li>Cho hai chặn thất bại độc lập: chặn "trên" (ước lượng quá cao) với xác suất ≤ 1/6 và chặn "dưới" (ước lượng quá thấp) với xác suất ≤ 1/6. Dùng union bound, chặn xác suất tổng ước lượng sai (theo cả hai chiều).</li>
+<li>Tổng hợp buổi 2–5: trình bày ngắn gọn (không cần chứng minh lại) khuôn mẫu 3 bước "thiết kế ước lượng không chệch → Chebyshev/Chernoff/Hoeffding giảm phương sai/xác suất lỗi qua lấy trung bình → union bound + trung vị hoá để đạt xác suất lỗi δ tuỳ ý" bằng lời của chính bạn.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/05_05-hoeffding-union.ipynb" download>⬇️ Tải notebook Python buổi 5 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "So với Chernoff, Hoeffding tổng quát hơn ở điểm nào?", "opts": ["Không cần các biến độc lập", "Không đòi hỏi phân phối Bernoulli, chỉ cần biến bị chặn trong khoảng", "Cho chặn chặt hơn luôn", "Chỉ dùng được cho 1 biến"], "correct": 1, "explain": "Hoeffding áp dụng cho biến độc lập bị chặn bất kỳ [a_i,b_i], không riêng Bernoulli."}, {"q": "Union bound $\\mathbb P(\\cup A_i)\\le\\sum\\mathbb P(A_i)$ đúng trong điều kiện nào?", "opts": ["Chỉ khi các $A_i$ độc lập", "Chỉ khi các $A_i$ rời nhau", "Luôn đúng, không cần điều kiện gì", "Chỉ khi n=2"], "correct": 2, "explain": "Union bound là hệ quả của tiên đề cộng tính, đúng vô điều kiện cho mọi tập sự kiện."}, {"q": "Trong CountMin, xác suất TẤT CẢ $L$ hàng cùng cho ước lượng sai là bao nhiêu (mỗi hàng lỗi độc lập xác suất 1/2)?", "opts": ["$1/2$", "$L/2$", "$2^{-L}$", "$1-2^{-L}$"], "correct": 2, "explain": "Các hàng độc lập, xác suất TẤT CẢ cùng sai = tích các xác suất lỗi = (1/2)^L = 2^{-L}."}, {"q": "Kỹ thuật 'chia đều ngân sách lỗi $\\delta/n$ cho n sự kiện' dựa trên nguyên lý nào?", "opts": ["Chernoff bound", "Union bound", "Định lý giới hạn trung tâm", "Bất đẳng thức Hölder"], "correct": 1, "explain": "Đây là ứng dụng trực tiếp và phổ biến nhất của union bound trong phân tích thuật toán streaming."}, {"q": "Thủ thuật dyadic (cây nhị phân tìm heavy hitters) cần union bound qua bao nhiêu tầng?", "opts": ["$O(1)$", "$O(\\sqrt n)$", "$O(\\log n)$", "$O(n)$"], "correct": 2, "explain": "Cây nhị phân trên [n] có O(log n) tầng, mỗi tầng cần một phần ngân sách lỗi riêng."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../04-chernoff/index.html">◀ Buổi 4: Bất đẳng thức Chernoff</a><a href="../06-quy-nap/index.html">Buổi 6: Quy nạp toán học & ước lượng không chệch ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 220" font-family="ui-monospace,Menlo,monospace">
+<rect width="620" height="220" fill="#ffffff"/>
+<text x="20" y="28" font-size="15" font-weight="700" fill="#1a1d29">Sketch tuyến tính:  Π x = y   (m ≪ n chiều)</text>
+<!-- matrix Pi -->
+<g transform="translate(20,50)">
+<rect width="230" height="130" fill="#eef1fb" stroke="#2b5ce6" stroke-width="1.5" rx="6"/>
+<text x="8" y="-6" font-size="12" fill="#5b6072">Π  (m × n)</text>
+<g stroke="#c7cee8">
+  <line x1="0" y1="26" x2="230" y2="26"/><line x1="0" y1="52" x2="230" y2="52"/>
+  <line x1="0" y1="78" x2="230" y2="78"/><line x1="0" y1="104" x2="230" y2="104"/>
+  <line x1="46" y1="0" x2="46" y2="130"/><line x1="92" y1="0" x2="92" y2="130"/>
+  <line x1="138" y1="0" x2="138" y2="130"/><line x1="184" y1="0" x2="184" y2="130"/>
+</g>
+<rect x="138" y="0" width="46" height="130" fill="#2b5ce6" opacity=".18"/>
+<text x="30" y="18" font-size="12" text-anchor="middle" fill="#5b6072">…</text>
+<text x="161" y="70" font-size="12" text-anchor="middle" fill="#2b5ce6" font-weight="700">cột i</text>
+</g>
+<text x="270" y="120" font-size="22" fill="#5b6072">×</text>
+<!-- vector x -->
+<g transform="translate(300,50)">
+<rect width="30" height="130" fill="#eef1fb" stroke="#7c3aed" stroke-width="1.5" rx="6"/>
+<text x="-2" y="-6" font-size="12" fill="#5b6072">x (n)</text>
+<rect x="0" y="52" width="30" height="26" fill="#7c3aed" opacity=".25"/>
+<text x="15" y="69" font-size="12" text-anchor="middle" fill="#7c3aed" font-weight="700">xᵢ</text>
+</g>
+<text x="345" y="120" font-size="22" fill="#5b6072">=</text>
+<!-- vector y -->
+<g transform="translate(375,50)">
+<rect width="30" height="130" fill="#eef1fb" stroke="#0f9d58" stroke-width="1.5" rx="6"/>
+<text x="-2" y="-6" font-size="12" fill="#5b6072">y (m)</text>
+</g>
+<g transform="translate(430,50)">
+<text x="0" y="14" font-size="12.5" fill="#1a1d29">Cập nhật x ← x + Δeᵢ (turnstile):</text>
+<text x="0" y="34" font-size="12.5" fill="#1a1d29">chỉ cần cộng thêm</text>
+<text x="0" y="52" font-size="13" fill="#2b5ce6" font-weight="700">Δ · (cột i của Π)</text>
+<text x="0" y="72" font-size="12.5" fill="#1a1d29">vào y hiện có — O(1) hàng</text>
+<text x="0" y="90" font-size="12.5" fill="#1a1d29">không cần đọc lại x.</text>
+<text x="0" y="118" font-size="11.5" fill="#5b6072">Mergeability: Πx+Πx′=Π(x+x′)</text>
+</g>
+</svg>

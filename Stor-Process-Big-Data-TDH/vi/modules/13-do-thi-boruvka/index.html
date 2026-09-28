@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 13: Đồ thị cơ bản, liên thông & Borůvka · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 13 / 14</div>
+<h1>Đồ thị cơ bản, liên thông & Borůvka</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 13 · Cấu trúc rời rạc</div><h2>Đồ thị cơ bản, liên thông & Borůvka</h2><p>Bài toán liên thông trên luồng cạnh động (có xoá) cần một thuật toán khác hẳn union-find truyền thống: sketch AGM.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Liên thông & thuật toán Borůvka</h2>
+<ul class="part-list"><li>Union-find sụp đổ khi luồng có XOÁ cạnh</li>
+<li>Borůvka: mỗi vòng số thành phần giảm ít nhất một nửa</li>
+<li>$O(\log n)$ vòng để có cây khung</li></ul></div><div class="mdeck-slide"><h2>Vì sao union-find không đủ cho luồng động</h2>
+     <p>Với luồng chỉ chèn cạnh, union-find (find/union) giải quyết liên thông trong $O(N\log N)$ bit. Nhưng
+     nếu luồng cho phép XOÁ cạnh, một cạnh đã dùng để hợp nhất 2 thành phần có thể bị xoá sau đó — union-find
+     "sụp đổ", không có cách hoàn tác rẻ. Đây là động lực cho sketch tuyến tính (AGM, buổi sau) chịu được
+     turnstile.</p></div><div class="mdeck-slide"><h2>Thuật toán Borůvka</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Borůvka</div>
+     <div class="pd-formula-math">Mỗi vòng: mỗi thành phần liên thông chọn 1 cạnh đi ra ngoài (nếu có), hợp nhất.</div></div>
+     <div class="callout good"><div class="lbl">Vì sao chỉ cần $O(\log n)$ vòng</div>
+     Mỗi vòng, mỗi thành phần ghép với ít nhất 1 thành phần khác → số thành phần giảm ít nhất một nửa. Sau
+     $O(\log n)$ vòng, chỉ còn 1 thành phần (hoặc rừng cây khung hoàn chỉnh).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: sketch AGM cho đồ thị động</h2>
+<ul class="part-list"><li>Vector cạnh kề có dấu $a_i$ cho mỗi đỉnh</li>
+<li>$\mathrm{supp}(\sum_{i\in S}a_i)$ = đúng tập cạnh cắt qua S</li>
+<li>Kết hợp SupportFind + Borůvka trong $O(N\log^3 N)$ bit</li></ul></div><div class="mdeck-slide"><h2>Ý tưởng sketch AGM</h2>
+     <p>Với mỗi đỉnh $i$, định nghĩa vector $a_i\in\mathbb R^{\binom V2}$: $+1$ tại cạnh $\{u,v\}$ nếu
+     $i=\min(u,v)$, $-1$ nếu $i=\max(u,v)$. Mệnh đề then chốt: với $S\subseteq V$,
+     $\mathrm{supp}(\sum_{i\in S}a_i) = E(S,V\setminus S)$ — cạnh có cả 2 đầu trong $S$ triệt tiêu, chỉ còn
+     đúng các cạnh cắt. Kết hợp với <b>SupportFind</b> (khôi phục 1 phần tử khác 0 từ 1 sketch tuyến tính,
+     buổi 14) và vòng lặp kiểu Borůvka, AGM giải liên thông trên luồng ĐỘNG (có xoá) chỉ trong
+     $O(N\log^3 N)$ bit — không cần lưu toàn bộ đồ thị.</p><p><img src="../../../assets/diagrams/boruvka-rounds.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh số cạnh cây khung của đồ thị liên thông $n$ đỉnh luôn là $n-1$ bằng quy nạp; kiểm tra bằng DFS/BFS xây cây khung thật trên đồ thị ngẫu nhiên.</li>
+<li>Viết `def random_connected_graph(n, extra_edges):`.</li>
+<li>Viết `dfs(graph, start)` và `bfs(graph, start)` tổng quát; kiểm tra cùng tập đỉnh đã thăm trên đồ thị ngẫu nhiên.</li>
+<li>Viết `connected_components(graph, vertices)` tổng quát; test trên đồ thị nhiều thành phần (hợp nhiều đồ thị con không nối nhau).</li>
+<li>Cài đặt đầy đủ Borůvka: `def boruvka(graph, vertices):` (mỗi vòng mỗi thành phần chọn 1 cạnh ra ngoài, hợp nhất bằng union-find).</li>
+<li>Test `boruvka` trên đồ thị ngẫu nhiên, so số cạnh kết quả với $n-1$.</li>
+<li>Đếm số vòng lặp thực tế của `boruvka` trên $n=10,100,1000,10000$, so với chặn lý thuyết $O(\log n)$.</li>
+<li>Chứng minh: sau mỗi vòng Borůvka, số thành phần giảm ÍT NHẤT một nửa; kiểm tra tỉ lệ giảm $\ge2$ thực tế trong code.</li>
+<li>Cài union-find đầy đủ có path compression + union by rank; so thời gian chạy với bản "ngây thơ" trên $10^5$ thao tác.</li>
+<li>Viết `def signed_incidence_vector(i, edges):` tổng quát; kiểm tra $\text{supp}(\sum_{i\in S}a_i)=$ cạnh cắt qua $S$ cho $S$ ngẫu nhiên.</li>
+<li>Viết `def cut_edges_bruteforce(edges, S):`; so với kết quả câu 10 trên nhiều $S$ — phải khớp 100%.</li>
+<li>Viết `def s0_s1_s2(edges_as_vector, z, p):` áp dụng cho vector cạnh kề có dấu; kiểm tra khôi phục đúng 1 cạnh khi $|S|$ nhỏ.</li>
+<li>Cài `def support_find(vector, delta):` đơn giản hoá; test trên vector có $k$ toạ độ khác 0, đo tỉ lệ thành công qua nhiều lần chạy.</li>
+<li>Viết `def agm_connectivity(n, edge_stream, delta):` mô phỏng đơn giản hoá; so kết quả với `connected_components` chạy trực tiếp.</li>
+<li>Đo "bộ nhớ" của `agm_connectivity` (đếm biến đã lưu) so với lưu toàn bộ cạnh, trên $n=1000$ nhiều cạnh.</li>
+<li>Chứng minh điều kiện cần (không đủ) về số cạnh cho chu trình; viết `has_cycle_by_count` và `has_cycle_dfs` (chính xác), tìm ví dụ điều kiện đếm SAI.</li>
+<li>Viết `minimum_spanning_tree_kruskal(edges, weights, n)`; test trên đồ thị có trọng số ngẫu nhiên.</li>
+<li>So sánh cây từ `boruvka` (không trọng số) và Kruskal (nhỏ nhất) trên cùng đồ thị có trọng số — in tổng trọng số mỗi cây.</li>
+<li>Benchmark thời gian `boruvka` vs.\ DFS-based spanning tree trên $n=10^4$.</li>
+<li>Viết module `graph_basic.py` (`dfs, bfs, connected_components, union_find, boruvka`) và test tự động so `boruvka` với `connected_components` trên 20 đồ thị ngẫu nhiên.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Biểu diễn đồ thị bằng `graph = {1:[2], 2:[1,3], 3:[2], 4:[5], 5:[4]}` (adjacency list).</li>
+<li>Viết hàm `def neighbors(graph, v): return graph.get(v, [])`. Test `neighbors(graph, 2)`.</li>
+<li>Viết hàm đệ quy `def dfs(graph, start, visited=None):` duyệt theo chiều sâu, trả về tập các đỉnh đã thăm.</li>
+<li>Test `dfs(graph, 1)` — kết quả phải là `{1,2,3}`.</li>
+<li>Viết hàm `def connected_components(graph, vertices):` dùng `dfs` lặp lại cho từng đỉnh chưa thăm, trả về danh sách các thành phần liên thông.</li>
+<li>Test câu 5 với `vertices = [1,2,3,4,5]` — kết quả phải có 2 thành phần.</li>
+<li>Viết cấu trúc union-find đơn giản bằng `dict`: `parent = {i: i for i in range(1,6)}`, hàm `def find(parent, x):` (đệ quy hoặc lặp, đi theo `parent[x]` đến khi `parent[x]==x`).</li>
+<li>Viết hàm `def union(parent, x, y): parent[find(parent,x)] = find(parent,y)`.</li>
+<li>Test: `union(parent,1,2)`, `union(parent,2,3)`, kiểm tra `find(parent,1) == find(parent,3)`.</li>
+<li>Viết vòng lặp áp dụng `union` cho từng cạnh trong `edges = [(1,2),(2,3),(4,5)]`, sau đó in `parent` — giải thích 2 nhóm liên thông được tạo ra tương ứng thành phần nào.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa đồ thị vô hướng G = (V,E), và định nghĩa thành phần liên thông (connected component).</li>
+<li>Cho một đồ thị với 6 đỉnh và các cạnh {1,2},{2,3},{4,5}. Liệt kê các thành phần liên thông.</li>
+<li>Định nghĩa cấu trúc dữ liệu union-find (disjoint-set): hai thao tác find(x) và union(x,y). Giải thích union-find dùng để làm gì khi xử lý một luồng CHỈ CHÈN cạnh (insertion-only).</li>
+<li>Giải thích tại sao union-find "sụp đổ" (không hoạt động đúng) khi luồng cho phép XOÁ cạnh — một cạnh đã dùng để hợp nhất hai thành phần có thể bị xoá sau đó.</li>
+<li>Trình bày ý tưởng thuật toán Borůvka để tìm cây khung (spanning forest): ở mỗi vòng, mỗi thành phần liên thông hiện tại chọn ra một cạnh đi ra ngoài thành phần (nếu có) và hợp nhất.</li>
+<li>Chứng minh: sau mỗi vòng của Borůvka, số thành phần liên thông giảm ít nhất một nửa.</li>
+<li>Từ câu 6, suy ra số vòng cần thiết của Borůvka trên đồ thị N đỉnh là O(log N).</li>
+<li>Với mỗi đỉnh i, định nghĩa vector "cạnh kề có dấu" aᵢ ∈ ℝ^{(V choose 2)} sao cho a_i[{u,v}] = +1 nếu i = min(u,v) và {u,v} ∈ E, = −1 nếu i = max(u,v) và {u,v}∈E, = 0 nếu ngược lại. Với S ⊆ V, giải thích ý nghĩa của support(∑_{i∈S} aᵢ).</li>
+<li>Chứng minh mệnh đề ở câu 8: support(∑_{i∈S}aᵢ) = E(S, V\S) (tập cạnh cắt qua S) — chỉ ra tại sao một cạnh có cả hai đầu mút trong S sẽ triệt tiêu trong tổng.</li>
+<li>Giải thích tại sao bài toán "khôi phục 1 phần tử khác 0 từ một vector ẩn x đã biết chỉ có đúng 1 toạ độ khác 0" (1-sparse recovery) là bước cần thiết để tìm MỘT cạnh đi ra khỏi một siêu đỉnh S trong thuật toán sketch đồ thị động.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/13_13-do-thi-boruvka.ipynb" download>⬇️ Tải notebook Python buổi 13 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Vì sao union-find truyền thống không giải quyết được liên thông trên luồng cạnh có XOÁ?", "opts": ["Vì union-find quá chậm", "Vì 1 cạnh dùng để hợp nhất có thể bị xoá sau, không có cách hoàn tác rẻ", "Vì union-find chỉ dùng được cho cây", "Không có vấn đề gì, union-find vẫn dùng được"], "correct": 1, "explain": "Đây chính là hạn chế cốt lõi khiến cần đến sketch tuyến tính (AGM) cho luồng động."}, {"q": "Sau mỗi vòng của thuật toán Borůvka, số thành phần liên thông giảm ít nhất bao nhiêu?", "opts": ["Giảm 1 đơn vị", "Giảm một nửa", "Không đổi", "Giảm về 1 ngay lập tức"], "correct": 1, "explain": "Mỗi thành phần ghép với ít nhất 1 thành phần khác, nên số thành phần giảm ít nhất 2 lần."}, {"q": "Từ tính chất giảm một nửa mỗi vòng, số vòng Borůvka cần trên đồ thị N đỉnh là bao nhiêu?", "opts": ["$O(N)$", "$O(\\log N)$", "$O(\\sqrt N)$", "$O(1)$"], "correct": 1, "explain": "Số thành phần giảm cấp số nhân theo cơ số 2, nên cần O(log N) vòng để về 1."}, {"q": "Mệnh đề then chốt của sketch AGM là $\\mathrm{supp}(\\sum_{i\\in S}a_i)$ bằng gì?", "opts": ["Toàn bộ cạnh của đồ thị", "Tập cạnh cắt $E(S,V\\setminus S)$", "Số đỉnh trong S", "Luôn bằng tập rỗng"], "correct": 1, "explain": "Cạnh có cả 2 đầu trong S triệt tiêu trong tổng, chỉ còn lại đúng các cạnh cắt qua S."}, {"q": "Sketch AGM kết hợp Borůvka với công cụ nào để tìm 1 cạnh đi ra khỏi 1 siêu đỉnh?", "opts": ["CountMin sketch", "SupportFind (khôi phục 1-thưa)", "AMS sketch", "q-digest"], "correct": 1, "explain": "SupportFind khôi phục đúng 1 phần tử khác 0 từ vector ẩn — chính là 1 cạnh cắt cần tìm mỗi vòng Borůvka."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../12-cay-nhi-phan/index.html">◀ Buổi 12: Cấu trúc cây nhị phân & rank/order statistics</a><a href="../14-truong-huu-han/index.html">Buổi 14: Số học $\mathbb F_p$, đa thức & Schwartz–Zippel ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

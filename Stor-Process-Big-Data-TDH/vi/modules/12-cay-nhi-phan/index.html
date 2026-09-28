@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 12: Cấu trúc cây nhị phân & rank/order statistics · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 12 / 14</div>
+<h1>Cấu trúc cây nhị phân & rank/order statistics</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 12 · Cấu trúc dữ liệu</div><h2>Cấu trúc cây nhị phân & rank/order statistics</h2><p>Cây nhị phân là xương sống của q-digest, MRL, KLL (quantile sketches) và thủ thuật dyadic cho heavy hitters.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Cây nhị phân & rank</h2>
+<ul class="part-list"><li>$\mathrm{rank}(x)$: số phần tử $\le x$</li>
+<li>Cây nhị phân hoàn chỉnh: $2^{L+1}-1$ nút</li>
+<li>Ý tưởng nén: gộp bớt để tiết kiệm bộ nhớ</li></ul></div><div class="mdeck-slide"><h2>Rank và quantile</h2>
+     <div class="pd-formula"><div class="pd-formula-label">Rank</div>
+     <div class="pd-formula-math">$\mathrm{rank}(x) = |\{i : y_i \le x\}|$</div></div>
+     <p>Bài toán quantile: trả lời $\mathrm{rank}(x)$ hoặc $\mathrm{quantile}(\phi)$ với sai số $\pm\varepsilon n$,
+     dùng ít hơn hẳn $O(n)$ bộ nhớ. q-digest, MRL, KLL là 3 hướng giải khác nhau, đều dựa trên cây nhị phân.</p></div><div class="mdeck-slide"><h2>Ý tưởng nén trên cây</h2>
+     <p>q-digest: mỗi đỉnh cây có bộ đếm, gộp 2 đỉnh anh em vào đỉnh cha khi tổng đủ nhỏ (điều kiện nén
+     $\le \varepsilon n/L$) — tiết kiệm bộ nhớ, đổi lấy sai số có kiểm soát (tổng sai số tích luỹ $\le
+     \varepsilon n$ vì chỉ có $L$ tổ tiên cho mỗi truy vấn).</p>
+     <div class="callout warn"><div class="lbl">Bẫy</div>MRL nén tất định (luôn giữ vị trí lẻ) có thể tích luỹ
+     lỗi hệ thống; KLL sửa bằng cách <b>nén ngẫu nhiên</b> (chọn ngẫu nhiên vị trí lẻ/chẵn) — biến sai số
+     thành tổng có dấu ngẫu nhiên, áp dụng được Khintchine (buổi 10) để chặn chặt hơn nhiều.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Case study: thủ thuật dyadic cho heavy hitters</h2>
+<ul class="part-list"><li>Cây nhị phân trên [n], mỗi tầng 1 sketch riêng</li>
+<li>Cập nhật: mọi tổ tiên của lá phải cập nhật</li>
+<li>Truy vấn: chỉ đi vào nhánh có giá trị đủ lớn</li></ul></div><div class="mdeck-slide"><h2>Tăng tốc truy vấn heavy hitters</h2>
+     <p>Xây cây nhị phân hoàn chỉnh trên $[n]$: mỗi tầng $j$ giữ 1 sketch CountMin cho vector đã "gộp đôi"
+     $2^j$ lần. Cập nhật 1 phần tử phải cập nhật sketch ở MỌI tầng (mọi tổ tiên của lá tương ứng). Bù lại,
+     truy vấn "chỉ đi tiếp vào nhánh có giá trị đủ lớn" giảm thời gian truy vấn từ $O(n\log(n/\delta))$
+     xuống $O(k\log(n/\delta)\log n)$ — minh chứng thực tế cho cây nhị phân + union bound (buổi 5) kết hợp.</p><p><img src="../../../assets/diagrams/dyadic-tree.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>📚 Bài tập gắn với buổi này</h2>
+<details class="ex"><summary>📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code) (20 bài)</summary>
+<ol class="exlist"><li>Chứng minh tổng số nút cây nhị phân hoàn chỉnh $L+1$ mức là $2^{L+1}-1$ tổng quát (quy nạp); viết `total_nodes(L)` và `count_nodes_recursive(node)` (đệ quy trên cấu trúc thật), kiểm tra khớp.</li>
+<li>Viết `class Node` và `build_complete_tree(depth)` đệ quy; kiểm tra `count_nodes_recursive` khớp công thức cho `depth=1..15`.</li>
+<li>Chứng minh $\text{rank}(x)$ tính được trong $O(\log n)$ (tìm kiếm nhị phân) thay vì $O(n)$; viết `rank_linear`, `rank_binary`, kiểm tra khớp trên 1000 truy vấn ngẫu nhiên.</li>
+<li>Đo thời gian chạy thực tế của 2 hàm câu 3 trên mảng $10^6$ phần tử, $10^4$ truy vấn.</li>
+<li>Mô phỏng cấu trúc q-digest trên miền $[0,U)$, $U=2^L$; viết `insert(qd, value)`.</li>
+<li>Viết `compress(qd, epsilon, n)` gộp đỉnh thoả $c[p]+c[v]+c[\text{sibling}]\le\varepsilon n/L$ (cây nhỏ, $L\le6$).</li>
+<li>Test q-digest (câu 5–6) trên luồng mô phỏng (1000 số trong $[0,64)$); so $\text{rank}(x)$ từ q-digest với rank chính xác, đo sai số tối đa, kiểm tra $\le\varepsilon n$.</li>
+<li>Viết `def mrl_compactor(arr, k):` mô phỏng 1 bước nén MRL; test với `arr` ngẫu nhiên, `k` khác nhau.</li>
+<li>Viết `def kll_compactor(arr, k):` (chọn ngẫu nhiên vị trí lẻ/chẵn khi nén); so sánh sai số trung bình MRL vs.\ KLL qua Monte Carlo trên cùng dữ liệu.</li>
+<li>Viết `def estimate_rank_from_compactors(compactors, x):` tổng quát; kiểm tra trên dữ liệu mô phỏng, so với rank chính xác.</li>
+<li>Chứng minh MRL sai số $\le nL/k$ tổng quát; đo sai số thực nghiệm khi $k=10,50,200$, kiểm tra xu hướng giảm $1/k$.</li>
+<li>So sánh phân phối sai số thực nghiệm (histogram qua nhiều lần chạy) của KLL và MRL — KLL nên có đuôi mỏng hơn.</li>
+<li>Viết `build_dyadic_tree(n)` và `update_dyadic(tree, i, delta)` cập nhật mọi tổ tiên của lá $i$.</li>
+<li>Test câu 13: sau nhiều lần cập nhật, giá trị tại gốc phải bằng tổng tất cả cập nhật.</li>
+<li>Viết `query_heavy_hitters_dyadic(tree, threshold)` (duyệt chiều sâu, chỉ vào nút $\ge$ threshold); test trên dữ liệu có vài phần tử "trội".</li>
+<li>Đo thời gian chạy câu 15 so với duyệt tuyến tính toàn mảng, trên $n=10^5,10^6$.</li>
+<li>Viết `tree_depth(node)` và `is_balanced(node)`; test trên cây `build_complete_tree` (phải cân bằng) và 1 cây lệch tự tạo.</li>
+<li>Viết `inorder_iterative(root)` (dùng stack, không đệ quy); so kết quả với `inorder` đệ quy trên nhiều cây ngẫu nhiên.</li>
+<li>Chứng minh số lá cây nhị phân hoàn chỉnh $depth$ mức là $2^{depth}$; viết `count_leaves(node)`, so với công thức.</li>
+<li>Viết module `quantile_sketch.py` (`MRLSketch`, `KLLSketch` dạng class có `update(x)`, `query(phi)`), benchmark sai số trung bình trên 3 bộ dữ liệu (đều, chuẩn, Zipf) cùng ngân sách bộ nhớ.</li></ol></details>
+<details class="ex"><summary>🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python) (10 bài)</summary>
+<ol class="exlist"><li>Viết class đơn giản:<br>   ```python<br>   class Node:<br>       def __init__(self, value, left=None, right=None):<br>           self.value = value<br>           self.left = left<br>           self.right = right<br>   ```</li>
+<li>Tạo 1 cây nhỏ: `root = Node(1, Node(2), Node(3))`. Truy cập `root.left.value`.</li>
+<li>Viết hàm đệ quy `def count_nodes(node):` đếm tổng số nút của cây (trả về 0 nếu `node is None`).</li>
+<li>Test `count_nodes(root)` với cây ở câu 2.</li>
+<li>Viết hàm đệ quy `def tree_depth(node):` tính độ sâu lớn nhất của cây (số mức).</li>
+<li>Viết hàm đệ quy `def inorder(node, result):` duyệt cây theo thứ tự trái–gốc–phải, thêm giá trị vào danh sách `result`.</li>
+<li>Test `inorder` trên cây có các giá trị `1,2,3,4,5` sắp xếp thành cây nhị phân tìm kiếm tự chọn, kiểm tra kết quả có được sắp xếp tăng dần không.</li>
+<li>Viết hàm `def rank_sorted(arr, x):` tính $\mathrm{rank}(x)$ trong danh sách `arr` đã sắp xếp bằng vòng lặp đếm số phần tử $\le x$.</li>
+<li>Test `rank_sorted([2,4,7,7,9,12], 7)`.</li>
+<li>Viết hàm `def build_complete_tree(depth):` tạo đệ quy 1 cây nhị phân hoàn chỉnh với `depth` mức (mỗi nút giá trị `None`, chỉ cần đúng cấu trúc), rồi dùng `count_nodes` kiểm tra tổng số nút bằng $2^{depth+1}-1$.</li></ol></details>
+<details class="ex"><summary>✍️ Bài tập tự luận mức vừa (chứng minh) (10 bài)</summary>
+<ol class="exlist"><li>Định nghĩa cây nhị phân hoàn chỉnh (complete binary tree) với L+1 mức (mức 0 là gốc, mức L là lá), số nút tại mức ℓ là bao nhiêu?</li>
+<li>Với U = 2^L giá trị {0,…,U−1}, giải thích cách mỗi lá của cây tương ứng với đúng một giá trị, và mỗi đỉnh trong (không phải lá) đại diện cho một khoảng giá trị liên tiếp.</li>
+<li>Định nghĩa rank(x) trong một mảng y₁ &lt; y₂ &lt; … &lt; yₙ đã sắp xếp: rank(x) = số phần tử ≤ x. Tính rank(7) trong mảng {2,4,7,7,9,12}.</li>
+<li>Định nghĩa quantile(φ) là giá trị tại rank ≈ φn. Với mảng ở câu 3 (n=6), tính quantile(0.5) (trung vị) chính xác.</li>
+<li>Giải thích ý tưởng chính của cấu trúc q-digest: mỗi đỉnh v của cây có bộ đếm c[v], và việc "gộp" hai đỉnh anh em vào đỉnh cha (cộng dồn bộ đếm rồi xoá) giúp tiết kiệm bộ nhớ nhưng làm mất độ chính xác — vì sao?</li>
+<li>Trong q-digest, chứng minh trực giác rằng khi trả lời rank(x), sai số tối đa đến từ việc "đếm nhầm" tại các tổ tiên của x đã bị gộp — mỗi tổ tiên đóng góp sai số tối đa bao nhiêu theo điều kiện nén εn/L?</li>
+<li>Giải thích thủ thuật "dyadic": xây một cây nhị phân hoàn chỉnh trên [n], mỗi mức j tương ứng một vector x^{(j)} ∈ ℝ^{2^j}, trong đó giá trị tại một đỉnh = tổng giá trị của hai đỉnh con. Với n = 8, có bao nhiêu mức?</li>
+<li>Cho một luồng chỉ chèn (insertion-only) cập nhật phần tử i, giải thích tại sao ta cần cập nhật SKETCH tại MỌI tổ tiên của lá i trong cây dyadic (không chỉ tại lá i).</li>
+<li>Trong thuật toán tìm heavy hitters bằng dyadic trick, việc "truy vấn theo chiều sâu" (đi từ gốc xuống, chỉ đi tiếp vào các nút có giá trị đủ lớn) giúp giảm thời gian truy vấn từ O(n log(n/δ)) xuống còn gì? Giải thích trực giác (không cần chứng minh đầy đủ).</li>
+<li>Cho một cây nhị phân hoàn chỉnh với n lá. Chứng minh tổng số đỉnh của cây là 2n − 1.<br><br>---</li></ol></details>
+<p><a href="../../../data/notebooks/modules/12_12-cay-nhi-phan.ipynb" download>⬇️ Tải notebook Python buổi 12 (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, mở bằng Jupyter/Colab.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Cây nhị phân hoàn chỉnh có $L+1$ mức (mức 0 là gốc) có tổng bao nhiêu nút?", "opts": ["$L+1$", "$2^{L+1}-1$", "$2^L$", "$L^2$"], "correct": 1, "explain": "Tổng số nút từ mức 0 đến L: 2^0+2^1+...+2^L = 2^{L+1}-1."}, {"q": "Điều kiện nén trong q-digest ($c[p]+c[v]+c[\\text{sibling}]\\le\\varepsilon n/L$) đảm bảo điều gì?", "opts": ["Cây luôn cân bằng hoàn hảo", "Tổng sai số tích luỹ tại mỗi truy vấn rank $\\le \\varepsilon n$", "Không bao giờ có sai số", "Bộ nhớ luôn bằng 0"], "correct": 1, "explain": "Mỗi tổ tiên góp tối đa εn/L sai số, có L tổ tiên nên tổng ≤ εn."}, {"q": "Điểm khác biệt chính giữa MRL và KLL trong cách nén là gì?", "opts": ["KLL không dùng cây nhị phân", "KLL chọn ngẫu nhiên vị trí lẻ/chẵn khi nén, MRL luôn cố định", "MRL nhanh hơn KLL rất nhiều", "Không có khác biệt đáng kể"], "correct": 1, "explain": "Đây là điểm mấu chốt: ngẫu nhiên hoá biến sai số MRL (tất định) thành tổng có dấu ngẫu nhiên kiểu Khintchine (buổi 10) cho KLL, cho chặn chặt hơn."}, {"q": "Trong thủ thuật dyadic (heavy hitters), khi 1 phần tử được cập nhật, cần cập nhật những sketch nào?", "opts": ["Chỉ sketch ở lá tương ứng", "Sketch tại MỌI tổ tiên của lá đó trên cây", "Chỉ sketch tại gốc", "Không cần cập nhật gì thêm"], "correct": 1, "explain": "Mỗi tầng của cây giữ 1 sketch riêng cho vector đã gộp ở mức đó, nên mọi tổ tiên đều cần cập nhật."}, {"q": "Thủ thuật dyadic giảm thời gian truy vấn heavy hitters từ $O(n\\log(n/\\delta))$ xuống mức nào?", "opts": ["$O(1)$", "$O(k\\log(n/\\delta)\\log n)$", "$O(n^2)$", "Không giảm được"], "correct": 1, "explain": "Nhờ chỉ đi tiếp vào nhánh có giá trị đủ lớn (cắt tỉa cây), thay vì duyệt toàn bộ n phần tử."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../11-ham-bam/index.html">◀ Buổi 11: Hàm băm & k-wise independence</a><a href="../13-do-thi-boruvka/index.html">Buổi 13: Đồ thị cơ bản, liên thông & Borůvka ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>
