@@ -2,6 +2,10 @@
 import json, pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from modules_content import MODULES
+from quiz_extra import EXTRA_QUIZ
+
+for _m in MODULES:
+    _m["quiz"] = _m["quiz"] + EXTRA_QUIZ.get(_m["n"], [])
 
 ROOT = pathlib.Path(__file__).parent.parent
 EX = json.loads((pathlib.Path(__file__).parent / "exercises.json").read_text(encoding="utf-8"))
