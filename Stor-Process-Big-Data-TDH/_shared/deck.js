@@ -18,10 +18,10 @@ document.addEventListener('DOMContentLoaded', function(){
       count.textContent = (i+1) + '/' + slides.length;
       prevBtn.disabled = i === 0; nextBtn.disabled = i === slides.length - 1;
       if (window.renderMathInElement) {
-        try { renderMathInElement(slides[i], {delimiters:[
+        try { renderMathInElement(slides[i], {delimiters: window.KATEX_DELIMS || [
           {left:'$$', right:'$$', display:true},
           {left:'$', right:'$', display:false}
-        ]}); } catch(e){}
+        ], macros: window.KATEX_MACROS || {}, throwOnError: false}); } catch(e){}
       }
     }
     function go(n){ i = Math.max(0, Math.min(slides.length - 1, n)); render(); }

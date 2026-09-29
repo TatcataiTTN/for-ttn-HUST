@@ -12,9 +12,17 @@ HEAD_THEME_SCRIPT = """<script>(function(){try{
 }catch(e){}})();</script>"""
 
 KATEX = """<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\\\E": "\\\\mathbb{E}", "\\\\Prob": "\\\\mathbb{P}", "\\\\R": "\\\\mathbb{R}", "\\\\F": "\\\\mathbb{F}",
+  "\\\\Var": "\\\\operatorname{Var}", "\\\\eps": "\\\\varepsilon",
+  "\\\\norm": "\\\\left\\\\lVert #1 \\\\right\\\\rVert", "\\\\ip": "\\\\left\\\\langle #1, #2 \\\\right\\\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>"""
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>"""
 
 def topbar(rel_lang):
     """rel_lang: đường dẫn tương đối để về vi/ (thư mục ngôn ngữ), dùng cho index.html và modules/."""

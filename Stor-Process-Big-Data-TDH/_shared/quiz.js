@@ -34,9 +34,9 @@ document.addEventListener('DOMContentLoaded', function(){
         root.appendChild(box);
       });
       if (window.renderMathInElement) {
-        try { renderMathInElement(root, {delimiters:[
+        try { renderMathInElement(root, {delimiters: window.KATEX_DELIMS || [
           {left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}
-        ]}); } catch(e){}
+        ], macros: window.KATEX_MACROS || {}, throwOnError: false}); } catch(e){}
       }
     }
     scoreBox = document.createElement('div'); scoreBox.className = 'quiz-score';
