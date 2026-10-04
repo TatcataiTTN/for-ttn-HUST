@@ -105,3 +105,19 @@ footer{padding:30px 0 60px;color:var(--muted);font-size:.85rem;text-align:center
 table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88rem}
 th,td{border:1px solid var(--border);padding:7px 10px;text-align:left}
 th{background:var(--code)}
+
+/* ---- Demo tương tác (sim) ---- */
+.sim{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:18px 0;background:var(--panel);box-shadow:var(--shadow)}
+.sim .simh{font-weight:800;font-size:1rem;margin-bottom:10px;color:var(--accent)}
+.sim .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.sim .row label{font-size:.85rem;color:var(--text);display:flex;align-items:center;gap:6px}
+.sim input, .sim textarea, .sim select{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.85rem}
+.sim .btn{padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;
+  cursor:pointer;font-size:.85rem;font-weight:700}
+.sim .btn:hover{opacity:.9}
+.sim .out, .sim .out2{margin-top:12px}
+.sim .t{font-size:.85rem}
+.sim p.ok{color:var(--good);font-weight:700}
+.sim p.no{color:var(--bad);font-weight:700}
+.sim .callout{margin-top:10px}

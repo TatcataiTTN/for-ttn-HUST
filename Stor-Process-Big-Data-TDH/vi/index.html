@@ -45,12 +45,21 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <h1>Lưu trữ &amp; xử lý dữ liệu lớn</h1>
 <p>Streaming &amp; Sketching Algorithms — 14 buổi tự học bám sát giáo trình <i>Sketching Algorithms</i>
 (Jelani Nelson), tích hợp trọn bộ 580 bài tập đã soạn (420 nền tảng có kiểm chứng bằng code Python + 140
-bài tự luận + 20 bài áp dụng slide gốc). Mỗi buổi có slide-deck tương tác, quiz tự chấm, và notebook Python.</p>
+bài tự luận + 20 bài áp dụng slide gốc). Mỗi buổi có slide-deck tương tác, <b>demo mô phỏng thuật toán chạy
+thật trên trình duyệt</b>, 15–25 câu quiz tự chấm, và notebook Python.</p>
 </div>
 <div class="callout good"><div class="lbl">Cách dùng lộ trình 2 tuần / 14 buổi</div>
-Mỗi ngày học đúng 1 buổi: đọc slide-deck (điều hướng bằng phím ← →) → mở accordion bài tập, làm 20 bài nền
-tảng rồi 10 bài Python rồi 10 bài tự luận → làm quiz tự kiểm tra → tải notebook để chạy thử code. Sau khi
-xong cả 14 buổi, làm 20 bài tổng hợp áp dụng trực tiếp lên slide gốc.</div>
+Mỗi ngày học đúng 1 buổi: đọc slide-deck (điều hướng bằng phím ← →) → bấm thử mục <b>🧪 Thực hành tương
+tác</b> (chạy thật thuật toán của buổi đó ngay trên trang, không cần cài gì) → mở accordion bài tập, làm 20
+bài nền tảng rồi 10 bài Python rồi 10 bài tự luận → làm quiz tự kiểm tra → tải notebook để chạy thử code.
+Sau khi xong cả 14 buổi, làm 20 bài tổng hợp áp dụng trực tiếp lên slide gốc.</div>
+<div class="callout info"><div class="lbl">🧪 14 demo tương tác (mỗi buổi 1 demo, chạy thật phía trình duyệt)</div>
+Morris counter trực tiếp · kiểm chứng Markov trên dữ liệu ngẫu nhiên · Chebyshev + KMV đếm phần tử phân biệt
+· so sánh nhị thức chính xác với chặn Chernoff · union bound tính số hàng CountMin · kiểm chứng quy nạp
+$\mathbb E[2^{X_n}]=n+1$ bằng thực nghiệm · FM lý tưởng hoá (và vì sao trung bình cộng gây hiểu lầm) ·
+máy tính $F_0,F_1,F_2$ từ 1 luồng · sketch tuyến tính streaming vs tính lại từ đầu · AMS ước lượng $F_2$ ·
+CountMin sketch thật xây từ luồng dữ liệu · rank/quantile trên mảng · Borůvka chạy từng vòng · kiểm chứng
+Schwartz–Zippel bằng Monte Carlo.</div>
 <h2>14 buổi học</h2>
 <div class="grid"><a class="mod-card" href="modules/01-ky-vong/index.html">
 <span class="kicker">Buổi 01</span>
@@ -129,7 +138,9 @@ xong cả 14 buổi, làm 20 bài tổng hợp áp dụng trực tiếp lên sli
 </div></div>
 <script src="../_shared/theme.js"></script>
 <script src="../_shared/info.js"></script>
+<script src="../_shared/algo.js"></script>
 <script src="../_shared/deck.js"></script>
 <script src="../_shared/quiz.js"></script>
+<script src="../_shared/sim.js"></script>
 
 </body></html>

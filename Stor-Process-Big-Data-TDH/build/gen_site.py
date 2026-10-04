@@ -80,8 +80,10 @@ def page_shell(title, rel_lang, rel_root, body, extra_script=""):
 {body}
 </div>
 {footer(rel_root)}
+<script src="{rel_root}_shared/algo.js"></script>
 <script src="{rel_root}_shared/deck.js"></script>
 <script src="{rel_root}_shared/quiz.js"></script>
+<script src="{rel_root}_shared/sim.js"></script>
 {extra_script}
 </body></html>"""
 
@@ -113,6 +115,24 @@ DIAGRAM_FOR = {
     "13-do-thi-boruvka": "boruvka-rounds.svg",
 }
 
+# slug module -> tên widget trong sim.js (data-sim="...")
+SIM_FOR = {
+    "01-ky-vong": "morris",
+    "02-markov": "markov",
+    "03-chebyshev": "chebyshev",
+    "04-chernoff": "chernoff",
+    "05-hoeffding-union": "unionbound",
+    "06-quy-nap": "induction",
+    "07-tail-taylor": "fm",
+    "08-vector-chuan": "vectornorm",
+    "09-ma-tran-sketch": "sketchmatrix",
+    "10-rademacher-khintchine": "ams",
+    "11-ham-bam": "countmin",
+    "12-cay-nhi-phan": "rank",
+    "13-do-thi-boruvka": "boruvka",
+    "14-truong-huu-han": "schwartzzippel",
+}
+
 def build_module_page(mod, prev_mod, next_mod):
     rel_lang = "../../"      # vi/modules/<slug>/index.html -> vi/
     rel_root = "../../../"   # vi/modules/<slug>/index.html -> site root
@@ -136,6 +156,10 @@ def build_module_page(mod, prev_mod, next_mod):
 </div></div>"""
 
     n = mod["n"]
+    sim_name = SIM_FOR.get(mod["slug"])
+    sim_html = (f'<h2>🧪 Thực hành tương tác</h2>\n'
+                f'<div class="sim" data-sim="{sim_name}"></div>') if sim_name else ""
+
     ex_html = "\n".join([
         render_exlist("📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code)", EX["phan1"].get(str(n), [])),
         render_exlist("🐍 Bài tập nền tảng — Phần 2 (thuật toán/mã giả Python)", EX["phan2"].get(str(n), [])),
@@ -161,6 +185,7 @@ def build_module_page(mod, prev_mod, next_mod):
     body = f"""<div class="hero"><div class="kicker">Buổi {n:02d} / 14</div>
 <h1>{mod["title"]}</h1></div>
 {deck}
+{sim_html}
 <h2>📚 Bài tập gắn với buổi này</h2>
 {ex_html}
 {nb_link}
@@ -212,12 +237,21 @@ def build_index():
 <h1>Lưu trữ &amp; xử lý dữ liệu lớn</h1>
 <p>Streaming &amp; Sketching Algorithms — 14 buổi tự học bám sát giáo trình <i>Sketching Algorithms</i>
 (Jelani Nelson), tích hợp trọn bộ 580 bài tập đã soạn (420 nền tảng có kiểm chứng bằng code Python + 140
-bài tự luận + 20 bài áp dụng slide gốc). Mỗi buổi có slide-deck tương tác, quiz tự chấm, và notebook Python.</p>
+bài tự luận + 20 bài áp dụng slide gốc). Mỗi buổi có slide-deck tương tác, <b>demo mô phỏng thuật toán chạy
+thật trên trình duyệt</b>, 15–25 câu quiz tự chấm, và notebook Python.</p>
 </div>
 <div class="callout good"><div class="lbl">Cách dùng lộ trình 2 tuần / 14 buổi</div>
-Mỗi ngày học đúng 1 buổi: đọc slide-deck (điều hướng bằng phím ← →) → mở accordion bài tập, làm 20 bài nền
-tảng rồi 10 bài Python rồi 10 bài tự luận → làm quiz tự kiểm tra → tải notebook để chạy thử code. Sau khi
-xong cả 14 buổi, làm 20 bài tổng hợp áp dụng trực tiếp lên slide gốc.</div>
+Mỗi ngày học đúng 1 buổi: đọc slide-deck (điều hướng bằng phím ← →) → bấm thử mục <b>🧪 Thực hành tương
+tác</b> (chạy thật thuật toán của buổi đó ngay trên trang, không cần cài gì) → mở accordion bài tập, làm 20
+bài nền tảng rồi 10 bài Python rồi 10 bài tự luận → làm quiz tự kiểm tra → tải notebook để chạy thử code.
+Sau khi xong cả 14 buổi, làm 20 bài tổng hợp áp dụng trực tiếp lên slide gốc.</div>
+<div class="callout info"><div class="lbl">🧪 14 demo tương tác (mỗi buổi 1 demo, chạy thật phía trình duyệt)</div>
+Morris counter trực tiếp · kiểm chứng Markov trên dữ liệu ngẫu nhiên · Chebyshev + KMV đếm phần tử phân biệt
+· so sánh nhị thức chính xác với chặn Chernoff · union bound tính số hàng CountMin · kiểm chứng quy nạp
+$\mathbb E[2^{{X_n}}]=n+1$ bằng thực nghiệm · FM lý tưởng hoá (và vì sao trung bình cộng gây hiểu lầm) ·
+máy tính $F_0,F_1,F_2$ từ 1 luồng · sketch tuyến tính streaming vs tính lại từ đầu · AMS ước lượng $F_2$ ·
+CountMin sketch thật xây từ luồng dữ liệu · rank/quantile trên mảng · Borůvka chạy từng vòng · kiểm chứng
+Schwartz–Zippel bằng Monte Carlo.</div>
 <h2>14 buổi học</h2>
 <div class="grid">{''.join(cards)}</div>
 <h2>Tài liệu bổ sung</h2>
