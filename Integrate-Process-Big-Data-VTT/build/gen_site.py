@@ -185,8 +185,13 @@ REFERENCES = [
     ("Fellegi, Sunter — A Theory for Record Linkage", "JASA 1969 — trả phí, xem tóm tắt trong slide buổi 4"),
 ]
 TEXTBOOKS = [
-    ("Xin Luna Dong, Divesh Srivastava — Big Data Integration", "Morgan & Claypool, 2015 — giáo trình chính thức #1"),
-    ("AnHai Doan, Alon Halevy, Zachary Ives — Principles of Data Integration", "Morgan Kaufmann, 2012 — giáo trình chính thức #2"),
+    ("Xin Luna Dong, Divesh Srivastava — Big Data Integration", "Morgan & Claypool, 2015 — giáo trình chính thức #1. "
+     "Chương 1 (Motivation) có bản free sample hợp pháp của tác giả; Ch.2 Schema Alignment, Ch.3 Record Linkage, "
+     "Ch.4 Data Fusion khớp đúng pipeline 3 bước của môn — xem bản PVLDB 2013 mở tương đương ở mục bài báo dưới."),
+    ("AnHai Doan, Alon Halevy, Zachary Ives — Principles of Data Integration", "Morgan Kaufmann, 2012 — giáo trình chính thức #2. "
+     "Ch.3 §3.2 'Schema Mapping Languages' (GAV/LAV/GLAV/TGD) = cấu trúc chính xác của Module 02; "
+     "Ch.4 'String Matching' + Ch.7 'Data Matching' = cấu trúc chính xác của Module 04. "
+     "Không có mục Exercises cuối chương (chỉ Bibliographic Notes) — bài tập trên site đều tự soạn."),
     ("Rick Sherman — Business Intelligence Guidebook: From Data Integration to Analytics", "Morgan Kaufmann, 2015 — giáo trình chính thức #3"),
     ("Matei Zaharia, Bill Chambers — Spark: The Definitive Guide", "O'Reilly, 2018 — giáo trình chính thức #4 (phần Spark, buổi 6+)"),
 ]

@@ -5,9 +5,15 @@
     3_RecordLinkage_ER.pdf) đã đọc trực tiếp và tóm tắt trong các phiên trước.
   - Giáo trình CHÍNH THỨC của môn (theo đề cương IT5427.pdf, mục "Text and Reading") là Dong &
     Srivastava "Big Data Integration" (Morgan & Claypool 2015) và Doan-Halevy-Ives "Principles of
-    Data Integration" (Morgan Kaufmann 2012) - cả 2 đều trả phí, không có bản đầy đủ hợp pháp. Bản
-    thay thế hợp pháp duy nhất tìm được: bài báo mở "Big Data Integration" (Dong & Srivastava,
-    PVLDB 2013, vol.6) - cùng tác giả/tiêu đề, nội dung cô đọng từ chính cuốn sách - đã lưu tại
+    Data Integration" (Morgan Kaufmann 2012). Đã đối chiếu mục lục thật của cả 2 sách (xem
+    Literature-Review-Papers/README.md mục "Đối chiếu Mục lục thật"): cấu trúc GAV/LAV/GLAV/TGD
+    của Module 02 khớp đúng §3.2 sách Doan-Halevy-Ives; similarity measures của Module 04 khớp
+    đúng Ch.4 "String Matching" + Ch.7 "Data Matching" cùng sách. CẢ 2 SÁCH KHÔNG CÓ MỤC "EXERCISES"
+    cuối chương (chỉ có "Bibliographic Notes") - đã verify bằng grep toàn văn - nên mọi bài tập làm
+    giấy trong exercises.json đều tự soạn (gắn nhãn "Bổ sung" minh bạch), không phải chép từ sách.
+    Bản thay thế hợp pháp cho cuốn Dong&Srivastava (vốn chỉ có free sample Ch.1 trong tay, Ch.2-6
+    không có toàn văn): bài báo mở "Big Data Integration" (Dong & Srivastava, PVLDB 2013, vol.6) -
+    cùng tác giả/tiêu đề, nội dung cô đọng từ chính cuốn sách - đã lưu tại
     Literature-Review-Papers/23_DongSrivastava2013_BigDataIntegration_PVLDB.pdf.
   - Module 00 (nền tảng) KHÔNG thuộc giáo trình chính thức môn này - viết lại bằng lời riêng từ
     kiến thức CSDL quan hệ/ER phổ thông (tương tự nội dung sách Fundamentals of Database Systems,
@@ -168,7 +174,10 @@ dict(n=1, slug="01-data-integration-overview", title="Data Integration — Tổn
 dict(n=2, slug="02-schema-alignment", title="Schema Alignment — GAV, LAV, GLAV & Certain Answers",
  tag="Buổi 3a — Lý thuyết Schema Mapping",
  intro="Làm sao viết truy vấn trên Mediated Schema rồi 'dịch' đúng thành truy vấn thật trên các nguồn? "
-       "3 ngôn ngữ mapping GAV/LAV/GLAV trả lời câu hỏi này theo 3 cách khác nhau.",
+       "3 ngôn ngữ mapping GAV/LAV/GLAV trả lời câu hỏi này theo 3 cách khác nhau. "
+       "Đúng cấu trúc này nằm ở Doan-Halevy-Ives, <i>Principles of Data Integration</i>, "
+       "Chương 3 'Describing Data Sources' §3.2 (GAV/LAV/GLAV/TGD) và Chương 2 §2.4 "
+       "'Answering Queries Using Views' (Bucket, MiniCon, Inverse-Rules).",
  parts=[
   dict(title="Certain Answers — định nghĩa 'câu trả lời đúng'", bullets=[
     "Possible Instances — các instance mediated schema khả dĩ với dữ liệu nguồn hiện có",
@@ -353,7 +362,9 @@ dict(n=4, slug="04-record-linkage-entity-resolution", title="Record Linkage & En
  intro="Cùng 1 thực thể thật xuất hiện khác nhau ở nhiều nguồn — làm sao máy tính nhận ra 'David Smith' và "
        "'Davod Smith' là cùng 1 người, ở quy mô hàng triệu bản ghi, không thể so từng cặp thủ công? "
        "Slide gốc buổi này trích dẫn <i>Dong &amp; Srivastava, Big Data Integration, Chapter 3</i> làm "
-       "nguồn chính — xem bản mở tương đương (PVLDB 2013) trong mục Tài liệu tham khảo cuối trang.",
+       "nguồn chính — xem bản mở tương đương (PVLDB 2013) trong mục Tài liệu tham khảo cuối trang. "
+       "Nội dung Similarity Measures khớp đúng Doan-Halevy-Ives Chương 4 'String Matching' §4.2, "
+       "pipeline Matching/Clustering khớp Chương 7 'Data Matching' (§7.2-7.6).",
  parts=[
   dict(title="Đặt vấn đề & Similarity Measures", bullets=[
     "Record Linkage, Entity Resolution, Entity Linking — phân biệt 3 khái niệm",
