@@ -1,0 +1,143 @@
+:root{
+  --bg:#f7f8fb; --panel:#ffffff; --text:#1a1d29; --muted:#5b6072; --border:#e2e5ee;
+  --accent:#2b5ce6; --accent2:#7c3aed; --code:#eef1fb; --good:#0f9d58; --warn:#e6a700; --bad:#e0433c;
+  --shadow:0 2px 10px rgba(20,25,50,.06);
+}
+:root[data-theme="dark"]{
+  --bg:#0f1117; --panel:#171a24; --text:#e8eaf2; --muted:#9aa0b4; --border:#2a2e3d;
+  --accent:#7fa4ff; --accent2:#c4a4ff; --code:#1d2133; --good:#4ade80; --warn:#fbbf24; --bad:#f87171;
+  --shadow:0 2px 14px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.6;padding-block:env(safe-area-inset-top,0) env(safe-area-inset-bottom,0)}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:var(--accent)}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+/* ---- Top bar ---- */
+.topbar{position:sticky;top:0;z-index:40;background:var(--panel);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.topbar .brand{font-weight:800;text-decoration:none;color:var(--text);font-size:.95rem}
+.topbar .brand span{color:var(--accent)}
+.topbar nav{display:flex;gap:14px;margin-left:auto;flex-wrap:wrap;font-size:.88rem}
+.topbar nav a{text-decoration:none;color:var(--muted);font-weight:600}
+.topbar nav a:hover{color:var(--accent)}
+
+/* ---- Theme/font switcher ---- */
+.switcher{position:relative}
+.switcher summary{list-style:none;cursor:pointer;border:1px solid var(--border);border-radius:8px;
+  padding:6px 10px;font-size:.85rem;color:var(--text);background:var(--panel)}
+.switcher summary::-webkit-details-marker{display:none}
+.switcher[open] summary{border-color:var(--accent)}
+.switcher .menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--panel);
+  border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:8px;min-width:160px;z-index:50}
+.switcher .menu button{display:block;width:100%;text-align:left;background:none;border:0;
+  padding:7px 8px;border-radius:6px;color:var(--text);cursor:pointer;font-size:.85rem}
+.switcher .menu button:hover{background:var(--code)}
+
+/* ---- Hero / headers ---- */
+.hero{padding:40px 0 20px}
+.hero h1{font-size:1.9rem;margin:0 0 8px}
+.hero p{color:var(--muted);max-width:64ch}
+.kicker{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+/* ---- Module cards ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:22px 0}
+.mod-card{display:block;border:1px solid var(--border);border-radius:14px;padding:16px;background:var(--panel);
+  text-decoration:none;color:var(--text);box-shadow:var(--shadow);transition:transform .12s}
+.mod-card:hover{transform:translateY(-2px)}
+.mod-card h3{margin:6px 0 4px;font-size:1.02rem}
+.mod-card .tag{display:inline-block;font-size:.7rem;background:var(--code);color:var(--accent);
+  padding:2px 8px;border-radius:999px;margin-top:6px}
+.mod-card .go{margin-top:10px;font-size:.82rem;font-weight:700;color:var(--accent)}
+
+/* ---- Callouts ---- */
+.callout{border-radius:12px;padding:14px 16px;margin:14px 0;border:1px solid var(--border)}
+.callout.info{background:color-mix(in srgb, var(--accent) 8%, var(--panel))}
+.callout.good{background:color-mix(in srgb, var(--good) 10%, var(--panel));border-color:var(--good)}
+.callout.warn{background:color-mix(in srgb, var(--warn) 12%, var(--panel));border-color:var(--warn)}
+.callout .lbl{font-weight:800;font-size:.78rem;text-transform:uppercase;margin-bottom:4px}
+
+/* ---- Formula box ---- */
+.pd-formula{background:var(--code);border:2px solid var(--accent);border-radius:10px;
+  padding:14px 18px;margin:12px 0;font-size:1.05rem;text-align:center}
+.pd-formula-label{font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.pd-formula-math{font-size:1.15rem}
+.pd-legend{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:10px 0;padding:0}
+.pd-legend b{color:var(--accent)}
+
+/* ---- Accordion (bài tập) ---- */
+details.ex{border:1px solid var(--border);border-radius:10px;margin:8px 0;background:var(--panel)}
+details.ex summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:.92rem}
+details.ex .exlist{padding:2px 18px 14px;color:var(--text)}
+details.ex .exlist li{margin:8px 0}
+details.ex .exlist code{background:var(--code);padding:1px 5px;border-radius:4px}
+
+/* ---- Quiz ---- */
+.quiz{margin:16px 0}
+.qitem{border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;background:var(--panel)}
+.opt{display:block;width:100%;text-align:left;padding:9px 12px;margin:6px 0;border:1px solid var(--border);
+  border-radius:8px;background:var(--bg);color:var(--text);cursor:pointer;font-size:.9rem}
+.opt:hover{border-color:var(--accent)}
+.opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 15%, var(--panel))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 15%, var(--panel))}
+.explain{display:none;margin-top:8px;font-size:.86rem;color:var(--muted);border-top:1px dashed var(--border);padding-top:8px}
+.explain.show{display:block}
+.quiz-score{font-weight:800;margin:10px 0}
+.quiz-restart{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--panel);cursor:pointer}
+
+/* ---- Code block ---- */
+pre{background:var(--code);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.85rem}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+/* ---- Footer / FAB ---- */
+.fab{position:fixed;right:18px;bottom:18px;z-index:45;width:46px;height:46px;border-radius:50%;
+  background:var(--accent);color:#fff;border:0;box-shadow:var(--shadow);cursor:pointer;font-size:1.1rem}
+footer{padding:30px 0 60px;color:var(--muted);font-size:.85rem;text-align:center}
+#info-modal{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:60;display:flex;align-items:center;justify-content:center}
+#info-modal .box{background:var(--panel);border-radius:14px;padding:20px 24px;max-width:420px;box-shadow:var(--shadow)}
+#info-modal .close{float:right;background:none;border:0;font-size:1.1rem;cursor:pointer;color:var(--muted)}
+
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.88rem}
+th,td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+th{background:var(--code)}
+
+/* ---- Demo tương tác (sim) ---- */
+.sim{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:18px 0;background:var(--panel);box-shadow:var(--shadow)}
+.sim .simh{font-weight:800;font-size:1rem;margin-bottom:10px;color:var(--accent)}
+.sim .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.sim .row label{font-size:.85rem;color:var(--text);display:flex;align-items:center;gap:6px}
+.sim input, .sim textarea, .sim select{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:.85rem}
+.sim .btn{padding:7px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;
+  cursor:pointer;font-size:.85rem;font-weight:700}
+.sim .btn:hover{opacity:.9}
+.sim .out, .sim .out2{margin-top:12px}
+.sim .t{font-size:.85rem}
+.sim p.ok{color:var(--good);font-weight:700}
+.sim p.no{color:var(--bad);font-weight:700}
+
+/* ---- IT5427: bài tập làm giấy, flashcard hỏi-đáp, bảng so sánh, tài liệu tham khảo ---- */
+.pd-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88rem}
+.pd-table th,.pd-table td{border:1px solid var(--border);padding:7px 10px;text-align:left}
+.pd-table th{background:var(--code);font-weight:800}
+.hint{color:var(--muted);font-size:.85rem;margin:4px 0 10px}
+
+details.ex-item{border:1px solid var(--border);border-radius:10px;margin:10px 0;background:var(--panel)}
+details.ex-item summary{cursor:pointer;padding:12px 14px;font-weight:700;font-size:.92rem;line-height:1.5}
+details.ex-item summary .src{display:block;margin-top:4px;font-weight:400;font-size:.75rem;color:var(--accent);text-transform:none}
+details.ex-item .loi-giai{padding:4px 16px 16px;color:var(--text);border-top:1px dashed var(--border);margin-top:8px;padding-top:12px}
+
+.flashcard-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:14px 0}
+details.flashcard{border:1px solid var(--border);border-radius:10px;background:var(--panel);padding:2px}
+details.flashcard summary{cursor:pointer;padding:12px 14px;font-weight:700;font-size:.88rem}
+details.flashcard .dap{padding:2px 14px 14px;color:var(--good);font-weight:600;font-size:.86rem;border-top:1px dashed var(--border);margin-top:4px;padding-top:10px}
+
+ol.reflist{padding-left:20px;display:flex;flex-direction:column;gap:10px}
+ol.reflist li{font-size:.92rem}
+ol.reflist .meta{color:var(--muted);font-size:.82rem}
+.sim .callout{margin-top:10px}

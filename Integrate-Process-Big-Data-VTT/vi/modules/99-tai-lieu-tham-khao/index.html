@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Tài liệu tham khảo · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Tài liệu tham khảo</div>
+<h1>Giáo trình chính thức &amp; 19 bài báo khoa học đã xác minh</h1>
+<p>Theo đề cương chính thức môn IT5427 (mục "Text and Reading"). Các sách dưới đây đều là tài liệu trả phí,
+không có bản đầy đủ công khai hợp pháp — trang này chỉ liệt kê để tra cứu, KHÔNG đăng tải lại nội dung sách.</p></div>
+<h2>📘 4 giáo trình chính thức</h2>
+<ol class="reflist"><li><b>Xin Luna Dong, Divesh Srivastava — Big Data Integration</b><br><span class='meta'>Morgan &amp; Claypool, 2015 — giáo trình chính thức #1</span></li>
+<li><b>AnHai Doan, Alon Halevy, Zachary Ives — Principles of Data Integration</b><br><span class='meta'>Morgan Kaufmann, 2012 — giáo trình chính thức #2</span></li>
+<li><b>Rick Sherman — Business Intelligence Guidebook: From Data Integration to Analytics</b><br><span class='meta'>Morgan Kaufmann, 2015 — giáo trình chính thức #3</span></li>
+<li><b>Matei Zaharia, Bill Chambers — Spark: The Definitive Guide</b><br><span class='meta'>O'Reilly, 2018 — giáo trình chính thức #4 (phần Spark, buổi 6+)</span></li></ol>
+<h2>📄 19 bài báo khoa học đã tải &amp; xác minh (pdftotext đối chiếu từng file)</h2>
+<p class="hint">Danh sách đầy đủ + lý do chọn từng bài nằm trong <code>Literature-Review-Papers/README.md</code> của
+repo nguồn (không public hoá PDF công khai trên site này, chỉ liệt kê trích dẫn — xem README để lấy link DOI/OA gốc).</p>
+<ol class="reflist"><li>Rahm, Bernstein — A survey of approaches to automatic schema matching <span class='meta'>(VLDB Journal 2001)</span></li>
+<li>Halevy, Franklin, Maier — Principles of dataspace systems <span class='meta'>(PODS 2006)</span></li>
+<li>Das Sarma, Dong, Halevy — Bootstrapping pay-as-you-go data integration systems <span class='meta'>(SIGMOD 2008)</span></li>
+<li>Cafarella, Halevy, Wang, Wu, Zhang — WebTables: exploring the power of tables on the web <span class='meta'>(PVLDB 2008)</span></li>
+<li>Talukdar, Jacob, Mehmood, Crammer, Ives, Pereira, Guha — Learning to create data-integrating queries <span class='meta'>(PVLDB 2008)</span></li>
+<li>Ullman — Information Integration Using Logical Views <span class='meta'>(ICDT 1997 — bài gốc GAV/LAV)</span></li>
+<li>Levy — Answering Queries Using Views: A Survey <span class='meta'>(VLDB Journal 2001)</span></li>
+<li>Lenzerini — Data Integration: A Theoretical Perspective <span class='meta'>(PODS 2002 tutorial)</span></li>
+<li>Dong, Srivastava — Big Data Integration <span class='meta'>(PVLDB 2013 — bản mở hợp pháp của sách giáo trình chính thức môn học (Morgan &amp; Claypool 2015, trả phí))</span></li>
+<li>Köpcke, Thor, Rahm — Evaluation of entity resolution approaches on real-world match problems <span class='meta'>(PVLDB 2010)</span></li>
+<li>Mudgal et al. — Deep Learning for Entity Matching (Magellan) <span class='meta'>(SIGMOD 2018)</span></li>
+<li>Hassanzadeh, Chiang, Miller, Lee — Framework for Evaluating Clustering Algorithms in Duplicate Detection <span class='meta'>(PVLDB 2009)</span></li>
+<li>Gruenheid, Dong, Srivastava — Incremental Record Linkage <span class='meta'>(PVLDB 2014)</span></li>
+<li>Burdick, Fagin, Kolaitis, Popa, Tan — Expressive Power of Entity-Linking Frameworks <span class='meta'>(ICDT 2017)</span></li>
+<li>Gionis, Indyk, Motwani — Similarity Search in High Dimensions via Hashing <span class='meta'>(VLDB 1999 — bài gốc LSH)</span></li>
+<li>Bansal, Blum, Chawla — Correlation Clustering <span class='meta'>(Machine Learning 2004 — bài gốc Correlation Clustering)</span></li>
+<li>Ebraheem, Thirumuruganathan, Joty, Ouzzani, Tang — Distributed Representations of Tuples for ER (DeepER) <span class='meta'>(PVLDB 2018)</span></li>
+<li>Kasai et al. — Low-resource Deep Entity Resolution with Transfer and Active Learning <span class='meta'>(ACL 2019)</span></li>
+<li>Fellegi, Sunter — A Theory for Record Linkage <span class='meta'>(JASA 1969 — trả phí, xem tóm tắt trong slide buổi 4)</span></li></ol>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

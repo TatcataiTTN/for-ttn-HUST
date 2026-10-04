@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 0: Nền tảng: Mô hình quan hệ & Thực thể-Liên kết · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 00</div>
+<h1>Nền tảng: Mô hình quan hệ & Thực thể-Liên kết</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 00 · Kiến thức nền tự bổ sung — không thuộc giáo trình chính thức IT5427</div><h2>Nền tảng: Mô hình quan hệ & Thực thể-Liên kết</h2><p>Trước khi học Tích hợp dữ liệu, cần nắm vững CSDL được mô hình hoá thế nào ở từng nguồn — đây là nền tảng để hiểu vì sao 2 nguồn 'cùng dữ liệu' lại có schema khác nhau.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Mô hình thực thể - liên kết (ER) & mô hình quan hệ</h2>
+<ul class="part-list"><li>Thực thể (entity), thuộc tính (attribute), liên kết (relationship)</li>
+<li>Khoá chính (primary key) & khoá ngoại (foreign key)</li>
+<li>Chuyển ER sang lược đồ quan hệ (bảng)</li></ul></div><div class="mdeck-slide"><h2>Vì sao cần mô hình hoá dữ liệu trước khi tích hợp?</h2>
+      <p>Mỗi tổ chức thiết kế CSDL riêng để phục vụ đúng nhu cầu của họ — cùng biểu diễn "một căn hộ cho thuê"
+      nhưng hệ thống A có thể gộp 1 bảng, hệ thống B tách thành 3 bảng liên kết nhau. <b>Mô hình Thực thể -
+      Liên kết (Entity-Relationship, ER)</b> là ngôn ngữ chung để mô tả ý định thiết kế đó trước khi hiện
+      thực hoá thành bảng quan hệ (relational schema).</p>
+      <ul class="pd-legend">
+      <li><b>Thực thể (Entity)</b><span>một đối tượng thế giới thực cần lưu trữ, VD "Căn hộ", "Người thuê"</span></li>
+      <li><b>Thuộc tính (Attribute)</b><span>đặc điểm mô tả thực thể, VD diện tích, giá thuê</span></li>
+      <li><b>Liên kết (Relationship)</b><span>quan hệ giữa 2+ thực thể, VD "Người thuê — Thuê — Căn hộ"</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Khoá chính & khoá ngoại — nền tảng của mọi phép Join</h2>
+      <p>Khi chuyển ER sang bảng quan hệ, mỗi thực thể thành 1 bảng với 1 <b>khoá chính</b> (primary key)
+      định danh duy nhất mỗi dòng. Một liên kết được hiện thực bằng <b>khoá ngoại</b> (foreign key) — cột
+      ở bảng này trỏ tới khoá chính bảng kia.</p>
+      <div class="callout good"><div class="lbl">Vì sao quan trọng cho môn Tích hợp dữ liệu</div>
+      Toàn bộ kỹ thuật <b>Record Linkage</b> (buổi 4) thực chất là đi tìm lại "khoá chính ngầm" giữa 2 nguồn
+      không hề chia sẻ cùng 1 khoá ngoại thật — vì chúng được thiết kế độc lập với nhau.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Chuẩn hoá & dị biệt thiết kế</h2>
+<ul class="part-list"><li>Chuẩn hoá (normalization) giảm dư thừa dữ liệu</li>
+<li>Cùng 1 miền dữ liệu, nhiều cách thiết kế hợp lệ khác nhau</li>
+<li>Đây chính là nguồn gốc của Schema Heterogeneity (buổi 2)</li></ul></div><div class="mdeck-slide"><h2>Chuẩn hoá tạo ra sự đa dạng thiết kế hợp lệ</h2>
+      <p>Chuẩn hoá (1NF → 2NF → 3NF...) nhằm giảm dị thường cập nhật/dư thừa dữ liệu — nhưng đồng thời khiến
+      2 đội thiết kế độc lập, cùng chuẩn hoá đúng kỹ thuật, vẫn ra <b>2 lược đồ khác nhau</b> cho cùng 1 miền
+      dữ liệu: 1 bên tách bảng Địa chỉ riêng, bên kia gộp vào bảng chính.</p>
+      <div class="callout warn"><div class="lbl">Cầu nối sang buổi 2</div>
+      "Chuẩn hoá đúng kỹ thuật ở từng nguồn" không có nghĩa "dễ tích hợp giữa các nguồn" — đây chính là lý do
+      Data Integration là một bài toán riêng, không tự động giải quyết chỉ bằng thiết kế CSDL tốt.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>✍️ Bài tập làm giấy (có lời giải)</h2>
+<div class="exlist-tuluan"><details class="ex-item">
+<summary>Bài 1. Cho 2 thực thể 'NguoiThue' và 'CanHo' có liên kết 'Thue' (1 người thuê có thể thuê nhiều căn hộ theo thời gian, 1 căn hộ có thể được nhiều người thuê lần lượt). Hãy chuyển sang lược đồ quan hệ (liệt kê bảng, khoá chính, khoá ngoại). <span class="src">[Bổ sung]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> 3 bảng: <b>NguoiThue</b>(MaNguoiThue PK, HoTen, SDT) · <b>CanHo</b>(MaCanHo PK, DiaChi, DienTich) · <b>Thue</b>(MaNguoiThue FK→NguoiThue, MaCanHo FK→CanHo, NgayBatDau, NgayKetThuc, KhoaChinh=(MaNguoiThue,MaCanHo,NgayBatDau)). Vì liên kết N-N có thuộc tính riêng (ngày thuê), phải tách thành bảng trung gian riêng — không gộp vào 1 trong 2 bảng thực thể.</div></details><details class="ex-item">
+<summary>Bài 2. Hệ thống A lưu 'Giá thuê đã gồm phí dịch vụ' trong 1 cột duy nhất. Hệ thống B tách 'Giá thuê' và 'Phí dịch vụ' thành 2 cột riêng. Cả 2 đều đúng chuẩn 3NF. Khi tích hợp 2 nguồn này, vấn đề gặp phải thuộc loại dị biệt nào (tham khảo Module 01) và vì sao chuẩn hoá không giúp tránh được nó? <span class="src">[Bổ sung]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> Đây là <b>Structural/Schema Heterogeneity</b> (và có thể kèm Data-level Heterogeneity nếu cần phép cộng để quy đổi qua lại). Chuẩn hoá chỉ đảm bảo KHÔNG DƯ THỪA/KHÔNG DỊ THƯỜNG CẬP NHẬT trong nội bộ 1 hệ thống — nó không quy định phải tách cột theo đúng 1 cách duy nhất, nên 2 đội độc lập chuẩn hoá đúng kỹ thuật vẫn ra 2 lược đồ khác nhau.</div></details></div>
+<h2>💬 Bài tập hỏi đáp nhanh</h2>
+<p class="hint">Bấm vào từng câu hỏi để lật xem đáp án — ôn tập nhanh thuật ngữ &amp; khái niệm cốt lõi.</p>
+<div class="flashcard-grid"><details class="flashcard">
+<summary>❓ Khoá ngoại (foreign key) dùng để làm gì?</summary><div class="dap">💡 Trỏ tới khoá chính của bảng khác để hiện thực 1 liên kết (relationship) giữa 2 thực thể.</div></details><details class="flashcard">
+<summary>❓ Vì sao 2 hệ thống cùng chuẩn hoá đúng kỹ thuật vẫn có thể ra lược đồ khác nhau?</summary><div class="dap">💡 Vì chuẩn hoá chỉ đảm bảo không dư thừa/dị thường — không ép duy nhất 1 cách tách bảng. Nhiều cách tách đều hợp lệ.</div></details><details class="flashcard">
+<summary>❓ Liên kết N-N có thuộc tính riêng thì xử lý thế nào khi chuyển sang bảng quan hệ?</summary><div class="dap">💡 Phải tách thành 1 bảng trung gian riêng (chứa 2 khoá ngoại + thuộc tính riêng của liên kết), không gộp vào bảng thực thể nào.</div></details></div>
+<h2>✅ Bài trắc nghiệm tự chấm</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Trong mô hình ER, 'Người thuê — Thuê — Căn hộ' thuộc loại thành phần nào?", "opts": ["Thực thể (Entity)", "Thuộc tính (Attribute)", "Liên kết (Relationship)", "Khoá ngoại"], "correct": 2, "explain": "Đây là quan hệ nối 2 thực thể (Người thuê, Căn hộ) — đúng định nghĩa Relationship trong ER."}, {"q": "Khoá ngoại (foreign key) dùng để làm gì?", "opts": ["Định danh duy nhất 1 dòng trong chính bảng đó", "Trỏ tới khoá chính của bảng khác để hiện thực liên kết", "Tăng tốc độ truy vấn", "Mã hoá dữ liệu nhạy cảm"], "correct": 1, "explain": "Khoá ngoại là cột tham chiếu khoá chính ở bảng khác — cơ chế hiện thực Relationship bằng bảng quan hệ."}, {"q": "Vì sao 2 hệ thống cùng chuẩn hoá đúng kỹ thuật vẫn có thể ra lược đồ khác nhau?", "opts": ["Vì 1 trong 2 bên làm sai", "Chuẩn hoá không duy nhất — nhiều cách tách bảng hợp lệ cho cùng miền dữ liệu", "Vì dùng hệ quản trị CSDL khác nhau", "Vì dữ liệu khác nhau"], "correct": 1, "explain": "Chuẩn hoá đảm bảo không dư thừa/dị thường, nhưng không ép buộc duy nhất 1 cách tách bảng — đây là gốc rễ của Structural Heterogeneity."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><span></span><a href="../01-data-integration-overview/index.html">Buổi 1: Data Integration — Tổng quan & Dị biệt dữ liệu ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

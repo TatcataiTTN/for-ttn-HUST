@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 3: Mediation Query bán cấu trúc & Big Data Integration Challenges · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 03</div>
+<h1>Mediation Query bán cấu trúc & Big Data Integration Challenges</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 03 · Buổi 3b — Mở rộng</div><h2>Mediation Query bán cấu trúc & Big Data Integration Challenges</h2><p>Khi dữ liệu là XML/semi-structured, không thể chỉ viết 1 câu GAV đơn giản — cần decompose schema thành sub-trees. Và khi số nguồn lên tới hàng triệu, cả GAV lẫn LAV truyền thống đều vỡ trận.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/3</div>
+<div class="part-num">01</div><h2>Sinh Mediation Query cho dữ liệu bán cấu trúc</h2>
+<ul class="part-list"><li>Decompose mediation schema thành sub-trees</li>
+<li>Partial Mapping — ánh xạ 1 sub-tree với 1 nguồn cụ thể</li>
+<li>Join Graph & kết hợp các partial mapping thành mediation query hoàn chỉnh</li></ul></div><div class="mdeck-slide"><h2>Vì sao XML/semi-structured khó hơn quan hệ?</h2>
+      <p>Với dữ liệu quan hệ, 1 câu GAV map thẳng 1 bảng mediated vào biểu thức trên bảng nguồn. Với cây XML
+      lồng nhau nhiều cấp, không có "1 bảng" để map — phải <b>decompose mediation schema thành các sub-tree</b>
+      (root là node đa trị hoặc gốc cây, lá phải có ít nhất 1 text node), rồi xử lý từng sub-tree riêng.</p></div><div class="mdeck-slide"><h2>Partial Mapping → Join Graph → Mediation Query</h2>
+      <p>Quy trình 3 bước: (1) Với mỗi sub-tree, tìm phần tương ứng ở từng nguồn (<b>partial mapping</b>).
+      (2) Tìm các phép join khả dĩ giữa các nguồn dựa trên key/reference-key, tạo thành <b>join graph</b>
+      (node = nguồn, cạnh = điều kiện join). (3) Kết hợp các partial mapping (mỗi sub-tree 1 cái) thành 1
+      <b>mediation query</b> hoàn chỉnh — hợp hai mediation query cũng tạo ra 1 mediation query mới.</p>
+      <div class="callout good"><div class="lbl">Kết quả</div>
+      Output cuối là 1 truy vấn XQuery thực thi được, sinh ra cây XML đúng cấu trúc mediation schema từ
+      nhiều nguồn XML rời rạc.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/3</div>
+<div class="part-num">02</div><h2>Vì sao tích hợp truyền thống 'vỡ trận' ở quy mô Big Data</h2>
+<ul class="part-list"><li>Deep Web at Scale, Schema Explosion, Keyword Queries không có schema cố định</li>
+<li>GAV/LAV đòi hỏi mapping chính xác — không khả thi với hàng triệu nguồn</li>
+<li>PAYGO: bắt đầu lỏng lẻo, cải thiện dần theo thời gian</li></ul></div><div class="mdeck-slide"><h2>4 lý do Data Integration truyền thống không đủ</h2>
+      <ul class="pd-legend">
+      <li><b>Deep Web at Scale</b><span>hàng chục triệu nguồn ẩn sau form web — không thể thiết kế mapping thủ công cho từng nguồn</span></li>
+      <li><b>Schema Explosion</b><span>hàng trăm nghìn schema khác nhau cùng miền dữ liệu ("database design by the masses")</span></li>
+      <li><b>Modeling Everything</b><span>dữ liệu trải khắp mọi lĩnh vực tri thức loài người — 1 mediated schema duy nhất là bất khả thi</span></li>
+      <li><b>Keyword Queries</b><span>người dùng web gõ từ khoá, không viết SQL theo đúng mediated schema nào cả</span></li>
+      </ul></div><div class="mdeck-slide"><h2>PAYGO — Pay-As-You-Go Integration</h2>
+      <p>Thay vì thiết kế mediated schema + mapping hoàn chỉnh trước (như GAV/LAV truyền thống), PAYGO bắt
+      đầu với rất ít ràng buộc ngữ nghĩa, trả lời truy vấn "tốt nhất có thể" với những gì đã biết, rồi
+      <b>cải thiện dần</b> theo thời gian/phản hồi người dùng.</p>
+      <table class="pd-table"><tr><th>Traditional DI</th><th>PAYGO</th></tr>
+      <tr><td>Single Mediated Schema (thiết kế thủ công)</td><td>Schema Clusters (tự động theo chủ đề)</td></tr>
+      <tr><td>Exact Schema Mappings</td><td>Approximate/Probabilistic Mappings</td></tr>
+      <tr><td>Structured Queries (SQL)</td><td>Keyword Queries + Routing</td></tr>
+      <tr><td>Deterministic Answers</td><td>Heterogeneous Ranking (best-effort)</td></tr></table></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/3</div>
+<div class="part-num">03</div><h2>Dataspace, Probabilistic Schema & WebTables</h2>
+<ul class="part-list"><li>Dataspace/DSSP — mô hình thay thế khi không đủ thời gian thiết kế mediated schema</li>
+<li>Probabilistic Mediated Schema — tạo tự động bằng clustering, kèm xác suất</li>
+<li>WebTables — tích hợp không cần mediated schema tường minh, dùng keyword search + ranking</li></ul></div><div class="mdeck-slide"><h2>Probabilistic Mediated Schema & Mapping</h2>
+      <p>Thay vì 1 mediated schema "đúng duy nhất", hệ thống tạo <b>nhiều phiên bản khả dĩ</b> bằng clustering
+      thuộc tính các nguồn, mỗi phiên bản kèm 1 trọng số xác suất. Tương tự, mỗi mapping cũng có nhiều khả
+      năng kèm xác suất tin cậy — mô hình hoá đúng sự không chắc chắn (uncertainty) ở cả 2 tầng.</p></div><div class="mdeck-slide"><h2>WebTables — khai thác 154 triệu bảng chất lượng cao trên Web</h2>
+      <p>Không xây mediated schema, WebTables trích xuất hàng tỷ bảng HTML, lọc ra các bảng quan hệ chất
+      lượng cao bằng phân loại thống kê, rồi <b>xếp hạng theo từ khoá người dùng gõ</b> (FeatureRank dùng đặc
+      trưng bảng; SchemaRank cộng thêm độ nhất quán schema qua Pointwise Mutual Information).</p>
+      <div class="callout good"><div class="lbl">Ý nghĩa</div>
+      Đây là minh chứng PAYGO hoạt động thực tế ở quy mô Web — "tích hợp" bằng tìm-kiếm-và-xếp-hạng thay vì
+      mapping tường minh.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>✍️ Bài tập làm giấy (có lời giải)</h2>
+<div class="exlist-tuluan"><details class="ex-item">
+<summary>Bài 1. Mediation schema XML gốc: <code>&lt;Library&gt;&lt;Book title author/&gt;&lt;Reviews score/&gt;&lt;/Library&gt;</code>. Giả sử Reviews là node đa trị (1 Book có nhiều Review). Hãy decompose thành các sub-tree theo đúng quy tắc đã học, và mô tả 1 partial mapping khả dĩ nếu có 2 nguồn: S1 (bảng Book: title, author) và S2 (bảng Review: book_title, score). <span class="src">[Bổ sung (dựa theo ví dụ Films/Director trong 2_mediationquery.pdf)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> 2 sub-tree: <b>t1</b> = root Library → Book(title, author) [root của mediation schema, chứa text node title/author]. <b>t2</b> = root Reviews (node đa trị) → score [root là node đa trị, có text node score]. <br>Partial mapping: t1 ↔ S1.Book(title,author) (ánh xạ trực tiếp cột-cột). t2 ↔ S2.Review(score) với điều kiện join S1.Book.title = S2.Review.book_title (dùng làm reference key nối 2 sub-tree lại thành 1 mediation query hoàn chỉnh qua Join Graph).</div></details><details class="ex-item">
+<summary>Bài 2. So sánh Probabilistic Mediated Schema (PAYGO) với mediated schema truyền thống (GAV/LAV cố định) theo 3 tiêu chí: cách tạo ra, số lượng phiên bản, cách xử lý khi sai. <span class="src">[Bổ sung]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> <b>Cách tạo:</b> truyền thống = chuyên gia thiết kế thủ công; PAYGO = tự động bằng clustering thuộc tính nguồn. <b>Số phiên bản:</b> truyền thống = đúng 1 duy nhất; PAYGO = nhiều phiên bản khả dĩ đồng thời, mỗi phiên bản kèm xác suất. <b>Xử lý khi sai:</b> truyền thống = phải sửa thiết kế thủ công (tốn thời gian, dừng hệ thống); PAYGO = tự cải thiện dần qua phản hồi người dùng/dữ liệu mới, không cần dừng hệ thống hay sửa thủ công.</div></details></div>
+<h2>💬 Bài tập hỏi đáp nhanh</h2>
+<p class="hint">Bấm vào từng câu hỏi để lật xem đáp án — ôn tập nhanh thuật ngữ &amp; khái niệm cốt lõi.</p>
+<div class="flashcard-grid"><details class="flashcard">
+<summary>❓ Khi decompose mediation schema XML, root của 1 sub-tree phải thoả điều kiện gì?</summary><div class="dap">💡 Là node đa trị (multi-value) hoặc là root của mediation schema, và sub-tree có ít nhất 1 text node.</div></details><details class="flashcard">
+<summary>❓ Join Graph dùng để làm gì trong sinh mediation query?</summary><div class="dap">💡 Biểu diễn các phép join khả dĩ giữa các nguồn, dựa trên key/reference-key — node=nguồn, cạnh=điều kiện join.</div></details><details class="flashcard">
+<summary>❓ PAYGO khác Data Integration truyền thống ở nguyên lý cốt lõi nào?</summary><div class="dap">💡 Bắt đầu với ít ràng buộc ngữ nghĩa, trả lời tốt nhất có thể ngay, cải thiện dần theo thời gian — không chờ thiết kế hoàn chỉnh.</div></details><details class="flashcard">
+<summary>❓ WebTables xếp hạng bảng kết quả bằng 2 phương pháp nào?</summary><div class="dap">💡 FeatureRank (dùng đặc trưng bảng) và SchemaRank (cộng thêm độ nhất quán schema qua Pointwise Mutual Information).</div></details></div>
+<h2>✅ Bài trắc nghiệm tự chấm</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Khi decompose mediation schema XML thành sub-tree, điều kiện bắt buộc của mỗi sub-tree là gì?", "opts": ["Phải có đúng 1 node", "Root là node đa trị hoặc gốc cây, và có ít nhất 1 text node trong sub-tree", "Không được chứa thuộc tính nào", "Phải trùng khớp hoàn toàn 1 nguồn"], "correct": 1, "explain": "Slide định nghĩa rõ: root = multi-value node hoặc root của mediation schema; node mono-value; có ít nhất 1 text node."}, {"q": "Join Graph trong sinh mediation query dùng để làm gì?", "opts": ["Biểu diễn các phép join khả dĩ giữa các nguồn dựa trên key/reference-key", "Tối ưu hoá tốc độ mạng", "Mã hoá dữ liệu", "Chuẩn hoá bảng"], "correct": 0, "explain": "Node = nguồn, cạnh = điều kiện join (VD authorId=id) — dùng để kết hợp các partial mapping."}, {"q": "'Schema Explosion' trong Big Data Integration nghĩa là gì?", "opts": ["Dữ liệu bị mất do lỗi hệ thống", "Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu", "Mediated schema tự động xoá", "Tốc độ truy vấn giảm"], "correct": 1, "explain": "'Database design by the masses' tạo ra vô số schema khác nhau cho cùng ý tưởng — không thể gộp thủ công."}, {"q": "Nguyên lý cốt lõi của PAYGO là gì?", "opts": ["Thiết kế mediated schema hoàn chỉnh trước khi dùng", "Bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện dần theo thời gian/phản hồi", "Chỉ dùng được với dữ liệu quan hệ", "Yêu cầu toàn bộ nguồn phải có cùng schema"], "correct": 1, "explain": "Pay-As-You-Go: trả lời tốt nhất có thể ngay từ đầu, tự động cải thiện mapping dần, không chờ thiết kế hoàn chỉnh."}, {"q": "Probabilistic Mediated Schema được tạo ra bằng cách nào?", "opts": ["Chuyên gia thiết kế thủ công", "Clustering tự động các thuộc tính nguồn, kèm xác suất cho mỗi phiên bản", "Dịch máy", "Random ngẫu nhiên hoàn toàn"], "correct": 1, "explain": "Tạo tự động bằng clustering thuộc tính — do Volume/Variety quá lớn để thiết kế thủ công."}, {"q": "SchemaRank trong WebTables khác FeatureRank ở điểm nào?", "opts": ["SchemaRank không dùng máy học", "SchemaRank cộng thêm đo độ nhất quán schema qua Pointwise Mutual Information", "SchemaRank chỉ dùng cho bảng tiếng Anh", "SchemaRank chậm hơn nhưng không chính xác hơn"], "correct": 1, "explain": "SchemaRank = FeatureRank + đo coherence giữa các thuộc tính bằng pmi(a,b), cải thiện chất lượng xếp hạng đo được trong slide."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../02-schema-alignment/index.html">◀ Buổi 2: Schema Alignment — GAV, LAV, GLAV & Certain Answers</a><a href="../04-record-linkage-entity-resolution/index.html">Buổi 4: Record Linkage & Entity Resolution ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

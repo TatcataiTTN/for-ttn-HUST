@@ -1,0 +1,99 @@
+{
+  "titles": {
+    "tuluan": "Bài tập làm giấy (có lời giải)",
+    "hoidap": "Bài tập hỏi đáp nhanh (flashcard)"
+  },
+  "tuluan": {
+    "0": [
+      {"nguon": "Bổ sung",
+       "cau": "Cho 2 thực thể 'NguoiThue' và 'CanHo' có liên kết 'Thue' (1 người thuê có thể thuê nhiều căn hộ theo thời gian, 1 căn hộ có thể được nhiều người thuê lần lượt). Hãy chuyển sang lược đồ quan hệ (liệt kê bảng, khoá chính, khoá ngoại).",
+       "loi_giai": "3 bảng: <b>NguoiThue</b>(MaNguoiThue PK, HoTen, SDT) · <b>CanHo</b>(MaCanHo PK, DiaChi, DienTich) · <b>Thue</b>(MaNguoiThue FK→NguoiThue, MaCanHo FK→CanHo, NgayBatDau, NgayKetThuc, KhoaChinh=(MaNguoiThue,MaCanHo,NgayBatDau)). Vì liên kết N-N có thuộc tính riêng (ngày thuê), phải tách thành bảng trung gian riêng — không gộp vào 1 trong 2 bảng thực thể."},
+      {"nguon": "Bổ sung",
+       "cau": "Hệ thống A lưu 'Giá thuê đã gồm phí dịch vụ' trong 1 cột duy nhất. Hệ thống B tách 'Giá thuê' và 'Phí dịch vụ' thành 2 cột riêng. Cả 2 đều đúng chuẩn 3NF. Khi tích hợp 2 nguồn này, vấn đề gặp phải thuộc loại dị biệt nào (tham khảo Module 01) và vì sao chuẩn hoá không giúp tránh được nó?",
+       "loi_giai": "Đây là <b>Structural/Schema Heterogeneity</b> (và có thể kèm Data-level Heterogeneity nếu cần phép cộng để quy đổi qua lại). Chuẩn hoá chỉ đảm bảo KHÔNG DƯ THỪA/KHÔNG DỊ THƯỜNG CẬP NHẬT trong nội bộ 1 hệ thống — nó không quy định phải tách cột theo đúng 1 cách duy nhất, nên 2 đội độc lập chuẩn hoá đúng kỹ thuật vẫn ra 2 lược đồ khác nhau."}
+    ],
+    "1": [
+      {"nguon": "Bổ sung (dựa theo ví dụ slide 'Movie' buổi 3, áp dụng ngược cho buổi 2)",
+       "cau": "Một mediated schema có quan hệ Flight(FlightNo, From, To, Date). Nguồn S1 là 1 API JSON trả {flight_id, origin, dest, date, status}, nguồn S2 là 1 bảng SQL FlightSchedule(fno, dep_airport, arr_airport, dep_date). Với mỗi nguồn, hãy chỉ ra: (a) mức độ Heterogeneity cụ thể nào xuất hiện so với mediated schema, (b) Wrapper cần làm gì để chuyển dữ liệu nguồn đó về đúng mô hình mediated schema.",
+       "loi_giai": "<b>S1 (JSON API):</b> (a) System/Platform Heterogeneity (API JSON ≠ mô hình quan hệ của mediated schema) + Syntactic/Format (field name flight_id/origin/dest khác tên cột FlightNo/From/To). (b) Wrapper gọi API, parse JSON, đổi tên field (flight_id→FlightNo, origin→From, dest→To), bỏ field 'status' không cần (hoặc giữ lại nếu mediated schema mở rộng). <br><b>S2 (SQL):</b> (a) chỉ có Syntactic/Format Heterogeneity (khác tên cột: fno/dep_airport/arr_airport/dep_date), KHÔNG có System Heterogeneity vì cùng là quan hệ/SQL. (b) Wrapper chỉ cần viết 1 SQL SELECT với alias đổi tên cột, không cần parser phức tạp như S1."},
+      {"nguon": "Bổ sung",
+       "cau": "Vì sao PAYGO coi 'Keyword Queries' là một thách thức riêng so với Data Integration truyền thống? Cho 1 ví dụ truy vấn từ khoá và giải thích vì sao GAV/LAV không áp dụng được trực tiếp cho nó.",
+       "loi_giai": "GAV/LAV đòi hỏi truy vấn được viết dưới dạng hình thức (SQL/logic) trên MỘT mediated schema đã biết trước, để reformulate chính xác qua unfolding/views. Truy vấn từ khoá như <code>'chung cư quận 7 giá dưới 3 tỷ'</code> không gắn với bất kỳ thuộc tính/quan hệ cụ thể nào của 1 schema — không có cách 'unfold' nó thành truy vấn logic rõ ràng trên nguồn, vì người dùng không biết (và không cần biết) mediated schema tồn tại hay có cấu trúc gì. PAYGO giải quyết bằng tìm-kiếm-và-xếp-hạng (như WebTables FeatureRank/SchemaRank) thay vì ánh xạ hình thức."}
+    ],
+    "2": [
+      {"nguon": "Bổ sung (mở rộng ví dụ Movie trong slide 2_SchemaAlignment.pdf)",
+       "cau": "Mediated schema: Book(Title, Author, Year). Nguồn S1 (GAV): <code>Book(t,a,y) ⊇ S1.Catalog(ISBN,t,a), S1.Detail(ISBN,y)</code>. Viết lại bằng Query Unfolding truy vấn mediated <code>Q: SELECT Title FROM Book WHERE Year > 2020</code> thành truy vấn thực thi trên S1.",
+       "loi_giai": "Thay subgoal <code>Book(t,a,y)</code> bằng đúng định nghĩa GAV (join S1.Catalog và S1.Detail theo ISBN): <br><code>SELECT C.t FROM S1.Catalog C JOIN S1.Detail D ON C.ISBN = D.ISBN WHERE D.y > 2020</code>. Đây chính là bước unfolding: không có subgoal mediated nào còn lại, toàn bộ đã quy về quan hệ nguồn thật."},
+      {"nguon": "Bổ sung",
+       "cau": "Giải thích bằng ví dụ cụ thể (khác ví dụ slide) tại sao LAV biểu diễn được 'thông tin nguồn không đầy đủ' còn GAV thì không. Gợi ý: xét trường hợp 1 nguồn chỉ biết MỘT PHẦN thuộc tính của mediated schema.",
+       "loi_giai": "Giả sử mediated schema Person(Name, Email, Phone), và nguồn S3 chỉ có danh bạ Name+Phone (không có Email). Với <b>LAV</b>: định nghĩa $S3(n,p) \\subseteq \\exists e.\\, Person(n,e,p)$ — khai báo đúng ý 'S3 biết 1 phần thông tin Person, Email có thể tồn tại nhưng S3 không biết'. Với <b>GAV</b>: phải viết $Person(n,e,p) \\supseteq Q(S3)$ — nhưng Q(S3) không có cột Email, nên không thể định nghĩa Person như 1 view đầy đủ trên nguồn này được (phải gán NULL cứng hoặc bỏ qua nguồn này hoàn toàn khỏi view hợp nhất) — GAV ép mediated schema phải 'biết đủ' ngay khi định nghĩa, không linh hoạt khai báo thiếu thông tin như LAV."},
+      {"nguon": "Bổ sung",
+       "cau": "Có 2 instance khả dĩ của mediated schema Movie(Title,Director): I1={(Tam Biet, Dao A)}, I2={(Tam Biet, Dao B)}. Truy vấn Q1: 'trả về Title của mọi phim' và Q2: 'trả về Director của mọi phim'. Xác định Certain Answer cho Q1 và Q2.",
+       "loi_giai": "Q1: Title='Tam Biet' đúng ở CẢ I1 và I2 → <b>Certain Answer = {Tam Biet}</b>. Q2: I1 cho Director='Dao A', I2 cho Director='Dao B' — không giá trị Director nào đúng ở CẢ 2 instance → <b>không có Certain Answer nào cho Q2</b> (tập Certain Answer rỗng)."}
+    ],
+    "3": [
+      {"nguon": "Bổ sung (dựa theo ví dụ Films/Director trong 2_mediationquery.pdf)",
+       "cau": "Mediation schema XML gốc: <code>&lt;Library&gt;&lt;Book title author/&gt;&lt;Reviews score/&gt;&lt;/Library&gt;</code>. Giả sử Reviews là node đa trị (1 Book có nhiều Review). Hãy decompose thành các sub-tree theo đúng quy tắc đã học, và mô tả 1 partial mapping khả dĩ nếu có 2 nguồn: S1 (bảng Book: title, author) và S2 (bảng Review: book_title, score).",
+       "loi_giai": "2 sub-tree: <b>t1</b> = root Library → Book(title, author) [root của mediation schema, chứa text node title/author]. <b>t2</b> = root Reviews (node đa trị) → score [root là node đa trị, có text node score]. <br>Partial mapping: t1 ↔ S1.Book(title,author) (ánh xạ trực tiếp cột-cột). t2 ↔ S2.Review(score) với điều kiện join S1.Book.title = S2.Review.book_title (dùng làm reference key nối 2 sub-tree lại thành 1 mediation query hoàn chỉnh qua Join Graph)."},
+      {"nguon": "Bổ sung",
+       "cau": "So sánh Probabilistic Mediated Schema (PAYGO) với mediated schema truyền thống (GAV/LAV cố định) theo 3 tiêu chí: cách tạo ra, số lượng phiên bản, cách xử lý khi sai.",
+       "loi_giai": "<b>Cách tạo:</b> truyền thống = chuyên gia thiết kế thủ công; PAYGO = tự động bằng clustering thuộc tính nguồn. <b>Số phiên bản:</b> truyền thống = đúng 1 duy nhất; PAYGO = nhiều phiên bản khả dĩ đồng thời, mỗi phiên bản kèm xác suất. <b>Xử lý khi sai:</b> truyền thống = phải sửa thiết kế thủ công (tốn thời gian, dừng hệ thống); PAYGO = tự cải thiện dần qua phản hồi người dùng/dữ liệu mới, không cần dừng hệ thống hay sửa thủ công."}
+    ],
+    "4": [
+      {"nguon": "Quiz-Buoi4-RecordLinkage-ER.md — câu B1+B2 (câu gốc từ slide, đã verify DP thủ công)",
+       "cau": "Tính Edit Distance (Levenshtein) giữa 'color' và 'colour', liệt kê thao tác cần dùng. Từ đó tính similarity score bằng công thức $s(x,y)=1-\\dfrac{d(x,y)}{\\max(|x|,|y|)}$.",
+       "loi_giai": "color (5 ký tự) → colour (6 ký tự): chỉ cần <b>1 phép chèn</b> ký tự 'u' (color → colo+u+r = colour) ⟹ $d=1$. Similarity: $s = 1 - 1/\\max(5,6) = 1 - 1/6 = 5/6 \\approx 0.833$."},
+      {"nguon": "Quiz-Buoi4-RecordLinkage-ER.md — câu B3 (câu gốc từ slide)",
+       "cau": "Cho $B_x=\\{a,b,c,d\\}$, $B_y=\\{b,c,d,e\\}$. Tính Overlap measure $O(x,y)$ và Jaccard measure $J(x,y)$.",
+       "loi_giai": "$O(x,y) = |B_x \\cap B_y| = |\\{b,c,d\\}| = 3$. $J(x,y) = |B_x\\cap B_y|/|B_x\\cup B_y| = 3/|\\{a,b,c,d,e\\}| = 3/5 = 0.6$."},
+      {"nguon": "Quiz-Buoi4-RecordLinkage-ER.md — câu B5 (câu gốc từ slide, đối chiếu đúng giá trị Soundex chuẩn 'Williams'=W452)",
+       "cau": "Áp dụng đúng 4 bước thuật toán Soundex để tính mã của tên 'Williams'. Trình bày từng bước.",
+       "loi_giai": "B1: giữ chữ đầu <b>W</b>, xét phần còn lại 'illiams'. B2: không có W/H ở phần còn lại; mã hoá theo nhóm âm: i(bỏ, nguyên âm), l→4, l→4, i(bỏ), a(bỏ), m→5, s→2 ⟹ tạm 'W 4 4 5 2' (bỏ nguyên âm luôn, chỉ giữ số). B3: gộp 2 số '4,4' liền kề (từ 2 chữ l liên tiếp) thành 1 số 4 ⟹ 'W 4 5 2'. B4: lấy chữ đầu + 3 số đầu ⟹ <b>W452</b>."},
+      {"nguon": "Quiz-Buoi4-RecordLinkage-ER.md — câu C5 (câu gốc từ slide)",
+       "cau": "Phương pháp Clustering 'Connected Components / Transitive Closure' có nhược điểm gì đã được slide chỉ ra rõ?",
+       "loi_giai": "Dễ tạo ra các cụm quá lớn chứa bản ghi thực chất không giống nhau ('big clusters and dissimilar records') — do tính bắc cầu: nếu A~B và B~C (qua 'cầu nối' B) nhưng A không thực sự giống C, Connected Components vẫn gộp cả A,B,C vào 1 cụm chỉ vì tồn tại đường nối gián tiếp."},
+      {"nguon": "Quiz-Buoi4-RecordLinkage-ER.md — câu D2 (liên hệ ứng dụng, câu gốc)",
+       "cau": "batdongsan.com.vn và nhatot.com cùng đăng 1 căn hộ nhưng giá lệch nhau 5% (1 bên tính thêm phí môi giới). Nên chọn loại similarity measure nào cho trường 'giá', và vì sao không nên dùng exact match?",
+       "loi_giai": "Nên dùng similarity/threshold-based measure cho giá trị số (coi 2 giá match nếu $|price_1-price_2|/\\max(price_1,price_2) \\le$ ngưỡng, ví dụ 10%). Không nên dùng exact match vì giá thực tế hầu như luôn lệch nhau chút ít giữa các nguồn (phí môi giới, làm tròn, thời điểm cập nhật) — exact match sẽ bỏ sót phần lớn cặp tin trùng thực sự (recall thấp), giống vấn đề Naïve Deduplication."}
+    ]
+  },
+  "hoidap": {
+    "0": [
+      {"hoi": "Khoá ngoại (foreign key) dùng để làm gì?", "dap": "Trỏ tới khoá chính của bảng khác để hiện thực 1 liên kết (relationship) giữa 2 thực thể."},
+      {"hoi": "Vì sao 2 hệ thống cùng chuẩn hoá đúng kỹ thuật vẫn có thể ra lược đồ khác nhau?", "dap": "Vì chuẩn hoá chỉ đảm bảo không dư thừa/dị thường — không ép duy nhất 1 cách tách bảng. Nhiều cách tách đều hợp lệ."},
+      {"hoi": "Liên kết N-N có thuộc tính riêng thì xử lý thế nào khi chuyển sang bảng quan hệ?", "dap": "Phải tách thành 1 bảng trung gian riêng (chứa 2 khoá ngoại + thuộc tính riêng của liên kết), không gộp vào bảng thực thể nào."}
+    ],
+    "1": [
+      {"hoi": "Mediated Schema là gì?", "dap": "Giao diện truy vấn thống nhất duy nhất người dùng thấy, che giấu vị trí/mô hình dữ liệu/khác biệt ngữ nghĩa của các nguồn phía sau."},
+      {"hoi": "Wrapper làm nhiệm vụ gì trong pipeline Query Processing?", "dap": "Nhận truy vấn đã reformulate, gửi thao tác thật tới nguồn dữ liệu, chuyển kết quả trả về đúng mô hình dữ liệu nội bộ."},
+      {"hoi": "7 mức độ Heterogeneity gồm những gì?", "dap": "System/Platform, Syntactic/Format, Structural/Schema, Semantic/Conceptual, Instance/Identity, Temporal/Process, Quality/Provenance/Governance."},
+      {"hoi": "Instance/Identity Heterogeneity giải quyết bằng kỹ thuật nào, học ở buổi nào?", "dap": "Entity Resolution / Record Linkage — buổi 4 (Module 04 của site này)."},
+      {"hoi": "Ưu điểm chính của Data Warehousing so với Virtual Integration?", "dap": "Có thể chạy tính toán nặng (data mining/ML) trên bản copy mà không làm phiền nguồn gốc mỗi lần truy vấn."},
+      {"hoi": "3 bước pipeline tổng thể của Big Data Integration là gì?", "dap": "Schema Alignment → Entity Resolution → Data Fusion."}
+    ],
+    "2": [
+      {"hoi": "GAV định nghĩa mediated schema như thế nào?", "dap": "Mediated schema ĐƯỢC ĐỊNH NGHĨA LÀ 1 view (truy vấn) trên các nguồn: $G \\supseteq Q(sources)$."},
+      {"hoi": "LAV định nghĩa nguồn như thế nào?", "dap": "Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema: $S_i \\subseteq Q_i(G)$."},
+      {"hoi": "Reformulation trong GAV dùng thuật toán gì?", "dap": "Query Unfolding — thay subgoal bằng rule tương ứng, lặp tới khi hết."},
+      {"hoi": "Reformulation trong LAV tương đương bài toán kinh điển nào?", "dap": "Answering Queries Using Views."},
+      {"hoi": "GLAV biểu diễn hình thức bằng công cụ gì?", "dap": "Tuple Generating Dependency (TGD)."},
+      {"hoi": "Certain Answer được định nghĩa thế nào?", "dap": "Đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping."},
+      {"hoi": "Nhược điểm cốt lõi của GAV so với LAV?", "dap": "Không biểu diễn được thông tin nguồn không đầy đủ (incomplete information)."}
+    ],
+    "3": [
+      {"hoi": "Khi decompose mediation schema XML, root của 1 sub-tree phải thoả điều kiện gì?", "dap": "Là node đa trị (multi-value) hoặc là root của mediation schema, và sub-tree có ít nhất 1 text node."},
+      {"hoi": "Join Graph dùng để làm gì trong sinh mediation query?", "dap": "Biểu diễn các phép join khả dĩ giữa các nguồn, dựa trên key/reference-key — node=nguồn, cạnh=điều kiện join."},
+      {"hoi": "PAYGO khác Data Integration truyền thống ở nguyên lý cốt lõi nào?", "dap": "Bắt đầu với ít ràng buộc ngữ nghĩa, trả lời tốt nhất có thể ngay, cải thiện dần theo thời gian — không chờ thiết kế hoàn chỉnh."},
+      {"hoi": "WebTables xếp hạng bảng kết quả bằng 2 phương pháp nào?", "dap": "FeatureRank (dùng đặc trưng bảng) và SchemaRank (cộng thêm độ nhất quán schema qua Pointwise Mutual Information)."}
+    ],
+    "4": [
+      {"hoi": "Entity Resolution là trường hợp đặc biệt của khái niệm nào?", "dap": "Entity Linking — ER là trường hợp khi liên kết đó nghĩa là 'cùng 1 thực thể' (khử trùng lặp)."},
+      {"hoi": "3 kết luận khi so khớp 1 cặp bản ghi theo Fellegi & Sunter (1969)?", "dap": "Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn)."},
+      {"hoi": "4 bước của Entity Resolution Pipeline, theo đúng thứ tự?", "dap": "Prepare Data → Blocking/Sorting → Matching → Clustering."},
+      {"hoi": "Sorted Neighborhood giảm chi phí blocking bằng cách nào?", "dap": "Sắp xếp theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định, không so toàn bộ n²."},
+      {"hoi": "Vì sao Soundex hoạt động kém với tên gốc Á Đông?", "dap": "Vì Soundex bỏ qua nguyên âm, trong khi tên Á Đông phân biệt nhau chủ yếu qua nguyên âm."},
+      {"hoi": "Class skew trong huấn luyện Learned Matchers nghĩa là gì?", "dap": "Số cặp bản ghi match ít hơn rất nhiều so với số cặp non-match — mất cân bằng lớp nghiêm trọng."},
+      {"hoi": "Incremental Data Deduplication dùng kỹ thuật gì để tránh tính lại từ đầu?", "dap": "Greedy update: connect/merge/split/move trên similarity graph đã có, thay vì chạy lại Correlation Clustering toàn bộ."}
+    ]
+  }
+}
