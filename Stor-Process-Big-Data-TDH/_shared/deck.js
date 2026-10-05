@@ -12,6 +12,26 @@ document.addEventListener('DOMContentLoaded', function(){
       dotsWrap.appendChild(d);
     });
     const dots = [...dotsWrap.children];
+    const viewport = deck.querySelector('.mdeck-viewport');
+    function fit(){
+      const s = slides[i];
+      if (!s) return;
+      s.style.transform = '';
+      s.style.width = '';
+      s.style.height = '';
+      // chờ 1 frame để layout ổn định rồi đo chiều cao nội dung thật
+      requestAnimationFrame(() => {
+        const boxH = viewport.clientHeight;
+        const contentH = s.scrollHeight;
+        if (boxH > 0 && contentH > boxH) {
+          const scale = Math.max(0.5, boxH / contentH);
+          s.style.transformOrigin = 'top left';
+          s.style.transform = `scale(${scale})`;
+          s.style.width = (100 / scale) + '%';
+          s.style.height = (100 / scale) + '%';
+        }
+      });
+    }
     function render(){
       slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
       dots.forEach((d, idx) => d.classList.toggle('on', idx === i));
@@ -23,8 +43,11 @@ document.addEventListener('DOMContentLoaded', function(){
           {left:'$', right:'$', display:false}
         ], macros: window.KATEX_MACROS || {}, throwOnError: false}); } catch(e){}
       }
+      fit();
     }
     function go(n){ i = Math.max(0, Math.min(slides.length - 1, n)); render(); }
+    window.addEventListener('resize', fit);
+    document.addEventListener('fullscreenchange', () => setTimeout(fit, 60));
     prevBtn.addEventListener('click', () => go(i - 1));
     nextBtn.addEventListener('click', () => go(i + 1));
     deck.tabIndex = 0;
