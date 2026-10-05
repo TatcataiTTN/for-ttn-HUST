@@ -42,7 +42,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="wrap">
 <div class="hero"><div class="kicker">Buổi 13 / 14</div>
 <h1>Đồ thị cơ bản, liên thông & Borůvka</h1></div>
-<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 13 · Cấu trúc rời rạc</div><h2>Đồ thị cơ bản, liên thông & Borůvka</h2><p>Bài toán liên thông trên luồng cạnh động (có xoá) cần một thuật toán khác hẳn union-find truyền thống: sketch AGM.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 13 · Cấu trúc rời rạc</div><h2>Đồ thị cơ bản, liên thông & Borůvka</h2><p>Bài toán liên thông trên luồng cạnh động (có xoá) cần một thuật toán khác hẳn union-find truyền thống: sketch AGM.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
 <div class="part-num">01</div><h2>Liên thông & thuật toán Borůvka</h2>
 <ul class="part-list"><li>Union-find sụp đổ khi luồng có XOÁ cạnh</li>
 <li>Borůvka: mỗi vòng số thành phần giảm ít nhất một nửa</li>
@@ -65,7 +65,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
      $\mathrm{supp}(\sum_{i\in S}a_i) = E(S,V\setminus S)$ — cạnh có cả 2 đầu trong $S$ triệt tiêu, chỉ còn
      đúng các cạnh cắt. Kết hợp với <b>SupportFind</b> (khôi phục 1 phần tử khác 0 từ 1 sketch tuyến tính,
      buổi 14) và vòng lặp kiểu Borůvka, AGM giải liên thông trên luồng ĐỘNG (có xoá) chỉ trong
-     $O(N\log^3 N)$ bit — không cần lưu toàn bộ đồ thị.</p><p><img src="../../../assets/diagrams/boruvka-rounds.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div>
+     $O(N\log^3 N)$ bit — không cần lưu toàn bộ đồ thị.</p><p><img src="../../../assets/diagrams/boruvka-rounds.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>

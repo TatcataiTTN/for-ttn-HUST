@@ -148,7 +148,7 @@ def build_module_page(mod, prev_mod, next_mod):
             is_last_slide_of_deck = last_part and (si == n_slides - 1)
             img = f"{rel_root}assets/diagrams/{diagram}" if (diagram and is_last_slide_of_deck) else ""
             slides.append(slide_html(s, img))
-    deck = f"""<div class="mdeck"><div class="mdeck-viewport">{''.join(slides)}</div>
+    deck = f"""<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport">{''.join(slides)}</div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>

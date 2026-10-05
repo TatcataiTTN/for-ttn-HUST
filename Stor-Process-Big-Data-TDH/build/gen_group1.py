@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Sinh slide thuyết trình bài tập lớn Nhóm 1 — Chương 2: Hệ sinh thái Hadoop.
+"""Sinh slide thuyết trình bài tập lớn Nhóm 1, Chương 2, Hệ sinh thái Hadoop.
 Nội dung bám sát IT4931_lecture_notes.pdf (Chương 2, tr.23-36, nhóm tác giả Trần Văn Đặng,
-Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung — ĐH Bách Khoa Hà Nội) — không bịa thêm
-sự kiện/số liệu ngoài những gì sách nêu. Định dạng theo mẫu lap_lich_50_slides.pdf."""
+Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, Đại học Bách Khoa Hà Nội), không bịa thêm
+sự kiện hay số liệu ngoài những gì sách nêu. Định dạng theo mẫu lap_lich_50_slides.pdf."""
 import pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from gen_site import HEAD_THEME_SCRIPT, KATEX, topbar, footer
@@ -20,10 +20,11 @@ def divider(idx, total, title, bullets):
     return f"""<div class="mdeck-slide part-divider"><div class="kicker">PHẦN {idx}/{total}</div>
 <div class="part-num">{idx:02d}</div><h2>{title}</h2><ul class="part-list">{lis}</ul></div>"""
 
-def tbl(head, rows):
+def tbl(head, rows, dense=False):
     h = "".join(f"<th>{x}</th>" for x in head)
     r = "".join("<tr>" + "".join(f"<td>{c}</td>" for c in row) + "</tr>" for row in rows)
-    return f'<table><tr>{h}</tr>{r}</table>'
+    cls = ' class="dense"' if dense else ""
+    return f'<table{cls}><tr>{h}</tr>{r}</table>'
 
 def formula(label, math):
     return f'<div class="pd-formula"><div class="pd-formula-label">{label}</div><div class="pd-formula-math">${math}$</div></div>'
@@ -34,9 +35,9 @@ def callout(kind, label, text):
 SLIDES = []
 
 # ---------- Title ----------
-SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">IT4931 — Lưu trữ &amp; xử lý dữ liệu lớn · Bài tập lớn</div>
+SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">IT4931: Lưu trữ &amp; xử lý dữ liệu lớn · Bài tập lớn</div>
 <h2>Hệ sinh thái Hadoop</h2>
-<p style="font-size:1.05rem;color:var(--muted)">Chương 2 — Lưu trữ và Xử lý Dữ liệu Lớn (Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, ĐH Bách Khoa Hà Nội)</p>
+<p style="font-size:1.05rem;color:var(--muted)">Chương 2: Lưu trữ và Xử lý Dữ liệu Lớn (Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, ĐH Bách Khoa Hà Nội)</p>
 <p><b>Nhóm 1</b> · {" · ".join(MEMBERS)}</p>
 <p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Bài giảng chuyên đề &nbsp;·&nbsp; __SLIDE_COUNT__ slide</p></div>""")
 
@@ -58,11 +59,10 @@ SLIDES.append(divider(1, 8, "Vì sao cần Hadoop?", [
     "Nguồn gốc: Google File System &amp; MapReduce", "4 thành phần cốt lõi"]))
 
 SLIDES.append(slide("Apache Hadoop là gì?", f"""
-<p>Nền tảng mã nguồn mở được thiết kế để <b>lưu trữ và xử lý khối lượng dữ liệu lớn trên cụm máy tính</b> —
-cung cấp khả năng lưu trữ <i>scalable</i> (mở rộng được) và <i>reliable</i> (tin cậy), hỗ trợ xử lý song song
+<p>Nền tảng mã nguồn mở được thiết kế để <b>lưu trữ và xử lý khối lượng dữ liệu lớn trên cụm máy tính</b>: cung cấp khả năng lưu trữ <i>scalable</i> (mở rộng được) và <i>reliable</i> (tin cậy), hỗ trợ xử lý song song
 trên phần cứng thông dụng (commodity hardware).</p>
-{callout('good','Kiến trúc scale-out', 'Mở rộng bằng cách <b>thêm máy</b> thay vì nâng cấp 1 máy duy nhất — cho phép mở rộng cụm lên hàng chục nghìn node.')}
-{callout('warn','Triết lý chịu lỗi', 'Hỏng hóc phần cứng được xem là <b>điều bình thường</b>, không phải ngoại lệ — hệ thống tự động phát hiện lỗi, nhân bản dữ liệu và chuyển tác vụ sang node khác.')}
+{callout('good','Kiến trúc scale-out', 'Mở rộng bằng cách <b>thêm máy</b> thay vì nâng cấp 1 máy duy nhất: cho phép mở rộng cụm lên hàng chục nghìn node.')}
+{callout('warn','Triết lý chịu lỗi', 'Hỏng hóc phần cứng được xem là <b>điều bình thường</b>, không phải ngoại lệ: hệ thống tự động phát hiện lỗi, nhân bản dữ liệu và chuyển tác vụ sang node khác.')}
 """))
 
 SLIDES.append(slide("Nguồn gốc: 2 bài báo của Google", f"""
@@ -79,7 +79,7 @@ SLIDES.append(slide("Bốn thành phần cốt lõi của Hadoop", tbl(
      ["<b>Hadoop MapReduce</b>", "Mô hình lập trình phân tán xử lý dữ liệu lớn kiểu batch"],
      ["<b>Hadoop YARN</b> (Yet Another Resource Negotiator)", "Quản lý tài nguyên &amp; lập lịch tác vụ, cho nhiều ứng dụng chạy đồng thời"],
      ["<b>Hadoop Common</b>", "Bộ thư viện &amp; tiện ích chung hỗ trợ các module khác"]]
-) + callout('info', 'Phối hợp', 'HDFS đảm bảo lưu trữ tin cậy · MapReduce cung cấp mô hình lập trình đơn giản · YARN điều phối hiệu quả tài nguyên — kết hợp giúp xử lý dữ liệu khổng lồ với chi phí hợp lý.')))
+) + callout('info', 'Phối hợp', 'HDFS đảm bảo lưu trữ tin cậy · MapReduce cung cấp mô hình lập trình đơn giản · YARN điều phối hiệu quả tài nguyên: kết hợp giúp xử lý dữ liệu khổng lồ với chi phí hợp lý.')))
 
 SLIDES.append(slide("Scale-out so với Scale-up", tbl(
     ["Tiêu chí", "Scale-up (truyền thống)", "Scale-out (Hadoop)"],
@@ -87,22 +87,22 @@ SLIDES.append(slide("Scale-out so với Scale-up", tbl(
      ["Giới hạn mở rộng", "Bị chặn bởi phần cứng cao cấp nhất hiện có", "Mở rộng tới hàng chục nghìn node"],
      ["Xử lý lỗi", "1 máy hỏng = toàn hệ thống dừng", "Lỗi node là bình thường, tự động nhân bản &amp; chuyển tác vụ"],
      ["Chi phí", "Tăng phi tuyến khi nâng cấp máy đơn", "Tăng gần tuyến tính khi thêm node thông dụng"]]
-) + callout('good', 'Vì sao quan trọng', 'Đây là lựa chọn kiến trúc nền tảng khiến Hadoop khả thi về chi phí cho bài toán dữ liệu petabyte — mọi thành phần khác (HDFS, YARN...) đều thiết kế xoay quanh triết lý scale-out này.')))
+) + callout('good', 'Vì sao quan trọng', 'Đây là lựa chọn kiến trúc nền tảng khiến Hadoop khả thi về chi phí cho bài toán dữ liệu petabyte: mọi thành phần khác (HDFS, YARN...) đều thiết kế xoay quanh triết lý scale-out này.')))
 
 # ===================== PHẦN 2: HDFS =====================
-SLIDES.append(divider(2, 8, "HDFS — lưu trữ phân tán", [
+SLIDES.append(divider(2, 8, "HDFS: lưu trữ phân tán", [
     "Mô hình write-once, read-many", "Kiến trúc master/slave: NameNode &amp; DataNode",
     "Block &amp; Replication (nhân bản)", "Hạn chế của HDFS"]))
 
 SLIDES.append(slide("HDFS được tối ưu cho điều gì?", f"""
 <p>HDFS tối ưu cho các tệp <b>kích thước lớn</b> (hàng trăm MB đến TB), mô hình truy cập
 <b>write-once, read-many</b> (ghi một lần, đọc nhiều lần).</p>
-{callout('warn','Đánh đổi có chủ đích', 'Thiết kế để đạt <b>thông lượng cao</b> thay vì <b>độ trễ thấp</b> — phù hợp xử lý batch hơn truy vấn tương tác thời gian thực.')}
-<p>Chạy trên <b>phần cứng thông dụng</b> (không cần thiết bị lưu trữ chuyên dụng đắt tiền) — chấp nhận lỗi phần cứng xảy ra thường xuyên, bù lại bằng cơ chế chịu lỗi ở cấp phần mềm.</p>
+{callout('warn','Đánh đổi có chủ đích', 'Thiết kế để đạt <b>thông lượng cao</b> thay vì <b>độ trễ thấp</b>: phù hợp xử lý batch hơn truy vấn tương tác thời gian thực.')}
+<p>Chạy trên <b>phần cứng thông dụng</b> (không cần thiết bị lưu trữ chuyên dụng đắt tiền): chấp nhận lỗi phần cứng xảy ra thường xuyên, bù lại bằng cơ chế chịu lỗi ở cấp phần mềm.</p>
 """))
 
 SLIDES.append(slide("Kiến trúc master/slave: NameNode &amp; DataNode", f"""
-<p><img src="../assets/diagrams/hdfs-architecture.svg" alt="Kiến trúc HDFS" style="border:1px solid var(--border);border-radius:10px;width:100%"></p>
+<p style="text-align:center"><img src="../assets/diagrams/hdfs-architecture.svg" alt="Kiến trúc HDFS" style="border:1px solid var(--border);border-radius:10px;max-width:100%;max-height:380px;height:auto"></p>
 <ul class="pd-legend"><li><b>NameNode</b><span>quản lý metadata: cấu trúc thư mục, tên tệp, ánh xạ tệp→block. Điều phối truy cập từ client.</span></li>
 <li><b>DataNode</b><span>lưu trữ block dữ liệu thật, xử lý yêu cầu đọc/ghi từ client.</span></li></ul>
 """))
@@ -116,30 +116,30 @@ SLIDES.append(slide("Block là gì?", f"""
 SLIDES.append(slide("Replication (nhân bản) hoạt động ra sao?", f"""
 <p>Mỗi block được <b>replicate</b> (nhân bản) thành nhiều bản sao, phân phối trên các DataNode <b>khác nhau</b> trong cụm.</p>
 {formula('Hệ số nhân bản mặc định', '3\\text{ bản sao trên 3 DataNode khác nhau}')}
-{callout('good','Vì sao nhân bản giúp chịu lỗi', 'Khi 1 DataNode hỏng, hệ thống vẫn còn bản sao trên node khác — NameNode tự động điều phối sao chép lại để duy trì đủ số bản sao mặc định.')}
+{callout('good','Vì sao nhân bản giúp chịu lỗi', 'Khi 1 DataNode hỏng, hệ thống vẫn còn bản sao trên node khác: NameNode tự động điều phối sao chép lại để duy trì đủ số bản sao mặc định.')}
 """))
 
 SLIDES.append(slide("Ví dụ minh hoạ: dung lượng vật lý thực cần", f"""
-<p style="color:var(--muted);font-size:.85rem">Ví dụ số liệu tự tính để minh hoạ khái niệm — không trích từ sách, chỉ dùng đúng các thông số sách đã nêu (block 128MB, nhân bản 3 lần).</p>
+<p style="color:var(--muted);font-size:.85rem">Ví dụ số liệu tự tính để minh hoạ khái niệm: không trích từ sách, chỉ dùng đúng các thông số sách đã nêu (block 128MB, nhân bản 3 lần).</p>
 {tbl(['Bước tính','Giá trị'],
      [['Kích thước tệp cần lưu', '1 TB = 1 048 576 MB'],
       ['Kích thước block', '128 MB'],
       ['Số block cần (1 048 576 / 128)', '= 8 192 block'],
       ['Hệ số nhân bản', '× 3'],
       ['<b>Dung lượng vật lý thực tế cần trên cụm</b>', '<b>= 3 TB</b> (gấp 3 lần dữ liệu gốc)']])}
-{callout('warn', 'Đánh đổi', 'Nhân bản 3 lần giúp chịu lỗi tốt nhưng tốn gấp 3 lần dung lượng lưu trữ thật — đây là chi phí đổi lấy độ tin cậy của HDFS.')}
+{callout('warn', 'Đánh đổi', 'Nhân bản 3 lần giúp chịu lỗi tốt nhưng tốn gấp 3 lần dung lượng lưu trữ thật: đây là chi phí đổi lấy độ tin cậy của HDFS.')}
 """))
 
 SLIDES.append(slide("NameNode có phải điểm yếu duy nhất?", f"""
-<p>NameNode là thành phần <b>trung tâm duy nhất</b> giữ toàn bộ metadata — nếu NameNode gặp sự cố mà không có cơ chế dự phòng, cả hệ thống có nguy cơ mất khả năng xác định dữ liệu nằm ở đâu (dù dữ liệu thật vẫn còn nguyên trên DataNode).</p>
-{callout('good', 'Cơ chế giảm thiểu rủi ro', '<i>Secondary NameNode</i> định kỳ sao lưu &amp; hợp nhất edit log của NameNode, hỗ trợ <b>phục hồi nhanh metadata</b> khi NameNode gặp sự cố — không phải bản sao chạy song song, mà là điểm khôi phục.')}
+<p>NameNode là thành phần <b>trung tâm duy nhất</b> giữ toàn bộ metadata: nếu NameNode gặp sự cố mà không có cơ chế dự phòng, cả hệ thống có nguy cơ mất khả năng xác định dữ liệu nằm ở đâu (dù dữ liệu thật vẫn còn nguyên trên DataNode).</p>
+{callout('good', 'Cơ chế giảm thiểu rủi ro', '<i>Secondary NameNode</i> định kỳ sao lưu &amp; hợp nhất edit log của NameNode, hỗ trợ <b>phục hồi nhanh metadata</b> khi NameNode gặp sự cố: không phải bản sao chạy song song, mà là điểm khôi phục.')}
 """))
 
 SLIDES.append(slide("Hạn chế của HDFS", tbl(["Hạn chế", "Lý do"], [
     ["Độ trễ truy xuất thấp (real-time)", "Tối ưu cho thông lượng tuần tự, không phải truy vấn ngẫu nhiên"],
-    ["Số lượng lớn tệp nhỏ", "Metadata mọi tệp giữ trong bộ nhớ NameNode — giới hạn RAM"],
+    ["Số lượng lớn tệp nhỏ", "Metadata mọi tệp giữ trong bộ nhớ NameNode: giới hạn RAM"],
     ["Sửa đổi nội dung tuỳ ý", "Chỉ hỗ trợ <i>append</i> ở cuối tệp, không ghi đè giữa file"],
-]) + callout('warn', 'Đánh đổi có chủ đích', 'HDFS hy sinh một số tính năng POSIX để đổi lấy khả năng mở rộng &amp; chịu lỗi vượt trội — nhờ đó lưu trữ được hàng petabyte trên cụm hàng nghìn node.')))
+]) + callout('warn', 'Đánh đổi có chủ đích', 'HDFS hy sinh một số tính năng POSIX để đổi lấy khả năng mở rộng &amp; chịu lỗi vượt trội: nhờ đó lưu trữ được hàng petabyte trên cụm hàng nghìn node.')))
 
 # ===================== PHẦN 3: MapReduce & YARN =====================
 SLIDES.append(divider(3, 8, "MapReduce &amp; YARN", [
@@ -147,11 +147,11 @@ SLIDES.append(divider(3, 8, "MapReduce &amp; YARN", [
     "Vì sao cần tách YARN khỏi MapReduce", "Kiến trúc YARN: RM / AM / NM"]))
 
 SLIDES.append(slide("Mô hình lập trình MapReduce", f"""
-<p>Đề xuất bởi Google (2004) — framework đơn giản cho xử lý dữ liệu lớn song song, dựa trên 2 hàm do người lập trình định nghĩa:</p>
+<p>Đề xuất bởi Google (2004): framework đơn giản cho xử lý dữ liệu lớn song song, dựa trên 2 hàm do người lập trình định nghĩa:</p>
 {tbl(['Giai đoạn','Việc của lập trình viên','Việc của framework'],
      [['Map (ánh xạ)','Viết hàm Map','Phân chia dữ liệu, phân phối tác vụ lên cụm'],
       ['Reduce (giảm thiểu)','Viết hàm Reduce','Thu gộp kết quả trung gian, xử lý lỗi tự động']])}
-{callout('good','Điểm mạnh','Lập trình viên chỉ cần viết 2 hàm — phần song song hoá, phân phối, chịu lỗi đều do framework tự động đảm nhiệm.')}
+{callout('good','Điểm mạnh','Lập trình viên chỉ cần viết 2 hàm: phần song song hoá, phân phối, chịu lỗi đều do framework tự động đảm nhiệm.')}
 """))
 
 SLIDES.append(slide("Vai trò MapReduce: Hadoop 1.x → 2.x", tbl(
@@ -159,27 +159,26 @@ SLIDES.append(slide("Vai trò MapReduce: Hadoop 1.x → 2.x", tbl(
     [["Hadoop 1.x", "Engine xử lý dữ liệu <b>chính</b>, cung cấp khả năng xử lý batch cho mọi bài toán"],
      ["Hadoop 2.x (có YARN)", "Trở thành <b>một trong nhiều</b> framework chạy trên cụm, cạnh tranh tài nguyên với Spark, Flink..."]]
 ) + f"""<p>Tối ưu hoá tận dụng hạ tầng: <b>Data Locality</b> (đặt tác vụ gần dữ liệu), <b>Minimal Data Exchange</b>,
-<b>Fault Tolerance</b> tự động — nhờ đó chạy hiệu quả trên hàng nghìn node, xử lý hàng petabyte theo lô.</p>
+<b>Fault Tolerance</b> tự động: nhờ đó chạy hiệu quả trên hàng nghìn node, xử lý hàng petabyte theo lô.</p>
 {callout('warn','Hạn chế', 'Độ trễ cao cho tác vụ lặp/tương tác → động lực ra đời Spark, Flink. Vẫn là nền tảng quan trọng cho <i>batch processing</i> truyền thống.')}"""))
 
 SLIDES.append(slide("MapReduce tích hợp với cả hệ sinh thái", f"""
-<p>MapReduce không hoạt động đơn độc — nó là <b>engine thực thi phía sau</b> của nhiều công cụ khác:</p>
+<p>MapReduce không hoạt động đơn độc: nó là <b>engine thực thi phía sau</b> của nhiều công cụ khác:</p>
 {tbl(['Công cụ','Dịch sang MapReduce như thế nào'],
      [['HDFS', 'MapReduce đọc/ghi dữ liệu trực tiếp qua HDFS'],
       ['YARN', 'Quản lý tài nguyên cho các job MapReduce chạy trên cụm'],
       ['Hive', 'Dịch câu lệnh HiveQL thành job MapReduce'],
       ['Pig', 'Dịch kịch bản Pig Latin thành job MapReduce'],
       ['Sqoop', 'Dùng MapReduce (chỉ Map task) để import/export dữ liệu']])}
-{callout('good', 'Ý nghĩa', 'Đây là lý do MapReduce được gọi là "engine chung" — người dùng Hive/Pig/Sqoop không cần biết MapReduce chạy bên dưới, nhưng mọi tác vụ của họ cuối cùng đều quy về job MapReduce.')}
+{callout('good', 'Ý nghĩa', 'Đây là lý do MapReduce được gọi là "engine chung": người dùng Hive/Pig/Sqoop không cần biết MapReduce chạy bên dưới, nhưng mọi tác vụ của họ cuối cùng đều quy về job MapReduce.')}
 """))
 
 SLIDES.append(slide("Vì sao cần tách riêng YARN?", f"""
-<p>Trong Hadoop 1.x, <b>MapReduce vừa xử lý dữ liệu vừa quản lý tài nguyên &amp; lập lịch</b> trên cụm —
-dẫn đến hạn chế về hiệu năng và tính linh hoạt.</p>
-{callout('good','Giải pháp Hadoop 2.x','YARN (Yet Another Resource Negotiator) tách biệt <b>quản lý tài nguyên</b> khỏi <b>xử lý dữ liệu</b>, biến Hadoop thành nền tảng tổng quát hơn — nhiều mô hình (MapReduce, Spark, Flink, Tez...) cùng chạy trên 1 cụm.')}
+<p>Trong Hadoop 1.x, <b>MapReduce vừa xử lý dữ liệu vừa quản lý tài nguyên &amp; lập lịch</b> trên cụm: dẫn đến hạn chế về hiệu năng và tính linh hoạt.</p>
+{callout('good','Giải pháp Hadoop 2.x','YARN (Yet Another Resource Negotiator) tách biệt <b>quản lý tài nguyên</b> khỏi <b>xử lý dữ liệu</b>, biến Hadoop thành nền tảng tổng quát hơn: nhiều mô hình (MapReduce, Spark, Flink, Tez...) cùng chạy trên 1 cụm.')}
 """))
 
-SLIDES.append(slide("Kiến trúc YARN", f"""<p><img src="../assets/diagrams/yarn-architecture.svg" alt="Kiến trúc YARN" style="border:1px solid var(--border);border-radius:10px;width:100%"></p>
+SLIDES.append(slide("Kiến trúc YARN", f"""<p style="text-align:center"><img src="../assets/diagrams/yarn-architecture.svg" alt="Kiến trúc YARN" style="border:1px solid var(--border);border-radius:10px;max-width:100%;max-height:380px;height:auto"></p>
 <ul class="pd-legend">
 <li><b>ResourceManager</b><span>quản lý tài nguyên toàn cục (CPU, bộ nhớ) cho mọi ứng dụng trên cụm</span></li>
 <li><b>ApplicationMaster</b><span>mỗi ứng dụng có 1 riêng, lập lịch/phối hợp thực thi tác vụ trên các NodeManager</span></li>
@@ -193,7 +192,7 @@ SLIDES.append(slide("Quy trình 1 ứng dụng chạy trên YARN", f"""
 <li>ApplicationMaster yêu cầu ResourceManager cấp <b>thêm container</b> trên các NodeManager thích hợp</li>
 <li>Các tác vụ của ứng dụng chạy trong những container đó, được NodeManager giám sát</li>
 </ol>
-{callout('info', 'Tự động hoá', 'Toàn bộ quá trình diễn ra tự động dưới sự điều phối của YARN — người dùng chỉ cần submit ứng dụng.')}
+{callout('info', 'Tự động hoá', 'Toàn bộ quá trình diễn ra tự động dưới sự điều phối của YARN: người dùng chỉ cần submit ứng dụng.')}
 """))
 
 SLIDES.append(slide("Lợi ích YARN mang lại cho Hadoop", tbl(["Lợi ích", "Giải thích"], [
@@ -201,21 +200,21 @@ SLIDES.append(slide("Lợi ích YARN mang lại cho Hadoop", tbl(["Lợi ích", 
     ["Tăng tính linh hoạt", "Biến cụm Hadoop thành nền tảng đa năng, không chỉ dành cho MapReduce"],
     ["Mở rộng &amp; đa người dùng", "Cấu hình chính sách lập lịch: FIFO, Fair Scheduler, Capacity Scheduler"],
     ["Quản lý tài nguyên hiệu quả", "Phân bổ công bằng &amp; hiệu quả giữa các ứng dụng khác nhau"],
-]) + callout('info', 'Ý nghĩa', 'YARN là bước ngoặt giúp hệ sinh thái Hadoop phát triển phong phú — Hive, Pig, Spark... có thể tích hợp và chạy chung 1 cụm thay vì hạ tầng riêng.')))
+]) + callout('info', 'Ý nghĩa', 'YARN là bước ngoặt giúp hệ sinh thái Hadoop phát triển phong phú: Hive, Pig, Spark... có thể tích hợp và chạy chung 1 cụm thay vì hạ tầng riêng.')))
 
 # ===================== PHẦN 4: Hive & Pig =====================
-SLIDES.append(divider(4, 8, "Hive &amp; Pig — truy vấn và biến đổi dữ liệu", [
+SLIDES.append(divider(4, 8, "Hive &amp; Pig: truy vấn và biến đổi dữ liệu", [
     "Apache Hive: data warehouse + HiveQL", "Apache Pig: Pig Latin, data flow",
     "Cả hai đều dịch sang job MapReduce", "So sánh 2 hướng tiếp cận"]))
 
-SLIDES.append(slide("Apache Hive — data warehouse trên Hadoop", f"""
-<p>Phát triển tại <b>Facebook</b> — cho phép truy vấn dữ liệu lớn bằng ngôn ngữ gần SQL (<b>HiveQL</b>): SELECT, JOIN, GROUP BY...
+SLIDES.append(slide("Apache Hive: data warehouse trên Hadoop", f"""
+<p>Phát triển tại <b>Facebook</b>: cho phép truy vấn dữ liệu lớn bằng ngôn ngữ gần SQL (<b>HiveQL</b>): SELECT, JOIN, GROUP BY...
 tự động dịch thành job MapReduce (hoặc Tez, Spark) để thực thi.</p>
 {tbl(['Đặc trưng','Ý nghĩa'],
      [['Phù hợp phân tích dữ liệu lớn','Tối ưu cho truy vấn batch trên TB dữ liệu'],
       ['Thân thiện người dùng','Nhà phân tích dùng SQL quen thuộc, không cần viết Java MapReduce'],
-      ['Schema on read','Dữ liệu lưu thô trên HDFS, schema chỉ định khi <i>đọc</i> — linh hoạt với dữ liệu đa dạng']])}
-{callout('warn','Độ trễ','Tính bằng phút (do khởi tạo job MapReduce/Tez) — phù hợp batch hơn truy vấn tương tác tức thì.')}
+      ['Schema on read','Dữ liệu lưu thô trên HDFS, schema chỉ định khi <i>đọc</i>: linh hoạt với dữ liệu đa dạng']])}
+{callout('warn','Độ trễ','Tính bằng phút (do khởi tạo job MapReduce/Tez): phù hợp batch hơn truy vấn tương tác tức thì.')}
 """))
 
 SLIDES.append(slide("Hive hoạt động như thế nào?", f"""
@@ -225,17 +224,17 @@ SLIDES.append(slide("Hive hoạt động như thế nào?", f"""
 <li>Job thực thi trên cụm Hadoop, đọc dữ liệu thô từ HDFS theo schema đã khai báo khi đọc</li>
 <li>Kết quả trả về dưới dạng <b>bảng</b>, giống làm việc với CSDL truyền thống</li>
 </ol>
-{callout('good', 'Giá trị cốt lõi', 'Người dùng không cần biết MapReduce chạy bên dưới — chỉ cần viết SQL quen thuộc.')}
+{callout('good', 'Giá trị cốt lõi', 'Người dùng không cần biết MapReduce chạy bên dưới: chỉ cần viết SQL quen thuộc.')}
 """))
 
-SLIDES.append(slide("Apache Pig — kịch bản xử lý dữ liệu", f"""
-<p>Phát triển tại <b>Yahoo!</b> — thay vì SQL, Pig cung cấp ngôn ngữ kịch bản <b>Pig Latin</b> để biểu diễn luồng xử lý
+SLIDES.append(slide("Apache Pig: kịch bản xử lý dữ liệu", f"""
+<p>Phát triển tại <b>Yahoo!</b>: thay vì SQL, Pig cung cấp ngôn ngữ kịch bản <b>Pig Latin</b> để biểu diễn luồng xử lý
 (đọc, lọc, biến đổi, gộp nhóm, join, sắp xếp...) theo dạng <i>data flow</i>.</p>
 {tbl(['Đặc điểm','Giải thích'],
      [['Độ dễ lập trình','Câu lệnh tuần tự, Pig tự song song hoá &amp; tối ưu'],
       ['Tối ưu hoá','Biết trước toàn bộ luồng → kết hợp bước, đẩy bộ lọc lên sớm'],
       ['Mở rộng (UDF)','Tự định nghĩa hàm bằng Java/Python chèn vào kịch bản']])}
-<p>Pig Engine biên dịch kịch bản thành chuỗi job MapReduce — đặc biệt hiệu quả cho <b>transform &amp; join</b> dữ liệu phức tạp.</p>
+<p>Pig Engine biên dịch kịch bản thành chuỗi job MapReduce: đặc biệt hiệu quả cho <b>transform &amp; join</b> dữ liệu phức tạp.</p>
 """))
 
 SLIDES.append(slide("So sánh Hive vs Pig", tbl(["Tiêu chí", "Hive", "Pig"], [
@@ -244,15 +243,15 @@ SLIDES.append(slide("So sánh Hive vs Pig", tbl(["Tiêu chí", "Hive", "Pig"], [
     ["Mô hình dữ liệu", "Bảng (schema-on-read)", "Data flow tuần tự"],
     ["Engine thực thi", "Dịch sang MapReduce/Tez/Spark", "Dịch sang MapReduce"],
     ["Độ trễ", "Vài phút (batch)", "Vài phút (batch)"],
-]) + callout('good', 'Điểm chung', 'Cả hai đều nhằm <b>đơn giản hoá sử dụng Hadoop</b>, không yêu cầu viết Java MapReduce thuần — cùng dịch công việc thành job MapReduce chạy trên cụm.')))
+]) + callout('good', 'Điểm chung', 'Cả hai đều nhằm <b>đơn giản hoá sử dụng Hadoop</b>, không yêu cầu viết Java MapReduce thuần: cùng dịch công việc thành job MapReduce chạy trên cụm.')))
 
 # ===================== PHẦN 5: HBase & Sqoop =====================
 SLIDES.append(divider(5, 8, "HBase &amp; Sqoop", [
     "HBase: NoSQL wide-column trên Hadoop", "Mô hình Bigtable (Google)",
     "HBase vs RDBMS", "Sqoop: cầu nối Hadoop ↔ SQL"]))
 
-SLIDES.append(slide("Apache HBase — \"cơ sở dữ liệu của Hadoop\"", f"""
-<p>NoSQL phân tán xây trên Hadoop, thiết kế theo mô hình <b>Bigtable</b> (Google) — lưu bảng <b>hàng tỷ dòng, hàng triệu cột</b>,
+SLIDES.append(slide("Apache HBase: \"cơ sở dữ liệu của Hadoop\"", f"""
+<p>NoSQL phân tán xây trên Hadoop, thiết kế theo mô hình <b>Bigtable</b> (Google): lưu bảng <b>hàng tỷ dòng, hàng triệu cột</b>,
 hỗ trợ truy cập ngẫu nhiên độ trễ thấp.</p>
 {callout('info','Ví von','Nếu HDFS giống hệ file, thì HBase giống <b>database chạy trên HDFS</b>, đọc/ghi theo kiểu bảng.')}
 {tbl(['Đặc trưng','Giải thích'],
@@ -262,8 +261,8 @@ hỗ trợ truy cập ngẫu nhiên độ trễ thấp.</p>
 """))
 
 SLIDES.append(slide("HBase khác RDBMS ở đâu?", f"""
-{callout('warn', 'Không phải RDBMS', 'HBase <b>không hỗ trợ SQL hay join phức tạp</b> — truy vấn qua API lập trình (Java/REST/Thrift) hoặc scan/get/put theo khoá. Không có transaction ACID đa bảng.')}
-<p>Phù hợp cho: truy cập ngẫu nhiên theo khoá, khối lượng lớn (vd tra cứu/cập nhật theo userID) — hơn là phân tích ad-hoc.</p>
+{callout('warn', 'Không phải RDBMS', 'HBase <b>không hỗ trợ SQL hay join phức tạp</b>: truy vấn qua API lập trình (Java/REST/Thrift) hoặc scan/get/put theo khoá. Không có transaction ACID đa bảng.')}
+<p>Phù hợp cho: truy cập ngẫu nhiên theo khoá, khối lượng lớn (vd tra cứu/cập nhật theo userID): hơn là phân tích ad-hoc.</p>
 <p><b>Ví dụ thực tế:</b> Facebook Messaging từng dùng HBase lưu tin nhắn cho hàng trăm triệu người dùng, khai thác khả năng mở rộng linh hoạt.</p>
 """))
 
@@ -273,12 +272,12 @@ SLIDES.append(slide("Khi nào dùng HDFS+Hive, khi nào dùng HBase?", tbl(
      ["Đọc/ghi ngẫu nhiên theo khoá, độ trễ thấp, gần thời gian thực", "HBase"],
      ["Truy vấn kiểu SQL, JOIN, GROUP BY phức tạp", "Hive (không phải HBase)"],
      ["Tra cứu/cập nhật theo userID với tốc độ cao", "HBase (không phải Hive)"]]
-) + callout('info', 'Nguyên tắc chọn', 'Không có công cụ nào "tốt hơn" tuyệt đối — HDFS+Hive phục vụ phân tích tổng hợp, HBase phục vụ truy cập chi tiết từng bản ghi. Hai nhu cầu khác nhau, hai công cụ khác nhau.')))
+) + callout('info', 'Nguyên tắc chọn', 'Không có công cụ nào "tốt hơn" tuyệt đối: HDFS+Hive phục vụ phân tích tổng hợp, HBase phục vụ truy cập chi tiết từng bản ghi. Hai nhu cầu khác nhau, hai công cụ khác nhau.')))
 
-SLIDES.append(slide("Apache Sqoop — cầu nối Hadoop ↔ RDBMS", f"""
-<p>Tên ghép từ <b>SQL + Hadoop</b> — công cụ nhập/xuất dữ liệu hàng loạt giữa Hadoop và RDBMS (MySQL, PostgreSQL, Oracle...).</p>
+SLIDES.append(slide("Apache Sqoop: cầu nối Hadoop ↔ RDBMS", f"""
+<p>Tên ghép từ <b>SQL + Hadoop</b>: công cụ nhập/xuất dữ liệu hàng loạt giữa Hadoop và RDBMS (MySQL, PostgreSQL, Oracle...).</p>
 {tbl(['Chiều', 'Cơ chế'],
-     [['Import (RDBMS → HDFS)', 'Kết nối JDBC, khởi chạy job MapReduce chỉ gồm Map task — mỗi task nhập 1 phần bảng (theo WHERE/primary key)'],
+     [['Import (RDBMS → HDFS)', 'Kết nối JDBC, khởi chạy job MapReduce chỉ gồm Map task: mỗi task nhập 1 phần bảng (theo WHERE/primary key)'],
       ['Export (HDFS → RDBMS)', 'Chia dữ liệu HDFS thành splits, mỗi Map task đẩy 1 phần vào CSDL qua batch INSERT']])}
 {callout('good','Use case tiêu biểu','Nhập bảng giao dịch từ data warehouse vào Hadoop để phân tích chuyên sâu · xuất kết quả Hive/HDFS ra bảng SQL cho ứng dụng kinh doanh.')}
 """))
@@ -287,10 +286,10 @@ SLIDES.append(slide("Quy trình Sqoop Import từng bước", f"""
 <ol style="line-height:2.1">
 <li>Sqoop kết nối tới CSDL nguồn qua <b>JDBC</b></li>
 <li>Thực thi truy vấn (hoặc duyệt từng bảng), <b>chia dữ liệu</b> theo điều kiện WHERE hoặc primary key</li>
-<li>Khởi chạy job MapReduce <b>chỉ gồm Map task</b> — mỗi task nhập 1 phần dữ liệu song song</li>
+<li>Khởi chạy job MapReduce <b>chỉ gồm Map task</b>: mỗi task nhập 1 phần dữ liệu song song</li>
 <li>Ghi kết quả xuống HDFS (text/CSV hoặc Avro/Parquet), hoặc thẳng vào Hive/HBase nếu được chỉ định</li>
 </ol>
-{callout('good', 'Vì sao song song', 'Chia nhỏ theo primary key cho phép nhiều Map task cùng nhập dữ liệu đồng thời — tăng tốc đáng kể so với import tuần tự.')}
+{callout('good', 'Vì sao song song', 'Chia nhỏ theo primary key cho phép nhiều Map task cùng nhập dữ liệu đồng thời: tăng tốc đáng kể so với import tuần tự.')}
 """))
 
 # ===================== PHẦN 6: Kafka, Oozie, ZooKeeper =====================
@@ -298,36 +297,36 @@ SLIDES.append(divider(6, 8, "Kafka, Oozie, ZooKeeper", [
     "Kafka: nền tảng streaming pub-sub", "Oozie: lập lịch workflow dạng DAG",
     "ZooKeeper: dịch vụ điều phối phân tán", "Vai trò trong toàn hệ sinh thái"]))
 
-SLIDES.append(slide("Apache Kafka — streaming thời gian thực", f"""
-<p>Phát triển tại <b>LinkedIn</b> — nền tảng <b>publish-subscribe</b> phân tán: producer gửi thông điệp vào <i>topic</i>,
+SLIDES.append(slide("Apache Kafka: streaming thời gian thực", f"""
+<p>Phát triển tại <b>LinkedIn</b>: nền tảng <b>publish-subscribe</b> phân tán: producer gửi thông điệp vào <i>topic</i>,
 consumer đăng ký nhận từ topic đó.</p>
 {tbl(['Đặc điểm','Giải thích'],
      [['Thông lượng &amp; độ bền cao','Hàng triệu thông điệp/giây, ghi commit log tuần tự, nhân bản giữa broker'],
-      ['Partition','Mỗi topic chia nhiều partition — tăng song song; Kafka đảm bảo thứ tự <i>trong từng partition</i>'],
+      ['Partition','Mỗi topic chia nhiều partition: tăng song song; Kafka đảm bảo thứ tự <i>trong từng partition</i>'],
       ['Multi-subscriber','Nhiều consumer group độc lập đọc cùng dữ liệu mà không ảnh hưởng nhau']])}
-{callout('info','Vai trò trong hệ sinh thái','Tầng thu thập/phân phối sự kiện (ingest) — nguồn dữ liệu đầu vào liên tục cho Spark, Storm hoặc lưu vào HDFS/HBase.')}
+{callout('info','Vai trò trong hệ sinh thái','Tầng thu thập/phân phối sự kiện (ingest): nguồn dữ liệu đầu vào liên tục cho Spark, Storm hoặc lưu vào HDFS/HBase.')}
 """))
 
 SLIDES.append(slide("Ví dụ minh hoạ: Kafka trong pipeline thu thập log", f"""
-<p style="color:var(--muted);font-size:.85rem">Minh hoạ dựa trên ví dụ sách nêu (thu thập log sự kiện người dùng vào topic "website_events") — diễn giải thêm để dễ hình dung, không phải trích nguyên văn.</p>
+<p style="color:var(--muted);font-size:.85rem">Minh hoạ dựa trên ví dụ sách nêu (thu thập log sự kiện người dùng vào topic "website_events"): diễn giải thêm để dễ hình dung, không phải trích nguyên văn.</p>
 <ol style="line-height:2.1">
 <li>Hàng trăm máy chủ web sinh ra sự kiện người dùng (click, xem trang...) liên tục</li>
 <li>Mỗi sự kiện được gửi (<b>produce</b>) vào topic <code>website_events</code></li>
 <li>Topic được chia thành nhiều <b>partition</b> để tăng thông lượng ghi song song</li>
 <li>Ứng dụng Hadoop/Spark <b>consume</b> dòng sự kiện này để xử lý gần thời gian thực</li>
 </ol>
-{callout('good', 'Điểm mấu chốt', 'Producer (máy chủ web) và consumer (Spark/Hadoop) không kết nối trực tiếp — Kafka đứng giữa như một hàng đợi bền vững, chịu lỗi.')}
+{callout('good', 'Điểm mấu chốt', 'Producer (máy chủ web) và consumer (Spark/Hadoop) không kết nối trực tiếp: Kafka đứng giữa như một hàng đợi bền vững, chịu lỗi.')}
 """))
 
-SLIDES.append(slide("Apache Oozie — lập lịch workflow", f"""
-<p>Hệ thống quản lý &amp; lập lịch luồng công việc (workflow scheduler) cho Hadoop — định nghĩa chuỗi job
+SLIDES.append(slide("Apache Oozie: lập lịch workflow", f"""
+<p>Hệ thống quản lý &amp; lập lịch luồng công việc (workflow scheduler) cho Hadoop: định nghĩa chuỗi job
 (MapReduce → Hive → shell script...) và quản lý thực thi tuần tự/song song.</p>
-{callout('good','Mô hình DAG','Workflow mô tả dưới dạng <b>đồ thị có hướng không chu trình</b> — node là action/control node, cạnh là luồng thực thi (có điều kiện).')}
+{callout('good','Mô hình DAG','Workflow mô tả dưới dạng <b>đồ thị có hướng không chu trình</b>: node là action/control node, cạnh là luồng thực thi (có điều kiện).')}
 <p><b>Ví dụ:</b> chạy job MapReduce A → nếu thành công chạy job Hive B, nếu thất bại gửi email rồi kết thúc.</p>
 <p><i>Coordinator</i>: lên lịch lặp lại workflow theo thời gian (mỗi giờ/ngày) hoặc khi dữ liệu mới đến HDFS.</p>
 """))
 
-SLIDES.append(slide("Apache ZooKeeper — dịch vụ điều phối", tbl(
+SLIDES.append(slide("Apache ZooKeeper: dịch vụ điều phối", tbl(
     ["Chức năng", "Mô tả ngắn"],
     [["Quản lý cấu hình", "Lưu &amp; phân phát thông tin cấu hình cho các node"],
      ["Đặt tên (naming)", "Không gian tên chung để dịch vụ đăng ký &amp; tìm nhau"],
@@ -337,10 +336,10 @@ SLIDES.append(slide("Apache ZooKeeper — dịch vụ điều phối", tbl(
 )))
 
 SLIDES.append(slide("Vì sao ZooKeeper đáng tin cậy?", f"""
-<p>ZooKeeper dùng thuật toán <b>ZAB</b> (ZooKeeper Atomic Broadcast — thuộc họ thuật toán Paxos) để đảm bảo
+<p>ZooKeeper dùng thuật toán <b>ZAB</b> (ZooKeeper Atomic Broadcast: thuộc họ thuật toán Paxos) để đảm bảo
 tất cả server ZooKeeper (chạy thành cụm nhỏ) duy trì <b>cùng một trạng thái</b>.</p>
 {callout('good', 'Tính nhất quán tuần tự', 'Các thay đổi áp dụng theo mô hình nhất quán tuần tự; client có thể đăng ký <b>watch</b> để được thông báo ngay khi dữ liệu thay đổi hoặc node mới xuất hiện/biến mất.')}
-<p>Nhờ đó, các node trong hệ phân tán không cần liên lạc peer-to-peer phức tạp — chỉ cần dựa vào ZooKeeper như một "trọng tài chung" tin cậy.</p>
+<p>Nhờ đó, các node trong hệ phân tán không cần liên lạc peer-to-peer phức tạp: chỉ cần dựa vào ZooKeeper như một "trọng tài chung" tin cậy.</p>
 """))
 
 SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Thành phần", "ZooKeeper dùng để"], [
@@ -348,7 +347,7 @@ SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Th
     ["YARN", "Lưu thông tin ResourceManager chủ"],
     ["HBase", "Theo dõi RegionServer &amp; điều phối Master"],
     ["Kafka (bản cũ)", "Quản lý thông tin broker, chủ đề, phân vùng"],
-]) + callout('info', 'Vai trò tổng thể', 'ZooKeeper là "người giữ nhịp" thầm lặng phía sau — giảm độ phức tạp phát triển hệ phân tán nhờ các primitive tin cậy có sẵn.')))
+]) + callout('info', 'Vai trò tổng thể', 'ZooKeeper là "người giữ nhịp" thầm lặng phía sau: giảm độ phức tạp phát triển hệ phân tán nhờ các primitive tin cậy có sẵn.')))
 
 # ===================== PHẦN 7: Tổng kết =====================
 SLIDES.append(divider(7, 8, "Tổng kết", [
@@ -364,7 +363,7 @@ SLIDES.append(slide("Toàn cảnh hệ sinh thái Hadoop", tbl(
      ["Quản trị luồng", "Oozie", "Lập lịch workflow dạng DAG"],
      ["Vận hành", "ZooKeeper", "Điều phối, đồng bộ, bầu leader"],
      ["Điều phối tài nguyên", "YARN", "Quản lý tài nguyên đa ứng dụng"],
-     ["Tích hợp RDBMS", "Sqoop", "Import/export với CSDL quan hệ"]]
+     ["Tích hợp RDBMS", "Sqoop", "Import/export với CSDL quan hệ"]], dense=True
 )))
 
 SLIDES.append(slide("Tổng kết chương 2", f"""
@@ -385,45 +384,45 @@ SLIDES.append(slide("Thuật ngữ quan trọng (tra cứu nhanh)", tbl(
      ["HiveQL / Pig Latin", "Ngôn ngữ truy vấn giống SQL (Hive) / ngôn ngữ kịch bản data flow (Pig)"],
      ["Column family", "Nhóm các cột trong bảng wide-column của HBase"],
      ["Topic / Partition", "Chủ đề thông điệp / đơn vị chia nhỏ 1 topic trong Kafka để song song hoá"],
-     ["DAG", "Đồ thị có hướng không chu trình — mô hình workflow của Oozie"],
-     ["Znode", "Đơn vị dữ liệu trong cây thư mục phân tán của ZooKeeper"]]
+     ["DAG", "Đồ thị có hướng không chu trình: mô hình workflow của Oozie"],
+     ["Znode", "Đơn vị dữ liệu trong cây thư mục phân tán của ZooKeeper"]], dense=True
 )))
 
 SLIDES.append(slide("Câu hỏi thảo luận nhanh", f"""
 <ol style="line-height:2">
 <li>Vì sao HDFS chọn đánh đổi độ trễ thấp để lấy thông lượng cao? Đánh đổi này hợp lý trong tình huống nào?</li>
 <li>So với MapReduce chạy trực tiếp trên Hadoop 1.x, vai trò của MapReduce thay đổi ra sao sau khi có YARN?</li>
-<li>Hive và Pig cùng dịch sang job MapReduce — vậy điểm khác biệt cốt lõi giữa 2 công cụ nằm ở đâu?</li>
+<li>Hive và Pig cùng dịch sang job MapReduce: vậy điểm khác biệt cốt lõi giữa 2 công cụ nằm ở đâu?</li>
 <li>Vì sao HBase không hỗ trợ SQL/join phức tạp lại vẫn được coi là một thành phần quan trọng của hệ sinh thái?</li>
 </ol>
-<p style="color:var(--muted);font-size:.88rem">Dùng để thảo luận tại lớp — không có đáp số cố định, trả lời dựa trên nội dung Chương 2.</p>
+<p style="color:var(--muted);font-size:.88rem">Dùng để thảo luận tại lớp: không có đáp số cố định, trả lời dựa trên nội dung Chương 2.</p>
 """))
 
 SLIDES.append(slide("Tài liệu tham khảo", f"""
 <p><b>Nguồn duy nhất của toàn bộ nội dung trình bày:</b></p>
 {tbl(['Mục','Chi tiết'],
-     [['Giáo trình','<i>Lưu trữ và Xử lý Dữ liệu Lớn</i> — Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung'],
+     [['Giáo trình','<i>Lưu trữ và Xử lý Dữ liệu Lớn</i>: Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung'],
       ['Đơn vị','Trường Công nghệ Thông tin &amp; Truyền thông, Đại học Bách Khoa Hà Nội (2024)'],
-      ['Chương sử dụng','Chương 2 — Hệ sinh thái Hadoop, tr. 23–36'],
-      ['Phân công','Thầy Tạ Duy Hoàng — Nhóm 1 phụ trách Chương 2 (thông báo 05/10, trình bày từ tuần 12/10)']])}
+      ['Chương sử dụng','Chương 2: Hệ sinh thái Hadoop, tr. 23–36'],
+      ['Phân công','Thầy Tạ Duy Hoàng: Nhóm 1 phụ trách Chương 2 (thông báo 05/10, trình bày từ tuần 12/10)']])}
 """))
 
 # ===================== PHẦN 8 (BONUS): Ứng dụng liên ngành =====================
-SLIDES.append(divider(8, 8, "Bonus — Ứng dụng liên ngành", [
+SLIDES.append(divider(8, 8, "Bonus: Ứng dụng liên ngành", [
     "Bài toán: tìm điểm chia cây quyết định", "Vì sao cần kỹ thuật streaming (sketch)",
     "Vì sao cần mô hình tính toán song song lớn (MPC)", "Nghiên cứu liên quan của giảng viên môn học"]))
 
 SLIDES.append(slide("Bài toán: tìm điểm chia cây quyết định", f"""
 <p>Khi huấn luyện <b>cây quyết định</b> (decision tree) trên 1 thuộc tính số, thuật toán cần tìm
-<b>ngưỡng chia tốt nhất</b> (split point) — ví dụ "tuổi &lt; 30?" — để tách dữ liệu sao cho 2 nhóm con
+<b>ngưỡng chia tốt nhất</b> (split point): ví dụ "tuổi &lt; 30?": để tách dữ liệu sao cho 2 nhóm con
 "thuần" nhất có thể.</p>
-{callout('info', 'Vì sao liên quan đến môn học', 'Để tìm ngưỡng chia tốt, thuật toán cần biết <b>phân vị</b> (quantile) của dữ liệu — đúng bài toán <i>quantile sketch</i> (q-digest, MRL, KLL) đã học trong môn Lưu trữ &amp; xử lý dữ liệu lớn.')}
-<p style="color:var(--muted);font-size:.85rem">Phần bonus này liên hệ khái niệm, không phải tóm tắt chi tiết kết quả kỹ thuật trong các bài báo trích dẫn — nhóm chưa đọc toàn văn các bài báo, chỉ liên hệ qua tiêu đề/tóm tắt công khai.</p>
+{callout('info', 'Vì sao liên quan đến môn học', 'Để tìm ngưỡng chia tốt, thuật toán cần biết <b>phân vị</b> (quantile) của dữ liệu: đúng bài toán <i>quantile sketch</i> (q-digest, MRL, KLL) đã học trong môn Lưu trữ &amp; xử lý dữ liệu lớn.')}
+<p style="color:var(--muted);font-size:.85rem">Phần bonus này liên hệ khái niệm, không phải tóm tắt chi tiết kết quả kỹ thuật trong các bài báo trích dẫn: nhóm chưa đọc toàn văn các bài báo, chỉ liên hệ qua tiêu đề/tóm tắt công khai.</p>
 """))
 
 SLIDES.append(slide("Kết nối 1: vì sao cần streaming?", f"""
 <p>Với tập dữ liệu khổng lồ (hàng tỷ bản ghi), <b>không thể lưu toàn bộ dữ liệu trong bộ nhớ</b> để tính
-chính xác điểm chia — đây chính là động lực streaming đã học (buổi 12: q-digest/MRL/KLL).</p>
+chính xác điểm chia: đây chính là động lực streaming đã học (buổi 12: q-digest/MRL/KLL).</p>
 {tbl(['Khái niệm đã học','Vai trò khi tìm điểm chia cây quyết định'],
      [['Quantile sketch (q-digest/MRL/KLL)','Ước lượng phân vị của thuộc tính mà không lưu hết dữ liệu'],
       ['Sai số $\\pm\\varepsilon n$ có kiểm soát','Đánh đổi bộ nhớ nhỏ lấy điểm chia "đủ tốt", không cần tuyệt đối chính xác'],
@@ -431,11 +430,10 @@ chính xác điểm chia — đây chính là động lực streaming đã học
 """))
 
 SLIDES.append(slide("Kết nối 2: vì sao cần tính toán song song lớn?", f"""
-<p>Dữ liệu huấn luyện thực tế thường <b>phân tán trên nhiều máy</b> trong cụm Hadoop/Spark — đúng kiến trúc
+<p>Dữ liệu huấn luyện thực tế thường <b>phân tán trên nhiều máy</b> trong cụm Hadoop/Spark: đúng kiến trúc
 HDFS + MapReduce + YARN đã trình bày ở Phần 2–3.</p>
-{callout('good', 'Mô hình MPC (Massively Parallel Computation)', 'Mô hình lý thuyết mô tả đúng cách MapReduce/Spark hoạt động: dữ liệu chia cho nhiều máy, mỗi máy bộ nhớ giới hạn, tính toán qua <b>vài vòng truyền thông</b> (round) giữa các máy — khớp với giai đoạn Map → Shuffle → Reduce đã học.')}
-<p>Bài toán đặt ra: tìm điểm chia cây quyết định bằng <b>càng ít vòng giao tiếp giữa các máy càng tốt</b> —
-giống hệt mục tiêu tối ưu khi chạy job trên YARN/MapReduce.</p>
+{callout('good', 'Mô hình MPC (Massively Parallel Computation)', 'Mô hình lý thuyết mô tả đúng cách MapReduce/Spark hoạt động: dữ liệu chia cho nhiều máy, mỗi máy bộ nhớ giới hạn, tính toán qua <b>vài vòng truyền thông</b> (round) giữa các máy: khớp với giai đoạn Map → Shuffle → Reduce đã học.')}
+<p>Bài toán đặt ra: tìm điểm chia cây quyết định bằng <b>càng ít vòng giao tiếp giữa các máy càng tốt</b>: giống hệt mục tiêu tối ưu khi chạy job trên YARN/MapReduce.</p>
 """))
 
 SLIDES.append(slide("Hai thế giới gặp nhau", tbl(
@@ -443,32 +441,32 @@ SLIDES.append(slide("Hai thế giới gặp nhau", tbl(
     [["Ràng buộc chính", "Bộ nhớ nhỏ, 1 lượt duyệt dữ liệu", "Mỗi máy bộ nhớ nhỏ, vài vòng giao tiếp"],
      ["Công cụ", "q-digest, MRL, KLL", "HDFS + MapReduce + YARN"],
      ["Mục tiêu chung", "Ước lượng thống kê (ở đây: điểm chia cây quyết định) đủ chính xác, chi phí tối thiểu", ""]]
-) + callout('warn', 'Thách thức nghiên cứu', 'Làm sao thiết kế 1 thuật toán vừa tiết kiệm bộ nhớ theo luồng (streaming), vừa tiết kiệm số vòng giao tiếp khi chạy phân tán (MPC) — đây chính xác là chủ đề 2 bài báo được trích dẫn ở slide sau.')))
+) + callout('warn', 'Thách thức nghiên cứu', 'Làm sao thiết kế 1 thuật toán vừa tiết kiệm bộ nhớ theo luồng (streaming), vừa tiết kiệm số vòng giao tiếp khi chạy phân tán (MPC): đây chính xác là chủ đề 2 bài báo được trích dẫn ở slide sau.')))
 
 SLIDES.append(slide("Nghiên cứu liên quan của giảng viên môn học", f"""
-<p>Thầy <b>Tạ Duy Hoàng</b> — giảng viên môn học — có hướng nghiên cứu trực tiếp về chủ đề này:</p>
+<p>Thầy <b>Tạ Duy Hoàng</b>: giảng viên môn học: có hướng nghiên cứu trực tiếp về chủ đề này:</p>
 {tbl(['Công trình','Đồng tác giả · Nơi công bố'],
      [['<i>Finding Decision Tree Splits in Streaming and Massively Parallel Models</i>', 'với Huy Pham, Hoa T. Vu · 2025 (submitted)'],
       ['<i>Constructing Decision Trees from Data Streams</i>', 'với Huy Pham, Hoa T. Vu · ISIT 2025'],
       ['<i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams</i>', 'với Hoa T. Vu · ESA 2026']])}
-{callout('info', 'Nguồn', 'Trích từ trang Publications công khai của giảng viên (sites.google.com/view/taduyhoang/publications) — nhóm chỉ liên hệ ở mức tiêu đề/chủ đề, chưa đọc toàn văn bài báo nên không trình bày chi tiết kết quả/thuật toán cụ thể bên trong.')}
+{callout('info', 'Nguồn', 'Trích từ trang Publications công khai của giảng viên (sites.google.com/view/taduyhoang/publications): nhóm chỉ liên hệ ở mức tiêu đề/chủ đề, chưa đọc toàn văn bài báo nên không trình bày chi tiết kết quả/thuật toán cụ thể bên trong.')}
 """))
 
 SLIDES.append(slide("Thông điệp của phần bonus", f"""
-<p>Hai mảng kiến thức tưởng tách biệt trong môn học — <b>thuật toán streaming</b> (ước lượng khi không đủ
-bộ nhớ) và <b>hệ sinh thái Hadoop</b> (xử lý khi dữ liệu phân tán nhiều máy) — thực ra là <b>2 ràng buộc của
+<p>Hai mảng kiến thức tưởng tách biệt trong môn học: <b>thuật toán streaming</b> (ước lượng khi không đủ
+bộ nhớ) và <b>hệ sinh thái Hadoop</b> (xử lý khi dữ liệu phân tán nhiều máy): thực ra là <b>2 ràng buộc của
 cùng 1 bài toán lớn</b>: học máy trên dữ liệu khổng lồ.</p>
-{callout('good', 'Kết luận', 'Một thuật toán big-data thực chiến thường phải đồng thời tiết kiệm bộ nhớ (streaming) VÀ tiết kiệm vòng giao tiếp (massively parallel) — đây là hướng nghiên cứu đang hoạt động, không phải bài toán đã đóng.')}
+{callout('good', 'Kết luận', 'Một thuật toán big-data thực chiến thường phải đồng thời tiết kiệm bộ nhớ (streaming) VÀ tiết kiệm vòng giao tiếp (massively parallel): đây là hướng nghiên cứu đang hoạt động, không phải bài toán đã đóng.')}
 """))
 
 SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">Cảm ơn đã theo dõi</div>
-<h2>Nhóm 1 — Hệ sinh thái Hadoop</h2>
+<h2>Nhóm 1: Hệ sinh thái Hadoop</h2>
 <p>{" · ".join(MEMBERS)}</p>
-<p style="color:var(--muted)">Môn Lưu trữ &amp; xử lý dữ liệu lớn — Giảng viên Tạ Duy Hoàng</p></div>""")
+<p style="color:var(--muted)">Môn Lưu trữ &amp; xử lý dữ liệu lớn, giảng viên Tạ Duy Hoàng</p></div>""")
 
 SLIDES[0] = SLIDES[0].replace("__SLIDE_COUNT__", str(len(SLIDES)))
 
-DECK = f"""<div class="mdeck"><div class="mdeck-viewport">{''.join(SLIDES)}</div>
+DECK = f"""<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport">{''.join(SLIDES)}</div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>
@@ -478,13 +476,12 @@ DECK = f"""<div class="mdeck"><div class="mdeck-viewport">{''.join(SLIDES)}</div
 rel_lang = ""
 rel_root = "../"
 body = f"""<div class="hero"><div class="kicker">Bài tập lớn · Nhóm 1</div>
-<h1>Hệ sinh thái Hadoop — Chương 2</h1>
-<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng) — nhóm {", ".join(MEMBERS)}.
+<h1>Hệ sinh thái Hadoop: Chương 2</h1>
+<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm {", ".join(MEMBERS)}.
 Nội dung bám sát 100% Chương 2 giáo trình chính thức của môn học (IT4931_lecture_notes.pdf, tr.23–36), không bổ sung nội dung ngoài phạm vi sách.</p></div>
 {DECK}
 <div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn</div>
-Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung. <i>Lưu trữ và Xử lý Dữ liệu Lớn</i>, Chương 2 —
-Hệ sinh thái Hadoop, tr.23–36. Trường CNTT&amp;TT, ĐH Bách Khoa Hà Nội, 2024.
+Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung. <i>Lưu trữ và Xử lý Dữ liệu Lớn</i>, Chương 2: Hệ sinh thái Hadoop, tr.23–36. Trường CNTT&amp;TT, ĐH Bách Khoa Hà Nội, 2024.
 &nbsp;·&nbsp; <a href="../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Xem giáo trình gốc (PDF)</a></div>
 """
 
@@ -493,7 +490,7 @@ html = f"""<!doctype html>
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 {HEAD_THEME_SCRIPT}
-<title>Nhóm 1 — Hệ sinh thái Hadoop (Chương 2)</title>
+<title>Nhóm 1: Hệ sinh thái Hadoop (Chương 2)</title>
 <link rel="stylesheet" href="{rel_root}_shared/common.css">
 <link rel="stylesheet" href="{rel_root}_shared/deck.css">
 {KATEX}
@@ -509,4 +506,4 @@ html = f"""<!doctype html>
 
 out = ROOT / "vi" / "group-1-slides.html"
 out.write_text(html, encoding="utf-8")
-print("Đã sinh", out, "—", len(SLIDES), "slide")
+print(f"Đã sinh {out} ({len(SLIDES)} slide)")

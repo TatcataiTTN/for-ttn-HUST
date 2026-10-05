@@ -12,24 +12,18 @@ document.addEventListener('DOMContentLoaded', function(){
       dotsWrap.appendChild(d);
     });
     const dots = [...dotsWrap.children];
+    const canvasWrap = deck.querySelector('.mdeck-canvas-wrap');
     const viewport = deck.querySelector('.mdeck-viewport');
+    const DESIGN_W = 1280, DESIGN_H = 720;
+    // Canvas thiết kế cố định 1280x720 được scale ĐỒNG NHẤT theo kích thước thật của
+    // khung chứa (canvas-wrap) — phóng to khi chiếu full màn hình lớn, thu nhỏ khi nhúng
+    // trong trang nhỏ. Không bao giờ co riêng từng slide theo nội dung nữa.
     function fit(){
-      const s = slides[i];
-      if (!s) return;
-      s.style.transform = '';
-      s.style.width = '';
-      s.style.height = '';
-      // chờ 1 frame để layout ổn định rồi đo chiều cao nội dung thật
       requestAnimationFrame(() => {
-        const boxH = viewport.clientHeight;
-        const contentH = s.scrollHeight;
-        if (boxH > 0 && contentH > boxH) {
-          const scale = Math.max(0.5, boxH / contentH);
-          s.style.transformOrigin = 'top left';
-          s.style.transform = `scale(${scale})`;
-          s.style.width = (100 / scale) + '%';
-          s.style.height = (100 / scale) + '%';
-        }
+        const boxW = canvasWrap.clientWidth, boxH = canvasWrap.clientHeight;
+        if (boxW <= 0 || boxH <= 0) return;
+        const scale = Math.min(boxW / DESIGN_W, boxH / DESIGN_H);
+        viewport.style.transform = `scale(${scale})`;
       });
     }
     function render(){
@@ -59,5 +53,8 @@ document.addEventListener('DOMContentLoaded', function(){
       if (!document.fullscreenElement) deck.requestFullscreen?.(); else document.exitFullscreen?.();
     });
     render();
+    // ResizeObserver bắt mọi thay đổi kích thước khung chứa (không chỉ window resize),
+    // ví dụ khi sidebar/theme toggle làm layout trang đổi.
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(canvasWrap);
   });
 });

@@ -42,7 +42,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="wrap">
 <div class="hero"><div class="kicker">Buổi 12 / 14</div>
 <h1>Cấu trúc cây nhị phân & rank/order statistics</h1></div>
-<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 12 · Cấu trúc dữ liệu</div><h2>Cấu trúc cây nhị phân & rank/order statistics</h2><p>Cây nhị phân là xương sống của q-digest, MRL, KLL (quantile sketches) và thủ thuật dyadic cho heavy hitters.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 12 · Cấu trúc dữ liệu</div><h2>Cấu trúc cây nhị phân & rank/order statistics</h2><p>Cây nhị phân là xương sống của q-digest, MRL, KLL (quantile sketches) và thủ thuật dyadic cho heavy hitters.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
 <div class="part-num">01</div><h2>Cây nhị phân & rank</h2>
 <ul class="part-list"><li>$\mathrm{rank}(x)$: số phần tử $\le x$</li>
 <li>Cây nhị phân hoàn chỉnh: $2^{L+1}-1$ nút</li>
@@ -64,7 +64,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
      <p>Xây cây nhị phân hoàn chỉnh trên $[n]$: mỗi tầng $j$ giữ 1 sketch CountMin cho vector đã "gộp đôi"
      $2^j$ lần. Cập nhật 1 phần tử phải cập nhật sketch ở MỌI tầng (mọi tổ tiên của lá tương ứng). Bù lại,
      truy vấn "chỉ đi tiếp vào nhánh có giá trị đủ lớn" giảm thời gian truy vấn từ $O(n\log(n/\delta))$
-     xuống $O(k\log(n/\delta)\log n)$ — minh chứng thực tế cho cây nhị phân + union bound (buổi 5) kết hợp.</p><p><img src="../../../assets/diagrams/dyadic-tree.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div>
+     xuống $O(k\log(n/\delta)\log n)$ — minh chứng thực tế cho cây nhị phân + union bound (buổi 5) kết hợp.</p><p><img src="../../../assets/diagrams/dyadic-tree.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>
