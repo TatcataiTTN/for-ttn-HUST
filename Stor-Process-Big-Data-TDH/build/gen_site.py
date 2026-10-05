@@ -173,7 +173,8 @@ def build_module_page(mod, prev_mod, next_mod):
 
     nb_link = (f'<p><a href="{rel_root}data/notebooks/modules/{n:02d}_{mod["slug"]}.ipynb" download>'
                f'⬇️ Tải notebook Python buổi {n} (.ipynb)</a> — chứa 10 bài thực hành code từ Phần 2, '
-               f'mở bằng Jupyter/Colab.</p>')
+               f'mở bằng Jupyter/Colab. &nbsp;·&nbsp; '
+               f'<a href="{rel_root}data/source/notes.pdf" target="_blank">📄 Lecture Notes gốc (PDF, Jelani Nelson)</a></p>')
 
     nav = '<div class="callout info" style="display:flex;justify-content:space-between;gap:10px">'
     nav += (f'<a href="../{prev_mod["slug"]}/index.html">◀ Buổi {prev_mod["n"]}: {prev_mod["title"]}</a>'
@@ -232,6 +233,10 @@ def build_index():
 <span class="kicker">Bổ sung</span><h3>20 bài áp dụng trực tiếp lên slide gốc</h3>
 <span class="tag">Morris · FM · KMV · CountMin · AGM · AMS</span>
 <div class="go">Mở →</div></a>"""
+    notes_card = """<a class="mod-card" href="../data/source/notes.pdf" target="_blank" style="border-color:var(--good)">
+<span class="kicker">Tài liệu nguồn gốc</span><h3>Lecture Notes — Sketching Algorithms (Jelani Nelson, PDF)</h3>
+<span class="tag">127 trang · nguồn chính của toàn bộ site</span>
+<div class="go">Mở / tải PDF →</div></a>"""
     body = f"""<div class="hero">
 <div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
 <h1>Lưu trữ &amp; xử lý dữ liệu lớn</h1>
@@ -255,7 +260,12 @@ Schwartz–Zippel bằng Monte Carlo.</div>
 <h2>14 buổi học</h2>
 <div class="grid">{''.join(cards)}</div>
 <h2>Tài liệu bổ sung</h2>
-<div class="grid">{slide_card}</div>
+<div class="grid">{notes_card}{slide_card}</div>
+<div class="callout warn"><div class="lbl">⚠️ Về slide gốc streaming-algorithms-vi.pdf</div>
+File slide .pdf gốc (bản tiếng Việt, dùng để soạn 20 bài ở mục "áp dụng slide gốc" phía trên) hiện không còn
+trên máy nguồn khi dựng site này — chỉ còn <i>notes.pdf</i> (bản Lecture Notes tiếng Anh gốc của Jelani
+Nelson mà slide đó được soạn dựa theo) làm nguồn tham chiếu chính thức duy nhất còn giữ được. Nếu tìm lại
+được file slide, cứ đưa cho tôi để tôi thêm vào mục tài liệu này.</div>
 """
     # index.html nằm trực tiếp trong vi/ -> rel_root phải là "../"
     html = page_shell("Lưu trữ & xử lý dữ liệu lớn — Streaming & Sketching Algorithms", rel_lang, rel_root, body)
