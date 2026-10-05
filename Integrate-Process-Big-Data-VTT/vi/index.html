@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>IT5427 — Tích hợp và xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../_shared/common.css">
+<link rel="stylesheet" href="../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero">
+<div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
+<h1>IT5427 — Tích hợp và xử lý dữ liệu lớn</h1>
+<p>HUST, giảng viên <b>Vũ Tuyết Trinh</b>. Bám sát 4 buổi slide đã học: Data Integration overview → Schema
+Alignment &amp; Query Rewriting → Mediation Query (bán cấu trúc) &amp; Big Data challenges → Record Linkage
+&amp; Entity Resolution. Mỗi buổi có slide-deck tương tác, bài tập làm giấy có lời giải, flashcard hỏi-đáp,
+và trắc nghiệm tự chấm.</p>
+</div>
+<div class="callout good"><div class="lbl">Cách dùng</div>
+Học theo đúng thứ tự Buổi 00 (nền tảng, không bắt buộc) → 01 → 02 → 03 → 04. Mỗi buổi: đọc slide-deck (phím
+← →) → làm bài tập làm giấy (có lời giải để tự đối chiếu) → ôn flashcard hỏi-đáp → làm trắc nghiệm tự chấm.</div>
+<div class="callout warn"><div class="lbl">Phạm vi</div>
+Site hiện bám đúng 4 buổi slide đã có (buổi 2-4 trong đề cương chính thức, cộng buổi 00 tự bổ sung). Đề cương
+còn 5 buổi tiếp theo (Sources Profiling, Approximate Query Processing, Batch vs Streaming, Governance/
+Provenance/Schema Drift, Project) — <b>chưa có slide nên chưa có module tương ứng</b>.</div>
+<h2>5 buổi học</h2>
+<div class="grid"><a class="mod-card" href="modules/00-nen-tang-csdl/index.html">
+<span class="kicker">Buổi 00</span>
+<h3>Nền tảng: Mô hình quan hệ & Thực thể-Liên kết</h3>
+<span class="tag">Kiến thức nền tự bổ sung — không thuộc giáo trình chính thức IT5427</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/01-data-integration-overview/index.html">
+<span class="kicker">Buổi 01</span>
+<h3>Data Integration — Tổng quan & Dị biệt dữ liệu</h3>
+<span class="tag">Buổi 2 — Nền tảng</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/02-schema-alignment/index.html">
+<span class="kicker">Buổi 02</span>
+<h3>Schema Alignment — GAV, LAV, GLAV & Certain Answers</h3>
+<span class="tag">Buổi 3a — Lý thuyết Schema Mapping</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/03-mediation-query-bigdata/index.html">
+<span class="kicker">Buổi 03</span>
+<h3>Mediation Query bán cấu trúc & Big Data Integration Challenges</h3>
+<span class="tag">Buổi 3b — Mở rộng</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/04-record-linkage-entity-resolution/index.html">
+<span class="kicker">Buổi 04</span>
+<h3>Record Linkage & Entity Resolution</h3>
+<span class="tag">Buổi 4 — Thực hành nhiều nhất</span>
+<div class="go">Mở bài giảng →</div></a></div>
+<h2>Tài liệu bổ sung</h2>
+<div class="grid"><a class="mod-card" href="modules/99-tai-lieu-tham-khao/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Tham khảo</span><h3>Giáo trình chính thức &amp; 19 bài báo khoa học</h3>
+<span class="tag">Dong&amp;Srivastava · Doan-Halevy-Ives · Ullman · Lenzerini · Fellegi&amp;Sunter...</span>
+<div class="go">Mở →</div></a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../_shared/theme.js"></script>
+<script src="../_shared/info.js"></script>
+<script src="../_shared/deck.js"></script>
+<script src="../_shared/quiz.js"></script>
+
+</body></html>

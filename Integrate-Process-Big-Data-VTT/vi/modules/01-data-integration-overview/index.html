@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 1: Data Integration — Tổng quan & Dị biệt dữ liệu · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 01</div>
+<h1>Data Integration — Tổng quan & Dị biệt dữ liệu</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 01 · Buổi 2 — Nền tảng</div><h2>Data Integration — Tổng quan & Dị biệt dữ liệu</h2><p>Data Integration là lớp trừu tượng bậc cao hơn DBMS: cho người dùng 1 giao diện truy vấn thống nhất tới nhiều nguồn dữ liệu độc lập, dù chúng khác nhau ở mọi tầng — từ hệ thống tới ngữ nghĩa.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/3</div>
+<div class="part-num">01</div><h2>Data Integration là gì</h2>
+<ul class="part-list"><li>DBMS = trừu tượng hoá logic/vật lý; Data Integration = trừu tượng hoá bậc cao hơn</li>
+<li>Mediated Schema — giao diện thống nhất duy nhất người dùng nhìn thấy</li>
+<li>Wrapper — cầu nối giữa truy vấn và dữ liệu nguồn thật</li></ul></div><div class="mdeck-slide"><h2>Data Integration: một tầng trừu tượng mới</h2>
+      <p>DBMS cho ta trừu tượng <i>logical vs physical</i> — người dùng viết SQL mà không cần biết dữ liệu lưu
+      trên đĩa ra sao. <b>Data Integration</b> đi xa hơn: cho người dùng 1 giao diện truy vấn duy nhất
+      (<b>Mediated Schema</b>) mà không cần biết dữ liệu thật nằm ở nguồn nào, mô hình gì, viết bằng ngôn ngữ gì.</p>
+      <div class="callout good"><div class="lbl">3 thứ Mediated Schema giúp "độc lập"</div>
+      Vị trí &amp; nơi lưu trữ nguồn · Mô hình dữ liệu &amp; cú pháp (SQL/XML/JSON...) · Biến thể ngữ nghĩa
+      giữa các nguồn.</div></div><div class="mdeck-slide"><h2>Wrapper — nơi 'dịch' truy vấn thành thao tác thật</h2>
+      <p>Khi truy vấn trên Mediated Schema được viết lại (reformulate) thành truy vấn con cho từng nguồn,
+      <b>Wrapper</b> là thành phần thực sự gửi thao tác đó tới nguồn (gọi API, chạy SQL cục bộ, parse HTML...),
+      rồi chuyển kết quả trả về đúng mô hình dữ liệu nội bộ của hệ thống tích hợp.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Pipeline Query Processing</div>
+      <div class="pd-formula-math">Query &rarr; Query Reformulation &rarr; Query Optimizer &rarr; Execution Engine &rarr; Wrapper(s) &rarr; Sources</div></div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/3</div>
+<div class="part-num">02</div><h2>7 mức độ Heterogeneity</h2>
+<ul class="part-list"><li>System/Platform · Syntactic/Format · Structural/Schema</li>
+<li>Semantic/Conceptual · Instance/Identity</li>
+<li>Temporal/Process · Quality/Provenance/Governance</li></ul></div><div class="mdeck-slide"><h2>Dị biệt không chỉ là 'khác định dạng file'</h2>
+      <p>Slide gốc chia dị biệt giữa các nguồn thành <b>7 tầng</b>, từ thấp tới cao:</p>
+      <ul class="pd-legend">
+      <li><b>1. System/Platform</b><span>dữ liệu lưu ở đâu, truy cập bằng cách nào (SQL JDBC, Document API, Kafka topic...)</span></li>
+      <li><b>2. Syntactic/Format</b><span>định dạng file, encoding, cú pháp ngày/số (vd "2026-09-15" vs "15/09/26")</span></li>
+      <li><b>3. Structural/Schema</b><span>bảng, thuộc tính, khoá, độ chi tiết (granularity) khác nhau</span></li>
+      <li><b>4. Semantic/Conceptual</b><span>đồng nghĩa (synonym), đa nghĩa (homonym) — cần ontology để giải quyết</span></li>
+      </ul></div><div class="mdeck-slide"><h2>3 tầng còn lại — thường bị bỏ sót</h2>
+      <ul class="pd-legend">
+      <li><b>5. Instance/Identity</b><span>cùng 1 thực thể thật xuất hiện khác nhau ở 2 nguồn — giải quyết bằng
+      <b>Entity Resolution/Record Linkage</b> (buổi 4)</span></li>
+      <li><b>6. Temporal/Process</b><span>tần suất cập nhật khác nhau, dữ liệu "mới nhất" ở nguồn này có thể cũ hơn nguồn kia</span></li>
+      <li><b>7. Quality/Provenance/Governance</b><span>độ tin cậy, nguồn gốc, quyền truy cập dữ liệu khác nhau giữa các nguồn</span></li>
+      </ul>
+      <div class="callout warn"><div class="lbl">Khung quan trọng nhất môn học</div>
+      3 buổi tiếp theo lần lượt giải quyết đúng các tầng này: buổi 3 giải quyết tầng 3-4 (Schema Alignment),
+      buổi 4 giải quyết tầng 5 (Record Linkage) — rồi tới Data Fusion xử lý xung đột giá trị khi đã gộp.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/3</div>
+<div class="part-num">03</div><h2>Kiến trúc: Virtual vs. Warehouse</h2>
+<ul class="part-list"><li>Virtual Integration — truy vấn thời gian thực qua wrapper, dữ liệu ở nguyên nguồn</li>
+<li>Data Warehousing — copy định kỳ (ETL) về kho tập trung</li>
+<li>5V của Big Data & pipeline 3 bước tổng thể</li></ul></div><div class="mdeck-slide"><h2>Virtual Integration vs. Data Warehousing</h2>
+      <table class="pd-table"><tr><th></th><th>Virtual</th><th>Warehouse</th></tr>
+      <tr><td>Dữ liệu ở đâu</td><td>Vẫn ở nguồn gốc</td><td>Copy về kho tập trung (ETL)</td></tr>
+      <tr><td>Độ mới</td><td>Luôn mới nhất (query-time)</td><td>Có độ trễ theo chu kỳ ETL</td></tr>
+      <tr><td>Ảnh hưởng nguồn</td><td>Mỗi truy vấn làm phiền nguồn gốc</td><td>Không làm phiền sau khi đã copy</td></tr>
+      <tr><td>Tính toán nặng</td><td>Khó (giới hạn bởi nguồn)</td><td>Dễ (data mining, ML trên kho)</td></tr></table></div><div class="mdeck-slide"><h2>5V & pipeline tổng thể của môn học</h2>
+      <p><b>Volume · Velocity · Variety · Veracity · Value</b> — 5 tiêu chí định nghĩa Big Data. Toàn bộ nội
+      dung môn học đi theo đúng 1 pipeline 3 bước xử lý Big Data Integration:</p>
+      <div class="pd-formula"><div class="pd-formula-label">Pipeline tổng thể</div>
+      <div class="pd-formula-math">Schema Alignment &rarr; Entity Resolution &rarr; Data Fusion</div></div>
+      <div class="callout good"><div class="lbl">Đây chính là 3 buổi học tiếp theo</div>
+      Buổi 3: Schema Alignment (GAV/LAV/GLAV). Buổi 4: Entity Resolution (Record Linkage). Data Fusion
+      (Survivorship Rule) là bước ứng dụng cụ thể khi làm project.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>✍️ Bài tập làm giấy (có lời giải)</h2>
+<div class="exlist-tuluan"><details class="ex-item">
+<summary>Bài 1. Một mediated schema có quan hệ Flight(FlightNo, From, To, Date). Nguồn S1 là 1 API JSON trả {flight_id, origin, dest, date, status}, nguồn S2 là 1 bảng SQL FlightSchedule(fno, dep_airport, arr_airport, dep_date). Với mỗi nguồn, hãy chỉ ra: (a) mức độ Heterogeneity cụ thể nào xuất hiện so với mediated schema, (b) Wrapper cần làm gì để chuyển dữ liệu nguồn đó về đúng mô hình mediated schema. <span class="src">[Bổ sung (dựa theo ví dụ slide 'Movie' buổi 3, áp dụng ngược cho buổi 2)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> <b>S1 (JSON API):</b> (a) System/Platform Heterogeneity (API JSON ≠ mô hình quan hệ của mediated schema) + Syntactic/Format (field name flight_id/origin/dest khác tên cột FlightNo/From/To). (b) Wrapper gọi API, parse JSON, đổi tên field (flight_id→FlightNo, origin→From, dest→To), bỏ field 'status' không cần (hoặc giữ lại nếu mediated schema mở rộng). <br><b>S2 (SQL):</b> (a) chỉ có Syntactic/Format Heterogeneity (khác tên cột: fno/dep_airport/arr_airport/dep_date), KHÔNG có System Heterogeneity vì cùng là quan hệ/SQL. (b) Wrapper chỉ cần viết 1 SQL SELECT với alias đổi tên cột, không cần parser phức tạp như S1.</div></details><details class="ex-item">
+<summary>Bài 2. Vì sao PAYGO coi 'Keyword Queries' là một thách thức riêng so với Data Integration truyền thống? Cho 1 ví dụ truy vấn từ khoá và giải thích vì sao GAV/LAV không áp dụng được trực tiếp cho nó. <span class="src">[Bổ sung]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> GAV/LAV đòi hỏi truy vấn được viết dưới dạng hình thức (SQL/logic) trên MỘT mediated schema đã biết trước, để reformulate chính xác qua unfolding/views. Truy vấn từ khoá như <code>'chung cư quận 7 giá dưới 3 tỷ'</code> không gắn với bất kỳ thuộc tính/quan hệ cụ thể nào của 1 schema — không có cách 'unfold' nó thành truy vấn logic rõ ràng trên nguồn, vì người dùng không biết (và không cần biết) mediated schema tồn tại hay có cấu trúc gì. PAYGO giải quyết bằng tìm-kiếm-và-xếp-hạng (như WebTables FeatureRank/SchemaRank) thay vì ánh xạ hình thức.</div></details></div>
+<h2>💬 Bài tập hỏi đáp nhanh</h2>
+<p class="hint">Bấm vào từng câu hỏi để lật xem đáp án — ôn tập nhanh thuật ngữ &amp; khái niệm cốt lõi.</p>
+<div class="flashcard-grid"><details class="flashcard">
+<summary>❓ Mediated Schema là gì?</summary><div class="dap">💡 Giao diện truy vấn thống nhất duy nhất người dùng thấy, che giấu vị trí/mô hình dữ liệu/khác biệt ngữ nghĩa của các nguồn phía sau.</div></details><details class="flashcard">
+<summary>❓ Wrapper làm nhiệm vụ gì trong pipeline Query Processing?</summary><div class="dap">💡 Nhận truy vấn đã reformulate, gửi thao tác thật tới nguồn dữ liệu, chuyển kết quả trả về đúng mô hình dữ liệu nội bộ.</div></details><details class="flashcard">
+<summary>❓ 7 mức độ Heterogeneity gồm những gì?</summary><div class="dap">💡 System/Platform, Syntactic/Format, Structural/Schema, Semantic/Conceptual, Instance/Identity, Temporal/Process, Quality/Provenance/Governance.</div></details><details class="flashcard">
+<summary>❓ Instance/Identity Heterogeneity giải quyết bằng kỹ thuật nào, học ở buổi nào?</summary><div class="dap">💡 Entity Resolution / Record Linkage — buổi 4 (Module 04 của site này).</div></details><details class="flashcard">
+<summary>❓ Ưu điểm chính của Data Warehousing so với Virtual Integration?</summary><div class="dap">💡 Có thể chạy tính toán nặng (data mining/ML) trên bản copy mà không làm phiền nguồn gốc mỗi lần truy vấn.</div></details><details class="flashcard">
+<summary>❓ 3 bước pipeline tổng thể của Big Data Integration là gì?</summary><div class="dap">💡 Schema Alignment → Entity Resolution → Data Fusion.</div></details></div>
+<h2>✅ Bài trắc nghiệm tự chấm</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Mediated Schema giúp người dùng độc lập với điều gì?", "opts": ["Chỉ vị trí lưu trữ nguồn", "Vị trí, mô hình/cú pháp dữ liệu, và biến thể ngữ nghĩa giữa các nguồn", "Chỉ tốc độ mạng", "Chỉ giá dịch vụ cloud"], "correct": 1, "explain": "Slide liệt kê rõ 3 thứ: source & location, data model & syntax, semantic variations."}, {"q": "Wrapper nằm ở vị trí nào trong pipeline Query Processing?", "opts": ["Trước Query Reformulation", "Giữa Query Optimizer và Execution Engine", "Sau Execution Engine, kết nối trực tiếp tới từng nguồn", "Không thuộc pipeline này"], "correct": 2, "explain": "Pipeline: Query → Reformulation → Optimizer → Execution Engine → Wrapper(s) → Sources."}, {"q": "Hai nguồn cùng lưu 'căn hộ cho thuê' nhưng 1 bên tách riêng bảng Địa chỉ, bên kia gộp chung — đây là dị biệt tầng nào?", "opts": ["Syntactic/Format", "Structural/Schema", "Semantic/Conceptual", "Temporal/Process"], "correct": 1, "explain": "Khác biệt về tổ chức bảng/độ chi tiết = Structural/Schema Heterogeneity (tầng 3)."}, {"q": "'Apartment' và 'Flat' cùng nghĩa nhưng viết khác nhau ở 2 nguồn — đây là dị biệt tầng nào?", "opts": ["Structural/Schema", "Instance/Identity", "Semantic/Conceptual (đồng nghĩa)", "System/Platform"], "correct": 2, "explain": "Đồng nghĩa (synonym) giữa các thuật ngữ là ví dụ kinh điển của Semantic/Conceptual Heterogeneity."}, {"q": "Cùng 1 căn hộ thật bị đăng tin ở 2 website khác nhau, không có ID chung — đây là dị biệt tầng nào, và buổi học nào giải quyết?", "opts": ["Structural, buổi 3", "Instance/Identity, buổi 4", "Temporal, không buổi nào giải quyết", "Quality, buổi 2"], "correct": 1, "explain": "Đây đúng định nghĩa Instance/Identity Heterogeneity — giải quyết bằng Record Linkage/Entity Resolution ở buổi 4."}, {"q": "Ưu điểm chính của Data Warehousing so với Virtual Integration là gì?", "opts": ["Dữ liệu luôn mới nhất", "Không cần thiết kế lược đồ vật lý", "Có thể chạy tính toán nặng (data mining/ML) mà không làm phiền nguồn gốc mỗi lần", "Không cần ETL"], "correct": 2, "explain": "Vì dữ liệu đã copy về kho, có thể chạy tính toán nặng tuỳ ý trên bản copy, không đụng tới nguồn gốc."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../00-nen-tang-csdl/index.html">◀ Buổi 0: Nền tảng: Mô hình quan hệ & Thực thể-Liên kết</a><a href="../02-schema-alignment/index.html">Buổi 2: Schema Alignment — GAV, LAV, GLAV & Certain Answers ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

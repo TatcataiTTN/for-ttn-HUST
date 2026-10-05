@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 4: Record Linkage & Entity Resolution · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 04</div>
+<h1>Record Linkage & Entity Resolution</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 04 · Buổi 4 — Thực hành nhiều nhất</div><h2>Record Linkage & Entity Resolution</h2><p>Cùng 1 thực thể thật xuất hiện khác nhau ở nhiều nguồn — làm sao máy tính nhận ra 'David Smith' và 'Davod Smith' là cùng 1 người, ở quy mô hàng triệu bản ghi, không thể so từng cặp thủ công? Slide gốc buổi này trích dẫn <i>Dong &amp; Srivastava, Big Data Integration, Chapter 3</i> làm nguồn chính — xem bản mở tương đương (PVLDB 2013) trong mục Tài liệu tham khảo cuối trang. Nội dung Similarity Measures khớp đúng Doan-Halevy-Ives Chương 4 'String Matching' §4.2, pipeline Matching/Clustering khớp Chương 7 'Data Matching' (§7.2-7.6).</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Đặt vấn đề & Similarity Measures</h2>
+<ul class="part-list"><li>Record Linkage, Entity Resolution, Entity Linking — phân biệt 3 khái niệm</li>
+<li>Similarity measure s(x,y) ∈ [0,1] — càng cao càng giống</li>
+<li>Edit Distance, Jaccard, TF/IDF, Soundex</li></ul></div><div class="mdeck-slide"><h2>Record Linkage vs. Entity Resolution vs. Entity Linking</h2>
+      <ul class="pd-legend">
+      <li><b>Record Linkage</b><span>tìm cặp bản ghi ở 2 file khác nhau đại diện cùng 1 thực thể</span></li>
+      <li><b>Entity Resolution (ER)</b><span>trường hợp đặc biệt của Entity Linking — khử trùng lặp (có thể trong cùng 1 file)</span></li>
+      <li><b>Entity Linking</b><span>khái niệm rộng hơn — tạo liên kết giữa các bản ghi có liên quan (không nhất thiết "là 1")</span></li>
+      </ul>
+      <div class="callout warn"><div class="lbl">Fellegi &amp; Sunter (1969)</div>
+      3 kết luận khi so 1 cặp bản ghi: <b>match</b>, <b>non-match</b>, hoặc <b>possible-match</b> (chưa đủ bằng chứng).</div></div><div class="mdeck-slide"><h2>Edit Distance (Levenshtein) — tính bằng Dynamic Programming</h2>
+      <div class="pd-formula"><div class="pd-formula-label">Edit Distance</div>
+      <div class="pd-formula-math">$d(i,j) = \min\{d(i-1,j-1)+c(x_i,y_j),\; d(i-1,j)+1,\; d(i,j-1)+1\}$</div></div>
+      <p>Ví dụ: <code>color</code> → <code>colour</code> chỉ cần <b>1 phép chèn</b> (thêm 'u') ⟹ $d=1$.
+      Similarity: $s(x,y) = 1 - d(x,y)/\max(|x|,|y|) = 1 - 1/6 \approx 0.833$.</p></div><div class="mdeck-slide"><h2>Jaccard & TF/IDF — similarity dạng tập hợp</h2>
+      <div class="pd-formula"><div class="pd-formula-label">Jaccard Measure</div>
+      <div class="pd-formula-math">$J(x,y) = \dfrac{|B_x \cap B_y|}{|B_x \cup B_y|}$</div></div>
+      <p>$B_x=\{a,b,c,d\}$, $B_y=\{b,c,d,e\}$ ⟹ $J=3/5=0.6$.</p>
+      <div class="callout good"><div class="lbl">Vì sao cần TF/IDF thay vì Jaccard thuần</div>
+      "Apple Corporation, CA" vs "IBM Corporation, CA" vs "Apple Corp" — Jaccard thuần dễ khớp nhầm x↔y (cùng
+      "Corporation, CA" phổ biến). TF/IDF cho trọng số cao hơn cho từ hiếm ("Apple") ⟹ khớp đúng x↔z.</div></div><div class="mdeck-slide"><h2>Soundex — so khớp theo âm đọc</h2>
+      <p>4 bước: (1) giữ chữ cái đầu (2) loại W/H, mã hoá chữ còn lại thành số theo nhóm âm
+      (B,F,P,V=1; C,G,J,K,Q,S,X,Z=2; D,T=3; L=4; M,N=5; R=6) (3) gộp số liên tiếp trùng nhau
+      (4) bỏ ký tự không phải số, lấy 4 ký tự đầu.</p>
+      <div class="callout warn"><div class="lbl">Điểm yếu</div>
+      Thiết kế cho tên gốc Caucasian — Soundex bỏ qua nguyên âm nên hoạt động kém với tên gốc Á Đông (vốn
+      phân biệt nhau chủ yếu qua nguyên âm).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Entity Resolution Pipeline: Prepare → Block → Match → Cluster</h2>
+<ul class="part-list"><li>Blocking/Sorting — giảm O(n²) xuống khả thi</li>
+<li>Matching — threshold hoặc Learned Matchers (ML/Deep Learning)</li>
+<li>Clustering — Connected Components, Correlation Clustering, Markov Clustering</li></ul></div><div class="mdeck-slide"><h2>Blocking/Sorting: Naïve All-Pairs quá chậm</h2>
+      <p>So mọi cặp có thể là $O(n^2)$ — không khả thi ở quy mô lớn. 2 kỹ thuật chính:</p>
+      <ul class="pd-legend">
+      <li><b>Sorted Neighborhood</b><span>sắp xếp theo sorting key, chỉ so trong 1 cửa sổ trượt kích thước cố định</span></li>
+      <li><b>LSH (Locality-Sensitive Hashing)</b><span>hash embedding bản ghi — bản ghi gần nhau rơi vào cùng bucket với xác suất cao</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Matching: từ threshold tới Deep Learning</h2>
+      <p>Cách đơn giản: $\mathrm{sim}(r,r') > \theta_h \Rightarrow$ match. Hiện đại hơn: <b>Learned
+      Matchers</b> — ML truyền thống (SVM/Random Forest/XGBoost, 2 pha: học similarity rồi học quyết định)
+      hoặc Deep Learning (DeepER, Magellan) tự học biểu diễn từ dữ liệu thô, tránh phải thiết kế feature thủ công.</p>
+      <div class="callout warn"><div class="lbl">Vấn đề dữ liệu gán nhãn</div>
+      Nhãn khan hiếm + class skew (match ít hơn non-match rất nhiều) → cần Transfer Learning (học từ kịch bản
+      nhiều dữ liệu, fine-tune ít nhãn) hoặc Active Learning (chủ động chọn cặp cần gán nhãn).</div></div><div class="mdeck-slide"><h2>Clustering: gộp các cặp match thành 1 thực thể</h2>
+      <ul class="pd-legend">
+      <li><b>Connected Components</b><span>đơn giản nhất, nhưng dễ tạo cụm quá lớn do tính bắc cầu (A~B, B~C ⟹ gộp cả A,C dù không thực sự giống)</span></li>
+      <li><b>Correlation Clustering</b><span>dùng cả cạnh dương lẫn âm, tối ưu toàn cục — NP-hard</span></li>
+      <li><b>Markov Clustering</b><span>mô phỏng luồng ngẫu nhiên (stochastic flow) trên đồ thị</span></li>
+      </ul>
+      <div class="callout good"><div class="lbl">Incremental Data Deduplication</div>
+      Khi có dữ liệu mới, dùng greedy update (connect/merge/split/move) trên similarity graph đã có — nhanh
+      hơn nhiều so với tính lại correlation clustering từ đầu.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>✍️ Bài tập làm giấy (có lời giải)</h2>
+<div class="exlist-tuluan"><details class="ex-item">
+<summary>Bài 1. Tính Edit Distance (Levenshtein) giữa 'color' và 'colour', liệt kê thao tác cần dùng. Từ đó tính similarity score bằng công thức $s(x,y)=1-\dfrac{d(x,y)}{\max(|x|,|y|)}$. <span class="src">[Quiz-Buoi4-RecordLinkage-ER.md — câu B1+B2 (câu gốc từ slide, đã verify DP thủ công)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> color (5 ký tự) → colour (6 ký tự): chỉ cần <b>1 phép chèn</b> ký tự 'u' (color → colo+u+r = colour) ⟹ $d=1$. Similarity: $s = 1 - 1/\max(5,6) = 1 - 1/6 = 5/6 \approx 0.833$.</div></details><details class="ex-item">
+<summary>Bài 2. Cho $B_x=\{a,b,c,d\}$, $B_y=\{b,c,d,e\}$. Tính Overlap measure $O(x,y)$ và Jaccard measure $J(x,y)$. <span class="src">[Quiz-Buoi4-RecordLinkage-ER.md — câu B3 (câu gốc từ slide)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> $O(x,y) = |B_x \cap B_y| = |\{b,c,d\}| = 3$. $J(x,y) = |B_x\cap B_y|/|B_x\cup B_y| = 3/|\{a,b,c,d,e\}| = 3/5 = 0.6$.</div></details><details class="ex-item">
+<summary>Bài 3. Áp dụng đúng 4 bước thuật toán Soundex để tính mã của tên 'Williams'. Trình bày từng bước. <span class="src">[Quiz-Buoi4-RecordLinkage-ER.md — câu B5 (câu gốc từ slide, đối chiếu đúng giá trị Soundex chuẩn 'Williams'=W452)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> B1: giữ chữ đầu <b>W</b>, xét phần còn lại 'illiams'. B2: không có W/H ở phần còn lại; mã hoá theo nhóm âm: i(bỏ, nguyên âm), l→4, l→4, i(bỏ), a(bỏ), m→5, s→2 ⟹ tạm 'W 4 4 5 2' (bỏ nguyên âm luôn, chỉ giữ số). B3: gộp 2 số '4,4' liền kề (từ 2 chữ l liên tiếp) thành 1 số 4 ⟹ 'W 4 5 2'. B4: lấy chữ đầu + 3 số đầu ⟹ <b>W452</b>.</div></details><details class="ex-item">
+<summary>Bài 4. Phương pháp Clustering 'Connected Components / Transitive Closure' có nhược điểm gì đã được slide chỉ ra rõ? <span class="src">[Quiz-Buoi4-RecordLinkage-ER.md — câu C5 (câu gốc từ slide)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> Dễ tạo ra các cụm quá lớn chứa bản ghi thực chất không giống nhau ('big clusters and dissimilar records') — do tính bắc cầu: nếu A~B và B~C (qua 'cầu nối' B) nhưng A không thực sự giống C, Connected Components vẫn gộp cả A,B,C vào 1 cụm chỉ vì tồn tại đường nối gián tiếp.</div></details><details class="ex-item">
+<summary>Bài 5. batdongsan.com.vn và nhatot.com cùng đăng 1 căn hộ nhưng giá lệch nhau 5% (1 bên tính thêm phí môi giới). Nên chọn loại similarity measure nào cho trường 'giá', và vì sao không nên dùng exact match? <span class="src">[Quiz-Buoi4-RecordLinkage-ER.md — câu D2 (liên hệ ứng dụng, câu gốc)]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> Nên dùng similarity/threshold-based measure cho giá trị số (coi 2 giá match nếu $|price_1-price_2|/\max(price_1,price_2) \le$ ngưỡng, ví dụ 10%). Không nên dùng exact match vì giá thực tế hầu như luôn lệch nhau chút ít giữa các nguồn (phí môi giới, làm tròn, thời điểm cập nhật) — exact match sẽ bỏ sót phần lớn cặp tin trùng thực sự (recall thấp), giống vấn đề Naïve Deduplication.</div></details></div>
+<h2>💬 Bài tập hỏi đáp nhanh</h2>
+<p class="hint">Bấm vào từng câu hỏi để lật xem đáp án — ôn tập nhanh thuật ngữ &amp; khái niệm cốt lõi.</p>
+<div class="flashcard-grid"><details class="flashcard">
+<summary>❓ Entity Resolution là trường hợp đặc biệt của khái niệm nào?</summary><div class="dap">💡 Entity Linking — ER là trường hợp khi liên kết đó nghĩa là 'cùng 1 thực thể' (khử trùng lặp).</div></details><details class="flashcard">
+<summary>❓ 3 kết luận khi so khớp 1 cặp bản ghi theo Fellegi &amp; Sunter (1969)?</summary><div class="dap">💡 Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn).</div></details><details class="flashcard">
+<summary>❓ 4 bước của Entity Resolution Pipeline, theo đúng thứ tự?</summary><div class="dap">💡 Prepare Data → Blocking/Sorting → Matching → Clustering.</div></details><details class="flashcard">
+<summary>❓ Sorted Neighborhood giảm chi phí blocking bằng cách nào?</summary><div class="dap">💡 Sắp xếp theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định, không so toàn bộ n².</div></details><details class="flashcard">
+<summary>❓ Vì sao Soundex hoạt động kém với tên gốc Á Đông?</summary><div class="dap">💡 Vì Soundex bỏ qua nguyên âm, trong khi tên Á Đông phân biệt nhau chủ yếu qua nguyên âm.</div></details><details class="flashcard">
+<summary>❓ Class skew trong huấn luyện Learned Matchers nghĩa là gì?</summary><div class="dap">💡 Số cặp bản ghi match ít hơn rất nhiều so với số cặp non-match — mất cân bằng lớp nghiêm trọng.</div></details><details class="flashcard">
+<summary>❓ Incremental Data Deduplication dùng kỹ thuật gì để tránh tính lại từ đầu?</summary><div class="dap">💡 Greedy update: connect/merge/split/move trên similarity graph đã có, thay vì chạy lại Correlation Clustering toàn bộ.</div></details></div>
+<h2>✅ Bài trắc nghiệm tự chấm</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Theo Fellegi & Sunter (1969), khi so 1 cặp bản ghi có 3 kết luận. 'Possible-match' nghĩa là gì?", "opts": ["Chắc chắn là cùng 1 thực thể", "Chắc chắn khác thực thể", "Chưa đủ bằng chứng kết luận chắc chắn", "Lỗi dữ liệu"], "correct": 2, "explain": "Possible-match = chưa đủ tin cậy để khẳng định match hay non-match, cần thêm thông tin/con người xác nhận."}, {"q": "Edit Distance giữa 'color' và 'colour' là bao nhiêu, và vì sao?", "opts": ["0, vì giống hệt", "1, chỉ cần 1 phép chèn ký tự 'u'", "2, cần 2 phép biến đổi", "5, bằng độ dài chuỗi ngắn hơn"], "correct": 1, "explain": "color → colou+r: chỉ 1 phép insert 'u'. d=1."}, {"q": "Vì sao TF/IDF khớp đúng 'Apple Corporation, CA' với 'Apple Corp' thay vì 'IBM Corporation, CA'?", "opts": ["Vì TF/IDF luôn ưu tiên chuỗi ngắn hơn", "Vì TF/IDF cho trọng số cao hơn cho từ hiếm ('Apple'), thấp hơn cho từ phổ biến ('Corporation, CA')", "Vì TF/IDF không quan tâm nội dung", "Vì TF/IDF dùng edit distance"], "correct": 1, "explain": "IDF (inverse document frequency) làm từ hiếm có trọng số cao — đúng là tín hiệu phân biệt thật sự."}, {"q": "Soundex hoạt động kém với tên gốc Á Đông vì lý do gì?", "opts": ["Tên Á Đông quá ngắn", "Soundex bỏ qua nguyên âm, trong khi tên Á Đông phân biệt nhau chủ yếu qua nguyên âm", "Soundex chỉ hỗ trợ bảng chữ cái Latin hoa", "Soundex yêu cầu tên có dấu"], "correct": 1, "explain": "Thiết kế gốc cho tên Caucasian, bỏ nguyên âm — không phù hợp ngôn ngữ phân biệt nhiều qua nguyên âm."}, {"q": "Sorted Neighborhood giảm độ phức tạp blocking bằng cách nào?", "opts": ["So mọi cặp nhưng song song hoá", "Sắp xếp theo sorting key rồi chỉ so trong 1 cửa sổ trượt kích thước cố định", "Xoá bớt dữ liệu ngẫu nhiên", "Dùng GPU"], "correct": 1, "explain": "Giả định các bản ghi trùng nhau nằm gần nhau sau khi sort — chỉ cần so trong window, không phải toàn bộ n²."}, {"q": "Vấn đề 'class skew' khi huấn luyện Learned Matchers là gì?", "opts": ["Dữ liệu quá nhiều", "Số cặp match ít hơn rất nhiều so với số cặp non-match", "Mô hình quá đơn giản", "Không liên quan tới ER"], "correct": 1, "explain": "Hầu hết các cặp bản ghi KHÔNG match — mất cân bằng lớp nghiêm trọng, cần xử lý riêng khi huấn luyện."}, {"q": "Nhược điểm chính của Connected Components khi dùng làm thuật toán Clustering trong ER là gì?", "opts": ["Chạy quá chậm", "Không chạy được trên đồ thị lớn", "Tính bắc cầu dễ tạo cụm quá lớn, gộp nhầm các bản ghi không thực sự giống nhau", "Không thể implement"], "correct": 2, "explain": "A~B và B~C (qua cầu nối B) không đảm bảo A~C thực sự — nhưng Connected Components vẫn gộp cả 3 vào 1 cụm."}, {"q": "Incremental Data Deduplication dùng kỹ thuật gì để tránh tính lại Correlation Clustering từ đầu?", "opts": ["Xoá hết dữ liệu cũ, chạy lại toàn bộ", "Greedy update: connect/merge/split/move trên similarity graph đã có", "Chỉ xử lý dữ liệu mới, bỏ qua dữ liệu cũ hoàn toàn", "Dùng Soundex thay cho toàn bộ pipeline"], "correct": 1, "explain": "Giữ lại kết quả clustering cũ, cập nhật tăng dần bằng các thao tác đồ thị nhẹ — nhanh hơn nhiều so với tính lại từ đầu."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../03-mediation-query-bigdata/index.html">◀ Buổi 3: Mediation Query bán cấu trúc & Big Data Integration Challenges</a><span></span></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>
