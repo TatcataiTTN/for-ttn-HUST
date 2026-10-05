@@ -242,6 +242,10 @@ def build_index():
 <span class="kicker">Tài liệu nguồn gốc</span><h3>Slide bài giảng gốc — Thuật toán trên luồng dữ liệu (PDF, tiếng Việt)</h3>
 <span class="tag">67 trang · dùng để soạn 20 bài "áp dụng slide gốc"</span>
 <div class="go">Mở / tải PDF →</div></a>"""
+    group1_card = """<a class="mod-card" href="group-1-slides.html" style="border-color:var(--accent2)">
+<span class="kicker">Bài tập lớn · Nhóm 1</span><h3>Hệ sinh thái Hadoop (Chương 2)</h3>
+<span class="tag">48 slide · Trương Tuấn Nghĩa, Nguyễn Vũ Việt Hoàng, Nguyễn Thế Hoàng</span>
+<div class="go">Mở slide thuyết trình →</div></a>"""
     body = f"""<div class="hero">
 <div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
 <h1>Lưu trữ &amp; xử lý dữ liệu lớn</h1>
@@ -266,6 +270,8 @@ Schwartz–Zippel bằng Monte Carlo.</div>
 <div class="grid">{''.join(cards)}</div>
 <h2>Tài liệu bổ sung</h2>
 <div class="grid">{notes_card}{slide_pdf_card}{slide_card}</div>
+<h2>Bài tập lớn môn học (ngoài 14 buổi tự học)</h2>
+<div class="grid">{group1_card}</div>
 """
     # index.html nằm trực tiếp trong vi/ -> rel_root phải là "../"
     html = page_shell("Lưu trữ & xử lý dữ liệu lớn — Streaming & Sketching Algorithms", rel_lang, rel_root, body)

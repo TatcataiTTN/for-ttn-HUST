@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Nhóm 1 — Hệ sinh thái Hadoop (Chương 2)</title>
+<link rel="stylesheet" href="../_shared/common.css">
+<link rel="stylesheet" href="../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Bài tập lớn · Nhóm 1</div>
+<h1>Hệ sinh thái Hadoop — Chương 2</h1>
+<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng) — nhóm Trương Tuấn Nghĩa (20251196M), Nguyễn Vũ Việt Hoàng (20252091M), Nguyễn Thế Hoàng (20251228M).
+Nội dung bám sát 100% Chương 2 giáo trình chính thức của môn học (IT4931_lecture_notes.pdf, tr.23–36), không bổ sung nội dung ngoài phạm vi sách.</p></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">IT4931 — Lưu trữ &amp; xử lý dữ liệu lớn · Bài tập lớn</div>
+<h2>Hệ sinh thái Hadoop</h2>
+<p style="font-size:1.05rem;color:var(--muted)">Chương 2 — Lưu trữ và Xử lý Dữ liệu Lớn (Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, ĐH Bách Khoa Hà Nội)</p>
+<p><b>Nhóm 1</b> · Trương Tuấn Nghĩa (20251196M) · Nguyễn Vũ Việt Hoàng (20252091M) · Nguyễn Thế Hoàng (20251228M)</p>
+<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Bài giảng chuyên đề &nbsp;·&nbsp; 48 slide</p></div><div class="mdeck-slide"><div class="kicker">Mục tiêu học tập</div><h2>Nội dung &amp; mục tiêu trình bày</h2><table><tr><th>Nội dung</th><th>Sau phần trình bày, lớp có thể</th></tr><tr><td>Tổng quan Hadoop</td><td>Giải thích vì sao Hadoop ra đời, kiến trúc scale-out</td></tr><tr><td>HDFS</td><td>Mô tả kiến trúc NameNode/DataNode, cơ chế nhân bản</td></tr><tr><td>MapReduce &amp; YARN</td><td>Phân biệt vai trò 2 thành phần, kiến trúc YARN</td></tr><tr><td>Hive, Pig</td><td>So sánh 2 cách trừu tượng hoá MapReduce</td></tr><tr><td>HBase, Sqoop</td><td>Nêu use-case NoSQL thời gian thực &amp; ETL với RDBMS</td></tr><tr><td>Kafka, Oozie, ZooKeeper</td><td>Giải thích vai trò streaming, điều phối workflow, coordination</td></tr></table><p style="margin-top:10px;color:var(--muted);font-size:.88rem">Nguồn duy nhất: Chương 2 giáo trình môn học, tr.23–36.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/7</div>
+<div class="part-num">01</div><h2>Vì sao cần Hadoop?</h2><ul class="part-list"><li>Bài toán: dữ liệu vượt quá khả năng 1 máy</li><li>Apache Hadoop: nền tảng mã nguồn mở, kiến trúc scale-out</li><li>Nguồn gốc: Google File System &amp; MapReduce</li><li>4 thành phần cốt lõi</li></ul></div><div class="mdeck-slide"><h2>Apache Hadoop là gì?</h2>
+<p>Nền tảng mã nguồn mở được thiết kế để <b>lưu trữ và xử lý khối lượng dữ liệu lớn trên cụm máy tính</b> —
+cung cấp khả năng lưu trữ <i>scalable</i> (mở rộng được) và <i>reliable</i> (tin cậy), hỗ trợ xử lý song song
+trên phần cứng thông dụng (commodity hardware).</p>
+<div class="callout good"><div class="lbl">Kiến trúc scale-out</div>Mở rộng bằng cách <b>thêm máy</b> thay vì nâng cấp 1 máy duy nhất — cho phép mở rộng cụm lên hàng chục nghìn node.</div>
+<div class="callout warn"><div class="lbl">Triết lý chịu lỗi</div>Hỏng hóc phần cứng được xem là <b>điều bình thường</b>, không phải ngoại lệ — hệ thống tự động phát hiện lỗi, nhân bản dữ liệu và chuyển tác vụ sang node khác.</div>
+</div><div class="mdeck-slide"><h2>Nguồn gốc: 2 bài báo của Google</h2>
+<p>Hadoop phát triển dựa trên nghiên cứu của Google về hệ thống phân tán:</p>
+<table><tr><th>Bài báo gốc</th><th>Google</th><th>Trở thành trong Hadoop</th></tr><tr><td>Google File System (GFS)</td><td>Hệ thống tập tin phân tán</td><td>HDFS</td></tr><tr><td>MapReduce (2004)</td><td>Mô hình lập trình song song</td><td>Hadoop MapReduce</td></tr></table>
+<p><b>Mục tiêu chính:</b> giải quyết bài toán lưu trữ và xử lý dữ liệu lớn trong môi trường phân tán, trên phần cứng rẻ tiền thay vì thiết bị chuyên dụng đắt tiền.</p>
+</div><div class="mdeck-slide"><h2>Bốn thành phần cốt lõi của Hadoop</h2><table><tr><th>Thành phần</th><th>Vai trò</th></tr><tr><td><b>HDFS</b> (Hadoop Distributed File System)</td><td>Lưu trữ dữ liệu dung lượng lớn trên cụm máy tính</td></tr><tr><td><b>Hadoop MapReduce</b></td><td>Mô hình lập trình phân tán xử lý dữ liệu lớn kiểu batch</td></tr><tr><td><b>Hadoop YARN</b> (Yet Another Resource Negotiator)</td><td>Quản lý tài nguyên &amp; lập lịch tác vụ, cho nhiều ứng dụng chạy đồng thời</td></tr><tr><td><b>Hadoop Common</b></td><td>Bộ thư viện &amp; tiện ích chung hỗ trợ các module khác</td></tr></table><div class="callout info"><div class="lbl">Phối hợp</div>HDFS đảm bảo lưu trữ tin cậy · MapReduce cung cấp mô hình lập trình đơn giản · YARN điều phối hiệu quả tài nguyên — kết hợp giúp xử lý dữ liệu khổng lồ với chi phí hợp lý.</div></div><div class="mdeck-slide"><h2>Scale-out so với Scale-up</h2><table><tr><th>Tiêu chí</th><th>Scale-up (truyền thống)</th><th>Scale-out (Hadoop)</th></tr><tr><td>Cách mở rộng</td><td>Nâng cấp 1 máy chủ (thêm CPU/RAM đắt tiền)</td><td>Thêm nhiều máy chủ rẻ tiền vào cụm</td></tr><tr><td>Giới hạn mở rộng</td><td>Bị chặn bởi phần cứng cao cấp nhất hiện có</td><td>Mở rộng tới hàng chục nghìn node</td></tr><tr><td>Xử lý lỗi</td><td>1 máy hỏng = toàn hệ thống dừng</td><td>Lỗi node là bình thường, tự động nhân bản &amp; chuyển tác vụ</td></tr><tr><td>Chi phí</td><td>Tăng phi tuyến khi nâng cấp máy đơn</td><td>Tăng gần tuyến tính khi thêm node thông dụng</td></tr></table><div class="callout good"><div class="lbl">Vì sao quan trọng</div>Đây là lựa chọn kiến trúc nền tảng khiến Hadoop khả thi về chi phí cho bài toán dữ liệu petabyte — mọi thành phần khác (HDFS, YARN...) đều thiết kế xoay quanh triết lý scale-out này.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/7</div>
+<div class="part-num">02</div><h2>HDFS — lưu trữ phân tán</h2><ul class="part-list"><li>Mô hình write-once, read-many</li><li>Kiến trúc master/slave: NameNode &amp; DataNode</li><li>Block &amp; Replication (nhân bản)</li><li>Hạn chế của HDFS</li></ul></div><div class="mdeck-slide"><h2>HDFS được tối ưu cho điều gì?</h2>
+<p>HDFS tối ưu cho các tệp <b>kích thước lớn</b> (hàng trăm MB đến TB), mô hình truy cập
+<b>write-once, read-many</b> (ghi một lần, đọc nhiều lần).</p>
+<div class="callout warn"><div class="lbl">Đánh đổi có chủ đích</div>Thiết kế để đạt <b>thông lượng cao</b> thay vì <b>độ trễ thấp</b> — phù hợp xử lý batch hơn truy vấn tương tác thời gian thực.</div>
+<p>Chạy trên <b>phần cứng thông dụng</b> (không cần thiết bị lưu trữ chuyên dụng đắt tiền) — chấp nhận lỗi phần cứng xảy ra thường xuyên, bù lại bằng cơ chế chịu lỗi ở cấp phần mềm.</p>
+</div><div class="mdeck-slide"><h2>Kiến trúc master/slave: NameNode &amp; DataNode</h2>
+<p><img src="../assets/diagrams/hdfs-architecture.svg" alt="Kiến trúc HDFS" style="border:1px solid var(--border);border-radius:10px;width:100%"></p>
+<ul class="pd-legend"><li><b>NameNode</b><span>quản lý metadata: cấu trúc thư mục, tên tệp, ánh xạ tệp→block. Điều phối truy cập từ client.</span></li>
+<li><b>DataNode</b><span>lưu trữ block dữ liệu thật, xử lý yêu cầu đọc/ghi từ client.</span></li></ul>
+</div><div class="mdeck-slide"><h2>Block là gì?</h2>
+<p>Mỗi tệp trong HDFS được <b>chia thành nhiều block</b> (khối dữ liệu) thay vì lưu nguyên khối như hệ file thông thường.</p>
+<div class="pd-formula"><div class="pd-formula-label">Kích thước block mặc định</div><div class="pd-formula-math">$64\text{ MB hoặc }128\text{ MB}$</div></div>
+<div class="callout info"><div class="lbl">Vì sao chia block</div>Block lớn giúp giảm chi phí quản lý metadata (ít block hơn so với chia nhỏ như hệ file truyền thống 4KB) và phù hợp mô hình đọc/ghi tuần tự khối lượng lớn mà HDFS hướng tới.</div>
+</div><div class="mdeck-slide"><h2>Replication (nhân bản) hoạt động ra sao?</h2>
+<p>Mỗi block được <b>replicate</b> (nhân bản) thành nhiều bản sao, phân phối trên các DataNode <b>khác nhau</b> trong cụm.</p>
+<div class="pd-formula"><div class="pd-formula-label">Hệ số nhân bản mặc định</div><div class="pd-formula-math">$3\text{ bản sao trên 3 DataNode khác nhau}$</div></div>
+<div class="callout good"><div class="lbl">Vì sao nhân bản giúp chịu lỗi</div>Khi 1 DataNode hỏng, hệ thống vẫn còn bản sao trên node khác — NameNode tự động điều phối sao chép lại để duy trì đủ số bản sao mặc định.</div>
+</div><div class="mdeck-slide"><h2>Ví dụ minh hoạ: dung lượng vật lý thực cần</h2>
+<p style="color:var(--muted);font-size:.85rem">Ví dụ số liệu tự tính để minh hoạ khái niệm — không trích từ sách, chỉ dùng đúng các thông số sách đã nêu (block 128MB, nhân bản 3 lần).</p>
+<table><tr><th>Bước tính</th><th>Giá trị</th></tr><tr><td>Kích thước tệp cần lưu</td><td>1 TB = 1 048 576 MB</td></tr><tr><td>Kích thước block</td><td>128 MB</td></tr><tr><td>Số block cần (1 048 576 / 128)</td><td>= 8 192 block</td></tr><tr><td>Hệ số nhân bản</td><td>× 3</td></tr><tr><td><b>Dung lượng vật lý thực tế cần trên cụm</b></td><td><b>= 3 TB</b> (gấp 3 lần dữ liệu gốc)</td></tr></table>
+<div class="callout warn"><div class="lbl">Đánh đổi</div>Nhân bản 3 lần giúp chịu lỗi tốt nhưng tốn gấp 3 lần dung lượng lưu trữ thật — đây là chi phí đổi lấy độ tin cậy của HDFS.</div>
+</div><div class="mdeck-slide"><h2>NameNode có phải điểm yếu duy nhất?</h2>
+<p>NameNode là thành phần <b>trung tâm duy nhất</b> giữ toàn bộ metadata — nếu NameNode gặp sự cố mà không có cơ chế dự phòng, cả hệ thống có nguy cơ mất khả năng xác định dữ liệu nằm ở đâu (dù dữ liệu thật vẫn còn nguyên trên DataNode).</p>
+<div class="callout good"><div class="lbl">Cơ chế giảm thiểu rủi ro</div><i>Secondary NameNode</i> định kỳ sao lưu &amp; hợp nhất edit log của NameNode, hỗ trợ <b>phục hồi nhanh metadata</b> khi NameNode gặp sự cố — không phải bản sao chạy song song, mà là điểm khôi phục.</div>
+</div><div class="mdeck-slide"><h2>Hạn chế của HDFS</h2><table><tr><th>Hạn chế</th><th>Lý do</th></tr><tr><td>Độ trễ truy xuất thấp (real-time)</td><td>Tối ưu cho thông lượng tuần tự, không phải truy vấn ngẫu nhiên</td></tr><tr><td>Số lượng lớn tệp nhỏ</td><td>Metadata mọi tệp giữ trong bộ nhớ NameNode — giới hạn RAM</td></tr><tr><td>Sửa đổi nội dung tuỳ ý</td><td>Chỉ hỗ trợ <i>append</i> ở cuối tệp, không ghi đè giữa file</td></tr></table><div class="callout warn"><div class="lbl">Đánh đổi có chủ đích</div>HDFS hy sinh một số tính năng POSIX để đổi lấy khả năng mở rộng &amp; chịu lỗi vượt trội — nhờ đó lưu trữ được hàng petabyte trên cụm hàng nghìn node.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/7</div>
+<div class="part-num">03</div><h2>MapReduce &amp; YARN</h2><ul class="part-list"><li>Mô hình lập trình Map + Reduce</li><li>Vai trò MapReduce: Hadoop 1.x vs 2.x</li><li>Vì sao cần tách YARN khỏi MapReduce</li><li>Kiến trúc YARN: RM / AM / NM</li></ul></div><div class="mdeck-slide"><h2>Mô hình lập trình MapReduce</h2>
+<p>Đề xuất bởi Google (2004) — framework đơn giản cho xử lý dữ liệu lớn song song, dựa trên 2 hàm do người lập trình định nghĩa:</p>
+<table><tr><th>Giai đoạn</th><th>Việc của lập trình viên</th><th>Việc của framework</th></tr><tr><td>Map (ánh xạ)</td><td>Viết hàm Map</td><td>Phân chia dữ liệu, phân phối tác vụ lên cụm</td></tr><tr><td>Reduce (giảm thiểu)</td><td>Viết hàm Reduce</td><td>Thu gộp kết quả trung gian, xử lý lỗi tự động</td></tr></table>
+<div class="callout good"><div class="lbl">Điểm mạnh</div>Lập trình viên chỉ cần viết 2 hàm — phần song song hoá, phân phối, chịu lỗi đều do framework tự động đảm nhiệm.</div>
+</div><div class="mdeck-slide"><h2>Vai trò MapReduce: Hadoop 1.x → 2.x</h2><table><tr><th>Phiên bản</th><th>Vai trò MapReduce</th></tr><tr><td>Hadoop 1.x</td><td>Engine xử lý dữ liệu <b>chính</b>, cung cấp khả năng xử lý batch cho mọi bài toán</td></tr><tr><td>Hadoop 2.x (có YARN)</td><td>Trở thành <b>một trong nhiều</b> framework chạy trên cụm, cạnh tranh tài nguyên với Spark, Flink...</td></tr></table><p>Tối ưu hoá tận dụng hạ tầng: <b>Data Locality</b> (đặt tác vụ gần dữ liệu), <b>Minimal Data Exchange</b>,
+<b>Fault Tolerance</b> tự động — nhờ đó chạy hiệu quả trên hàng nghìn node, xử lý hàng petabyte theo lô.</p>
+<div class="callout warn"><div class="lbl">Hạn chế</div>Độ trễ cao cho tác vụ lặp/tương tác → động lực ra đời Spark, Flink. Vẫn là nền tảng quan trọng cho <i>batch processing</i> truyền thống.</div></div><div class="mdeck-slide"><h2>MapReduce tích hợp với cả hệ sinh thái</h2>
+<p>MapReduce không hoạt động đơn độc — nó là <b>engine thực thi phía sau</b> của nhiều công cụ khác:</p>
+<table><tr><th>Công cụ</th><th>Dịch sang MapReduce như thế nào</th></tr><tr><td>HDFS</td><td>MapReduce đọc/ghi dữ liệu trực tiếp qua HDFS</td></tr><tr><td>YARN</td><td>Quản lý tài nguyên cho các job MapReduce chạy trên cụm</td></tr><tr><td>Hive</td><td>Dịch câu lệnh HiveQL thành job MapReduce</td></tr><tr><td>Pig</td><td>Dịch kịch bản Pig Latin thành job MapReduce</td></tr><tr><td>Sqoop</td><td>Dùng MapReduce (chỉ Map task) để import/export dữ liệu</td></tr></table>
+<div class="callout good"><div class="lbl">Ý nghĩa</div>Đây là lý do MapReduce được gọi là "engine chung" — người dùng Hive/Pig/Sqoop không cần biết MapReduce chạy bên dưới, nhưng mọi tác vụ của họ cuối cùng đều quy về job MapReduce.</div>
+</div><div class="mdeck-slide"><h2>Vì sao cần tách riêng YARN?</h2>
+<p>Trong Hadoop 1.x, <b>MapReduce vừa xử lý dữ liệu vừa quản lý tài nguyên &amp; lập lịch</b> trên cụm —
+dẫn đến hạn chế về hiệu năng và tính linh hoạt.</p>
+<div class="callout good"><div class="lbl">Giải pháp Hadoop 2.x</div>YARN (Yet Another Resource Negotiator) tách biệt <b>quản lý tài nguyên</b> khỏi <b>xử lý dữ liệu</b>, biến Hadoop thành nền tảng tổng quát hơn — nhiều mô hình (MapReduce, Spark, Flink, Tez...) cùng chạy trên 1 cụm.</div>
+</div><div class="mdeck-slide"><h2>Kiến trúc YARN</h2><p><img src="../assets/diagrams/yarn-architecture.svg" alt="Kiến trúc YARN" style="border:1px solid var(--border);border-radius:10px;width:100%"></p>
+<ul class="pd-legend">
+<li><b>ResourceManager</b><span>quản lý tài nguyên toàn cục (CPU, bộ nhớ) cho mọi ứng dụng trên cụm</span></li>
+<li><b>ApplicationMaster</b><span>mỗi ứng dụng có 1 riêng, lập lịch/phối hợp thực thi tác vụ trên các NodeManager</span></li>
+<li><b>NodeManager</b><span>tác nhân tại mỗi node: cấp container, giám sát thực thi tác vụ</span></li></ul>
+</div><div class="mdeck-slide"><h2>Quy trình 1 ứng dụng chạy trên YARN</h2>
+<ol style="line-height:2.1">
+<li>Ứng dụng được <b>submit</b> lên ResourceManager</li>
+<li>ResourceManager cấp <b>container đầu tiên</b> để khởi chạy ApplicationMaster</li>
+<li>ApplicationMaster yêu cầu ResourceManager cấp <b>thêm container</b> trên các NodeManager thích hợp</li>
+<li>Các tác vụ của ứng dụng chạy trong những container đó, được NodeManager giám sát</li>
+</ol>
+<div class="callout info"><div class="lbl">Tự động hoá</div>Toàn bộ quá trình diễn ra tự động dưới sự điều phối của YARN — người dùng chỉ cần submit ứng dụng.</div>
+</div><div class="mdeck-slide"><h2>Lợi ích YARN mang lại cho Hadoop</h2><table><tr><th>Lợi ích</th><th>Giải thích</th></tr><tr><td>Đa dạng hoá workload</td><td>Nhiều loại ứng dụng chạy đồng thời (MapReduce, Spark, Flink, Tez...)</td></tr><tr><td>Tăng tính linh hoạt</td><td>Biến cụm Hadoop thành nền tảng đa năng, không chỉ dành cho MapReduce</td></tr><tr><td>Mở rộng &amp; đa người dùng</td><td>Cấu hình chính sách lập lịch: FIFO, Fair Scheduler, Capacity Scheduler</td></tr><tr><td>Quản lý tài nguyên hiệu quả</td><td>Phân bổ công bằng &amp; hiệu quả giữa các ứng dụng khác nhau</td></tr></table><div class="callout info"><div class="lbl">Ý nghĩa</div>YARN là bước ngoặt giúp hệ sinh thái Hadoop phát triển phong phú — Hive, Pig, Spark... có thể tích hợp và chạy chung 1 cụm thay vì hạ tầng riêng.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/7</div>
+<div class="part-num">04</div><h2>Hive &amp; Pig — truy vấn và biến đổi dữ liệu</h2><ul class="part-list"><li>Apache Hive: data warehouse + HiveQL</li><li>Apache Pig: Pig Latin, data flow</li><li>Cả hai đều dịch sang job MapReduce</li><li>So sánh 2 hướng tiếp cận</li></ul></div><div class="mdeck-slide"><h2>Apache Hive — data warehouse trên Hadoop</h2>
+<p>Phát triển tại <b>Facebook</b> — cho phép truy vấn dữ liệu lớn bằng ngôn ngữ gần SQL (<b>HiveQL</b>): SELECT, JOIN, GROUP BY...
+tự động dịch thành job MapReduce (hoặc Tez, Spark) để thực thi.</p>
+<table><tr><th>Đặc trưng</th><th>Ý nghĩa</th></tr><tr><td>Phù hợp phân tích dữ liệu lớn</td><td>Tối ưu cho truy vấn batch trên TB dữ liệu</td></tr><tr><td>Thân thiện người dùng</td><td>Nhà phân tích dùng SQL quen thuộc, không cần viết Java MapReduce</td></tr><tr><td>Schema on read</td><td>Dữ liệu lưu thô trên HDFS, schema chỉ định khi <i>đọc</i> — linh hoạt với dữ liệu đa dạng</td></tr></table>
+<div class="callout warn"><div class="lbl">Độ trễ</div>Tính bằng phút (do khởi tạo job MapReduce/Tez) — phù hợp batch hơn truy vấn tương tác tức thì.</div>
+</div><div class="mdeck-slide"><h2>Hive hoạt động như thế nào?</h2>
+<ol style="line-height:2.1">
+<li>Người dùng viết câu lệnh <b>HiveQL</b> (SELECT, JOIN, GROUP BY...)</li>
+<li>Hive <b>tự động dịch</b> câu lệnh thành job MapReduce (hoặc Tez, Spark) tương ứng</li>
+<li>Job thực thi trên cụm Hadoop, đọc dữ liệu thô từ HDFS theo schema đã khai báo khi đọc</li>
+<li>Kết quả trả về dưới dạng <b>bảng</b>, giống làm việc với CSDL truyền thống</li>
+</ol>
+<div class="callout good"><div class="lbl">Giá trị cốt lõi</div>Người dùng không cần biết MapReduce chạy bên dưới — chỉ cần viết SQL quen thuộc.</div>
+</div><div class="mdeck-slide"><h2>Apache Pig — kịch bản xử lý dữ liệu</h2>
+<p>Phát triển tại <b>Yahoo!</b> — thay vì SQL, Pig cung cấp ngôn ngữ kịch bản <b>Pig Latin</b> để biểu diễn luồng xử lý
+(đọc, lọc, biến đổi, gộp nhóm, join, sắp xếp...) theo dạng <i>data flow</i>.</p>
+<table><tr><th>Đặc điểm</th><th>Giải thích</th></tr><tr><td>Độ dễ lập trình</td><td>Câu lệnh tuần tự, Pig tự song song hoá &amp; tối ưu</td></tr><tr><td>Tối ưu hoá</td><td>Biết trước toàn bộ luồng → kết hợp bước, đẩy bộ lọc lên sớm</td></tr><tr><td>Mở rộng (UDF)</td><td>Tự định nghĩa hàm bằng Java/Python chèn vào kịch bản</td></tr></table>
+<p>Pig Engine biên dịch kịch bản thành chuỗi job MapReduce — đặc biệt hiệu quả cho <b>transform &amp; join</b> dữ liệu phức tạp.</p>
+</div><div class="mdeck-slide"><h2>So sánh Hive vs Pig</h2><table><tr><th>Tiêu chí</th><th>Hive</th><th>Pig</th></tr><tr><td>Ngôn ngữ</td><td>HiveQL (giống SQL)</td><td>Pig Latin (kịch bản)</td></tr><tr><td>Đối tượng dùng</td><td>Nhà phân tích quen SQL</td><td>Kỹ sư dữ liệu, ETL phức tạp</td></tr><tr><td>Mô hình dữ liệu</td><td>Bảng (schema-on-read)</td><td>Data flow tuần tự</td></tr><tr><td>Engine thực thi</td><td>Dịch sang MapReduce/Tez/Spark</td><td>Dịch sang MapReduce</td></tr><tr><td>Độ trễ</td><td>Vài phút (batch)</td><td>Vài phút (batch)</td></tr></table><div class="callout good"><div class="lbl">Điểm chung</div>Cả hai đều nhằm <b>đơn giản hoá sử dụng Hadoop</b>, không yêu cầu viết Java MapReduce thuần — cùng dịch công việc thành job MapReduce chạy trên cụm.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 5/7</div>
+<div class="part-num">05</div><h2>HBase &amp; Sqoop</h2><ul class="part-list"><li>HBase: NoSQL wide-column trên Hadoop</li><li>Mô hình Bigtable (Google)</li><li>HBase vs RDBMS</li><li>Sqoop: cầu nối Hadoop ↔ SQL</li></ul></div><div class="mdeck-slide"><h2>Apache HBase — "cơ sở dữ liệu của Hadoop"</h2>
+<p>NoSQL phân tán xây trên Hadoop, thiết kế theo mô hình <b>Bigtable</b> (Google) — lưu bảng <b>hàng tỷ dòng, hàng triệu cột</b>,
+hỗ trợ truy cập ngẫu nhiên độ trễ thấp.</p>
+<div class="callout info"><div class="lbl">Ví von</div>Nếu HDFS giống hệ file, thì HBase giống <b>database chạy trên HDFS</b>, đọc/ghi theo kiểu bảng.</div>
+<table><tr><th>Đặc trưng</th><th>Giải thích</th></tr><tr><td>Mô hình wide-column</td><td>Cột nhóm thành <i>column family</i>; mỗi ô có row key, tên cột, giá trị, timestamp</td></tr><tr><td>Mở rộng cực lớn</td><td>Scale-out hàng trăm node, bảng hàng chục petabyte, tự động chia region</td></tr><tr><td>Đọc/ghi thời gian thực</td><td>Hàng trăm nghìn INSERT/giây nhờ LSM-tree + commit log</td></tr></table>
+</div><div class="mdeck-slide"><h2>HBase khác RDBMS ở đâu?</h2>
+<div class="callout warn"><div class="lbl">Không phải RDBMS</div>HBase <b>không hỗ trợ SQL hay join phức tạp</b> — truy vấn qua API lập trình (Java/REST/Thrift) hoặc scan/get/put theo khoá. Không có transaction ACID đa bảng.</div>
+<p>Phù hợp cho: truy cập ngẫu nhiên theo khoá, khối lượng lớn (vd tra cứu/cập nhật theo userID) — hơn là phân tích ad-hoc.</p>
+<p><b>Ví dụ thực tế:</b> Facebook Messaging từng dùng HBase lưu tin nhắn cho hàng trăm triệu người dùng, khai thác khả năng mở rộng linh hoạt.</p>
+</div><div class="mdeck-slide"><h2>Khi nào dùng HDFS+Hive, khi nào dùng HBase?</h2><table><tr><th>Nhu cầu</th><th>Chọn</th></tr><tr><td>Phân tích tổng hợp trên tập dữ liệu lớn (batch)</td><td>HDFS + MapReduce/Hive</td></tr><tr><td>Đọc/ghi ngẫu nhiên theo khoá, độ trễ thấp, gần thời gian thực</td><td>HBase</td></tr><tr><td>Truy vấn kiểu SQL, JOIN, GROUP BY phức tạp</td><td>Hive (không phải HBase)</td></tr><tr><td>Tra cứu/cập nhật theo userID với tốc độ cao</td><td>HBase (không phải Hive)</td></tr></table><div class="callout info"><div class="lbl">Nguyên tắc chọn</div>Không có công cụ nào "tốt hơn" tuyệt đối — HDFS+Hive phục vụ phân tích tổng hợp, HBase phục vụ truy cập chi tiết từng bản ghi. Hai nhu cầu khác nhau, hai công cụ khác nhau.</div></div><div class="mdeck-slide"><h2>Apache Sqoop — cầu nối Hadoop ↔ RDBMS</h2>
+<p>Tên ghép từ <b>SQL + Hadoop</b> — công cụ nhập/xuất dữ liệu hàng loạt giữa Hadoop và RDBMS (MySQL, PostgreSQL, Oracle...).</p>
+<table><tr><th>Chiều</th><th>Cơ chế</th></tr><tr><td>Import (RDBMS → HDFS)</td><td>Kết nối JDBC, khởi chạy job MapReduce chỉ gồm Map task — mỗi task nhập 1 phần bảng (theo WHERE/primary key)</td></tr><tr><td>Export (HDFS → RDBMS)</td><td>Chia dữ liệu HDFS thành splits, mỗi Map task đẩy 1 phần vào CSDL qua batch INSERT</td></tr></table>
+<div class="callout good"><div class="lbl">Use case tiêu biểu</div>Nhập bảng giao dịch từ data warehouse vào Hadoop để phân tích chuyên sâu · xuất kết quả Hive/HDFS ra bảng SQL cho ứng dụng kinh doanh.</div>
+</div><div class="mdeck-slide"><h2>Quy trình Sqoop Import từng bước</h2>
+<ol style="line-height:2.1">
+<li>Sqoop kết nối tới CSDL nguồn qua <b>JDBC</b></li>
+<li>Thực thi truy vấn (hoặc duyệt từng bảng), <b>chia dữ liệu</b> theo điều kiện WHERE hoặc primary key</li>
+<li>Khởi chạy job MapReduce <b>chỉ gồm Map task</b> — mỗi task nhập 1 phần dữ liệu song song</li>
+<li>Ghi kết quả xuống HDFS (text/CSV hoặc Avro/Parquet), hoặc thẳng vào Hive/HBase nếu được chỉ định</li>
+</ol>
+<div class="callout good"><div class="lbl">Vì sao song song</div>Chia nhỏ theo primary key cho phép nhiều Map task cùng nhập dữ liệu đồng thời — tăng tốc đáng kể so với import tuần tự.</div>
+</div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 6/7</div>
+<div class="part-num">06</div><h2>Kafka, Oozie, ZooKeeper</h2><ul class="part-list"><li>Kafka: nền tảng streaming pub-sub</li><li>Oozie: lập lịch workflow dạng DAG</li><li>ZooKeeper: dịch vụ điều phối phân tán</li><li>Vai trò trong toàn hệ sinh thái</li></ul></div><div class="mdeck-slide"><h2>Apache Kafka — streaming thời gian thực</h2>
+<p>Phát triển tại <b>LinkedIn</b> — nền tảng <b>publish-subscribe</b> phân tán: producer gửi thông điệp vào <i>topic</i>,
+consumer đăng ký nhận từ topic đó.</p>
+<table><tr><th>Đặc điểm</th><th>Giải thích</th></tr><tr><td>Thông lượng &amp; độ bền cao</td><td>Hàng triệu thông điệp/giây, ghi commit log tuần tự, nhân bản giữa broker</td></tr><tr><td>Partition</td><td>Mỗi topic chia nhiều partition — tăng song song; Kafka đảm bảo thứ tự <i>trong từng partition</i></td></tr><tr><td>Multi-subscriber</td><td>Nhiều consumer group độc lập đọc cùng dữ liệu mà không ảnh hưởng nhau</td></tr></table>
+<div class="callout info"><div class="lbl">Vai trò trong hệ sinh thái</div>Tầng thu thập/phân phối sự kiện (ingest) — nguồn dữ liệu đầu vào liên tục cho Spark, Storm hoặc lưu vào HDFS/HBase.</div>
+</div><div class="mdeck-slide"><h2>Ví dụ minh hoạ: Kafka trong pipeline thu thập log</h2>
+<p style="color:var(--muted);font-size:.85rem">Minh hoạ dựa trên ví dụ sách nêu (thu thập log sự kiện người dùng vào topic "website_events") — diễn giải thêm để dễ hình dung, không phải trích nguyên văn.</p>
+<ol style="line-height:2.1">
+<li>Hàng trăm máy chủ web sinh ra sự kiện người dùng (click, xem trang...) liên tục</li>
+<li>Mỗi sự kiện được gửi (<b>produce</b>) vào topic <code>website_events</code></li>
+<li>Topic được chia thành nhiều <b>partition</b> để tăng thông lượng ghi song song</li>
+<li>Ứng dụng Hadoop/Spark <b>consume</b> dòng sự kiện này để xử lý gần thời gian thực</li>
+</ol>
+<div class="callout good"><div class="lbl">Điểm mấu chốt</div>Producer (máy chủ web) và consumer (Spark/Hadoop) không kết nối trực tiếp — Kafka đứng giữa như một hàng đợi bền vững, chịu lỗi.</div>
+</div><div class="mdeck-slide"><h2>Apache Oozie — lập lịch workflow</h2>
+<p>Hệ thống quản lý &amp; lập lịch luồng công việc (workflow scheduler) cho Hadoop — định nghĩa chuỗi job
+(MapReduce → Hive → shell script...) và quản lý thực thi tuần tự/song song.</p>
+<div class="callout good"><div class="lbl">Mô hình DAG</div>Workflow mô tả dưới dạng <b>đồ thị có hướng không chu trình</b> — node là action/control node, cạnh là luồng thực thi (có điều kiện).</div>
+<p><b>Ví dụ:</b> chạy job MapReduce A → nếu thành công chạy job Hive B, nếu thất bại gửi email rồi kết thúc.</p>
+<p><i>Coordinator</i>: lên lịch lặp lại workflow theo thời gian (mỗi giờ/ngày) hoặc khi dữ liệu mới đến HDFS.</p>
+</div><div class="mdeck-slide"><h2>Apache ZooKeeper — dịch vụ điều phối</h2><table><tr><th>Chức năng</th><th>Mô tả ngắn</th></tr><tr><td>Quản lý cấu hình</td><td>Lưu &amp; phân phát thông tin cấu hình cho các node</td></tr><tr><td>Đặt tên (naming)</td><td>Không gian tên chung để dịch vụ đăng ký &amp; tìm nhau</td></tr><tr><td>Đồng bộ hoá phân tán</td><td>Cơ chế khoá, hàng rào (barrier) tránh xung đột</td></tr><tr><td>Dịch vụ nhóm</td><td>Theo dõi thành viên trong 1 nhóm node (vd RegionServer)</td></tr><tr><td>Bầu chọn leader</td><td>Đảm bảo đúng 1 node làm leader tại 1 thời điểm (ephemeral znode)</td></tr></table></div><div class="mdeck-slide"><h2>Vì sao ZooKeeper đáng tin cậy?</h2>
+<p>ZooKeeper dùng thuật toán <b>ZAB</b> (ZooKeeper Atomic Broadcast — thuộc họ thuật toán Paxos) để đảm bảo
+tất cả server ZooKeeper (chạy thành cụm nhỏ) duy trì <b>cùng một trạng thái</b>.</p>
+<div class="callout good"><div class="lbl">Tính nhất quán tuần tự</div>Các thay đổi áp dụng theo mô hình nhất quán tuần tự; client có thể đăng ký <b>watch</b> để được thông báo ngay khi dữ liệu thay đổi hoặc node mới xuất hiện/biến mất.</div>
+<p>Nhờ đó, các node trong hệ phân tán không cần liên lạc peer-to-peer phức tạp — chỉ cần dựa vào ZooKeeper như một "trọng tài chung" tin cậy.</p>
+</div><div class="mdeck-slide"><h2>ZooKeeper được dùng ở đâu trong Hadoop?</h2><table><tr><th>Thành phần</th><th>ZooKeeper dùng để</th></tr><tr><td>HDFS High Availability</td><td>Giám sát NameNode &amp; kích hoạt failover</td></tr><tr><td>YARN</td><td>Lưu thông tin ResourceManager chủ</td></tr><tr><td>HBase</td><td>Theo dõi RegionServer &amp; điều phối Master</td></tr><tr><td>Kafka (bản cũ)</td><td>Quản lý thông tin broker, chủ đề, phân vùng</td></tr></table><div class="callout info"><div class="lbl">Vai trò tổng thể</div>ZooKeeper là "người giữ nhịp" thầm lặng phía sau — giảm độ phức tạp phát triển hệ phân tán nhờ các primitive tin cậy có sẵn.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 7/7</div>
+<div class="part-num">07</div><h2>Tổng kết</h2><ul class="part-list"><li>Sơ đồ toàn cảnh hệ sinh thái Hadoop</li><li>Tổng kết nội dung chương 2</li><li>Câu hỏi thảo luận nhanh</li><li>Tài liệu tham khảo</li></ul></div><div class="mdeck-slide"><h2>Toàn cảnh hệ sinh thái Hadoop</h2><table><tr><th>Tầng</th><th>Thành phần</th><th>Vai trò</th></tr><tr><td>Thu thập</td><td>Kafka</td><td>Streaming sự kiện thời gian thực</td></tr><tr><td>Lưu trữ</td><td>HDFS, HBase</td><td>Tệp phân tán &amp; NoSQL thời gian thực</td></tr><tr><td>Tính toán batch</td><td>MapReduce</td><td>Mô hình Map + Reduce song song</td></tr><tr><td>Phân tích</td><td>Hive, Pig</td><td>SQL-like &amp; kịch bản data flow</td></tr><tr><td>Quản trị luồng</td><td>Oozie</td><td>Lập lịch workflow dạng DAG</td></tr><tr><td>Vận hành</td><td>ZooKeeper</td><td>Điều phối, đồng bộ, bầu leader</td></tr><tr><td>Điều phối tài nguyên</td><td>YARN</td><td>Quản lý tài nguyên đa ứng dụng</td></tr><tr><td>Tích hợp RDBMS</td><td>Sqoop</td><td>Import/export với CSDL quan hệ</td></tr></table></div><div class="mdeck-slide"><h2>Tổng kết chương 2</h2>
+<p>Hai nền tảng chính <b>HDFS</b> (lưu trữ tin cậy, mở rộng trên phần cứng rẻ) và <b>MapReduce</b> (lập trình
+song song đơn giản) tạo lõi Hadoop. <b>YARN</b> tách quản lý tài nguyên, biến cụm thành hạ tầng đa nhiệm.</p>
+<p>Các dự án mở rộng đáp ứng nhu cầu đa dạng: <b>Hive</b> (SQL-like), <b>Pig</b> (ETL kịch bản),
+<b>HBase</b> (NoSQL thời gian thực), <b>Sqoop</b> (tích hợp RDBMS), <b>Kafka</b> (streaming),
+<b>Oozie</b> (workflow), <b>ZooKeeper</b> (điều phối).</p>
+<div class="callout good"><div class="lbl">Thông điệp chính</div>Sức mạnh Hadoop không nằm ở riêng HDFS, mà ở <b>toàn bộ hệ sinh thái phối hợp</b>: thu thập → lưu trữ → tính toán → phân tích → quản trị → vận hành.</div>
+</div><div class="mdeck-slide"><h2>Thuật ngữ quan trọng (tra cứu nhanh)</h2><table><tr><th>Thuật ngữ</th><th>Giải nghĩa ngắn</th></tr><tr><td>NameNode / DataNode</td><td>Node quản lý metadata / node lưu block dữ liệu thật trong HDFS</td></tr><tr><td>Block &amp; Replication</td><td>Đơn vị chia nhỏ tệp (64–128MB) &amp; cơ chế nhân bản (mặc định 3 lần)</td></tr><tr><td>ResourceManager / NodeManager</td><td>Quản lý tài nguyên toàn cục / tác nhân quản lý tài nguyên từng node (YARN)</td></tr><tr><td>ApplicationMaster</td><td>Tiến trình lập lịch riêng cho mỗi ứng dụng chạy trên YARN</td></tr><tr><td>HiveQL / Pig Latin</td><td>Ngôn ngữ truy vấn giống SQL (Hive) / ngôn ngữ kịch bản data flow (Pig)</td></tr><tr><td>Column family</td><td>Nhóm các cột trong bảng wide-column của HBase</td></tr><tr><td>Topic / Partition</td><td>Chủ đề thông điệp / đơn vị chia nhỏ 1 topic trong Kafka để song song hoá</td></tr><tr><td>DAG</td><td>Đồ thị có hướng không chu trình — mô hình workflow của Oozie</td></tr><tr><td>Znode</td><td>Đơn vị dữ liệu trong cây thư mục phân tán của ZooKeeper</td></tr></table></div><div class="mdeck-slide"><h2>Câu hỏi thảo luận nhanh</h2>
+<ol style="line-height:2">
+<li>Vì sao HDFS chọn đánh đổi độ trễ thấp để lấy thông lượng cao? Đánh đổi này hợp lý trong tình huống nào?</li>
+<li>So với MapReduce chạy trực tiếp trên Hadoop 1.x, vai trò của MapReduce thay đổi ra sao sau khi có YARN?</li>
+<li>Hive và Pig cùng dịch sang job MapReduce — vậy điểm khác biệt cốt lõi giữa 2 công cụ nằm ở đâu?</li>
+<li>Vì sao HBase không hỗ trợ SQL/join phức tạp lại vẫn được coi là một thành phần quan trọng của hệ sinh thái?</li>
+</ol>
+<p style="color:var(--muted);font-size:.88rem">Dùng để thảo luận tại lớp — không có đáp số cố định, trả lời dựa trên nội dung Chương 2.</p>
+</div><div class="mdeck-slide"><h2>Tài liệu tham khảo</h2>
+<p><b>Nguồn duy nhất của toàn bộ nội dung trình bày:</b></p>
+<table><tr><th>Mục</th><th>Chi tiết</th></tr><tr><td>Giáo trình</td><td><i>Lưu trữ và Xử lý Dữ liệu Lớn</i> — Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung</td></tr><tr><td>Đơn vị</td><td>Trường Công nghệ Thông tin &amp; Truyền thông, Đại học Bách Khoa Hà Nội (2024)</td></tr><tr><td>Chương sử dụng</td><td>Chương 2 — Hệ sinh thái Hadoop, tr. 23–36</td></tr><tr><td>Phân công</td><td>Thầy Tạ Duy Hoàng — Nhóm 1 phụ trách Chương 2 (thông báo 05/10, trình bày từ tuần 12/10)</td></tr></table>
+</div><div class="mdeck-slide"><div class="kicker">Cảm ơn đã theo dõi</div>
+<h2>Nhóm 1 — Hệ sinh thái Hadoop</h2>
+<p>Trương Tuấn Nghĩa (20251196M) · Nguyễn Vũ Việt Hoàng (20252091M) · Nguyễn Thế Hoàng (20251228M)</p>
+<p style="color:var(--muted)">Môn Lưu trữ &amp; xử lý dữ liệu lớn — Giảng viên Tạ Duy Hoàng</p></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn</div>
+Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung. <i>Lưu trữ và Xử lý Dữ liệu Lớn</i>, Chương 2 —
+Hệ sinh thái Hadoop, tr.23–36. Trường CNTT&amp;TT, ĐH Bách Khoa Hà Nội, 2024.
+&nbsp;·&nbsp; <a href="../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Xem giáo trình gốc (PDF)</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../_shared/theme.js"></script>
+<script src="../_shared/info.js"></script>
+<script src="../_shared/deck.js"></script>
+</body></html>
