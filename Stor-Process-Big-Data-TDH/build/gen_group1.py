@@ -38,7 +38,7 @@ SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">IT4931 — Lưu t
 <h2>Hệ sinh thái Hadoop</h2>
 <p style="font-size:1.05rem;color:var(--muted)">Chương 2 — Lưu trữ và Xử lý Dữ liệu Lớn (Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, ĐH Bách Khoa Hà Nội)</p>
 <p><b>Nhóm 1</b> · {" · ".join(MEMBERS)}</p>
-<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Bài giảng chuyên đề &nbsp;·&nbsp; 48 slide</p></div>""")
+<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Bài giảng chuyên đề &nbsp;·&nbsp; __SLIDE_COUNT__ slide</p></div>""")
 
 # ---------- Overview ----------
 SLIDES.append(slide("Nội dung &amp; mục tiêu trình bày",
@@ -53,7 +53,7 @@ SLIDES.append(slide("Nội dung &amp; mục tiêu trình bày",
     "Mục tiêu học tập"))
 
 # ===================== PHẦN 1 =====================
-SLIDES.append(divider(1, 7, "Vì sao cần Hadoop?", [
+SLIDES.append(divider(1, 8, "Vì sao cần Hadoop?", [
     "Bài toán: dữ liệu vượt quá khả năng 1 máy", "Apache Hadoop: nền tảng mã nguồn mở, kiến trúc scale-out",
     "Nguồn gốc: Google File System &amp; MapReduce", "4 thành phần cốt lõi"]))
 
@@ -90,7 +90,7 @@ SLIDES.append(slide("Scale-out so với Scale-up", tbl(
 ) + callout('good', 'Vì sao quan trọng', 'Đây là lựa chọn kiến trúc nền tảng khiến Hadoop khả thi về chi phí cho bài toán dữ liệu petabyte — mọi thành phần khác (HDFS, YARN...) đều thiết kế xoay quanh triết lý scale-out này.')))
 
 # ===================== PHẦN 2: HDFS =====================
-SLIDES.append(divider(2, 7, "HDFS — lưu trữ phân tán", [
+SLIDES.append(divider(2, 8, "HDFS — lưu trữ phân tán", [
     "Mô hình write-once, read-many", "Kiến trúc master/slave: NameNode &amp; DataNode",
     "Block &amp; Replication (nhân bản)", "Hạn chế của HDFS"]))
 
@@ -142,7 +142,7 @@ SLIDES.append(slide("Hạn chế của HDFS", tbl(["Hạn chế", "Lý do"], [
 ]) + callout('warn', 'Đánh đổi có chủ đích', 'HDFS hy sinh một số tính năng POSIX để đổi lấy khả năng mở rộng &amp; chịu lỗi vượt trội — nhờ đó lưu trữ được hàng petabyte trên cụm hàng nghìn node.')))
 
 # ===================== PHẦN 3: MapReduce & YARN =====================
-SLIDES.append(divider(3, 7, "MapReduce &amp; YARN", [
+SLIDES.append(divider(3, 8, "MapReduce &amp; YARN", [
     "Mô hình lập trình Map + Reduce", "Vai trò MapReduce: Hadoop 1.x vs 2.x",
     "Vì sao cần tách YARN khỏi MapReduce", "Kiến trúc YARN: RM / AM / NM"]))
 
@@ -204,7 +204,7 @@ SLIDES.append(slide("Lợi ích YARN mang lại cho Hadoop", tbl(["Lợi ích", 
 ]) + callout('info', 'Ý nghĩa', 'YARN là bước ngoặt giúp hệ sinh thái Hadoop phát triển phong phú — Hive, Pig, Spark... có thể tích hợp và chạy chung 1 cụm thay vì hạ tầng riêng.')))
 
 # ===================== PHẦN 4: Hive & Pig =====================
-SLIDES.append(divider(4, 7, "Hive &amp; Pig — truy vấn và biến đổi dữ liệu", [
+SLIDES.append(divider(4, 8, "Hive &amp; Pig — truy vấn và biến đổi dữ liệu", [
     "Apache Hive: data warehouse + HiveQL", "Apache Pig: Pig Latin, data flow",
     "Cả hai đều dịch sang job MapReduce", "So sánh 2 hướng tiếp cận"]))
 
@@ -247,7 +247,7 @@ SLIDES.append(slide("So sánh Hive vs Pig", tbl(["Tiêu chí", "Hive", "Pig"], [
 ]) + callout('good', 'Điểm chung', 'Cả hai đều nhằm <b>đơn giản hoá sử dụng Hadoop</b>, không yêu cầu viết Java MapReduce thuần — cùng dịch công việc thành job MapReduce chạy trên cụm.')))
 
 # ===================== PHẦN 5: HBase & Sqoop =====================
-SLIDES.append(divider(5, 7, "HBase &amp; Sqoop", [
+SLIDES.append(divider(5, 8, "HBase &amp; Sqoop", [
     "HBase: NoSQL wide-column trên Hadoop", "Mô hình Bigtable (Google)",
     "HBase vs RDBMS", "Sqoop: cầu nối Hadoop ↔ SQL"]))
 
@@ -294,7 +294,7 @@ SLIDES.append(slide("Quy trình Sqoop Import từng bước", f"""
 """))
 
 # ===================== PHẦN 6: Kafka, Oozie, ZooKeeper =====================
-SLIDES.append(divider(6, 7, "Kafka, Oozie, ZooKeeper", [
+SLIDES.append(divider(6, 8, "Kafka, Oozie, ZooKeeper", [
     "Kafka: nền tảng streaming pub-sub", "Oozie: lập lịch workflow dạng DAG",
     "ZooKeeper: dịch vụ điều phối phân tán", "Vai trò trong toàn hệ sinh thái"]))
 
@@ -351,7 +351,7 @@ SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Th
 ]) + callout('info', 'Vai trò tổng thể', 'ZooKeeper là "người giữ nhịp" thầm lặng phía sau — giảm độ phức tạp phát triển hệ phân tán nhờ các primitive tin cậy có sẵn.')))
 
 # ===================== PHẦN 7: Tổng kết =====================
-SLIDES.append(divider(7, 7, "Tổng kết", [
+SLIDES.append(divider(7, 8, "Tổng kết", [
     "Sơ đồ toàn cảnh hệ sinh thái Hadoop", "Tổng kết nội dung chương 2",
     "Câu hỏi thảo luận nhanh", "Tài liệu tham khảo"]))
 
@@ -408,10 +408,65 @@ SLIDES.append(slide("Tài liệu tham khảo", f"""
       ['Phân công','Thầy Tạ Duy Hoàng — Nhóm 1 phụ trách Chương 2 (thông báo 05/10, trình bày từ tuần 12/10)']])}
 """))
 
+# ===================== PHẦN 8 (BONUS): Ứng dụng liên ngành =====================
+SLIDES.append(divider(8, 8, "Bonus — Ứng dụng liên ngành", [
+    "Bài toán: tìm điểm chia cây quyết định", "Vì sao cần kỹ thuật streaming (sketch)",
+    "Vì sao cần mô hình tính toán song song lớn (MPC)", "Nghiên cứu liên quan của giảng viên môn học"]))
+
+SLIDES.append(slide("Bài toán: tìm điểm chia cây quyết định", f"""
+<p>Khi huấn luyện <b>cây quyết định</b> (decision tree) trên 1 thuộc tính số, thuật toán cần tìm
+<b>ngưỡng chia tốt nhất</b> (split point) — ví dụ "tuổi &lt; 30?" — để tách dữ liệu sao cho 2 nhóm con
+"thuần" nhất có thể.</p>
+{callout('info', 'Vì sao liên quan đến môn học', 'Để tìm ngưỡng chia tốt, thuật toán cần biết <b>phân vị</b> (quantile) của dữ liệu — đúng bài toán <i>quantile sketch</i> (q-digest, MRL, KLL) đã học trong môn Lưu trữ &amp; xử lý dữ liệu lớn.')}
+<p style="color:var(--muted);font-size:.85rem">Phần bonus này liên hệ khái niệm, không phải tóm tắt chi tiết kết quả kỹ thuật trong các bài báo trích dẫn — nhóm chưa đọc toàn văn các bài báo, chỉ liên hệ qua tiêu đề/tóm tắt công khai.</p>
+"""))
+
+SLIDES.append(slide("Kết nối 1: vì sao cần streaming?", f"""
+<p>Với tập dữ liệu khổng lồ (hàng tỷ bản ghi), <b>không thể lưu toàn bộ dữ liệu trong bộ nhớ</b> để tính
+chính xác điểm chia — đây chính là động lực streaming đã học (buổi 12: q-digest/MRL/KLL).</p>
+{tbl(['Khái niệm đã học','Vai trò khi tìm điểm chia cây quyết định'],
+     [['Quantile sketch (q-digest/MRL/KLL)','Ước lượng phân vị của thuộc tính mà không lưu hết dữ liệu'],
+      ['Sai số $\\pm\\varepsilon n$ có kiểm soát','Đánh đổi bộ nhớ nhỏ lấy điểm chia "đủ tốt", không cần tuyệt đối chính xác'],
+      ['Tính hợp nhất (mergeability)','Gộp sketch từ nhiều luồng con/nhiều máy thành 1 sketch tổng']])}
+"""))
+
+SLIDES.append(slide("Kết nối 2: vì sao cần tính toán song song lớn?", f"""
+<p>Dữ liệu huấn luyện thực tế thường <b>phân tán trên nhiều máy</b> trong cụm Hadoop/Spark — đúng kiến trúc
+HDFS + MapReduce + YARN đã trình bày ở Phần 2–3.</p>
+{callout('good', 'Mô hình MPC (Massively Parallel Computation)', 'Mô hình lý thuyết mô tả đúng cách MapReduce/Spark hoạt động: dữ liệu chia cho nhiều máy, mỗi máy bộ nhớ giới hạn, tính toán qua <b>vài vòng truyền thông</b> (round) giữa các máy — khớp với giai đoạn Map → Shuffle → Reduce đã học.')}
+<p>Bài toán đặt ra: tìm điểm chia cây quyết định bằng <b>càng ít vòng giao tiếp giữa các máy càng tốt</b> —
+giống hệt mục tiêu tối ưu khi chạy job trên YARN/MapReduce.</p>
+"""))
+
+SLIDES.append(slide("Hai thế giới gặp nhau", tbl(
+    ["", "Streaming (buổi 12)", "Massively Parallel / Hadoop (Chương 2)"],
+    [["Ràng buộc chính", "Bộ nhớ nhỏ, 1 lượt duyệt dữ liệu", "Mỗi máy bộ nhớ nhỏ, vài vòng giao tiếp"],
+     ["Công cụ", "q-digest, MRL, KLL", "HDFS + MapReduce + YARN"],
+     ["Mục tiêu chung", "Ước lượng thống kê (ở đây: điểm chia cây quyết định) đủ chính xác, chi phí tối thiểu", ""]]
+) + callout('warn', 'Thách thức nghiên cứu', 'Làm sao thiết kế 1 thuật toán vừa tiết kiệm bộ nhớ theo luồng (streaming), vừa tiết kiệm số vòng giao tiếp khi chạy phân tán (MPC) — đây chính xác là chủ đề 2 bài báo được trích dẫn ở slide sau.')))
+
+SLIDES.append(slide("Nghiên cứu liên quan của giảng viên môn học", f"""
+<p>Thầy <b>Tạ Duy Hoàng</b> — giảng viên môn học — có hướng nghiên cứu trực tiếp về chủ đề này:</p>
+{tbl(['Công trình','Đồng tác giả · Nơi công bố'],
+     [['<i>Finding Decision Tree Splits in Streaming and Massively Parallel Models</i>', 'với Huy Pham, Hoa T. Vu · 2025 (submitted)'],
+      ['<i>Constructing Decision Trees from Data Streams</i>', 'với Huy Pham, Hoa T. Vu · ISIT 2025'],
+      ['<i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams</i>', 'với Hoa T. Vu · ESA 2026']])}
+{callout('info', 'Nguồn', 'Trích từ trang Publications công khai của giảng viên (sites.google.com/view/taduyhoang/publications) — nhóm chỉ liên hệ ở mức tiêu đề/chủ đề, chưa đọc toàn văn bài báo nên không trình bày chi tiết kết quả/thuật toán cụ thể bên trong.')}
+"""))
+
+SLIDES.append(slide("Thông điệp của phần bonus", f"""
+<p>Hai mảng kiến thức tưởng tách biệt trong môn học — <b>thuật toán streaming</b> (ước lượng khi không đủ
+bộ nhớ) và <b>hệ sinh thái Hadoop</b> (xử lý khi dữ liệu phân tán nhiều máy) — thực ra là <b>2 ràng buộc của
+cùng 1 bài toán lớn</b>: học máy trên dữ liệu khổng lồ.</p>
+{callout('good', 'Kết luận', 'Một thuật toán big-data thực chiến thường phải đồng thời tiết kiệm bộ nhớ (streaming) VÀ tiết kiệm vòng giao tiếp (massively parallel) — đây là hướng nghiên cứu đang hoạt động, không phải bài toán đã đóng.')}
+"""))
+
 SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">Cảm ơn đã theo dõi</div>
 <h2>Nhóm 1 — Hệ sinh thái Hadoop</h2>
 <p>{" · ".join(MEMBERS)}</p>
 <p style="color:var(--muted)">Môn Lưu trữ &amp; xử lý dữ liệu lớn — Giảng viên Tạ Duy Hoàng</p></div>""")
+
+SLIDES[0] = SLIDES[0].replace("__SLIDE_COUNT__", str(len(SLIDES)))
 
 DECK = f"""<div class="mdeck"><div class="mdeck-viewport">{''.join(SLIDES)}</div>
 <div class="mdeck-bar">
