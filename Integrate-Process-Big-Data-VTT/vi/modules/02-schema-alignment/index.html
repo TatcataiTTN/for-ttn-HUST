@@ -119,7 +119,28 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <summary>❓ GLAV biểu diễn hình thức bằng công cụ gì?</summary><div class="dap">💡 Tuple Generating Dependency (TGD).</div></details><details class="flashcard">
 <summary>❓ Certain Answer được định nghĩa thế nào?</summary><div class="dap">💡 Đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping.</div></details><details class="flashcard">
 <summary>❓ Nhược điểm cốt lõi của GAV so với LAV?</summary><div class="dap">💡 Không biểu diễn được thông tin nguồn không đầy đủ (incomplete information).</div></details></div>
-<h2>✅ Bài trắc nghiệm tự chấm</h2>
+<h2>🖥️ SQL Sandbox — chạy thật trên dữ liệu ví dụ của slide (sql.js/SQLite)</h2>
+<p class="hint">Lược đồ bảng S1-S7 lấy đúng nguyên văn slide gốc (xem Module 02 phần "Vì sao cần Certain
+Answers"); dữ liệu 10 phim là dữ liệu minh hoạ tự soạn (gắn nhãn rõ trong mã nguồn). Viết SQL vào ô bên
+dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với lời giải mẫu đã chạy thật và lưu sẵn.</p>
+<div id="sb-mount-m02"></div>
+<script src="../../../_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({
+  mount: "#sb-mount-m02",
+  vendorUrl: "../../../vendor/sql-wasm/",
+  schemaUrl: "../../../data/sql/schema_m02.sql",
+  dataUrl: "../../../data/sql/questions_m02.json",
+  storageKey: "sqlbank:02-schema-alignment"
+});
+</script>
+<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">96 câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide/giáo trình hoặc bổ sung — ghi rõ
+từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../02-schema-alignment/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng 96 câu — Schema Alignment — GAV, LAV, GLAV & Certain Answers</h3>
+<div class="go">Mở →</div></a>
+<h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
 <div class="quiz"><div class="quiz-root"></div>
 <script type="application/json">{"items": [{"q": "Certain Answer được định nghĩa thế nào?", "opts": ["Đúng ở ít nhất 1 instance khả dĩ của mediated schema", "Đúng ở MỌI instance khả dĩ của mediated schema", "Đúng ở instance được chọn ngẫu nhiên", "Đúng khi không có nguồn nào mâu thuẫn"], "correct": 1, "explain": "Certain = chắc chắn đúng trong tất cả các khả năng, không chỉ 1 trường hợp cụ thể."}, {"q": "Trong GAV, mediated schema được định nghĩa như thế nào?", "opts": ["Là 1 view trên các nguồn", "Các nguồn là view trên mediated schema", "Cả 2 chiều đều là truy vấn (TGD)", "Không có định nghĩa hình thức"], "correct": 0, "explain": "GAV = Global-as-View: global/mediated schema ĐƯỢC ĐỊNH NGHĨA LÀ view trên nguồn."}, {"q": "Reformulation trong GAV dùng thuật toán nào?", "opts": ["Inverse Rules", "Query Unfolding — thay subgoal bằng rule, lặp tới hết", "Correlation Clustering", "Locality-Sensitive Hashing"], "correct": 1, "explain": "GAV reformulate bằng Unfolding: đơn giản vì mediated schema đã định nghĩa thẳng bằng nguồn."}, {"q": "Nhược điểm cốt lõi của GAV so với LAV là gì?", "opts": ["GAV luôn chậm hơn khi thực thi", "GAV không biểu diễn được thông tin nguồn không đầy đủ (incomplete information)", "GAV không dùng được SQL", "GAV chỉ hoạt động với 1 nguồn duy nhất"], "correct": 1, "explain": "GAV ép mọi nguồn vào đúng 1 view cố định — không biểu diễn được trường hợp nguồn chỉ biết 1 phần."}, {"q": "Reformulation trong LAV tương đương với bài toán kinh điển nào?", "opts": ["Query Unfolding", "Answering Queries Using Views", "Correlation Clustering", "Entity Resolution"], "correct": 1, "explain": "Vì nguồn là view trên mediated schema, trả lời truy vấn trên mediated schema = trả lời bằng các view đã có — đúng định nghĩa bài toán này."}, {"q": "GLAV biểu diễn hình thức bằng công cụ nào?", "opts": ["Chỉ dùng SQL thuần", "Tuple Generating Dependency (TGD)", "Hash function", "Decision Tree"], "correct": 1, "explain": "GLAV tương đương 1 TGD: vế trái (nguồn) kéo theo sự tồn tại dữ liệu thoả vế phải (mediated schema)."}]}</script></div>
 <div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../01-data-integration-overview/index.html">◀ Buổi 1: Data Integration — Tổng quan & Dị biệt dữ liệu</a><a href="../03-mediation-query-bigdata/index.html">Buổi 3: Mediation Query bán cấu trúc & Big Data Integration Challenges ▶</a></div>

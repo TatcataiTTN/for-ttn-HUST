@@ -111,6 +111,15 @@ def render_hoidap(items):
 <summary>❓ {esc(it['hoi'])}</summary><div class="dap">💡 {esc(it['dap'])}</div></details>""")
     return f'<div class="flashcard-grid">{"".join(cards)}</div>'
 
+# slug module -> prefix file dữ liệu SQL sandbox (data/sql/schema_<prefix>.sql, questions_<prefix>.json)
+SQL_SANDBOX_FOR = {
+    "02-schema-alignment": "m02",
+}
+# slug module -> đường dẫn trang ngân hàng trắc nghiệm sâu (bank.html riêng, build bằng build_bank.py)
+MCQ_BANK_FOR = {
+    "02-schema-alignment": "m02",
+}
+
 def build_module_page(mod, prev_mod, next_mod):
     rel_lang = "../../"
     rel_root = "../../../"
@@ -139,9 +148,39 @@ def build_module_page(mod, prev_mod, next_mod):
 {render_hoidap(hoidap_items)}"""
 
     quiz_items = json.dumps({"items": mod["quiz"]}, ensure_ascii=False)
-    quiz_html = f"""<h2>✅ Bài trắc nghiệm tự chấm</h2>
+    quiz_html = f"""<h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
 <div class="quiz"><div class="quiz-root"></div>
 <script type="application/json">{quiz_items}</script></div>"""
+
+    sql_prefix = SQL_SANDBOX_FOR.get(mod["slug"])
+    sql_html = ""
+    if sql_prefix:
+        sql_html = f"""<h2>🖥️ SQL Sandbox — chạy thật trên dữ liệu ví dụ của slide (sql.js/SQLite)</h2>
+<p class="hint">Lược đồ bảng S1-S7 lấy đúng nguyên văn slide gốc (xem Module 02 phần "Vì sao cần Certain
+Answers"); dữ liệu 10 phim là dữ liệu minh hoạ tự soạn (gắn nhãn rõ trong mã nguồn). Viết SQL vào ô bên
+dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với lời giải mẫu đã chạy thật và lưu sẵn.</p>
+<div id="sb-mount-{sql_prefix}"></div>
+<script src="{rel_root}_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({{
+  mount: "#sb-mount-{sql_prefix}",
+  vendorUrl: "{rel_root}vendor/sql-wasm/",
+  schemaUrl: "{rel_root}data/sql/schema_{sql_prefix}.sql",
+  dataUrl: "{rel_root}data/sql/questions_{sql_prefix}.json",
+  storageKey: "sqlbank:{mod['slug']}"
+}});
+</script>"""
+
+    bank_prefix = MCQ_BANK_FOR.get(mod["slug"])
+    bank_html = ""
+    if bank_prefix:
+        bank_count = len(json.loads((ROOT / "data" / "bank" / f"bank_{bank_prefix}.json").read_text(encoding="utf-8")))
+        bank_html = f"""<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">{bank_count} câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide/giáo trình hoặc bổ sung — ghi rõ
+từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../{mod['slug']}/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng {bank_count} câu — {mod['title']}</h3>
+<div class="go">Mở →</div></a>"""
 
     nav = '<div class="callout info" style="display:flex;justify-content:space-between;gap:10px">'
     nav += (f'<a href="../{prev_mod["slug"]}/index.html">◀ Buổi {prev_mod["n"]}: {prev_mod["title"]}</a>'
@@ -154,6 +193,8 @@ def build_module_page(mod, prev_mod, next_mod):
 <h1>{mod["title"]}</h1></div>
 {deck}
 {ex_html}
+{sql_html}
+{bank_html}
 {quiz_html}
 {nav}
 """
@@ -217,6 +258,32 @@ repo nguồn (không public hoá PDF công khai trên site này, chỉ liệt k�
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
 
+def build_bank_page(mod):
+    """Trang ngân hàng trắc nghiệm luyện tập sâu riêng cho 1 module (vi/modules/<slug>/bank.html)."""
+    prefix = MCQ_BANK_FOR[mod["slug"]]
+    rel_lang = "../../"
+    rel_root = "../../../"
+    body = f"""<div class="hero"><div class="kicker">Luyện tập sâu · Buổi {mod['n']:02d}</div>
+<h1>Ngân hàng trắc nghiệm — {mod['title']}</h1>
+<p>Mỗi câu ghi rõ nguồn (gốc slide/giáo trình hay bổ sung tự soạn), đáp án đã chấm &amp; giải thích ngay,
+lưu tiến độ trên trình duyệt. Lọc theo chủ đề/nguồn, xem lại riêng các câu đã sai.</p></div>
+<div id="bank-mount"></div>
+<script src="{rel_root}_shared/bank.js"></script>
+<script>
+BankUI.init({{
+  mount: "#bank-mount",
+  dataUrl: "{rel_root}data/bank/bank_{prefix}.json",
+  storageKey: "bank:{mod['slug']}"
+}});
+</script>
+<div class="callout info" style="margin-top:18px">
+<a href="index.html">◀ Về trang bài giảng Buổi {mod['n']}: {mod['title']}</a></div>
+"""
+    html = page_shell(f"Ngân hàng trắc nghiệm · Buổi {mod['n']} · IT5427", rel_lang, rel_root, body)
+    out = ROOT / "vi" / "modules" / mod["slug"] / "bank.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(html, encoding="utf-8")
+
 def build_index():
     rel_lang = ""
     rel_root = "../"
@@ -267,6 +334,8 @@ if __name__ == "__main__":
         prev_mod = MODULES[i-1] if i > 0 else None
         next_mod = MODULES[i+1] if i < len(MODULES)-1 else None
         build_module_page(m, prev_mod, next_mod)
+        if m["slug"] in MCQ_BANK_FOR:
+            build_bank_page(m)
     build_index()
     build_root_redirect()
     print("Đã sinh", len(MODULES), "module + 1 trang tài liệu tham khảo + index")

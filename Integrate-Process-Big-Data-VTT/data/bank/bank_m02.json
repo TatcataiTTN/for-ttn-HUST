@@ -1,0 +1,1346 @@
+[
+ {
+  "id": "m02-t1-gav",
+  "q": "'GAV (Global-as-View)' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Mediated schema được ĐỊNH NGHĨA LÀ 1 view (truy vấn) trên các nguồn: G ⊇ Q(sources)",
+   "Cả mediated schema và nguồn đều là view của nhau (TGD 2 chiều)",
+   "Mediated schema không cần định nghĩa hình thức, chỉ cần đặt tên bảng giống nguồn",
+   "Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "GAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mediated schema được ĐỊNH NGHĨA LÀ 1 view (truy vấn) trên các nguồn: G ⊇ Q(sources)"
+ },
+ {
+  "id": "m02-t1-lav",
+  "q": "'LAV (Local-as-View)' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Nguồn và mediated schema dùng chung 1 schema vật lý duy nhất",
+   "Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema: S_i ⊆ Q_i(G)",
+   "Mediated schema được định nghĩa là 1 view trên các nguồn",
+   "LAV chỉ áp dụng được khi có đúng 1 nguồn duy nhất — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "LAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema: S_i ⊆ Q_i(G)"
+ },
+ {
+  "id": "m02-t1-glav",
+  "q": "'GLAV' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Chỉ áp dụng cho dữ liệu XML, không áp dụng cho dữ liệu quan hệ",
+   "Chỉ dùng được khi mediated schema và nguồn có cùng số cột — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Kết hợp GAV và LAV — cả 2 vế đều là truy vấn: Q^S(X) ⊆ Q^G(X), biểu diễn bằng Tuple Generating Dependency (TGD)",
+   "Là tên gọi khác của Query Unfolding — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "GLAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Kết hợp GAV và LAV — cả 2 vế đều là truy vấn: Q^S(X) ⊆ Q^G(X), biểu diễn bằng Tuple Generating Dependency (TGD)"
+ },
+ {
+  "id": "m02-t1-tgd",
+  "q": "'Tuple Generating Dependency (TGD)' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Một ràng buộc khoá ngoại (foreign key constraint) đặc biệt",
+   "Công thức chỉ dùng trong chuẩn hoá CSDL (1NF/2NF/3NF), không liên quan Data Integration",
+   "Thuật toán chấm điểm similarity giữa 2 bản ghi",
+   "Công thức logic dạng ∀X̄ φ(X̄) → ∃Ȳ ψ(X̄,Ȳ) — cách hình thức khác để viết GLAV"
+  ],
+  "correct": 3,
+  "topic": "GLAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Công thức logic dạng ∀X̄ φ(X̄) → ∃Ȳ ψ(X̄,Ȳ) — cách hình thức khác để viết GLAV"
+ },
+ {
+  "id": "m02-t1-certain-answer",
+  "q": "'Certain Answer' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Câu trả lời đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping",
+   "Câu trả lời đã được con người xác nhận thủ công",
+   "Câu trả lời đúng trong ít nhất 1 instance khả dĩ",
+   "Câu trả lời do nguồn đáng tin cậy nhất cung cấp — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Câu trả lời đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping"
+ },
+ {
+  "id": "m02-t1-possible-instance",
+  "q": "'Possible Instance' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Instance duy nhất đúng của mediated schema, không có instance khác",
+   "Một instance của mediated schema tương thích với dữ liệu nguồn hiện có — có thể có nhiều hơn 1, tuỳ ngôn ngữ mapping",
+   "Instance chỉ tồn tại trong GAV, không tồn tại trong LAV",
+   "Một bản sao vật lý (backup) của cơ sở dữ liệu nguồn — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Một instance của mediated schema tương thích với dữ liệu nguồn hiện có — có thể có nhiều hơn 1, tuỳ ngôn ngữ mapping"
+ },
+ {
+  "id": "m02-t1-open-world",
+  "q": "'Open-world assumption' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Giả định mọi nguồn đều công khai (public) trên Internet — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Giả định 'chỉ có đúng dữ liệu đã biết, không còn gì khác' (đây là closed-world)",
+   "Giả định 'còn có thể có dữ liệu khác chưa biết' — dùng khi định nghĩa Gi(X) ⊇ Q(S)",
+   "Giả định không có giới hạn Access Pattern nào trên nguồn"
+  ],
+  "correct": 2,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giả định 'còn có thể có dữ liệu khác chưa biết' — dùng khi định nghĩa Gi(X) ⊇ Q(S)"
+ },
+ {
+  "id": "m02-t1-closed-world",
+  "q": "'Closed-world assumption' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Giả định 'còn có thể có dữ liệu khác chưa biết' (đây là open-world)",
+   "Giả định hệ thống chỉ hoạt động offline, không có truy vấn trực tuyến",
+   "Giả định dữ liệu được mã hoá (encrypted) khi truyền giữa nguồn và mediated schema",
+   "Giả định 'chỉ có đúng dữ liệu đã biết' — dùng khi định nghĩa Gi(X) = Q(S)"
+  ],
+  "correct": 3,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giả định 'chỉ có đúng dữ liệu đã biết' — dùng khi định nghĩa Gi(X) = Q(S)"
+ },
+ {
+  "id": "m02-t1-query-unfolding",
+  "q": "'Query Unfolding' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Thuật toán reformulation trong GAV — thay thế subgoal bằng rule tương ứng, lặp tới khi hết; không đảm bảo tạo query hiệu quả hơn, kích thước có thể tăng theo cấp số nhân",
+   "Thuật toán luôn tạo ra query ngắn hơn và nhanh hơn query gốc — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Thuật toán tối ưu hoá chỉ mục (index) của CSDL — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Thuật toán reformulation trong LAV (đây thực ra là Answering Queries Using Views) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Thuật toán reformulation trong GAV — thay thế subgoal bằng rule tương ứng, lặp tới khi hết; không đảm bảo tạo query hiệu quả hơn, kích thước có thể tăng theo cấp số nhân"
+ },
+ {
+  "id": "m02-t1-aquv",
+  "q": "'Answering Queries Using Views' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Bài toán reformulation trong GAV (đây thực ra là Query Unfolding) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Bài toán reformulation trong LAV — tìm cách trả lời truy vấn trên mediated schema chỉ dùng dữ liệu đã có ở các view (nguồn)",
+   "Bài toán tìm view nhanh nhất để tạo chỉ mục (materialized view index)",
+   "Bài toán chỉ xuất hiện khi dùng GLAV, không xuất hiện khi dùng LAV thuần"
+  ],
+  "correct": 1,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Bài toán reformulation trong LAV — tìm cách trả lời truy vấn trên mediated schema chỉ dùng dữ liệu đã có ở các view (nguồn)"
+ },
+ {
+  "id": "m02-t1-inverse-rules",
+  "q": "'Inverse Rules' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Kỹ thuật chỉ dùng trong GAV, không áp dụng được cho LAV",
+   "Một thuật toán Clustering dùng trong Entity Resolution",
+   "Kỹ thuật giải LAV — suy ngược từ định nghĩa view ra quy tắc suy luận dữ liệu gốc, rồi unfold như GAV",
+   "Kỹ thuật mã hoá ngược (decrypt) dữ liệu đã mã hoá — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Kỹ thuật giải LAV — suy ngược từ định nghĩa view ra quy tắc suy luận dữ liệu gốc, rồi unfold như GAV"
+ },
+ {
+  "id": "m02-t1-bucket",
+  "q": "'Bucket Algorithm' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Thuật toán Clustering trong Record Linkage — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Thuật toán tối ưu hoá lưu trữ (bucket hashing) của hệ quản trị CSDL",
+   "Thuật toán Query Unfolding dùng riêng cho GAV — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "1 trong các thuật toán Answering-Queries-Using-Views (cùng với MiniCon) — theo mục lục Doan-Halevy-Ives Ch.2 §2.4.4"
+  ],
+  "correct": 3,
+  "topic": "Query Unfolding",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1 trong các thuật toán Answering-Queries-Using-Views (cùng với MiniCon) — theo mục lục Doan-Halevy-Ives Ch.2 §2.4.4"
+ },
+ {
+  "id": "m02-t1-data-level-het",
+  "q": "'Data-level Heterogeneity' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Khác biệt cần PHÉP BIẾN ĐỔI TÍNH TOÁN khi map, không chỉ đổi tên cột — VD Celsius↔Fahrenheit, giá có/không thuế",
+   "Khác biệt duy nhất mà GAV không giải quyết được nhưng LAV giải quyết được",
+   "Khác biệt chỉ do đổi tên cột (đây là Syntactic/Format Heterogeneity)",
+   "Khác biệt chỉ xảy ra giữa 2 hệ quản trị CSDL khác hãng — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Data-level heterogeneity",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Khác biệt cần PHÉP BIẾN ĐỔI TÍNH TOÁN khi map, không chỉ đổi tên cột — VD Celsius↔Fahrenheit, giá có/không thuế"
+ },
+ {
+  "id": "m02-t1-paygo",
+  "q": "'PAYGO (Pay-As-You-Go Integration)' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Yêu cầu thiết kế mediated schema hoàn chỉnh trước khi triển khai — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Triết lý tích hợp dần dần — bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện mapping dần theo thời gian/phản hồi người dùng",
+   "Mô hình tính phí (billing) theo số truy vấn thực hiện trên hệ thống tích hợp",
+   "Chỉ áp dụng được cho dữ liệu có cấu trúc (structured), không dùng cho Deep Web"
+  ],
+  "correct": 1,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Triết lý tích hợp dần dần — bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện mapping dần theo thời gian/phản hồi người dùng"
+ },
+ {
+  "id": "m02-t1-dataspace",
+  "q": "'Dataspace / DSSP' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Không gian lưu trữ vật lý (physical storage) dùng riêng cho Big Data — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Một loại cơ sở dữ liệu phân tán (distributed database) thay thế SQL — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Mô hình quản lý dữ liệu thay thế tích hợp truyền thống khi có quá nhiều nguồn (hàng triệu) — không đòi hỏi mediated schema chính xác ngay, chấp nhận uncertainty ở mọi tầng",
+   "Chỉ là tên gọi khác của Data Warehouse — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 2,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mô hình quản lý dữ liệu thay thế tích hợp truyền thống khi có quá nhiều nguồn (hàng triệu) — không đòi hỏi mediated schema chính xác ngay, chấp nhận uncertainty ở mọi tầng"
+ },
+ {
+  "id": "m02-t1-prob-schema",
+  "q": "'Probabilistic Mediated Schema' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Mediated schema duy nhất do chuyên gia thiết kế thủ công, không có phiên bản khác",
+   "Chỉ dùng được khi tất cả nguồn đã đồng thuận 100% về schema — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một kỹ thuật mã hoá xác suất (probabilistic encryption) cho schema",
+   "Mediated schema được tạo tự động bằng clustering thuộc tính nguồn, có nhiều phiên bản khả dĩ kèm xác suất"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mediated schema được tạo tự động bằng clustering thuộc tính nguồn, có nhiều phiên bản khả dĩ kèm xác suất"
+ },
+ {
+  "id": "m02-t1-webtables",
+  "q": "'WebTables' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Hướng tích hợp không cần mediated schema tường minh — tìm/ghép bảng trên Web bằng keyword + ranking theo độ liên quan (FeatureRank, SchemaRank)",
+   "Chỉ hoạt động trên dữ liệu đã có mediated schema sẵn, không phải dữ liệu Web thô — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Một ngôn ngữ truy vấn SQL mở rộng cho bảng HTML — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Công cụ chuyển đổi file Excel sang HTML table — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 0,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hướng tích hợp không cần mediated schema tường minh — tìm/ghép bảng trên Web bằng keyword + ranking theo độ liên quan (FeatureRank, SchemaRank)"
+ },
+ {
+  "id": "m02-t1-semantic-mapping",
+  "q": "'Semantic Mapping' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Ánh xạ vật lý (physical mapping) giữa RAM và đĩa cứng",
+   "Ánh xạ ngữ nghĩa giữa mediated schema và schema của từng nguồn — 'logic' kết nối 2 bên",
+   "Chỉ tồn tại trong các hệ thống dùng XML, không tồn tại trong hệ thống quan hệ",
+   "Một thuật ngữ đồng nghĩa với Wrapper — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Ánh xạ ngữ nghĩa giữa mediated schema và schema của từng nguồn — 'logic' kết nối 2 bên"
+ },
+ {
+  "id": "m02-t1-schema-mapping-def",
+  "q": "'Schema Mapping' được định nghĩa như thế nào (theo đúng nội dung slide/giáo trình đã học)?",
+  "opts": [
+   "Chỉ cần thiết khi dùng Data Warehousing, không cần khi dùng Virtual Integration",
+   "Chỉ là bảng đối chiếu tên cột (column renaming table), không có công thức logic",
+   "Mô tả hình thức (công thức logic) quan hệ giữa mediated schema và schema nguồn — dùng để reformulate truy vấn",
+   "Một bước trong Entity Resolution Pipeline (Blocking) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mô tả hình thức (công thức logic) quan hệ giữa mediated schema và schema nguồn — dùng để reformulate truy vấn"
+ },
+ {
+  "id": "m02-t2-gav",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mediated schema được ĐỊNH NGHĨA LÀ 1 view (truy vấn) trên các nguồn: G ⊇ Q(sources)\"",
+  "opts": [
+   "Tuple Generating Dependency (TGD)",
+   "Closed-world assumption",
+   "Bucket Algorithm",
+   "GAV (Global-as-View)"
+  ],
+  "correct": 3,
+  "topic": "GAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: GAV (Global-as-View)"
+ },
+ {
+  "id": "m02-t2-lav",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema: S_i ⊆ Q_i(G)\"",
+  "opts": [
+   "LAV (Local-as-View)",
+   "PAYGO (Pay-As-You-Go Integration)",
+   "Possible Instance",
+   "GLAV"
+  ],
+  "correct": 0,
+  "topic": "LAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: LAV (Local-as-View)"
+ },
+ {
+  "id": "m02-t2-glav",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Kết hợp GAV và LAV — cả 2 vế đều là truy vấn: Q^S(X) ⊆ Q^G(X), biểu diễn bằng Tuple Generating Dependency (TGD)\"",
+  "opts": [
+   "Open-world assumption",
+   "GLAV",
+   "Inverse Rules",
+   "Bucket Algorithm"
+  ],
+  "correct": 1,
+  "topic": "GLAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: GLAV"
+ },
+ {
+  "id": "m02-t2-tgd",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Công thức logic dạng ∀X̄ φ(X̄) → ∃Ȳ ψ(X̄,Ȳ) — cách hình thức khác để viết GLAV\"",
+  "opts": [
+   "Query Unfolding",
+   "Probabilistic Mediated Schema",
+   "Tuple Generating Dependency (TGD)",
+   "Certain Answer — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "GLAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Tuple Generating Dependency (TGD)"
+ },
+ {
+  "id": "m02-t2-certain-answer",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Câu trả lời đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping\"",
+  "opts": [
+   "Answering Queries Using Views",
+   "Open-world assumption",
+   "Schema Mapping",
+   "Certain Answer"
+  ],
+  "correct": 3,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Certain Answer"
+ },
+ {
+  "id": "m02-t2-possible-instance",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Một instance của mediated schema tương thích với dữ liệu nguồn hiện có — có thể có nhiều hơn 1, tuỳ ngôn ngữ mapping\"",
+  "opts": [
+   "Possible Instance",
+   "GLAV",
+   "Tuple Generating Dependency (TGD)",
+   "Inverse Rules"
+  ],
+  "correct": 0,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Possible Instance"
+ },
+ {
+  "id": "m02-t2-open-world",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Giả định 'còn có thể có dữ liệu khác chưa biết' — dùng khi định nghĩa Gi(X) ⊇ Q(S)\"",
+  "opts": [
+   "LAV (Local-as-View)",
+   "Open-world assumption",
+   "Semantic Mapping",
+   "Bucket Algorithm — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 1,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Open-world assumption"
+ },
+ {
+  "id": "m02-t2-closed-world",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Giả định 'chỉ có đúng dữ liệu đã biết' — dùng khi định nghĩa Gi(X) = Q(S)\"",
+  "opts": [
+   "GLAV",
+   "PAYGO (Pay-As-You-Go Integration)",
+   "Closed-world assumption",
+   "Certain Answer"
+  ],
+  "correct": 2,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Closed-world assumption"
+ },
+ {
+  "id": "m02-t2-query-unfolding",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Thuật toán reformulation trong GAV — thay thế subgoal bằng rule tương ứng, lặp tới khi hết; không đảm bảo tạo query hiệu quả hơn, kích thước có thể tăng theo cấp số nhân\"",
+  "opts": [
+   "LAV (Local-as-View)",
+   "PAYGO (Pay-As-You-Go Integration)",
+   "Schema Mapping",
+   "Query Unfolding"
+  ],
+  "correct": 3,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Query Unfolding"
+ },
+ {
+  "id": "m02-t2-aquv",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Bài toán reformulation trong LAV — tìm cách trả lời truy vấn trên mediated schema chỉ dùng dữ liệu đã có ở các view (nguồn)\"",
+  "opts": [
+   "Answering Queries Using Views",
+   "Open-world assumption",
+   "Query Unfolding",
+   "Certain Answer — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 0,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Answering Queries Using Views"
+ },
+ {
+  "id": "m02-t2-inverse-rules",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Kỹ thuật giải LAV — suy ngược từ định nghĩa view ra quy tắc suy luận dữ liệu gốc, rồi unfold như GAV\"",
+  "opts": [
+   "Open-world assumption",
+   "Inverse Rules",
+   "Semantic Mapping",
+   "Possible Instance"
+  ],
+  "correct": 1,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Inverse Rules"
+ },
+ {
+  "id": "m02-t2-bucket",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"1 trong các thuật toán Answering-Queries-Using-Views (cùng với MiniCon) — theo mục lục Doan-Halevy-Ives Ch.2 §2.4.4\"",
+  "opts": [
+   "Answering Queries Using Views",
+   "Data-level Heterogeneity",
+   "Bucket Algorithm",
+   "WebTables"
+  ],
+  "correct": 2,
+  "topic": "Query Unfolding",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Bucket Algorithm"
+ },
+ {
+  "id": "m02-t2-data-level-het",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Khác biệt cần PHÉP BIẾN ĐỔI TÍNH TOÁN khi map, không chỉ đổi tên cột — VD Celsius↔Fahrenheit, giá có/không thuế\"",
+  "opts": [
+   "Semantic Mapping",
+   "GAV (Global-as-View)",
+   "Probabilistic Mediated Schema",
+   "Data-level Heterogeneity"
+  ],
+  "correct": 3,
+  "topic": "Data-level heterogeneity",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Data-level Heterogeneity"
+ },
+ {
+  "id": "m02-t2-paygo",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Triết lý tích hợp dần dần — bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện mapping dần theo thời gian/phản hồi người dùng\"",
+  "opts": [
+   "PAYGO (Pay-As-You-Go Integration)",
+   "Certain Answer — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Possible Instance",
+   "Answering Queries Using Views"
+  ],
+  "correct": 0,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: PAYGO (Pay-As-You-Go Integration)"
+ },
+ {
+  "id": "m02-t2-dataspace",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mô hình quản lý dữ liệu thay thế tích hợp truyền thống khi có quá nhiều nguồn (hàng triệu) — không đòi hỏi mediated schema chính xác ngay, chấp nhận uncertainty ở mọi tầng\"",
+  "opts": [
+   "Possible Instance",
+   "Dataspace / DSSP",
+   "Certain Answer",
+   "GAV (Global-as-View)"
+  ],
+  "correct": 1,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Dataspace / DSSP"
+ },
+ {
+  "id": "m02-t2-prob-schema",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mediated schema được tạo tự động bằng clustering thuộc tính nguồn, có nhiều phiên bản khả dĩ kèm xác suất\"",
+  "opts": [
+   "Open-world assumption",
+   "Tuple Generating Dependency (TGD)",
+   "Probabilistic Mediated Schema",
+   "WebTables"
+  ],
+  "correct": 2,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Probabilistic Mediated Schema"
+ },
+ {
+  "id": "m02-t2-webtables",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Hướng tích hợp không cần mediated schema tường minh — tìm/ghép bảng trên Web bằng keyword + ranking theo độ liên quan (FeatureRank, SchemaRank)\"",
+  "opts": [
+   "Query Unfolding",
+   "PAYGO (Pay-As-You-Go Integration)",
+   "Probabilistic Mediated Schema",
+   "WebTables"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: WebTables"
+ },
+ {
+  "id": "m02-t2-semantic-mapping",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Ánh xạ ngữ nghĩa giữa mediated schema và schema của từng nguồn — 'logic' kết nối 2 bên\"",
+  "opts": [
+   "Semantic Mapping",
+   "PAYGO (Pay-As-You-Go Integration)",
+   "LAV (Local-as-View)",
+   "GLAV"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Semantic Mapping"
+ },
+ {
+  "id": "m02-t2-schema-mapping-def",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mô tả hình thức (công thức logic) quan hệ giữa mediated schema và schema nguồn — dùng để reformulate truy vấn\"",
+  "opts": [
+   "Closed-world assumption",
+   "Schema Mapping",
+   "Tuple Generating Dependency (TGD)",
+   "WebTables"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Schema Mapping"
+ },
+ {
+  "id": "m02-t3-gav",
+  "q": "Phát biểu nào sau đây về GAV (Global-as-View) là ĐÚNG?",
+  "opts": [
+   "Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Cả mediated schema và nguồn đều là view của nhau (TGD 2 chiều)",
+   "Mediated schema được ĐỊNH NGHĨA LÀ 1 view (truy vấn) trên các nguồn: G ⊇ Q(sources)",
+   "Mediated schema không cần định nghĩa hình thức, chỉ cần đặt tên bảng giống nguồn"
+  ],
+  "correct": 2,
+  "topic": "GAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mediated schema được ĐỊNH NGHĨA LÀ 1 view (truy vấn) trên các nguồn: G ⊇ Q(sources)"
+ },
+ {
+  "id": "m02-t3-lav",
+  "q": "Phát biểu nào sau đây về LAV (Local-as-View) là ĐÚNG?",
+  "opts": [
+   "Nguồn và mediated schema dùng chung 1 schema vật lý duy nhất",
+   "Mediated schema được định nghĩa là 1 view trên các nguồn",
+   "LAV chỉ áp dụng được khi có đúng 1 nguồn duy nhất — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema: S_i ⊆ Q_i(G)"
+  ],
+  "correct": 3,
+  "topic": "LAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mỗi NGUỒN được định nghĩa là 1 view trên mediated schema: S_i ⊆ Q_i(G)"
+ },
+ {
+  "id": "m02-t3-glav",
+  "q": "Phát biểu nào sau đây về GLAV là ĐÚNG?",
+  "opts": [
+   "Kết hợp GAV và LAV — cả 2 vế đều là truy vấn: Q^S(X) ⊆ Q^G(X), biểu diễn bằng Tuple Generating Dependency (TGD)",
+   "Là tên gọi khác của Query Unfolding — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Chỉ áp dụng cho dữ liệu XML, không áp dụng cho dữ liệu quan hệ",
+   "Chỉ dùng được khi mediated schema và nguồn có cùng số cột — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 0,
+  "topic": "GLAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Kết hợp GAV và LAV — cả 2 vế đều là truy vấn: Q^S(X) ⊆ Q^G(X), biểu diễn bằng Tuple Generating Dependency (TGD)"
+ },
+ {
+  "id": "m02-t3-tgd",
+  "q": "Phát biểu nào sau đây về Tuple Generating Dependency (TGD) là ĐÚNG?",
+  "opts": [
+   "Công thức chỉ dùng trong chuẩn hoá CSDL (1NF/2NF/3NF), không liên quan Data Integration",
+   "Công thức logic dạng ∀X̄ φ(X̄) → ∃Ȳ ψ(X̄,Ȳ) — cách hình thức khác để viết GLAV",
+   "Thuật toán chấm điểm similarity giữa 2 bản ghi",
+   "Một ràng buộc khoá ngoại (foreign key constraint) đặc biệt"
+  ],
+  "correct": 1,
+  "topic": "GLAV",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Công thức logic dạng ∀X̄ φ(X̄) → ∃Ȳ ψ(X̄,Ȳ) — cách hình thức khác để viết GLAV"
+ },
+ {
+  "id": "m02-t3-certain-answer",
+  "q": "Phát biểu nào sau đây về Certain Answer là ĐÚNG?",
+  "opts": [
+   "Câu trả lời đúng trong ít nhất 1 instance khả dĩ",
+   "Câu trả lời đã được con người xác nhận thủ công",
+   "Câu trả lời đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping",
+   "Câu trả lời do nguồn đáng tin cậy nhất cung cấp — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Câu trả lời đúng trong MỌI instance khả dĩ của mediated schema nhất quán với dữ liệu nguồn + mapping"
+ },
+ {
+  "id": "m02-t3-possible-instance",
+  "q": "Phát biểu nào sau đây về Possible Instance là ĐÚNG?",
+  "opts": [
+   "Instance chỉ tồn tại trong GAV, không tồn tại trong LAV",
+   "Instance duy nhất đúng của mediated schema, không có instance khác",
+   "Một bản sao vật lý (backup) của cơ sở dữ liệu nguồn — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Một instance của mediated schema tương thích với dữ liệu nguồn hiện có — có thể có nhiều hơn 1, tuỳ ngôn ngữ mapping"
+  ],
+  "correct": 3,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Một instance của mediated schema tương thích với dữ liệu nguồn hiện có — có thể có nhiều hơn 1, tuỳ ngôn ngữ mapping"
+ },
+ {
+  "id": "m02-t3-open-world",
+  "q": "Phát biểu nào sau đây về Open-world assumption là ĐÚNG?",
+  "opts": [
+   "Giả định 'còn có thể có dữ liệu khác chưa biết' — dùng khi định nghĩa Gi(X) ⊇ Q(S)",
+   "Giả định không có giới hạn Access Pattern nào trên nguồn",
+   "Giả định mọi nguồn đều công khai (public) trên Internet — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Giả định 'chỉ có đúng dữ liệu đã biết, không còn gì khác' (đây là closed-world)"
+  ],
+  "correct": 0,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giả định 'còn có thể có dữ liệu khác chưa biết' — dùng khi định nghĩa Gi(X) ⊇ Q(S)"
+ },
+ {
+  "id": "m02-t3-closed-world",
+  "q": "Phát biểu nào sau đây về Closed-world assumption là ĐÚNG?",
+  "opts": [
+   "Giả định 'còn có thể có dữ liệu khác chưa biết' (đây là open-world)",
+   "Giả định 'chỉ có đúng dữ liệu đã biết' — dùng khi định nghĩa Gi(X) = Q(S)",
+   "Giả định hệ thống chỉ hoạt động offline, không có truy vấn trực tuyến",
+   "Giả định dữ liệu được mã hoá (encrypted) khi truyền giữa nguồn và mediated schema"
+  ],
+  "correct": 1,
+  "topic": "Certain Answers",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giả định 'chỉ có đúng dữ liệu đã biết' — dùng khi định nghĩa Gi(X) = Q(S)"
+ },
+ {
+  "id": "m02-t3-query-unfolding",
+  "q": "Phát biểu nào sau đây về Query Unfolding là ĐÚNG?",
+  "opts": [
+   "Thuật toán tối ưu hoá chỉ mục (index) của CSDL — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Thuật toán reformulation trong LAV (đây thực ra là Answering Queries Using Views) — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Thuật toán reformulation trong GAV — thay thế subgoal bằng rule tương ứng, lặp tới khi hết; không đảm bảo tạo query hiệu quả hơn, kích thước có thể tăng theo cấp số nhân",
+   "Thuật toán luôn tạo ra query ngắn hơn và nhanh hơn query gốc — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Thuật toán reformulation trong GAV — thay thế subgoal bằng rule tương ứng, lặp tới khi hết; không đảm bảo tạo query hiệu quả hơn, kích thước có thể tăng theo cấp số nhân"
+ },
+ {
+  "id": "m02-t3-aquv",
+  "q": "Phát biểu nào sau đây về Answering Queries Using Views là ĐÚNG?",
+  "opts": [
+   "Bài toán reformulation trong GAV (đây thực ra là Query Unfolding) — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Bài toán chỉ xuất hiện khi dùng GLAV, không xuất hiện khi dùng LAV thuần",
+   "Bài toán tìm view nhanh nhất để tạo chỉ mục (materialized view index)",
+   "Bài toán reformulation trong LAV — tìm cách trả lời truy vấn trên mediated schema chỉ dùng dữ liệu đã có ở các view (nguồn)"
+  ],
+  "correct": 3,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Bài toán reformulation trong LAV — tìm cách trả lời truy vấn trên mediated schema chỉ dùng dữ liệu đã có ở các view (nguồn)"
+ },
+ {
+  "id": "m02-t3-inverse-rules",
+  "q": "Phát biểu nào sau đây về Inverse Rules là ĐÚNG?",
+  "opts": [
+   "Kỹ thuật giải LAV — suy ngược từ định nghĩa view ra quy tắc suy luận dữ liệu gốc, rồi unfold như GAV",
+   "Một thuật toán Clustering dùng trong Entity Resolution",
+   "Kỹ thuật mã hoá ngược (decrypt) dữ liệu đã mã hoá — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Kỹ thuật chỉ dùng trong GAV, không áp dụng được cho LAV"
+  ],
+  "correct": 0,
+  "topic": "Query Unfolding",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Kỹ thuật giải LAV — suy ngược từ định nghĩa view ra quy tắc suy luận dữ liệu gốc, rồi unfold như GAV"
+ },
+ {
+  "id": "m02-t3-bucket",
+  "q": "Phát biểu nào sau đây về Bucket Algorithm là ĐÚNG?",
+  "opts": [
+   "Thuật toán tối ưu hoá lưu trữ (bucket hashing) của hệ quản trị CSDL",
+   "1 trong các thuật toán Answering-Queries-Using-Views (cùng với MiniCon) — theo mục lục Doan-Halevy-Ives Ch.2 §2.4.4",
+   "Thuật toán Query Unfolding dùng riêng cho GAV",
+   "Thuật toán Clustering trong Record Linkage — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 1,
+  "topic": "Query Unfolding",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1 trong các thuật toán Answering-Queries-Using-Views (cùng với MiniCon) — theo mục lục Doan-Halevy-Ives Ch.2 §2.4.4"
+ },
+ {
+  "id": "m02-t3-data-level-het",
+  "q": "Phát biểu nào sau đây về Data-level Heterogeneity là ĐÚNG?",
+  "opts": [
+   "Khác biệt chỉ do đổi tên cột (đây là Syntactic/Format Heterogeneity)",
+   "Khác biệt duy nhất mà GAV không giải quyết được nhưng LAV giải quyết được",
+   "Khác biệt cần PHÉP BIẾN ĐỔI TÍNH TOÁN khi map, không chỉ đổi tên cột — VD Celsius↔Fahrenheit, giá có/không thuế",
+   "Khác biệt chỉ xảy ra giữa 2 hệ quản trị CSDL khác hãng — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "Data-level heterogeneity",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Khác biệt cần PHÉP BIẾN ĐỔI TÍNH TOÁN khi map, không chỉ đổi tên cột — VD Celsius↔Fahrenheit, giá có/không thuế"
+ },
+ {
+  "id": "m02-t3-paygo",
+  "q": "Phát biểu nào sau đây về PAYGO (Pay-As-You-Go Integration) là ĐÚNG?",
+  "opts": [
+   "Mô hình tính phí (billing) theo số truy vấn thực hiện trên hệ thống tích hợp",
+   "Yêu cầu thiết kế mediated schema hoàn chỉnh trước khi triển khai — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Chỉ áp dụng được cho dữ liệu có cấu trúc (structured), không dùng cho Deep Web",
+   "Triết lý tích hợp dần dần — bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện mapping dần theo thời gian/phản hồi người dùng"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Triết lý tích hợp dần dần — bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện mapping dần theo thời gian/phản hồi người dùng"
+ },
+ {
+  "id": "m02-t3-dataspace",
+  "q": "Phát biểu nào sau đây về Dataspace / DSSP là ĐÚNG?",
+  "opts": [
+   "Mô hình quản lý dữ liệu thay thế tích hợp truyền thống khi có quá nhiều nguồn (hàng triệu) — không đòi hỏi mediated schema chính xác ngay, chấp nhận uncertainty ở mọi tầng",
+   "Không gian lưu trữ vật lý (physical storage) dùng riêng cho Big Data — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một loại cơ sở dữ liệu phân tán (distributed database) thay thế SQL — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Chỉ là tên gọi khác của Data Warehouse — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 0,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mô hình quản lý dữ liệu thay thế tích hợp truyền thống khi có quá nhiều nguồn (hàng triệu) — không đòi hỏi mediated schema chính xác ngay, chấp nhận uncertainty ở mọi tầng"
+ },
+ {
+  "id": "m02-t3-prob-schema",
+  "q": "Phát biểu nào sau đây về Probabilistic Mediated Schema là ĐÚNG?",
+  "opts": [
+   "Chỉ dùng được khi tất cả nguồn đã đồng thuận 100% về schema — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Mediated schema được tạo tự động bằng clustering thuộc tính nguồn, có nhiều phiên bản khả dĩ kèm xác suất",
+   "Một kỹ thuật mã hoá xác suất (probabilistic encryption) cho schema",
+   "Mediated schema duy nhất do chuyên gia thiết kế thủ công, không có phiên bản khác"
+  ],
+  "correct": 1,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mediated schema được tạo tự động bằng clustering thuộc tính nguồn, có nhiều phiên bản khả dĩ kèm xác suất"
+ },
+ {
+  "id": "m02-t3-webtables",
+  "q": "Phát biểu nào sau đây về WebTables là ĐÚNG?",
+  "opts": [
+   "Một ngôn ngữ truy vấn SQL mở rộng cho bảng HTML — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Chỉ hoạt động trên dữ liệu đã có mediated schema sẵn, không phải dữ liệu Web thô — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Hướng tích hợp không cần mediated schema tường minh — tìm/ghép bảng trên Web bằng keyword + ranking theo độ liên quan (FeatureRank, SchemaRank)",
+   "Công cụ chuyển đổi file Excel sang HTML table — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "PAYGO & Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hướng tích hợp không cần mediated schema tường minh — tìm/ghép bảng trên Web bằng keyword + ranking theo độ liên quan (FeatureRank, SchemaRank)"
+ },
+ {
+  "id": "m02-t3-semantic-mapping",
+  "q": "Phát biểu nào sau đây về Semantic Mapping là ĐÚNG?",
+  "opts": [
+   "Ánh xạ vật lý (physical mapping) giữa RAM và đĩa cứng",
+   "Một thuật ngữ đồng nghĩa với Wrapper — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Chỉ tồn tại trong các hệ thống dùng XML, không tồn tại trong hệ thống quan hệ",
+   "Ánh xạ ngữ nghĩa giữa mediated schema và schema của từng nguồn — 'logic' kết nối 2 bên"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Ánh xạ ngữ nghĩa giữa mediated schema và schema của từng nguồn — 'logic' kết nối 2 bên"
+ },
+ {
+  "id": "m02-t3-schema-mapping-def",
+  "q": "Phát biểu nào sau đây về Schema Mapping là ĐÚNG?",
+  "opts": [
+   "Mô tả hình thức (công thức logic) quan hệ giữa mediated schema và schema nguồn — dùng để reformulate truy vấn",
+   "Chỉ cần thiết khi dùng Data Warehousing, không cần khi dùng Virtual Integration",
+   "Chỉ là bảng đối chiếu tên cột (column renaming table), không có công thức logic",
+   "Một bước trong Entity Resolution Pipeline (Blocking) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mô tả hình thức (công thức logic) quan hệ giữa mediated schema và schema nguồn — dùng để reformulate truy vấn"
+ },
+ {
+  "id": "m02-t5-00",
+  "q": "Trong GAV, mỗi quan hệ của Mediated Schema được định nghĩa là 1 ___ trên các nguồn.",
+  "opts": [
+   "chỉ mục (index)",
+   "view (truy vấn)",
+   "bản sao vật lý",
+   "ràng buộc khoá ngoại"
+  ],
+  "correct": 1,
+  "topic": "GAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: view (truy vấn)"
+ },
+ {
+  "id": "m02-t5-01",
+  "q": "Công thức GAV dạng open-world viết là $G_i(\\bar X)$ ___ $Q(\\bar S)$ (dùng dấu chứa, không phải dấu bằng).",
+  "opts": [
+   "≠",
+   "⊆",
+   "⊇",
+   "="
+  ],
+  "correct": 2,
+  "topic": "GAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: ⊇"
+ },
+ {
+  "id": "m02-t5-02",
+  "q": "Nhược điểm cốt lõi của GAV: cứng nhắc — ép mọi nguồn vào đúng 1 'góc nhìn' của mediated schema, không biểu diễn được trường hợp nguồn chỉ biết ___.",
+  "opts": [
+   "thông tin đã mã hoá",
+   "thông tin dạng XML — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "toàn bộ thông tin đầy đủ",
+   "1 phần thông tin (incomplete information)"
+  ],
+  "correct": 3,
+  "topic": "GAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1 phần thông tin (incomplete information)"
+ },
+ {
+  "id": "m02-t5-03",
+  "q": "Ngược với GAV, trong LAV mỗi ___ được định nghĩa là 1 view trên mediated schema.",
+  "opts": [
+   "nguồn (source)",
+   "truy vấn người dùng",
+   "wrapper",
+   "mediated schema"
+  ],
+  "correct": 0,
+  "topic": "LAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: nguồn (source)"
+ },
+ {
+  "id": "m02-t5-04",
+  "q": "Ưu điểm của LAV: thêm/bớt nguồn chỉ cần thêm/bớt 1 định nghĩa LAV, không đụng tới ___.",
+  "opts": [
+   "dữ liệu nguồn gốc",
+   "mediated schema",
+   "Certain Answers đã tính trước",
+   "wrapper của nguồn khác"
+  ],
+  "correct": 1,
+  "topic": "LAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: mediated schema"
+ },
+ {
+  "id": "m02-t5-05",
+  "q": "Reformulate trong LAV trở thành bài toán Answering Queries Using Views, dùng kỹ thuật ___ (suy ngược định nghĩa view ra rule rồi mới unfold được).",
+  "opts": [
+   "Locality-Sensitive Hashing",
+   "Correlation Clustering",
+   "Inverse Rules",
+   "Query Unfolding"
+  ],
+  "correct": 2,
+  "topic": "LAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Inverse Rules"
+ },
+ {
+  "id": "m02-t5-06",
+  "q": "GLAV tương đương về mặt hình thức với 1 ___ (Tuple Generating Dependency).",
+  "opts": [
+   "Khoá chính (primary key)",
+   "Chỉ mục B-tree",
+   "View vật lý (materialized view)",
+   "TGD"
+  ],
+  "correct": 3,
+  "topic": "GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: TGD"
+ },
+ {
+  "id": "m02-t5-07",
+  "q": "Theo bảng so sánh GAV/LAV/GLAV trong slide, dòng 'Thêm nguồn mới' của cột GAV ghi là '___'.",
+  "opts": [
+   "Sửa mediated schema",
+   "Chỉ thêm định nghĩa",
+   "Phải tính lại Certain Answers",
+   "Không cần làm gì"
+  ],
+  "correct": 0,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Sửa mediated schema"
+ },
+ {
+  "id": "m02-t5-08",
+  "q": "Theo bảng so sánh GAV/LAV/GLAV, dòng 'Biểu diễn incomplete info' của cột GAV ghi là '___'.",
+  "opts": [
+   "Chỉ khi dùng closed-world",
+   "Không",
+   "Chỉ khi có đúng 1 nguồn",
+   "Có"
+  ],
+  "correct": 1,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Không"
+ },
+ {
+  "id": "m02-t5-09",
+  "q": "Certain Answer: $t \\in Q(s_1,...,s_n)$ iff $t \\in Q(g)$ với ___ $g$ sao cho $(g,s_1,...,s_n) \\in M_R$.",
+  "opts": [
+   "∃ (tồn tại)",
+   "không có",
+   "∀ (với mọi)",
+   "chỉ 1"
+  ],
+  "correct": 2,
+  "topic": "Certain Answers",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: ∀ (với mọi)"
+ },
+ {
+  "id": "m02-t5-10",
+  "q": "Trong ví dụ slide: nguồn chỉ có (Title, Year); Mediated Schema cần (Director, Title, Year). Vì vậy có 2 ___ khả dĩ khác nhau cho Director.",
+  "opts": [
+   "mapping language",
+   "wrapper",
+   "query plan",
+   "instance"
+  ],
+  "correct": 3,
+  "topic": "Certain Answers",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: instance"
+ },
+ {
+  "id": "m02-t5-11",
+  "q": "Trong ví dụ Certain Answer, truy vấn 'trả về mọi năm phim' CÓ certain answer vì giá trị năm xuất hiện ___ ở cả 2 instance.",
+  "opts": [
+   "giống nhau (đúng)",
+   "khác nhau — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "chỉ ở 1 instance",
+   "không xuất hiện"
+  ],
+  "correct": 0,
+  "topic": "Certain Answers",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: giống nhau (đúng)"
+ },
+ {
+  "id": "m02-t5-12",
+  "q": "Trong ví dụ Certain Answer, truy vấn 'trả về mọi đạo diễn' KHÔNG có certain answer vì không đạo diễn nào xuất hiện ___.",
+  "opts": [
+   "trong mediated schema",
+   "ở cả 2 instance",
+   "ở instance thứ 1",
+   "ở instance thứ 2"
+  ],
+  "correct": 1,
+  "topic": "Certain Answers",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: ở cả 2 instance"
+ },
+ {
+  "id": "m02-t5-13",
+  "q": "Query Unfolding: thay từng ___ bằng định nghĩa GAV tương ứng, lặp tới khi hết.",
+  "opts": [
+   "khoá chính",
+   "bảng chỉ mục",
+   "subgoal",
+   "view vật lý"
+  ],
+  "correct": 2,
+  "topic": "Query Unfolding",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: subgoal"
+ },
+ {
+  "id": "m02-t5-14",
+  "q": "Query Unfolding không đảm bảo tạo query hiệu quả hơn — kích thước truy vấn có thể tăng theo ___.",
+  "opts": [
+   "cấp số cộng (linear)",
+   "tốc độ cố định",
+   "không đổi — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "cấp số nhân (exponential)"
+  ],
+  "correct": 3,
+  "topic": "Query Unfolding",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: cấp số nhân (exponential)"
+ },
+ {
+  "id": "m02-t8-00",
+  "q": "Ví dụ slide: Instance 1 = {(Allen,Manhattan,1979),(Coppola,GodFather,1972)}, Instance 2 = {(Halevy,Manhattan,1979),(Stonebraker,GodFather,1972)}. Giá trị năm (Year) của phim 'Manhattan' ở CẢ 2 instance là bao nhiêu?",
+  "opts": [
+   "1979 (giống nhau ở cả 2 instance)",
+   "1972 ở cả 2 instance",
+   "Không instance nào có năm cho Manhattan",
+   "1979 ở instance 1, 1972 ở instance 2"
+  ],
+  "correct": 0,
+  "topic": "Certain Answers — ví dụ số",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1979 (giống nhau ở cả 2 instance)"
+ },
+ {
+  "id": "m02-t8-01",
+  "q": "Cùng ví dụ trên: đạo diễn phim 'GodFather' là 'Coppola' ở instance 1 nhưng là gì ở instance 2?",
+  "opts": [
+   "Halevy",
+   "Stonebraker",
+   "Vẫn là Coppola",
+   "Allen"
+  ],
+  "correct": 1,
+  "topic": "Certain Answers — ví dụ số",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Stonebraker"
+ },
+ {
+  "id": "m02-t8-02",
+  "q": "Vì đạo diễn 'GodFather' khác nhau giữa 2 instance (Coppola vs Stonebraker), kết luận đúng về Certain Answer cho truy vấn đạo diễn của GodFather là gì?",
+  "opts": [
+   "Certain answer là Stonebraker (vì xuất hiện sau)",
+   "Certain answer là Coppola (vì xuất hiện trước)",
+   "Không có certain answer (vì không giá trị nào đúng ở CẢ 2 instance)",
+   "Certain answer là cả 2 giá trị cùng lúc — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Certain Answers — ví dụ số",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Không có certain answer (vì không giá trị nào đúng ở CẢ 2 instance)"
+ },
+ {
+  "id": "m02-t8-03",
+  "q": "Trong ví dụ này, nguồn gốc dữ liệu chỉ có 2 cột (Title, Year) — vậy tại sao instance lại CÓ thêm cột Director?",
+  "opts": [
+   "Vì nguồn thực ra có đủ 3 cột, slide ghi thiếu — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Vì đây là lỗi dữ liệu cần sửa — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Vì Director được tính bằng công thức từ Title+Year — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Vì Mediated Schema yêu cầu (Director,Title,Year) — Director là thông tin KHÔNG có ở nguồn, nên mỗi instance khả dĩ 'đoán' 1 giá trị Director khác nhau"
+  ],
+  "correct": 3,
+  "topic": "Certain Answers — ví dụ số",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì Mediated Schema yêu cầu (Director,Title,Year) — Director là thông tin KHÔNG có ở nguồn, nên mỗi instance khả dĩ 'đoán' 1 giá trị Director khác nhau"
+ },
+ {
+  "id": "m02-t8-04",
+  "q": "Nếu có Instance 3 = {(Allen,Manhattan,1979),(Stonebraker,GodFather,1972)} (trộn 2 instance cũ), Certain Answer cho đạo diễn GodFather có thay đổi không?",
+  "opts": [
+   "Không — vẫn không có certain answer, vì 3 instance (gốc 2 + Instance 3 mới) vẫn không đồng thuận giá trị Director cho GodFather",
+   "Có — giờ certain answer là Allen — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Có — giờ certain answer là Stonebraker vì xuất hiện ở 2/3 instance",
+   "Certain Answers không áp dụng được khi có từ 3 instance trở lên — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "Certain Answers — ví dụ số",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Không — vẫn không có certain answer, vì 3 instance (gốc 2 + Instance 3 mới) vẫn không đồng thuận giá trị Director cho GodFather"
+ },
+ {
+  "id": "m02-t8-05",
+  "q": "Giả sử thêm Instance 4 mà CẢ 2 phim đều ghi đạo diễn giống Instance 1 (Allen, Coppola). Director của 'GodFather' lúc này có certain answer không, xét trên 3 instance {1,2,4}?",
+  "opts": [
+   "Có — vì đa số (2/3) instance đồng thuận Coppola — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Không — Instance 2 vẫn ghi Stonebraker, khác Coppola ở Instance 1 và 4, nên vẫn không đồng thuận ở TẤT CẢ instance",
+   "Có — certain answer luôn là giá trị xuất hiện ở Instance 1",
+   "Certain answer lúc này là Stonebraker — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Certain Answers — ví dụ số",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Không — Instance 2 vẫn ghi Stonebraker, khác Coppola ở Instance 1 và 4, nên vẫn không đồng thuận ở TẤT CẢ instance"
+ },
+ {
+  "id": "m02-t4-00",
+  "q": "So với GAV, ưu điểm chính của LAV là gì?",
+  "opts": [
+   "LAV luôn reformulate nhanh hơn GAV",
+   "LAV không cần định nghĩa hình thức nào cả",
+   "Biểu diễn được thông tin nguồn không đầy đủ (incomplete information); dễ thêm/bớt nguồn",
+   "LAV chỉ hoạt động với dữ liệu XML — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Biểu diễn được thông tin nguồn không đầy đủ (incomplete information); dễ thêm/bớt nguồn"
+ },
+ {
+  "id": "m02-t4-01",
+  "q": "Nhược điểm cốt lõi của GAV so với LAV là gì?",
+  "opts": [
+   "GAV yêu cầu certain answers phải rỗng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "GAV luôn chạy chậm hơn LAV khi thực thi thực tế",
+   "GAV không thể dùng cho dữ liệu quan hệ (chỉ dùng cho NoSQL)",
+   "Không biểu diễn được thông tin nguồn không đầy đủ — ép mọi nguồn vào đúng 1 view cố định"
+  ],
+  "correct": 3,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Không biểu diễn được thông tin nguồn không đầy đủ — ép mọi nguồn vào đúng 1 view cố định"
+ },
+ {
+  "id": "m02-t4-02",
+  "q": "GLAV khác GAV và LAV ở điểm nào?",
+  "opts": [
+   "Cả 2 vế (nguồn và mediated schema) đều là truy vấn, biểu diễn bằng Tuple Generating Dependency",
+   "GLAV chỉ dùng được khi có đúng 2 nguồn — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "GLAV không cần reformulation vì đã có sẵn kết quả",
+   "GLAV là phiên bản cũ hơn, ít dùng hơn GAV/LAV trong thực tế"
+  ],
+  "correct": 0,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cả 2 vế (nguồn và mediated schema) đều là truy vấn, biểu diễn bằng Tuple Generating Dependency"
+ },
+ {
+  "id": "m02-t4-03",
+  "q": "Khi thêm 1 nguồn dữ liệu mới vào hệ thống đang dùng GAV, cần làm gì?",
+  "opts": [
+   "Phải tính lại Certain Answers cho mọi truy vấn cũ đã lưu",
+   "Phải sửa lại định nghĩa mediated schema (vì mediated schema = view trên TẤT CẢ nguồn)",
+   "Chỉ cần thêm 1 định nghĩa LAV mới, không cần sửa gì khác",
+   "Không cần làm gì, GAV tự động nhận nguồn mới — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Phải sửa lại định nghĩa mediated schema (vì mediated schema = view trên TẤT CẢ nguồn)"
+ },
+ {
+  "id": "m02-t4-04",
+  "q": "Khi thêm 1 nguồn dữ liệu mới vào hệ thống đang dùng LAV, cần làm gì?",
+  "opts": [
+   "Phải viết lại toàn bộ định nghĩa mediated schema từ đầu",
+   "Phải chuyển toàn bộ hệ thống sang dùng GAV trước",
+   "Chỉ cần thêm 1 định nghĩa LAV mới cho nguồn đó, không cần sửa mediated schema",
+   "Không thể thêm nguồn mới khi đang dùng LAV — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Chỉ cần thêm 1 định nghĩa LAV mới cho nguồn đó, không cần sửa mediated schema"
+ },
+ {
+  "id": "m02-t4-05",
+  "q": "Open-world assumption và Closed-world assumption khác nhau ở điểm nào?",
+  "opts": [
+   "Cả 2 đều giống nhau, chỉ khác tên gọi — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Open-world dùng cho dữ liệu công khai trên Internet, Closed-world dùng cho dữ liệu nội bộ",
+   "Open-world nhanh hơn Closed-world khi thực thi truy vấn",
+   "Open-world: còn có thể có dữ liệu khác chưa biết (⊇); Closed-world: chỉ có đúng dữ liệu đã biết (=)"
+  ],
+  "correct": 3,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Open-world: còn có thể có dữ liệu khác chưa biết (⊇); Closed-world: chỉ có đúng dữ liệu đã biết (=)"
+ },
+ {
+  "id": "m02-t4-06",
+  "q": "Query Unfolding (GAV) và Answering Queries Using Views (LAV) khác nhau cơ bản ở điều gì?",
+  "opts": [
+   "Unfolding thay subgoal bằng rule đã biết sẵn (dễ); AQUV phải TÌM cách dùng view có sẵn để trả lời (khó hơn)",
+   "AQUV luôn cho kết quả sai, chỉ Unfolding mới đúng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Hai thuật toán này hoàn toàn giống nhau, chỉ khác tên",
+   "Unfolding dùng cho LAV, AQUV dùng cho GAV (bị đảo ngược)"
+  ],
+  "correct": 0,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Unfolding thay subgoal bằng rule đã biết sẵn (dễ); AQUV phải TÌM cách dùng view có sẵn để trả lời (khó hơn)"
+ },
+ {
+  "id": "m02-t4-07",
+  "q": "Vì sao Certain Answer cần xét 'MỌI instance khả dĩ' mà không chỉ xét 1 instance cụ thể?",
+  "opts": [
+   "Vì luật của SQL yêu cầu phải xét mọi instance trước khi SELECT — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Vì với nhiều nguồn/mapping có thể tồn tại NHIỀU instance mediated schema đều hợp lệ — chỉ công nhận kết quả đúng ở TẤT CẢ các khả năng mới chắc chắn tin được",
+   "Vì chỉ có đúng 1 instance khả dĩ nên xét 1 cái là đủ, câu này không áp dụng — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Vì mỗi instance tốn nhiều bộ nhớ nên phải kiểm tra hết — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 1,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì với nhiều nguồn/mapping có thể tồn tại NHIỀU instance mediated schema đều hợp lệ — chỉ công nhận kết quả đúng ở TẤT CẢ các khả năng mới chắc chắn tin được"
+ },
+ {
+  "id": "m02-t4-08",
+  "q": "PAYGO khác Data Integration truyền thống (GAV/LAV cố định) ở điểm nào?",
+  "opts": [
+   "PAYGO chỉ là tên gọi khác của GLAV — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "PAYGO yêu cầu thiết kế mediated schema kỹ hơn GAV/LAV truyền thống — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Bắt đầu với ít ràng buộc ngữ nghĩa, trả lời tốt nhất có thể ngay, cải thiện dần — không chờ thiết kế mediated schema hoàn chỉnh",
+   "PAYGO không dùng được với Certain Answers — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Bắt đầu với ít ràng buộc ngữ nghĩa, trả lời tốt nhất có thể ngay, cải thiện dần — không chờ thiết kế mediated schema hoàn chỉnh"
+ },
+ {
+  "id": "m02-t4-09",
+  "q": "Probabilistic Mediated Schema khác mediated schema truyền thống (1 schema cố định) ở điểm nào?",
+  "opts": [
+   "Chỉ khác ở chỗ dùng ngôn ngữ truy vấn khác (NoSQL thay vì SQL)",
+   "Probabilistic Mediated Schema luôn chỉ có đúng 1 phiên bản duy nhất, giống truyền thống",
+   "Không có gì khác biệt về bản chất, chỉ khác cách gọi tên — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Có NHIỀU phiên bản mediated schema khả dĩ cùng tồn tại, mỗi phiên bản kèm 1 xác suất, tạo tự động bằng clustering"
+  ],
+  "correct": 3,
+  "topic": "So sánh GAV/LAV/GLAV",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Có NHIỀU phiên bản mediated schema khả dĩ cùng tồn tại, mỗi phiên bản kèm 1 xác suất, tạo tự động bằng clustering"
+ },
+ {
+  "id": "m02-t6-00",
+  "q": "Trong ví dụ Movie của slide gốc, thuộc tính 'genre' thuộc bảng nào ở nguồn S1?",
+  "opts": [
+   "S1.Movie(title,director,year,genre)",
+   "S2.Cinemas(place,movie,start)",
+   "S1.Actor(AID,firstName,lastName,...)",
+   "S4.Reviews(title,date,grade,review)"
+  ],
+  "correct": 0,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: S1.Movie(title,director,year,genre)"
+ },
+ {
+  "id": "m02-t6-01",
+  "q": "Nguồn nào trong ví dụ Movie CHỈ biết đạo diễn (director) của phim, không biết năm/thể loại?",
+  "opts": [
+   "S1.MovieDetails(MID,director,genre,year)",
+   "S6.MovieDirectors(title,dir)",
+   "S5.MovieGenres(title,genre)",
+   "S7.MovieYears(title,year)"
+  ],
+  "correct": 1,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: S6.MovieDirectors(title,dir)"
+ },
+ {
+  "id": "m02-t6-02",
+  "q": "Để dựng lại mediated Movie(title,director,year,genre) ĐẦY ĐỦ từ S5,S6,S7 (mỗi nguồn biết 1 cột), cần dùng phép toán quan hệ nào?",
+  "opts": [
+   "UNION 3 nguồn (vì chúng không có cùng số cột)",
+   "Không thể dựng lại được vì thiếu mediated schema",
+   "JOIN 3 nguồn theo title (mỗi nguồn là 1 LAV view chỉ biết 1 phần cột)",
+   "Chỉ cần SELECT * từ 1 nguồn duy nhất — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 2,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: JOIN 3 nguồn theo title (mỗi nguồn là 1 LAV view chỉ biết 1 phần cột)"
+ },
+ {
+  "id": "m02-t6-03",
+  "q": "Nguồn S1 có đủ 4 bảng (Movie, Actor, ActorPlays, MovieDetails) — điều này minh hoạ đúng dị biệt nào trong slide 'Tabular Organization of Schema'?",
+  "opts": [
+   "Dị biệt về ngôn ngữ truy vấn (SQL vs NoSQL)",
+   "Dị biệt về định dạng file (CSV vs JSON) — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Dị biệt chỉ xảy ra ở cấp độ dữ liệu (data-level), không phải cấp schema",
+   "1 nguồn tách thành nhiều bảng trong khi mediated schema gộp 1 bảng Movie duy nhất"
+  ],
+  "correct": 3,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1 nguồn tách thành nhiều bảng trong khi mediated schema gộp 1 bảng Movie duy nhất"
+ },
+ {
+  "id": "m02-t6-04",
+  "q": "Theo slide 'Schema Coverage', vì sao S6.MovieDirectors không chứa 'Train to Busan'?",
+  "opts": [
+   "Minh hoạ 'Different coverage and detail' — không phải nguồn nào cũng biết hết mọi phim",
+   "Vì đó là lỗi nhập liệu cần sửa ngay — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Vì 'Train to Busan' không phải là phim thật",
+   "Vì S6 chỉ chứa phim có rating trên 8 điểm"
+  ],
+  "correct": 0,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Minh hoạ 'Different coverage and detail' — không phải nguồn nào cũng biết hết mọi phim"
+ },
+ {
+  "id": "m02-t6-05",
+  "q": "Trong bài tập SQL Sandbox của site, S6.MovieDirectors ghi đạo diễn 'The Godfather' là 'Martin Scorsese' — đây minh hoạ điều gì?",
+  "opts": [
+   "Dữ liệu ngẫu nhiên không có mục đích sư phạm",
+   "Xung đột dữ liệu GIỮA 2 NGUỒN được cài có chủ đích, để minh hoạ vấn đề Certain Answers",
+   "Lỗi thật trong slide gốc của giảng viên — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Martin Scorsese thực sự là đạo diễn phim này"
+  ],
+  "correct": 1,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Xung đột dữ liệu GIỮA 2 NGUỒN được cài có chủ đích, để minh hoạ vấn đề Certain Answers"
+ },
+ {
+  "id": "m02-t6-06",
+  "q": "GAV cho nguồn S1: Movie(title,director,year,genre) ⊇ Q(S1). Vế PHẢI của công thức này ($Q(S1)$) đóng vai trò gì?",
+  "opts": [
+   "Truy vấn người dùng gõ trực tiếp vào mediated schema",
+   "Một ràng buộc toàn vẹn (integrity constraint) của S1",
+   "Truy vấn trên S1 dùng để ĐỊNH NGHĨA mediated schema Movie",
+   "Kết quả cuối cùng trả về cho người dùng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Truy vấn trên S1 dùng để ĐỊNH NGHĨA mediated schema Movie"
+ },
+ {
+  "id": "m02-t6-07",
+  "q": "Nếu S2.Cinemas(place,movie,start) và S3.NYCCinemas(name,title,startTime) CÙNG góp phần định nghĩa mediated Plays, đây là ví dụ của điều gì?",
+  "opts": [
+   "Certain Answer — vì 2 nguồn luôn đồng thuận — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Đây là ví dụ Data-level Heterogeneity, không phải Schema Mapping",
+   "LAV — vì mediated schema được định nghĩa là view trên S2,S3",
+   "Nhiều nguồn (GAV) cùng phủ 1 quan hệ mediated — cần UNION các view lại"
+  ],
+  "correct": 3,
+  "topic": "Ví dụ Movie (S1-S7)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Nhiều nguồn (GAV) cùng phủ 1 quan hệ mediated — cần UNION các view lại"
+ }
+]
