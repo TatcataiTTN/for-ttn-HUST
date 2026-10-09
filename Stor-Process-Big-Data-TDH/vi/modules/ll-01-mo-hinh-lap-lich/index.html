@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 01: Mô hình bài toán lập lịch · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 01 / 10</div>
+<h1>Mô hình bài toán lập lịch</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 01 · Nhập môn lập lịch · liên hệ Spark/YARN/Kafka</div><h2>Mô hình bài toán lập lịch</h2><p>Lập lịch nằm ở khắp các tầng của hệ thống phân tán: Spark DAGScheduler/TaskScheduler, YARN cấp tài nguyên, Kafka gán partition cho consumer. Buổi này xây mô hình toán học chung trước khi học từng thuật toán cụ thể.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Lập lịch nằm ở đâu trong hệ thống?</h2>
+<ul class="part-list"><li>Spark DAGScheduler quyết định stage nào đủ điều kiện chạy</li>
+<li>Spark TaskScheduler gửi task tới tài nguyên thực thi nào</li>
+<li>YARN cấp tài nguyên cho ứng dụng/hàng đợi nào</li>
+<li>Kafka consumer group: consumer nào phụ trách partition nào</li></ul></div><div class="mdeck-slide"><h2>Bốn quyết định lập lịch thật trong hệ phân tán</h2>
+      <p>Trước khi học thuật toán, cần thấy lập lịch không phải bài toán lý thuyết suông — nó là quyết định
+      thật mà 4 thành phần dưới đây đưa ra liên tục, với những mục tiêu khác nhau, và các tầng có thể cùng
+      hoạt động song song.</p>
+      <table><tr><th>Thành phần</th><th>Quyết định</th><th>Mô hình liên quan</th></tr>
+      <tr><td>Spark DAGScheduler</td><td>Stage nào đã đủ điều kiện chạy?</td><td>Phụ thuộc DAG</td></tr>
+      <tr><td>Spark TaskScheduler</td><td>Gửi task đến tài nguyên thực thi nào?</td><td>Phân công tác vụ, vị trí dữ liệu</td></tr>
+      <tr><td>Hadoop YARN</td><td>Cấp tài nguyên cho ứng dụng/hàng đợi nào?</td><td>Phân bổ công bằng, giới hạn dung lượng</td></tr>
+      <tr><td>Kafka consumer group</td><td>Consumer nào phụ trách partition nào?</td><td>Cân bằng tải, chi phí tái phân công</td></tr></table>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.3 (trích tài liệu Spark/Hadoop/Kafka ở cuối bài).</p></div><div class="mdeck-slide"><h2>Job, task và đơn vị thực thi</h2>
+      <p><b>Job</b>: một công việc của người dùng, có thể gồm nhiều tác vụ. <b>Task</b>: đơn vị công việc
+      được giao cho một tài nguyên thực thi. Trong mô hình toán học, một "máy" chỉ chạy đúng một task tại
+      một thời điểm — nhưng một máy vật lý hoặc một Spark executor có thể có <b>nhiều đơn vị thực thi song
+      song</b>.</p>
+      <div class="callout info"><div class="lbl">Ví dụ quy đổi</div>3 máy vật lý, mỗi máy cho phép chạy 4 task
+      đồng thời → mô hình đơn giản có $m = 3 \times 4 = 12$ đơn vị thực thi.</div>
+      <p style="color:var(--muted);font-size:.85rem">Phải xác định rõ "máy" trong mô hình trước khi áp dụng thuật toán.
+      Nguồn: lap_lich_50_slides.pdf, tr.4.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Ký hiệu, mục tiêu và giả thiết</h2>
+<ul class="part-list"><li>n, m, pj, rj, Sj, Cj, wj</li>
+<li>Mục tiêu: Cmax, tổng Cj, tổng có trọng số, flow time</li>
+<li>Giả thiết quyết định bài toán: offline/online, ngắt/không, độc lập/DAG</li></ul></div><div class="mdeck-slide"><h2>Ký hiệu chuẩn dùng xuyên suốt</h2>
+      <ul class="pd-legend">
+      <li><b>n, m</b><span>số tác vụ, số máy</span></li>
+      <li><b>$p_j$</b><span>thời gian xử lý tác vụ j</span></li>
+      <li><b>$r_j$</b><span>thời điểm tác vụ j đến</span></li>
+      <li><b>$S_j, C_j$</b><span>thời điểm bắt đầu, kết thúc</span></li>
+      <li><b>$w_j > 0$</b><span>trọng số ưu tiên</span></li></ul>
+      <div class="pd-formula"><div class="pd-formula-label">Ba nhóm mục tiêu thường gặp</div>
+      <div class="pd-formula-math">\min C_{max},\ C_{max}=\max_j C_j \quad\Big|\quad \min\sum_j C_j\ \text{hoặc}\ \min\sum_j w_jC_j \quad\Big|\quad \min\sum_j (C_j-r_j)</div></div>
+      <p style="color:var(--muted);font-size:.85rem">Công bằng cần một định nghĩa riêng về phần tài nguyên được chia (buổi ll-06, ll-07).
+      Nguồn: lap_lich_50_slides.pdf, tr.5.</p></div><div class="mdeck-slide"><h2>Giả thiết nào cũng làm đổi bài toán</h2>
+      <table><tr><th>Câu hỏi</th><th>Các lựa chọn</th></tr>
+      <tr><td>Thời điểm biết tin</td><td>Offline: biết trước. Online: chỉ biết khi công việc đến.</td></tr>
+      <tr><td>Ngắt tác vụ</td><td>Không ngắt; hoặc ngắt rồi tiếp tục phần còn lại.</td></tr>
+      <tr><td>Năng lực máy</td><td>Cùng tốc độ; hoặc thời gian xử lý phụ thuộc máy.</td></tr>
+      <tr><td>Phụ thuộc</td><td>Độc lập; hoặc có thứ tự trước-sau theo DAG.</td></tr>
+      <tr><td>Chi phí phụ</td><td>Truyền dữ liệu, khởi động, chuyển trạng thái, lỗi máy.</td></tr></table>
+      <div class="callout warn"><div class="lbl">Lưu ý phạm vi</div>Các ví dụ trong 10 buổi này là dữ liệu giả
+      định để minh hoạ thuật toán. Bảo đảm lý thuyết chỉ đúng dưới đúng giả thiết đã nêu ở từng bài.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.6.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="ll01_scenario"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Trong mô hình lập lịch, Spark TaskScheduler quyết định điều gì?", "opts": ["Stage nào đủ điều kiện chạy", "Gửi task đến tài nguyên thực thi nào", "Cấp tài nguyên cho hàng đợi nào", "Consumer nào đọc partition nào"], "correct": 1, "explain": "DAGScheduler quyết định stage; TaskScheduler mới là nơi gửi task tới tài nguyên thực thi cụ thể."}, {"q": "3 máy vật lý, mỗi máy chạy song song 4 task, mô hình có bao nhiêu đơn vị thực thi m?", "opts": ["m = 3", "m = 4", "m = 7", "m = 12"], "correct": 3, "explain": "m = 3 × 4 = 12, đúng ví dụ slide tr.4."}, {"q": "$S_j$ và $C_j$ lần lượt là gì?", "opts": ["Số tác vụ và số máy", "Thời điểm bắt đầu và kết thúc của tác vụ j", "Trọng số và thời gian xử lý", "Thời điểm đến và thời gian xử lý"], "correct": 1, "explain": "S_j: start, C_j: completion — ký hiệu chuẩn slide tr.5."}, {"q": "Mục tiêu $\\min C_{max}$ nghĩa là gì?", "opts": ["Giảm tổng thời gian xử lý mọi tác vụ", "Giảm thời điểm hoàn thành tác vụ kết thúc muộn nhất", "Giảm số tác vụ bị trễ", "Tăng số máy đang bận"], "correct": 1, "explain": "C_max = max_j C_j — thời điểm hoàn thành toàn bộ, cần tối thiểu hoá."}, {"q": "Giả thiết \"online\" trong lập lịch nghĩa là gì?", "opts": ["Biết trước toàn bộ tác vụ ngay từ đầu", "Chỉ biết một tác vụ khi nó thực sự đến", "Mọi tác vụ chạy trên cùng 1 máy", "Tác vụ không bao giờ bị ngắt"], "correct": 1, "explain": "Offline biết trước, online chỉ biết tin khi công việc đến — ảnh hưởng trực tiếp thuật toán có thể dùng."}, {"q": "Vì sao phải xác định rõ \"máy\" trong mô hình trước khi áp dụng thuật toán?", "opts": ["Vì thuật toán chỉ chạy được trên máy vật lý", "Vì một máy vật lý/Spark executor có thể có nhiều đơn vị thực thi song song, ảnh hưởng số liệu m", "Vì lý thuyết không áp dụng được cho cụm ảo hoá", "Vì mỗi tác vụ cần một máy riêng biệt"], "correct": 1, "explain": "m trong mô hình là số 'đơn vị thực thi', không nhất thiết bằng số máy vật lý."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><span></span><a href="../ll-02-list-scheduling-lpt/index.html">Lập lịch 02: List Scheduling & LPT cho tác vụ độc lập ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

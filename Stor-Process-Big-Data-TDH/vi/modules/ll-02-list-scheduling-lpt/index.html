@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 02: List Scheduling & LPT cho tác vụ độc lập · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 02 / 10</div>
+<h1>List Scheduling & LPT cho tác vụ độc lập</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 02 · Makespan, 2 cận dưới, bảo đảm xấp xỉ</div><h2>List Scheduling & LPT cho tác vụ độc lập</h2><p>Bài toán nền tảng nhất: n tác vụ độc lập, m máy giống nhau, giảm makespan Cmax. Hai thuật toán đơn giản — List Scheduling và LPT — đã có bảo đảm xấp xỉ chứng minh được từ 1969.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/3</div>
+<div class="part-num">01</div><h2>Bài toán và hai cận dưới</h2>
+<ul class="part-list"><li>n tác vụ độc lập, m máy giống nhau, giảm Cmax</li>
+<li>Cận dưới: W/m và max_j p_j</li>
+<li>Ví dụ A-F: m=3, W=30, OPT≥10</li></ul></div><div class="mdeck-slide"><h2>Bài toán phân công tác vụ độc lập</h2>
+      <p>Có n tác vụ, m máy giống nhau. Tất cả tác vụ sẵn sàng tại $t=0$. Mỗi tác vụ chạy liên tục trên đúng
+      một máy, bỏ qua chi phí truyền dữ liệu.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Mục tiêu</div>
+      <div class="pd-formula-math">\min_{\{J_1,\dots,J_m\}} \max_{1\le i\le m}\sum_{j\in J_i} p_j</div></div>
+      <table><tr><th>Tác vụ</th><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+      <tr><th>$p_j$</th><td>2</td><td>3</td><td>4</td><td>6</td><td>7</td><td>8</td></tr></table>
+      <p>$m=3$. Ví dụ này dùng xuyên suốt buổi học — liên hệ: các task độc lập trong 1 stage Spark hoặc 1 pha Map.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.7.</p></div><div class="mdeck-slide"><h2>Hai cận dưới cho thời gian tối ưu</h2>
+      <div class="pd-formula"><div class="pd-formula-label">OPT ≥</div>
+      <div class="pd-formula-math">\text{OPT} \ge \max\Big(\tfrac{W}{m}, \max_j p_j\Big),\quad W=\sum_j p_j</div></div>
+      <ul class="pd-legend"><li><b>W/m</b><span>các máy phải chia hết tổng khối lượng công việc</span></li>
+      <li><b>$\max_j p_j$</b><span>một tác vụ không thể chạy nhanh hơn thời gian của chính nó</span></li></ul>
+      <p>Với ví dụ: $W=30$, $m=3$, $\max_j p_j=8$, nên $\text{OPT}\ge 10$. Lịch (8+2, 7+3, 6+4) đạt đúng 10,
+      nên $\text{OPT}=10$.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.8.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/3</div>
+<div class="part-num">02</div><h2>Thuật toán List Scheduling</h2>
+<ul class="part-list"><li>Giao tác vụ tiếp theo cho máy đang tải nhỏ nhất</li>
+<li>Ví dụ: thứ tự A,B,C,D,E,F → Cmax=12</li>
+<li>Bảo đảm (2-1/m)·OPT</li></ul></div><div class="mdeck-slide"><h2>List Scheduling: giao máy tải nhỏ nhất</h2>
+      <ol style="line-height:2">
+      <li>Khởi tạo tải $L_i=0$ cho mỗi máy</li>
+      <li>Duyệt các tác vụ theo thứ tự đã cho</li>
+      <li>Với tác vụ j, chọn i có $L_i$ nhỏ nhất (hoà thì chọn chỉ số nhỏ hơn)</li>
+      <li>Đặt $S_j=L_i$, $C_j=L_i+p_j$, cập nhật $L_i\gets L_i+p_j$</li></ol>
+      <p>Với thứ tự A,B,C,D,E,F trong ví dụ: $C_{max}=12$, tỉ lệ $C_{max}/\text{OPT}=1{,}2$. Thứ tự xét tác vụ
+      ảnh hưởng trực tiếp tới kết quả.</p>
+      <p style="color:var(--muted);font-size:.85rem">Độ phức tạp: duyệt mọi máy O(nm), dùng min-heap O(m+n log m).
+      Nguồn: lap_lich_50_slides.pdf, tr.9-10.</p></div><div class="mdeck-slide"><h2>Vì sao List Scheduling bảo đảm gần 2 lần OPT</h2>
+      <p>Gọi j là tác vụ kết thúc cuối cùng. Khi giao j, tải nhỏ nhất không vượt tải trung bình của các tác
+      vụ đã giao, nên $S_j \le (W-p_j)/m$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Bảo đảm xấp xỉ (Graham, 1969)</div>
+      <div class="pd-formula-math">C_{max} = S_j+p_j \le \Big(2-\tfrac{1}{m}\Big)\,\text{OPT}</div></div>
+      <div class="callout good"><div class="lbl">Ý nghĩa</div>Thuật toán cực đơn giản, nhưng có bảo đảm đúng cho
+      MỌI bộ dữ liệu hợp lệ — không chỉ trường hợp may mắn.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.11; định lý gốc: Graham (1969).</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/3</div>
+<div class="part-num">03</div><h2>LPT và giới hạn của nó</h2>
+<ul class="part-list"><li>Xét tác vụ dài trước: F,E,D,C,B,A → Cmax=10=OPT</li>
+<li>Bảo đảm (4/3-1/3m)·OPT</li>
+<li>Phản ví dụ: LPT chưa chắc tối ưu</li></ul></div><div class="mdeck-slide"><h2>LPT: Longest Processing Time first</h2>
+      <ol style="line-height:2"><li>Sắp tác vụ theo $p_j$ giảm dần</li>
+      <li>Áp dụng List Scheduling theo thứ tự vừa sắp</li></ol>
+      <p>Thứ tự mới: F(8), E(7), D(6), C(4), B(3), A(2). Trực giác: xếp khối lớn trước, dùng khối nhỏ lấp phần
+      tải còn thiếu. Trong ví dụ, LPT đạt $C_{max}=10=\text{OPT}$ — cải thiện từ 12 (List Scheduling theo thứ
+      tự gốc) xuống 10.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Bảo đảm LPT</div>
+      <div class="pd-formula-math">C_{max}^{LPT} \le \Big(\tfrac{4}{3}-\tfrac{1}{3m}\Big)\text{OPT}</div></div>
+      <p style="color:var(--muted);font-size:.85rem">Chi phí sắp xếp O(n log n), cần biết hoặc ước lượng $p_j$.
+      Nguồn: lap_lich_50_slides.pdf, tr.12-13.</p></div><div class="mdeck-slide"><h2>LPT có thể chưa tối ưu</h2>
+      <p>Hai máy, năm tác vụ có thời gian 3, 3, 2, 2, 2.</p>
+      <table><tr><th></th><th>LPT</th><th>Lịch tối ưu</th></tr>
+      <tr><td>M1</td><td>3+2+2=7</td><td>3+3=6</td></tr>
+      <tr><td>M2</td><td>3+2=5</td><td>2+2+2=6</td></tr></table>
+      <p>$C_{max}^{LPT}/\text{OPT} = 7/6 = 4/3-1/(3\cdot 2)$ — đúng bằng cận trên lý thuyết, cho thấy bảo đảm
+      LPT là <b>chặt</b> (tight), không thể cải thiện thêm bằng phân tích tốt hơn.</p>
+      <div class="callout warn"><div class="lbl">Liên hệ Spark/MapReduce</div>Trong một stage đã sẵn sàng, nhiều
+      task xử lý các partition khác nhau — kích thước dữ liệu lệch nhau làm thời gian chạy lệch nhau. List
+      Scheduling/LPT là mô hình CƠ SỞ để phân tích, không phải mô tả mặc định của Spark TaskScheduler (cần
+      thêm vị trí dữ liệu, bộ nhớ, chi phí shuffle — xem buổi ll-03).</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.14-15.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="listscheduling"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Hai cận dưới của OPT trong bài toán phân công tác vụ độc lập là gì?", "opts": ["n và m", "W/m và max_j p_j", "W và m", "p_j nhỏ nhất và lớn nhất"], "correct": 1, "explain": "OPT ≥ max(W/m, max_j p_j) — cả hai đều là ràng buộc vật lý không thể vượt qua."}, {"q": "Với ví dụ A(2),B(3),C(4),D(6),E(7),F(8), m=3, OPT bằng bao nhiêu?", "opts": ["8", "9", "10", "12"], "correct": 2, "explain": "W=30, W/m=10, max p_j=8 → OPT≥10, và có lịch đạt đúng 10."}, {"q": "List Scheduling theo thứ tự A,B,C,D,E,F trong ví dụ cho Cmax bằng bao nhiêu?", "opts": ["10", "11", "12", "13"], "correct": 2, "explain": "Cmax=12, tỉ lệ Cmax/OPT=1,2 — đúng số liệu slide tr.9-10."}, {"q": "LPT theo thứ tự F,E,D,C,B,A trong CÙNG ví dụ đó cho Cmax bằng bao nhiêu?", "opts": ["9", "10", "11", "12"], "correct": 1, "explain": "LPT đạt Cmax=10=OPT trong ví dụ này — cải thiện so với thứ tự gốc."}, {"q": "Bảo đảm xấp xỉ của List Scheduling là gì?", "opts": ["(2-1/m)·OPT", "(4/3-1/3m)·OPT", "2·OPT đúng với mọi m", "OPT đúng tuyệt đối"], "correct": 0, "explain": "Graham (1969): Cmax ≤ (2-1/m)·OPT cho List Scheduling bất kỳ thứ tự nào."}, {"q": "Bảo đảm xấp xỉ của LPT là gì?", "opts": ["(2-1/m)·OPT", "(4/3-1/3m)·OPT", "OPT đúng tuyệt đối", "Không có bảo đảm"], "correct": 1, "explain": "LPT có bảo đảm chặt hơn List Scheduling thường: (4/3-1/3m)·OPT."}, {"q": "Ví dụ 2 máy, 5 tác vụ (3,3,2,2,2) cho thấy điều gì về LPT?", "opts": ["LPT luôn tối ưu", "LPT có thể KHÔNG tối ưu, đạt đúng cận trên lý thuyết 4/3-1/(3m)", "LPT luôn tệ hơn List Scheduling thường", "LPT không áp dụng được khi m=2"], "correct": 1, "explain": "Cmax/OPT = 7/6, khớp đúng cận lý thuyết — chứng tỏ bảo đảm LPT là chặt (tight), không chỉ là cận lỏng."}, {"q": "Vì sao Cmax trong List Scheduling không vượt quá (2-1/m)·OPT?", "opts": ["Vì mọi máy đều có tải bằng nhau", "Vì tải nhỏ nhất lúc giao tác vụ cuối không vượt tải trung bình (W-p_j)/m", "Vì thuật toán luôn chọn tác vụ ngắn nhất trước", "Vì số tác vụ luôn chia hết cho m"], "correct": 1, "explain": "Đây là lập luận chứng minh cốt lõi ở slide tr.11."}, {"q": "LPT cần thông tin gì mà List Scheduling thường không bắt buộc?", "opts": ["Số máy m", "Biết hoặc ước lượng trước p_j của mọi tác vụ để sắp xếp", "Thời điểm đến r_j", "Trọng số w_j"], "correct": 1, "explain": "LPT phải sắp theo p_j giảm dần trước khi chạy, nên cần biết/ước lượng p_j trước."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-01-mo-hinh-lap-lich/index.html">◀ Lập lịch 01: Mô hình bài toán lập lịch</a><a href="../ll-03-dag-mapreduce/index.html">Lập lịch 03: Lập lịch DAG, MapReduce và vị trí dữ liệu ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

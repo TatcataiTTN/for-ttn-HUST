@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 03: Lập lịch DAG, MapReduce và vị trí dữ liệu · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 03 / 10</div>
+<h1>Lập lịch DAG, MapReduce và vị trí dữ liệu</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 03 · Critical path, rào chắn Map→Shuffle→Reduce</div><h2>Lập lịch DAG, MapReduce và vị trí dữ liệu</h2><p>Khi tác vụ có quan hệ trước-sau (DAG), List Scheduling cần thêm quy tắc chọn tác vụ sẵn sàng. Buổi này còn minh hoạ rào chắn giữa các pha trong MapReduce và quy tắc chọn máy theo vị trí dữ liệu.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Lập lịch trên DAG</h2>
+<ul class="part-list"><li>DAG: (u,v)∈E ⟹ S_v≥C_u</li>
+<li>Ví dụ 6 tác vụ, đường găng A→C→E, OPT≥10</li>
+<li>List Scheduling cho DAG: đếm tiền nhiệm, tập sẵn sàng</li></ul></div><div class="mdeck-slide"><h2>Bài toán lập lịch có quan hệ trước-sau</h2>
+      <p>DAG là đồ thị có hướng không chu trình. Cho $G=(V,E)$, đỉnh j là tác vụ có thời gian $p_j$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Ràng buộc thứ tự</div>
+      <div class="pd-formula-math">(u,v)\in E \implies S_v \ge C_u</div></div>
+      <p>Có m máy giống nhau, mỗi máy chạy 1 tác vụ tại 1 thời điểm, không ngắt, bỏ qua chi phí truyền dữ liệu.
+      Mục tiêu vẫn là $\min C_{max}$. <b>Tác vụ sẵn sàng</b>: chưa chạy và mọi tiền nhiệm đã hoàn thành.</p>
+      <div class="callout info"><div class="lbl">Liên hệ</div>DAG của các stage trong Spark, và phụ thuộc giữa
+      các pha xử lý, chính là đồ thị này.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.16.</p></div><div class="mdeck-slide"><h2>Ví dụ DAG 6 tác vụ và đường găng</h2>
+      <p>$m=2$. DAG: A(3)→C(4)→E(3), B(2)→D(2)→F(2) (và các cạnh chéo khác theo slide gốc).
+      $W = 3+2+4+2+3+2 = 16$. Đường đi dài nhất (đường găng): A→C→E, tổng $3+4+3=10$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Cận dưới</div>
+      <div class="pd-formula-math">\text{OPT} \ge \max\{W/m, \text{độ dài đường găng}\} = \max\{8,10\}=10</div></div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.17.</p></div><div class="mdeck-slide"><h2>List Scheduling áp dụng cho DAG</h2>
+      <ol style="line-height:2">
+      <li>Đếm số tiền nhiệm chưa hoàn thành của từng tác vụ</li>
+      <li>Đưa tác vụ có số đếm bằng 0 vào tập sẵn sàng</li>
+      <li>Khi có máy rảnh, chọn 1 tác vụ sẵn sàng và cho chạy</li>
+      <li>Khi tác vụ kết thúc, giảm số đếm của tác vụ kế tiếp, bổ sung tác vụ mới sẵn sàng</li></ol>
+      <p>Trong ví dụ, chạy đúng quy trình này cho $C_{max}=10=\text{OPT}$ — máy rảnh ở $t=2$ (M2 chờ) là do
+      <b>phụ thuộc dữ liệu</b>, không phải thiếu việc tổng thể.</p>
+      <div class="callout good"><div class="lbl">Nguyên tắc</div>Không để máy rảnh nếu vẫn có tác vụ sẵn sàng có
+      thể chạy.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.18-20.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>MapReduce và vị trí dữ liệu</h2>
+<ul class="part-list"><li>Ưu tiên theo b(v): phần đường găng còn lại</li>
+<li>Bảo đảm Cmax ≤ (2-1/m)·OPT cho DAG</li>
+<li>Ví dụ MapReduce có rào chắn: Cmax=10</li>
+<li>Vị trí dữ liệu: máy rảnh chưa chắc hoàn thành sớm</li></ul></div><div class="mdeck-slide"><h2>Ưu tiên theo phần đường găng còn lại</h2>
+      <p>Đặt $b(v)$ là độ dài đường đi dài nhất bắt đầu tại v (tính cả $p_v$):
+      $b(v) = p_v + \max_{(v,u)\in E} b(u)$, bằng $p_v$ khi v không có đỉnh kế tiếp.</p>
+      <p>Tính $b(v)$ theo thứ tự tô pô đảo trong $O(|V|+|E|)$. Khi chọn trong tập sẵn sàng, ưu tiên tác vụ có
+      $b(v)$ lớn hơn. Đây là quy tắc chọn trong List Scheduling, <b>không bảo đảm tối ưu mọi DAG</b> nhưng giúp
+      ưu tiên đúng các tác vụ nằm trên đường găng.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Bảo đảm cho DAG (chi phí truyền dữ liệu = 0)</div>
+      <div class="pd-formula-math">C_{max} \le \tfrac{W}{m} + \Big(1-\tfrac1m\Big)L \le \Big(2-\tfrac1m\Big)\text{OPT}</div></div>
+      <p style="color:var(--muted);font-size:.85rem">L: độ dài đường găng. Kết quả cổ điển của Graham.
+      Nguồn: lap_lich_50_slides.pdf, tr.20-21.</p></div><div class="mdeck-slide"><h2>Ví dụ MapReduce: rào chắn giữa các pha</h2>
+      <p>2 chỗ chạy task, 4 task Map dài 4,3,2,1. Sau toàn bộ Map là 1 pha shuffle dài 2, rồi 2 task Reduce
+      dài 3,2.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Makespan</div>
+      <div class="pd-formula-math">C_{max} = \underbrace{5}_{\text{Map bằng LPT}} + \underbrace{2}_{\text{shuffle}} + \underbrace{3}_{\text{Reduce}} = 10</div></div>
+      <div class="callout warn"><div class="lbl">Mô hình giảng dạy</div>Trong Hadoop thực tế, một phần shuffle
+      có thể chồng lấp với Map — ví dụ này cố ý dùng rào chắn cứng để tính được bằng tay.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.22-23.</p></div><div class="mdeck-slide"><h2>Vị trí dữ liệu: máy rảnh chưa chắc hoàn thành sớm</h2>
+      <p>Một task cần 4 đơn vị xử lý, dữ liệu nằm ở M1.</p>
+      <table><tr><th>Lựa chọn</th><th>Chờ máy</th><th>Lấy dữ liệu</th><th>Kết thúc</th></tr>
+      <tr><td>Chạy tại M1</td><td>3</td><td>0</td><td>3+0+4=7</td></tr>
+      <tr><td>Chạy tại M2</td><td>0</td><td>5</td><td>0+5+4=9</td></tr></table>
+      <p>Quy tắc tham lam: chọn máy có $\hat C_i = \text{thời gian chờ}+\text{thời gian lấy dữ liệu}+p_j$ nhỏ
+      nhất. Nếu thời gian lấy dữ liệu ở M2 chỉ là 1, nên chọn M2 vì $1+4=5 < 7$.</p>
+      <div class="callout info"><div class="lbl">Liên hệ</div>Đây chính là nguyên tắc ưu tiên dữ liệu cục bộ
+      (data locality) trong Spark DAGScheduler/Hadoop — mô hình dự báo đơn giản, không phải cơ chế thật đầy đủ.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.24.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="dagschedule"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Ràng buộc DAG (u,v)∈E nghĩa là gì?", "opts": ["S_v ≥ C_u (v chỉ bắt đầu sau khi u hoàn thành)", "u phải chạy sau v", "u và v phải chạy cùng lúc", "Không có ràng buộc thứ tự"], "correct": 0, "explain": "Cạnh (u,v) nghĩa là v phụ thuộc u, chỉ bắt đầu khi u đã xong."}, {"q": "Tác vụ \"sẵn sàng\" trong lập lịch DAG nghĩa là gì?", "opts": ["Đã chạy xong", "Chưa chạy và mọi tiền nhiệm đã hoàn thành", "Có thời gian xử lý ngắn nhất", "Nằm trên đường găng"], "correct": 1, "explain": "Đúng định nghĩa slide tr.16."}, {"q": "Trong ví dụ DAG 6 tác vụ (m=2), đường găng là đường nào và độ dài bao nhiêu?", "opts": ["B→D→F, độ dài 6", "A→C→E, độ dài 10", "A→D→F, độ dài 7", "Không có đường găng"], "correct": 1, "explain": "A(3)→C(4)→E(3), tổng 3+4+3=10, đúng số liệu slide tr.17."}, {"q": "b(v) trong quy tắc ưu tiên DAG được định nghĩa thế nào?", "opts": ["Số tiền nhiệm của v", "Độ dài đường đi dài nhất bắt đầu tại v, tính cả p_v", "Thời gian xử lý trung bình", "Số lượng hậu duệ của v"], "correct": 1, "explain": "b(v) = p_v + max b(u) trên các cạnh (v,u) — dùng để ưu tiên tác vụ nằm trên đường găng."}, {"q": "Trong ví dụ MapReduce có rào chắn (Map LPT=5, shuffle=2, Reduce=3), Cmax bằng bao nhiêu?", "opts": ["8", "9", "10", "12"], "correct": 2, "explain": "Cmax = 5+2+3 = 10, do rào chắn cứng giữa các pha (mô hình giảng dạy)."}, {"q": "Trong ví dụ vị trí dữ liệu, vì sao nên chạy task tại M2 dù dữ liệu nằm ở M1?", "opts": ["M2 luôn nhanh hơn M1", "Nếu thời gian lấy dữ liệu ở M2 đủ nhỏ, tổng thời gian (chờ+lấy dữ liệu+xử lý) có thể nhỏ hơn chạy tại M1", "M1 đang hỏng", "Luật bắt buộc chạy tại máy có ít tải nhất"], "correct": 1, "explain": "Quy tắc tham lam so sánh Ĉ_i = chờ + lấy dữ liệu + p_j giữa các lựa chọn, không mặc định ưu tiên máy có dữ liệu."}, {"q": "Bảo đảm xấp xỉ của List Scheduling trên DAG (chi phí truyền dữ liệu = 0) là gì?", "opts": ["(2-1/m)·OPT, giống hệt trường hợp tác vụ độc lập", "OPT đúng tuyệt đối", "(4/3)·OPT", "Không có bảo đảm nào cho DAG"], "correct": 0, "explain": "Cmax ≤ W/m + (1-1/m)L ≤ (2-1/m)·OPT — cùng dạng bảo đảm với tác vụ độc lập."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-02-list-scheduling-lpt/index.html">◀ Lập lịch 02: List Scheduling & LPT cho tác vụ độc lập</a><a href="../ll-04-fifo-spt-smith/index.html">Lập lịch 04: FIFO, SPT và quy tắc Smith ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>
