@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 05: SRPT và hàng đợi công việc động · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 05 / 10</div>
+<h1>SRPT và hàng đợi công việc động</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 05 · Lập lịch ngắt được, liên hệ Spark FIFO/FAIR</div><h2>SRPT và hàng đợi công việc động</h2><p>Khi công việc đến tại các thời điểm khác nhau và được phép ngắt, SRPT (Shortest Remaining Processing Time) tối ưu tổng thời gian trong hệ thống — nền tảng lý thuyết cho hàng đợi công việc thật.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>SRPT: công việc đến theo thời gian</h2>
+<ul class="part-list"><li>Ngắt được, luôn ưu tiên thời gian còn lại nhỏ nhất</li>
+<li>Ví dụ A(0,8), B(1,2): SRPT=12, FIFO=17</li>
+<li>SRPT tối ưu tổng (Cj-rj)</li></ul></div><div class="mdeck-slide"><h2>SRPT: ưu tiên thời gian còn lại nhỏ nhất</h2>
+      <p>Một máy, biết $p_j$ khi công việc đến. Cho phép ngắt và tiếp tục, không mất chi phí. SRPT: luôn chạy
+      công việc đã đến có thời gian xử lý <b>còn lại</b> nhỏ nhất.</p>
+      <p>Ví dụ: $A:(r_A,p_A)=(0,8)$, $B:(r_B,p_B)=(1,2)$. SRPT chạy A từ 0→1, ngắt để chạy B từ 1→3 (ngắn hơn
+      phần còn lại của A), rồi tiếp tục A từ 3→10.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Tổng thời gian trong hệ thống</div>
+      <div class="pd-formula-math">\sum_j (C_j-r_j) = (10-0)+(3-1) = 12</div></div>
+      <p>FIFO không ngắt: A chạy [0,8], B chạy [8,10], tổng $= 8+9=17$ — tệ hơn SRPT đáng kể.</p>
+      <div class="callout good"><div class="lbl">Kết quả</div>SRPT tối ưu tổng thời gian trong hệ thống dưới các
+      giả thiết trên (Schrage, 1968). Không áp dụng trực tiếp khi có trọng số hoặc chi phí ngắt.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.30.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Liên hệ với hàng đợi công việc thật</h2>
+<ul class="part-list"><li>Bảng so sánh FIFO/SPT/Smith/SRPT/FAIR</li>
+<li>Spark có FIFO và FAIR, không có SRPT trực tiếp</li></ul></div><div class="mdeck-slide"><h2>Bốn chính sách, bốn loại thông tin cần có</h2>
+      <table><tr><th>Chính sách</th><th>Thông tin cần có</th><th>Cách dùng mô hình</th></tr>
+      <tr><td>FIFO</td><td>Thứ tự đến</td><td>Chính sách cơ sở dễ triển khai</td></tr>
+      <tr><td>SPT / Smith</td><td>Ước lượng thời gian, thêm trọng số với Smith</td><td>So sánh độ trễ của các yêu cầu</td></tr>
+      <tr><td>SRPT</td><td>Thời gian còn lại và khả năng ngắt</td><td>Mô hình lý tưởng cho công việc đến động</td></tr>
+      <tr><td>FAIR</td><td>Phần tài nguyên của job/pool</td><td>Chia sẻ tài nguyên giữa nhiều công việc</td></tr></table>
+      <div class="callout warn"><div class="lbl">Lưu ý quan trọng</div>Spark có FIFO và FAIR giữa các job trong
+      một SparkContext. <b>Không thể suy ra</b> rằng bật FAIR sẽ thực thi SPT hoặc SRPT — đây là các chính sách
+      khác nhau về bản chất, chỉ là mô hình phân tích để so sánh khái niệm.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.31-32.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="srpt"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "SRPT luôn ưu tiên chạy công việc nào?", "opts": ["Đến trước nhất", "Có thời gian xử lý còn lại nhỏ nhất trong số đã đến", "Có trọng số lớn nhất", "Có thời gian xử lý tổng lớn nhất"], "correct": 1, "explain": "Đúng định nghĩa: Shortest Remaining Processing Time."}, {"q": "Trong ví dụ A(0,8), B(1,2), SRPT cho tổng (Cj-rj) bằng bao nhiêu?", "opts": ["10", "12", "15", "17"], "correct": 1, "explain": "(10-0)+(3-1)=12, đúng slide tr.30."}, {"q": "FIFO không ngắt cho CÙNG ví dụ A(0,8),B(1,2) cho tổng (Cj-rj) bằng bao nhiêu?", "opts": ["12", "15", "17", "20"], "correct": 2, "explain": "A chạy [0,8], B chạy [8,10]: tổng = 8+9 = 17."}, {"q": "SRPT tối ưu dưới giả thiết nào?", "opts": ["Biết độ dài tác vụ, ngắt được và không mất chi phí ngắt", "Không cần biết độ dài tác vụ trước", "Chỉ áp dụng khi có trọng số", "Chỉ áp dụng cho DAG"], "correct": 0, "explain": "Kết quả Schrage (1968) yêu cầu đúng các giả thiết này — không áp dụng trực tiếp khi có trọng số/chi phí ngắt."}, {"q": "Spark Job Scheduling hỗ trợ trực tiếp SRPT giữa các job không?", "opts": ["Có, SRPT là chính sách mặc định", "Không — Spark chỉ có FIFO và FAIR, không suy ra được là đang chạy SRPT/SPT", "Có, nhưng chỉ khi bật chế độ Dynamic Allocation", "Không liên quan tới Spark"], "correct": 1, "explain": "Lưu ý rõ ở slide tr.31-32: không được suy diễn bật FAIR tương đương SRPT/SPT."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-04-fifo-spt-smith/index.html">◀ Lập lịch 04: FIFO, SPT và quy tắc Smith</a><a href="../ll-06-cong-bang-tai-nguyen/index.html">Lập lịch 06: Công bằng tài nguyên: max-min & progressive filling ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

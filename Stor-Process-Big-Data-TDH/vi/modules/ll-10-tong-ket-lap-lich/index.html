@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 10: Tổng kết: chọn thuật toán & bài tập · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 10 / 10</div>
+<h1>Tổng kết: chọn thuật toán & bài tập</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 10 · Bảng tra cứu, 3 bài tập có đáp số</div><h2>Tổng kết: chọn thuật toán & bài tập</h2><p>Khép lại 10 buổi lập lịch bằng bảng tra cứu chọn thuật toán theo bài toán, 3 bài tập có đáp số lấy nguyên từ slide gốc, và danh mục đầy đủ tài liệu tham khảo.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Bảng chọn thuật toán theo bài toán</h2>
+<ul class="part-list"><li>8 dòng tra cứu nhanh: bài toán → thuật toán → điều kiện cần nhớ</li></ul></div><div class="mdeck-slide"><h2>Bảng tra cứu chọn thuật toán</h2>
+      <table><tr><th>Bài toán</th><th>Thuật toán cơ bản</th><th>Điều kiện cần nhớ</th></tr>
+      <tr><td>Tác vụ độc lập</td><td>List Scheduling / LPT</td><td>Giảm makespan, máy giống nhau</td></tr>
+      <tr><td>Tác vụ có phụ thuộc</td><td>List Scheduling trên DAG</td><td>Chỉ chọn tác vụ đã sẵn sàng</td></tr>
+      <tr><td>Một máy, giảm ΣCj</td><td>SPT</td><td>Tất cả có sẵn từ đầu</td></tr>
+      <tr><td>Một máy, giảm Σ wⱼCⱼ</td><td>Smith</td><td>Biết pj, wj, có sẵn từ đầu</td></tr>
+      <tr><td>Một máy, tác vụ đến động</td><td>SRPT</td><td>Biết độ dài, ngắt không mất phí</td></tr>
+      <tr><td>Chia tài nguyên</td><td>Tăng đều / DRF</td><td>Định nghĩa rõ nhu cầu và công bằng</td></tr>
+      <tr><td>Gán partition theo số lượng</td><td>Round Robin / Range</td><td>Phụ thuộc subscription</td></tr>
+      <tr><td>Giảm di chuyển partition</td><td>Nguyên tắc sticky</td><td>Ưu tiên giữ phân công hợp lệ</td></tr></table>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.46-47.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>3 bài tập có đáp số (nguyên văn slide gốc)</h2>
+<ul class="part-list"><li>LPT 2 máy: tìm lịch tốt hơn</li>
+<li>Progressive filling 3 người dùng</li>
+<li>Tái cân bằng: ít nhất bao nhiêu partition đổi</li></ul></div><div class="mdeck-slide"><h2>Bài 1 & Bài 2</h2>
+      <div class="callout info"><div class="lbl">Bài 1</div>Hai máy, các tác vụ có thời gian 5, 4, 3, 2, 2.
+      Chạy LPT, hoà chọn máy 1. Tính makespan và tìm một lịch tốt hơn.<br>
+      <b>Đáp số:</b> LPT cho tải (9, 7). Lịch (5+3, 4+2+2) có tải (8, 8) và tối ưu.</div>
+      <div class="callout info"><div class="lbl">Bài 2</div>Có 15 đơn vị tài nguyên, nhu cầu ba người là
+      (3, 4, 20). Dùng progressive filling để tìm phần cấp công bằng.<br>
+      <b>Đáp số:</b> Tăng đến (3,3,3), rồi (3,4,4), cuối cùng (3,4,8).</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.47 (đáp số giữ nguyên văn slide gốc).</p></div><div class="mdeck-slide"><h2>Bài 3 & Tài liệu tham khảo</h2>
+      <div class="callout info"><div class="lbl">Bài 3</div>Consumer rời nhóm đang giữ 4 partition. Ít nhất bao
+      nhiêu partition phải đổi consumer nếu vẫn giữ nguyên các partition còn lại?<br>
+      <b>Đáp số:</b> Ít nhất 4. Có đạt được đồng thời với cân bằng hay không còn tuỳ subscription và ràng buộc.</div>
+      <table><tr><th>Tài liệu thuật toán</th></tr>
+      <tr><td>[1] R. L. Graham (1969). Bounds on Multiprocessing Timing Anomalies. SIAM J. Applied Math.</td></tr>
+      <tr><td>[2] W. E. Smith (1956). Various Optimizers for Single-Stage Production. Naval Research Logistics Quarterly.</td></tr>
+      <tr><td>[3] L. Schrage (1968). A Proof of the Optimality of SRPT Discipline. Operations Research.</td></tr>
+      <tr><td>[4] A. Ghodsi và cộng sự (2011). Dominant Resource Fairness. NSDI 2011.</td></tr></table>
+      <table><tr><th>Tài liệu chính thức hệ thống</th></tr>
+      <tr><td>[5] Apache Spark: Job Scheduling (3.5.6), Cluster Mode Overview, TaskScheduler/DAGScheduler.</td></tr>
+      <tr><td>[6] Apache Hadoop YARN (3.4.0): Fair Scheduler, Capacity Scheduler.</td></tr>
+      <tr><td>[7] Apache Hadoop MapReduce (3.4.0): MapReduce Tutorial.</td></tr>
+      <tr><td>[8] Apache Kafka Consumer API (3.7.2): RoundRobinAssignor, RangeAssignor, StickyAssignor.</td></tr></table>
+      <p style="color:var(--muted);font-size:.85rem">Phạm vi đối chiếu: đúng các phiên bản nêu trên — cấu hình/giao thức
+      phiên bản khác có thể thay đổi. Nguồn: lap_lich_50_slides.pdf, tr.47-50.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="algo_picker"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Hai máy, tác vụ (5,4,3,2,2), LPT (hoà chọn máy 1) cho makespan bao nhiêu?", "opts": ["7", "8", "9", "10"], "correct": 2, "explain": "LPT cho tải (9,7) → makespan 9, đúng đáp số Bài 1 slide tr.47."}, {"q": "Lịch tốt hơn cho bài toán trên (5,4,3,2,2; 2 máy) đạt makespan bao nhiêu?", "opts": ["7", "8", "9", "10"], "correct": 1, "explain": "Lịch (5+3, 4+2+2) có tải (8,8) — tốt hơn LPT (9,7), đúng đáp số Bài 1."}, {"q": "15 đơn vị tài nguyên, nhu cầu 3 người (3,4,20), progressive filling cho kết quả cuối cùng là gì?", "opts": ["(3,4,8)", "(5,5,5)", "(3,3,9)", "(0,0,15)"], "correct": 0, "explain": "Tăng đến (3,3,3)→(3,4,4)→cuối cùng (3,4,8), đúng đáp số Bài 2."}, {"q": "Consumer rời nhóm đang giữ 4 partition, ít nhất bao nhiêu partition phải đổi consumer?", "opts": ["1", "2", "4", "6"], "correct": 2, "explain": "Ít nhất 4 — đúng số partition mà consumer đó đang giữ, đáp số Bài 3."}, {"q": "Bài báo gốc chứng minh bảo đảm xấp xỉ của List Scheduling/LPT là của ai?", "opts": ["W. E. Smith (1956)", "R. L. Graham (1969)", "L. Schrage (1968)", "A. Ghodsi và cộng sự (2011)"], "correct": 1, "explain": "[1] Graham (1969), Bounds on Multiprocessing Timing Anomalies."}, {"q": "DRF (Dominant Resource Fairness) được công bố ở đâu, bởi ai?", "opts": ["Graham, SIAM 1969", "Smith, Naval Research Logistics 1956", "Ghodsi và cộng sự, NSDI 2011", "Schrage, Operations Research 1968"], "correct": 2, "explain": "[4] A. Ghodsi và cộng sự (2011), Dominant Resource Fairness, NSDI 2011."}, {"q": "Theo bảng chọn thuật toán, bài toán \"một máy, giảm Σ wⱼCⱼ\" dùng thuật toán nào?", "opts": ["SPT", "Smith", "SRPT", "DRF"], "correct": 1, "explain": "Smith xử lý đúng trường hợp có trọng số wⱼ; SPT chỉ là trường hợp đặc biệt khi mọi wⱼ bằng nhau."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-09-kafka-sticky-rebalance/index.html">◀ Lập lịch 09: Kafka: tái cân bằng & nguyên tắc Sticky</a><span></span></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

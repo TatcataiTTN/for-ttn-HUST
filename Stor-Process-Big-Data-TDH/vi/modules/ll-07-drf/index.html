@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 07: DRF — Dominant Resource Fairness · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 07 / 10</div>
+<h1>DRF — Dominant Resource Fairness</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 07 · Nhiều loại tài nguyên, liên hệ YARN/Spark FAIR</div><h2>DRF — Dominant Resource Fairness</h2><p>Khi cụm có nhiều loại tài nguyên (CPU, RAM...) và người dùng có nhu cầu lệch nhau, chia công bằng một loại tài nguyên có thể làm loại khác quá tải. DRF (Ghodsi và cộng sự, NSDI 2011) giải quyết việc này.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Mô hình DRF và dominant share</h2>
+<ul class="part-list"><li>d loại tài nguyên, dominant share s_i = max_r (x_i a_ir / R_r)</li>
+<li>DRF: max-min fairness trên dominant share</li>
+<li>Ví dụ: 9 CPU, 18GB RAM, 2 người dùng</li></ul></div><div class="mdeck-slide"><h2>Bài toán chia nhiều loại tài nguyên</h2>
+      <p>Có $d$ loại tài nguyên, loại r có dung lượng $R_r$. Một task của người dùng i cần $a_{ir}$ đơn vị tài
+      nguyên loại r. $x_i$ là số task của người dùng i được cấp đồng thời.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Ràng buộc & dominant share</div>
+      <div class="pd-formula-math">\sum_i x_i a_{ir} \le R_r \ (\forall r), \qquad s_i = \max_r \frac{x_i a_{ir}}{R_r}</div></div>
+      <p><b>DRF</b>: thực hiện công bằng max-min trên các dominant share $s_i$ thay vì trên từng loại tài nguyên
+      riêng lẻ.</p>
+      <div class="callout warn"><div class="lbl">Vì sao cần DRF</div>Người dùng có thể thiên về CPU hoặc RAM —
+      chia công bằng 1 loại tài nguyên đơn lẻ có thể làm loại khác quá tải hoặc lãng phí.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.34-35; Ghodsi và cộng sự (2011), NSDI.</p></div><div class="mdeck-slide"><h2>Ví dụ DRF: hai người dùng, nhu cầu khác nhau</h2>
+      <p>Cụm có 9 CPU, 18GB RAM. Hai người dùng đủ task để tiếp tục nhận tài nguyên.</p>
+      <table><tr><th>Người dùng</th><th>CPU/task</th><th>RAM/task</th><th>Tài nguyên trội</th></tr>
+      <tr><td>A</td><td>1</td><td>4GB</td><td>RAM: 4/18 &gt; 1/9</td></tr>
+      <tr><td>B</td><td>3</td><td>1GB</td><td>CPU: 3/9 &gt; 1/18</td></tr></table>
+      <p>$s_A = 2x_A/9$, $s_B=x_B/3$. Ràng buộc khả thi: $x_A+3x_B\le 9$, $4x_A+x_B\le 18$.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.35.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Tính DRF và liên hệ YARN/Spark</h2>
+<ul class="part-list"><li>Tăng đều dominant share: s=2/3, (xA,xB)=(3,2)</li>
+<li>Cấp phát theo từng task, chọn s_i nhỏ nhất</li>
+<li>YARN Fair/Capacity Scheduler, Spark FAIR</li></ul></div><div class="mdeck-slide"><h2>Tăng đều dominant share chung</h2>
+      <p>Đặt dominant share chung bằng $s$: $x_A=\tfrac92 s$, $x_B=3s$. Thay vào 2 ràng buộc:</p>
+      <div class="pd-formula"><div class="pd-formula-label">CPU đầy trước</div>
+      <div class="pd-formula-math">\tfrac92 s + 9s \le 9 \Rightarrow s\le\tfrac23 \quad(\text{RAM cho }s\le\tfrac67)</div></div>
+      <p>CPU đầy trước nên $s=2/3$, suy ra $x_A=3$, $x_B=2$. Tổng sử dụng: $3+3\cdot2=9$ CPU và $4\cdot3+2=14$
+      GB RAM. Hai người có <b>cùng dominant share</b> nhưng số task được cấp khác nhau.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.36.</p></div><div class="mdeck-slide"><h2>DRF theo từng task — cấp phát rời rạc</h2>
+      <p>Quy tắc: chọn người có $s_i$ nhỏ nhất trong số có task vừa tài nguyên còn lại, cấp thêm 1 task (hoà
+      chọn A trước).</p>
+      <table><tr><th>Bước</th><th>Cấp cho</th><th>(xA,xB)</th><th>(sA,sB)</th><th>CPU dùng</th><th>RAM dùng</th></tr>
+      <tr><td>1</td><td>A</td><td>(1,0)</td><td>(2/9,0)</td><td>1</td><td>4</td></tr>
+      <tr><td>2</td><td>B</td><td>(1,1)</td><td>(2/9,1/3)</td><td>4</td><td>5</td></tr>
+      <tr><td>3</td><td>A</td><td>(2,1)</td><td>(4/9,1/3)</td><td>5</td><td>9</td></tr>
+      <tr><td>4</td><td>B</td><td>(2,2)</td><td>(4/9,2/3)</td><td>8</td><td>10</td></tr>
+      <tr><td>5</td><td>A</td><td>(3,2)</td><td>(2/3,2/3)</td><td>9</td><td>14</td></tr></table>
+      <p>Dừng vì hết CPU — trùng nghiệm liên tục ở bước trước. Task nguyên hoặc máy riêng biệt có thể làm thay
+      đổi bảo đảm lý thuyết.</p>
+      <div class="callout good"><div class="lbl">Liên hệ YARN/Spark</div>YARN Fair Scheduler chia tài nguyên
+      giữa ứng dụng/hàng đợi, có thể cấu hình DRF để xét cả CPU lẫn bộ nhớ. YARN Capacity Scheduler quản lý
+      phần dung lượng bảo đảm và giới hạn hàng đợi. Spark FAIR chia sẻ tài nguyên giữa job/pool trong 1
+      SparkContext. Khi Spark chạy trên YARN: YARN cấp tài nguyên cho ứng dụng Spark, rồi ứng dụng Spark tự
+      dùng tài nguyên đó cho các task của mình — hai tầng lập lịch độc lập.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.37-38.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="drf"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Dominant share s_i của người dùng i được định nghĩa thế nào?", "opts": ["Tổng tài nguyên người i đang dùng", "max_r (x_i·a_ir / R_r) — tỉ lệ lớn nhất trong các loại tài nguyên", "Số task người i đang chạy", "Trọng số ưu tiên của người i"], "correct": 1, "explain": "Dominant share lấy tỉ lệ LỚN NHẤT trong các loại tài nguyên — đây là loại tài nguyên 'trội' của người đó."}, {"q": "Vì sao cần DRF thay vì chia công bằng từng loại tài nguyên riêng lẻ?", "opts": ["DRF tính toán nhanh hơn", "Người dùng có thể thiên về CPU hoặc RAM khác nhau — chia công bằng 1 loại có thể làm loại khác quá tải", "DRF chỉ áp dụng được cho 1 loại tài nguyên", "Không có lý do, chỉ là lựa chọn tuỳ ý"], "correct": 1, "explain": "Đây là động lực chính nêu ở slide tr.34 — users lệch nhu cầu resource khác nhau."}, {"q": "Trong ví dụ 9 CPU/18GB RAM, người dùng A (1 CPU, 4GB/task) có tài nguyên trội là gì?", "opts": ["CPU, vì 1/9 > 4/18", "RAM, vì 4/18 > 1/9", "Cả hai bằng nhau", "Không xác định được"], "correct": 1, "explain": "4/18 ≈ 0,222 > 1/9 ≈ 0,111 nên RAM là tài nguyên trội của A."}, {"q": "Kết quả cuối cùng (liên tục) của ví dụ DRF 2 người dùng là gì?", "opts": ["(xA,xB)=(2,3), s=1/2", "(xA,xB)=(3,2), s=2/3, dùng hết 9 CPU và 14GB RAM", "(xA,xB)=(4,1), s=8/9", "(xA,xB)=(1,1), s=2/9"], "correct": 1, "explain": "CPU đầy trước ở s=2/3, cho (xA,xB)=(3,2) — đúng số liệu slide tr.36."}, {"q": "DRF theo từng task chọn người nào để cấp task tiếp theo?", "opts": ["Người có s_i LỚN nhất", "Người có s_i NHỎ nhất trong số còn vừa tài nguyên", "Người đến trước", "Người có trọng số cao nhất"], "correct": 1, "explain": "Quy tắc: luôn ưu tiên người có dominant share nhỏ nhất, đúng tinh thần max-min fairness."}, {"q": "YARN Fair Scheduler và YARN Capacity Scheduler khác nhau ở điểm nào theo nội dung đã học?", "opts": ["Không khác gì nhau", "Fair Scheduler chia tài nguyên giữa ứng dụng/hàng đợi (có thể cấu hình DRF); Capacity Scheduler quản lý phần dung lượng bảo đảm và giới hạn hàng đợi", "Capacity Scheduler chỉ dùng cho Spark", "Fair Scheduler không áp dụng được cho YARN"], "correct": 1, "explain": "Hai cơ chế khác nhau trong cùng YARN, đúng như liên hệ ở slide tr.38."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-06-cong-bang-tai-nguyen/index.html">◀ Lập lịch 06: Công bằng tài nguyên: max-min & progressive filling</a><a href="../ll-08-kafka-roundrobin-range/index.html">Lập lịch 08: Kafka: Round Robin & Range assignor ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

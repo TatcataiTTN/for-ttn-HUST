@@ -231,6 +231,245 @@ ALG.schwartzZippelTest = function(coeffs, p, trials){
   return { zeroCount: zeroCount, trials: trials, empirical: zeroCount/trials, theoryBound: degree/p, degree: degree, p: p };
 };
 
+// ---------- Lập lịch (lap_lich_50_slides.pdf) ----------
+
+// List Scheduling theo đúng THỨ TỰ cho sẵn trong labels/pj. LPT = gọi hàm này sau khi tự sắp giảm dần.
+ALG.listSchedule = function(labels, pj, m){
+  var load = new Array(m).fill(0);
+  var rows = labels.map(function(lab, idx){
+    var best = 0;
+    for (var i=1;i<m;i++) if (load[i] < load[best]) best = i;
+    var S = load[best], C = S + pj[idx];
+    load[best] += pj[idx];
+    return { label: lab, p: pj[idx], machine: best, S: S, C: C };
+  });
+  var Cmax = Math.max.apply(null, load);
+  var W = pj.reduce(function(a,b){return a+b;}, 0);
+  var lb = Math.max(W/m, Math.max.apply(null, pj));
+  return { rows: rows, load: load, Cmax: Cmax, W: W, lowerBound: lb };
+};
+ALG.lpt = function(labels, pj, m){
+  var idx = labels.map(function(_,i){return i;}).sort(function(a,b){ return pj[b]-pj[a]; });
+  return ALG.listSchedule(idx.map(function(i){return labels[i];}), idx.map(function(i){return pj[i];}), m);
+};
+
+// Lập lịch DAG bằng List Scheduling event-driven. edges: [[u,v],...] nghĩa là v phụ thuộc u.
+ALG.dagSchedule = function(labels, pj, edges, m){
+  var n = labels.length;
+  var idxOf = {}; labels.forEach(function(l,i){ idxOf[l]=i; });
+  var preds = labels.map(function(){return [];}), succs = labels.map(function(){return [];});
+  edges.forEach(function(e){ var u=idxOf[e[0]], v=idxOf[e[1]]; preds[v].push(u); succs[u].push(v); });
+  var done = new Array(n).fill(false), doneAt = new Array(n).fill(null);
+  var machineFree = new Array(m).fill(0);
+  var started = new Array(n).fill(false);
+  var events = [];
+  var remaining = n;
+  var t = 0;
+  // mô phỏng rời rạc đơn giản: tại mỗi bước, gán tác vụ sẵn sàng cho máy rảnh sớm nhất
+  var queue = [];
+  function readyNow(j){ return !started[j] && preds[j].every(function(u){ return done[u]; }); }
+  var assigned = new Array(n).fill(null); // {machine,S,C}
+  var remainingTasks = n, iter = 0;
+  while (remainingTasks > 0 && iter < 10000){
+    iter++;
+    // tìm máy rảnh sớm nhất và tác vụ sẵn sàng tại thời điểm đó
+    var earliestMachine = 0;
+    for (var i=1;i<m;i++) if (machineFree[i] < machineFree[earliestMachine]) earliestMachine = i;
+    var tNow = machineFree[earliestMachine];
+    var cand = null;
+    for (var j=0;j<n;j++){
+      if (!started[j] && readyNow(j)){ if (cand===null) cand = j; }
+    }
+    if (cand === null){
+      // không có tác vụ sẵn sàng — nhảy thời gian tới sự kiện hoàn thành gần nhất
+      var nextDone = Infinity;
+      assigned.forEach(function(a){ if (a && a.C > tNow && a.C < nextDone) nextDone = a.C; });
+      if (!isFinite(nextDone)) break;
+      machineFree[earliestMachine] = nextDone;
+      continue;
+    }
+    started[cand] = true;
+    var S = tNow, C = tNow + pj[cand];
+    assigned[cand] = { machine: earliestMachine, S: S, C: C };
+    machineFree[earliestMachine] = C;
+    done[cand] = true; // đánh dấu ngay để tính sẵn sàng cho vòng sau (đã bắt đầu = coi như theo thứ tự tô pô ở mô hình đơn giản này)
+    remainingTasks--;
+  }
+  var rows = labels.map(function(l,i){ return { label:l, p: pj[i], machine: assigned[i].machine, S: assigned[i].S, C: assigned[i].C }; });
+  var Cmax = Math.max.apply(null, rows.map(function(r){return r.C;}));
+  return { rows: rows, Cmax: Cmax };
+};
+
+// FIFO / SPT / Smith trên 1 máy — thứ tự cho trước, trả về Cj và tổng (có trọng số)
+ALG.oneMachineOrder = function(labels, pj, wj){
+  var t = 0; var rows = labels.map(function(l,i){ var C = t + pj[i]; t = C; return { label:l, p:pj[i], w:(wj?wj[i]:1), C:C }; });
+  var sum = rows.reduce(function(a,r){return a+r.C;},0);
+  var wsum = rows.reduce(function(a,r){return a+r.w*r.C;},0);
+  return { rows: rows, sumC: sum, sumWC: wsum };
+};
+ALG.sptOrder = function(labels, pj){
+  var idx = labels.map(function(_,i){return i;}).sort(function(a,b){ return pj[a]-pj[b]; });
+  return { labels: idx.map(function(i){return labels[i];}), pj: idx.map(function(i){return pj[i];}) };
+};
+ALG.smithOrder = function(labels, pj, wj){
+  var idx = labels.map(function(_,i){return i;}).sort(function(a,b){ return (pj[a]/wj[a]) - (pj[b]/wj[b]); });
+  return { labels: idx.map(function(i){return labels[i];}), pj: idx.map(function(i){return pj[i];}), wj: idx.map(function(i){return wj[i];}) };
+};
+
+// SRPT (ngắt được) vs FIFO (không ngắt) — tasks: [{label,r,p}], mô phỏng rời rạc theo đơn vị thời gian nhỏ nhất.
+ALG.srptRun = function(tasks){
+  var jobs = tasks.map(function(t){ return { label:t.label, r:t.r, p:t.p, rem:t.p, C:null }; });
+  var t = Math.min.apply(null, jobs.map(function(j){return j.r;}));
+  var timeline = [];
+  var remainingCount = jobs.length;
+  while (remainingCount > 0){
+    var avail = jobs.filter(function(j){ return j.r<=t && j.rem>0; });
+    if (avail.length===0){ var nextR = Math.min.apply(null, jobs.filter(function(j){return j.rem>0;}).map(function(j){return j.r;})); t = nextR; continue; }
+    avail.sort(function(a,b){ return a.rem-b.rem; });
+    var run = avail[0];
+    var nextArrival = Math.min.apply(null, jobs.filter(function(j){return j.r>t;}).map(function(j){return j.r;}).concat([Infinity]));
+    var step = Math.min(run.rem, nextArrival-t);
+    step = step>0?step:run.rem;
+    timeline.push({label:run.label, from:t, to:t+step});
+    t += step; run.rem -= step;
+    if (run.rem<=0){ run.C = t; remainingCount--; }
+  }
+  var sum = jobs.reduce(function(a,j){ return a+(j.C-j.r); },0);
+  return { jobs: jobs, timeline: timeline, sumFlow: sum };
+};
+ALG.fifoRun = function(tasks){
+  var jobs = tasks.slice().sort(function(a,b){ return a.r-b.r; });
+  var t = 0; var out = [];
+  jobs.forEach(function(j){ var S=Math.max(t,j.r), C=S+j.p; out.push({label:j.label,r:j.r,p:j.p,S:S,C:C}); t=C; });
+  var sum = out.reduce(function(a,j){return a+(j.C-j.r);},0);
+  return { jobs: out, sumFlow: sum };
+};
+
+// Progressive filling: B tổng, demands[]
+ALG.progressiveFilling = function(B, demands){
+  var n = demands.length;
+  var sorted = demands.map(function(d,i){return {d:d,i:i};}).sort(function(a,b){return a.d-b.d;});
+  var alloc = new Array(n).fill(0);
+  var steps = [];
+  var remaining = B, active = n;
+  for (var k=0;k<sorted.length;k++){
+    var cur = sorted[k].d;
+    var prevLevel = k>0?sorted[k-1].d:0;
+    var delta = cur - prevLevel;
+    var give = Math.min(delta, remaining/active);
+    for (var j=k;j<n;j++) alloc[sorted[j].i] += give;
+    remaining -= give*active;
+    steps.push({ upTo: prevLevel+give, alloc: alloc.slice() });
+    if (give < delta){ break; } // hết tài nguyên giữa chừng
+    active--;
+    if (remaining<=1e-9) break;
+  }
+  return { alloc: alloc, steps: steps, lambda: Math.max.apply(null, alloc) };
+};
+
+// DRF: 2 người dùng, mỗi người (cpu,ram) trên 1 task, tổng (Rc,Rr)
+ALG.drfTwoUsers = function(a, b, Rc, Rr){
+  // xA = (Rc/ (a[0]+ (a[0]/b[0])*b[0]))... giải trực tiếp theo tỉ lệ dominant share chung s:
+  // xA = s*Rc/a[0] theo chuẩn hoá của dominant resource của A; tổng quát hoá bằng dò nhị phân cho chắc.
+  function used(s){
+    // với mỗi người, dominant resource là loại có a[r]/R[r] lớn hơn
+    var domA = (a[0]/Rc >= a[1]/Rr) ? 0 : 1;
+    var domB = (b[0]/Rc >= b[1]/Rr) ? 0 : 1;
+    var R = [Rc, Rr];
+    var xA = s * R[domA] / a[domA];
+    var xB = s * R[domB] / b[domB];
+    return { xA: xA, xB: xB, cpu: xA*a[0]+xB*b[0], ram: xA*a[1]+xB*b[1] };
+  }
+  var lo=0, hi=1;
+  for (var it=0; it<60; it++){
+    var mid=(lo+hi)/2, u=used(mid);
+    if (u.cpu<=Rc && u.ram<=Rr) lo=mid; else hi=mid;
+  }
+  var r = used(lo);
+  return { s: lo, xA: r.xA, xB: r.xB, cpuUsed: r.cpu, ramUsed: r.ram };
+};
+// DRF theo từng task (rời rạc) — chọn người có dominant share nhỏ nhất, hoà thì A trước
+ALG.drfStepwise = function(a, b, Rc, Rr, maxSteps){
+  var xA=0, xB=0, rows=[];
+  for (var k=0;k<(maxSteps||20);k++){
+    var cpu = xA*a[0]+xB*b[0], ram = xA*a[1]+xB*b[1];
+    var canA = (cpu+a[0]<=Rc) && (ram+a[1]<=Rr);
+    var canB = (cpu+b[0]<=Rc) && (ram+b[1]<=Rr);
+    if (!canA && !canB) break;
+    var sA = Math.max(xA*a[0]/Rc, xA*a[1]/Rr), sB = Math.max(xB*b[0]/Rc, xB*b[1]/Rr);
+    var giveA = canA && (!canB || sA<=sB);
+    if (giveA) xA++; else xB++;
+    cpu = xA*a[0]+xB*b[0]; ram = xA*a[1]+xB*b[1];
+    sA = Math.max(xA*a[0]/Rc, xA*a[1]/Rr); sB = Math.max(xB*b[0]/Rc, xB*b[1]/Rr);
+    rows.push({ step:k+1, givenTo: giveA?'A':'B', xA:xA, xB:xB, sA:sA, sB:sB, cpu:cpu, ram:ram });
+  }
+  return { rows: rows, xA: xA, xB: xB };
+};
+
+// Kafka: gán partition cho consumer. loads: [{id,load}] đã hoặc chưa sort.
+ALG.kafkaRoundRobin = function(parts, mC){
+  var assign = parts.map(function(p,i){ return { id:p.id, load:p.load, consumer: i % mC }; });
+  return ALG.kafkaSummarize(assign, mC);
+};
+ALG.kafkaRange = function(parts, mC){
+  var n = parts.length, q = Math.floor(n/mC), r = n%mC;
+  var assign = [], idx = 0;
+  for (var c=0;c<mC;c++){
+    var cnt = q + (c<r?1:0);
+    for (var k=0;k<cnt;k++){ assign.push({ id:parts[idx].id, load:parts[idx].load, consumer:c }); idx++; }
+  }
+  return ALG.kafkaSummarize(assign, mC);
+};
+ALG.kafkaLPT = function(parts, mC){
+  var sorted = parts.slice().sort(function(a,b){ return b.load-a.load; });
+  var load = new Array(mC).fill(0);
+  var assign = sorted.map(function(p){
+    var best=0; for (var i=1;i<mC;i++) if (load[i]<load[best]) best=i;
+    load[best]+=p.load;
+    return { id:p.id, load:p.load, consumer: best };
+  });
+  return ALG.kafkaSummarize(assign, mC);
+};
+ALG.kafkaSummarize = function(assign, mC){
+  var byC = {};
+  assign.forEach(function(a){ (byC[a.consumer]=byC[a.consumer]||[]).push(a); });
+  var rows = [];
+  for (var c=0;c<mC;c++){
+    var items = byC[c]||[];
+    rows.push({ consumer:'C'+(c+1), parts: items.map(function(x){return x.id;}).join(', '), count: items.length,
+                load: items.reduce(function(s,x){return s+x.load;},0) });
+  }
+  var maxLoad = Math.max.apply(null, rows.map(function(r){return r.load;}));
+  return { rows: rows, maxLoad: maxLoad, assign: assign };
+};
+
+// Tái cân bằng khi 1 consumer rời nhóm — so "round robin lại toàn bộ" vs "sticky (giữ phân công còn hợp lệ)"
+ALG.kafkaRebalanceCompare = function(parts, assignBefore, leavingConsumer, remainingConsumers){
+  // assignBefore: [{id,load,consumer}]
+  var lost = assignBefore.filter(function(a){ return a.consumer===leavingConsumer; });
+  var kept = assignBefore.filter(function(a){ return a.consumer!==leavingConsumer; });
+  // Round robin lại toàn bộ trên remainingConsumers
+  var rrAssign = parts.map(function(p,i){ return { id:p.id, load:p.load, consumer: remainingConsumers[i % remainingConsumers.length] }; });
+  var rrMoves = rrAssign.filter(function(a){
+    var before = assignBefore.filter(function(b){return b.id===a.id;})[0];
+    return before.consumer !== a.consumer;
+  }).length;
+  // Sticky: giữ kept nguyên, gán lost cho consumer có tải nhỏ nhất hiện tại (hoà -> consumer nhỏ hơn)
+  var stickyAssign = kept.map(function(a){ return {id:a.id, load:a.load, consumer:a.consumer}; });
+  lost.forEach(function(p){
+    var loadByC = {}; remainingConsumers.forEach(function(c){ loadByC[c]=0; });
+    stickyAssign.forEach(function(a){ loadByC[a.consumer]=(loadByC[a.consumer]||0)+a.load; });
+    var best = remainingConsumers[0];
+    remainingConsumers.forEach(function(c){ if (loadByC[c]<loadByC[best]) best=c; });
+    stickyAssign.push({ id:p.id, load:p.load, consumer: best });
+  });
+  var stickyMoves = lost.length; // chỉ các partition mất chủ phải chuyển, phần kept giữ nguyên tuyệt đối
+  return {
+    roundRobin: ALG.kafkaSummarize(rrAssign, Math.max.apply(null,remainingConsumers)+1), rrMoves: rrMoves,
+    sticky: ALG.kafkaSummarize(stickyAssign, Math.max.apply(null,remainingConsumers)+1), stickyMoves: stickyMoves
+  };
+};
+
 global.ALG = ALG;
 if (typeof module !== 'undefined' && module.exports) module.exports = ALG;
 })(typeof window !== 'undefined' ? window : globalThis);

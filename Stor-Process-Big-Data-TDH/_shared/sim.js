@@ -253,6 +253,217 @@ W.schwartzzippel = function(root){
   $(root,'#go').onclick=run; run();
 };
 
+/* ---------- 10 demo "Lập lịch trong hệ thống phân tán" ---------- */
+
+W.ll01_scenario = function(root){
+  frame(root,'Chọn giả thiết → hiện đúng mục tiêu lập lịch phù hợp',
+    '<div class="row"><label>Thời điểm biết tin: <select id="t1"><option value="offline">Offline (biết trước)</option><option value="online">Online (biết khi đến)</option></select></label>'+
+    '<label>Ngắt được: <select id="t2"><option value="no">Không ngắt</option><option value="yes">Ngắt được</option></select></label>'+
+    '<label>Phụ thuộc: <select id="t3"><option value="indep">Độc lập</option><option value="dag">DAG</option></select></label>'+
+    '<label>Trọng số: <select id="t4"><option value="no">Không có</option><option value="yes">Có w_j</option></select></label>'+
+    '<button class="btn" id="go">Xem gợi ý</button></div><div class="out"></div>');
+  function run(){
+    var offline=$(root,'#t1').value==='offline', preempt=$(root,'#t2').value==='yes', dag=$(root,'#t3').value==='dag', wgt=$(root,'#t4').value==='yes';
+    var sug;
+    if (dag) sug = 'List Scheduling trên DAG (buổi ll-03) — mục tiêu $\\min C_{max}$, chỉ chọn tác vụ đã sẵn sàng.';
+    else if (preempt && !offline) sug = 'SRPT (buổi ll-05) — công việc đến động, ngắt được, tối ưu tổng thời gian trong hệ thống.';
+    else if (wgt) sug = 'Quy tắc Smith (buổi ll-04) — một máy, có trọng số, tối thiểu $\\sum w_jC_j$.';
+    else if (!wgt && offline && !preempt && !dag) sug = 'List Scheduling/LPT (buổi ll-02) nếu nhiều máy giảm $C_{max}$, hoặc SPT (buổi ll-04) nếu 1 máy giảm $\\sum C_j$.';
+    else sug = 'Xem bảng tra cứu tổng hợp ở buổi ll-10 để chọn chính xác hơn theo đúng ràng buộc của bạn.';
+    $(root,'.out').innerHTML = '<div class="callout info"><div class="lbl">Gợi ý thuật toán</div>'+sug+'</div>'+
+      '<p><small>Đây là gợi ý sơ bộ dựa trên giả thiết chọn — không thay thế việc đọc kỹ điều kiện áp dụng ở từng buổi.</small></p>';
+    renderMath(root);
+  }
+  ['t1','t2','t3','t4'].forEach(function(id){ $(root,'#'+id).onchange = run; });
+  $(root,'#go').onclick=run; run();
+};
+
+W.listscheduling = function(root){
+  frame(root,'List Scheduling vs LPT — Gantt chart và so với cận dưới OPT',
+    '<div class="row"><label>Tên tác vụ (cách nhau khoảng trắng): <input id="labs" size="30" value="A B C D E F"></label></div>'+
+    '<div class="row"><label>Thời gian xử lý $p_j$: <input id="pj" size="30" value="2 3 4 6 7 8"></label><label>Số máy m = <input id="m" type="number" value="3" style="width:60px"></label><button class="btn" id="go">Chạy List Scheduling &amp; LPT</button></div><div class="out"></div>');
+  function ganttRow(name, rows, m){
+    var html = '<p><b>'+name+'</b></p><div class="t" style="font-family:monospace;font-size:.82rem;line-height:1.9">';
+    for (var i=0;i<m;i++){
+      var segs = rows.filter(function(r){return r.machine===i;}).sort(function(a,b){return a.S-b.S;});
+      html += 'M'+(i+1)+': '+segs.map(function(s){return s.label+'['+fnum(s.S)+'-'+fnum(s.C)+']';}).join(' ')+'<br>';
+    }
+    return html+'</div>';
+  }
+  function run(){
+    var labs = toks($(root,'#labs').value), pj = nums($(root,'#pj').value), m = +$(root,'#m').value;
+    var ls = A.listSchedule(labs, pj, m);
+    var lpt = A.lpt(labs, pj, m);
+    $(root,'.out').innerHTML = '<p>Cận dưới OPT $\\ge\\max(W/m,\\max p_j)=$ <b>'+fnum(ls.lowerBound)+'</b> (W='+ls.W+')</p>'+
+      ganttRow('List Scheduling (theo thứ tự nhập)', ls.rows, m) + '<p>$C_{max}=$<b>'+fnum(ls.Cmax)+'</b>, tỉ lệ $C_{max}/$OPT$\\approx$'+fnum(ls.Cmax/ls.lowerBound)+'</p>'+
+      ganttRow('LPT (sắp giảm dần trước khi chạy)', lpt.rows, m) + '<p>$C_{max}=$<b>'+fnum(lpt.Cmax)+'</b>, tỉ lệ $C_{max}/$OPT$\\approx$'+fnum(lpt.Cmax/ls.lowerBound)+'</p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.dagschedule = function(root){
+  frame(root,'List Scheduling trên DAG — ví dụ 6 tác vụ (A..F)',
+    '<div class="row"><label>$p_j$ (A B C D E F): <input id="pj" size="30" value="3 2 4 2 3 2"></label><label>Số máy m = <input id="m" type="number" value="2" style="width:60px"></label></div>'+
+    '<div class="row"><small>Cạnh phụ thuộc mặc định (đúng ví dụ slide tr.16-20): A→C, A→D, B→D, C→E, D→F, F→E.</small></div>'+
+    '<button class="btn" id="go">Chạy mô phỏng</button><div class="out"></div>');
+  function run(){
+    var labs = ['A','B','C','D','E','F'], pj = nums($(root,'#pj').value), m = +$(root,'#m').value;
+    var edges = [['A','C'],['A','D'],['B','D'],['C','E'],['D','F'],['F','E']];
+    var r = A.dagSchedule(labs, pj, edges, m);
+    var rows = r.rows.map(function(x){ return [x.label, x.p, 'M'+(x.machine+1), fnum(x.S), fnum(x.C)]; });
+    $(root,'.out').innerHTML = tbl(['Tác vụ','p_j','Máy','Bắt đầu S','Kết thúc C'], rows)+
+      '<p>$C_{max}=$<b>'+fnum(r.Cmax)+'</b> (ví dụ gốc: đường găng A→C→E dài 10, OPT≥10).</p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.spt_smith = function(root){
+  frame(root,'FIFO vs SPT vs Smith trên 1 máy',
+    '<div class="row"><label>Tên (cách nhau khoảng trắng): <input id="labs" size="20" value="A B C"></label>'+
+    '<label>$p_j$: <input id="pj" size="20" value="6 3 2"></label><label>$w_j$ (để trống = đều bằng 1): <input id="wj" size="20" value="1 3 2"></label></div>'+
+    '<button class="btn" id="go">So sánh 3 thứ tự</button><div class="out"></div>');
+  function run(){
+    var labs = toks($(root,'#labs').value), pj = nums($(root,'#pj').value);
+    var wjRaw = $(root,'#wj').value.trim(); var wj = wjRaw ? nums(wjRaw) : labs.map(function(){return 1;});
+    var fifo = A.oneMachineOrder(labs, pj, wj);
+    var spt = A.sptOrder(labs, pj); var sptRes = A.oneMachineOrder(spt.labels, spt.pj, spt.labels.map(function(l){return wj[labs.indexOf(l)];}));
+    var smith = A.smithOrder(labs, pj, wj); var smithRes = A.oneMachineOrder(smith.labels, smith.pj, smith.wj);
+    $(root,'.out').innerHTML =
+      tbl(['Thứ tự','Trình tự','$\\sum C_j$','$\\sum w_jC_j$'],[
+        ['FIFO (nhập ban đầu)', labs.join('→'), fnum(fifo.sumC), fnum(fifo.sumWC)],
+        ['SPT ($p_j$ tăng dần)', spt.labels.join('→'), fnum(sptRes.sumC), fnum(sptRes.sumWC)],
+        ['Smith ($p_j/w_j$ tăng dần)', smith.labels.join('→'), fnum(smithRes.sumC), fnum(smithRes.sumWC)]
+      ])+'<p><small>SPT tối ưu $\\sum C_j$ (không trọng số); Smith tối ưu $\\sum w_jC_j$ khi có trọng số — SPT là trường hợp riêng của Smith khi mọi $w_j$ bằng nhau.</small></p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.srpt = function(root){
+  frame(root,'SRPT (ngắt được) vs FIFO (không ngắt) với công việc đến động',
+    '<div class="row"><label>Task dạng label,r,p cách nhau dấu chấm phẩy: <input id="jobs" size="40" value="A,0,8; B,1,2"></label></div>'+
+    '<button class="btn" id="go">Chạy SRPT &amp; FIFO</button><div class="out"></div>');
+  function parseJobs(s){
+    return s.trim().split(';').map(function(part){
+      var f = part.split(',').map(function(x){return x.trim();});
+      return { label: f[0], r: +f[1], p: +f[2] };
+    });
+  }
+  function run(){
+    var jobs = parseJobs($(root,'#jobs').value);
+    var srpt = A.srptRun(jobs);
+    var fifo = A.fifoRun(jobs);
+    $(root,'.out').innerHTML =
+      '<p><b>SRPT</b>: '+srpt.timeline.map(function(s){return s.label+'['+fnum(s.from)+'-'+fnum(s.to)+']';}).join(' → ')+
+      '</p><p>Tổng $\\sum(C_j-r_j)=$ <b>'+fnum(srpt.sumFlow)+'</b></p>'+
+      '<p><b>FIFO không ngắt</b>: '+fifo.jobs.map(function(j){return j.label+'['+fnum(j.S)+'-'+fnum(j.C)+']';}).join(' → ')+
+      '</p><p>Tổng $\\sum(C_j-r_j)=$ <b>'+fnum(fifo.sumFlow)+'</b></p>'+
+      '<p class="'+(srpt.sumFlow<=fifo.sumFlow?'ok':'no')+'">'+(srpt.sumFlow<=fifo.sumFlow?'✓ SRPT ≤ FIFO, đúng tính tối ưu lý thuyết':'✗ kiểm tra lại dữ liệu nhập')+'</p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.progressive_filling = function(root){
+  frame(root,'Progressive filling: chia công bằng 1 loại tài nguyên',
+    '<div class="row"><label>Tổng tài nguyên B = <input id="B" type="number" value="12" style="width:80px"></label><label>Nhu cầu $d_i$ (cách nhau khoảng trắng): <input id="d" size="30" value="2 8 8"></label></div>'+
+    '<button class="btn" id="go">Chạy progressive filling</button><div class="out"></div>');
+  function run(){
+    var B = +$(root,'#B').value, d = nums($(root,'#d').value);
+    var r = A.progressiveFilling(B, d);
+    var rows = r.steps.map(function(s,i){ return ['Tới mức '+fnum(s.upTo)].concat(s.alloc.map(fnum)); });
+    var head = ['Giai đoạn'].concat(d.map(function(_,i){return 'x'+(i+1);}));
+    $(root,'.out').innerHTML = tbl(head, rows)+
+      '<p>Phần cấp cuối cùng: ['+r.alloc.map(fnum).join(', ')+'], $\\lambda=$'+fnum(r.lambda)+'</p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.drf = function(root){
+  frame(root,'DRF — Dominant Resource Fairness (2 người dùng)',
+    '<div class="row"><label>Tổng CPU = <input id="Rc" type="number" value="9" style="width:70px"></label><label>Tổng RAM(GB) = <input id="Rr" type="number" value="18" style="width:70px"></label></div>'+
+    '<div class="row"><label>A: CPU/task,RAM/task = <input id="a" size="10" value="1,4"></label><label>B: CPU/task,RAM/task = <input id="b" size="10" value="3,1"></label></div>'+
+    '<button class="btn" id="go">Tính DRF (liên tục &amp; theo từng task)</button><div class="out"></div>');
+  function run(){
+    var Rc=+$(root,'#Rc').value, Rr=+$(root,'#Rr').value;
+    var a = nums($(root,'#a').value), b = nums($(root,'#b').value);
+    var cont = A.drfTwoUsers(a,b,Rc,Rr);
+    var step = A.drfStepwise(a,b,Rc,Rr,30);
+    $(root,'.out').innerHTML = '<p><b>Nghiệm liên tục:</b> $s=$'+fnum(cont.s)+', $x_A=$'+fnum(cont.xA)+', $x_B=$'+fnum(cont.xB)+
+      ' — dùng '+fnum(cont.cpuUsed)+' CPU, '+fnum(cont.ramUsed)+' GB RAM.</p>'+
+      '<p><b>Cấp phát theo từng task:</b></p>'+
+      tbl(['Bước','Cấp cho','xA','xB','sA','sB','CPU dùng','RAM dùng'],
+        step.rows.map(function(r){ return [r.step, r.givenTo, r.xA, r.xB, fnum(r.sA), fnum(r.sB), fnum(r.cpu), fnum(r.ram)]; }))+
+      '<p>Kết quả rời rạc cuối: $(x_A,x_B)=($'+step.xA+', '+step.xB+'$)$</p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.kafka_assign = function(root){
+  frame(root,'So sánh Round Robin, Range, LPT-theo-tải khi gán partition',
+    '<div class="row"><label>Tải từng partition P1..Pn (cách nhau khoảng trắng): <input id="loads" size="30" value="8 7 6 3 2 1"></label><label>Số consumer = <input id="mc" type="number" value="3" style="width:60px"></label></div>'+
+    '<button class="btn" id="go">So sánh 3 phương án</button><div class="out"></div>');
+  function showAssign(title, res){
+    return '<p><b>'+title+'</b> — tải lớn nhất: <b>'+fnum(res.maxLoad)+'</b></p>'+
+      tbl(['Consumer','Partition nhận','Số lượng','Tổng tải'], res.rows.map(function(r){return [r.consumer, r.parts, r.count, fnum(r.load)];}));
+  }
+  function run(){
+    var loads = nums($(root,'#loads').value), mc = +$(root,'#mc').value;
+    var parts = loads.map(function(l,i){ return { id:'P'+(i+1), load:l }; });
+    var rr = A.kafkaRoundRobin(parts, mc), rg = A.kafkaRange(parts, mc), lpt = A.kafkaLPT(parts, mc);
+    $(root,'.out').innerHTML = showAssign('Round Robin', rr) + showAssign('Range', rg) + showAssign('LPT theo tải', lpt)+
+      '<p><small>Cận dưới lý thuyết = tổng tải / số consumer = '+fnum(loads.reduce(function(a,b){return a+b;},0)/mc)+'.</small></p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.kafka_rebalance = function(root){
+  frame(root,'Tái cân bằng khi 1 consumer rời nhóm — Round Robin lại vs Sticky',
+    '<div class="row"><small>Mặc định dùng đúng ví dụ slide: Round Robin ban đầu C1={P1,P4}, C2={P2,P5}, C3={P3,P6}, tải (8,7,6,3,2,1); C2 rời nhóm.</small></div>'+
+    '<button class="btn" id="go">So sánh phân công lại toàn bộ vs Sticky</button><div class="out"></div>');
+  function run(){
+    var parts = [{id:'P1',load:8},{id:'P2',load:7},{id:'P3',load:6},{id:'P4',load:3},{id:'P5',load:2},{id:'P6',load:1}];
+    var before = [{id:'P1',load:8,consumer:0},{id:'P4',load:3,consumer:0},{id:'P2',load:7,consumer:1},{id:'P5',load:2,consumer:1},{id:'P3',load:6,consumer:2},{id:'P6',load:1,consumer:2}];
+    var r = A.kafkaRebalanceCompare(parts, before, 1, [0,2]);
+    $(root,'.out').innerHTML =
+      '<p><b>Round Robin lại toàn bộ</b> — số partition chuyển: <b>'+r.rrMoves+'</b>, tải lớn nhất: '+fnum(r.roundRobin.maxLoad)+'</p>'+
+      tbl(['Consumer','Partition nhận','Tải'], r.roundRobin.rows.map(function(x){return [x.consumer,x.parts,fnum(x.load)];}))+
+      '<p><b>Sticky (giữ phân công cũ, chỉ gán lại phần mất chủ)</b> — số partition chuyển: <b>'+r.stickyMoves+'</b>, tải lớn nhất: '+fnum(r.sticky.maxLoad)+'</p>'+
+      tbl(['Consumer','Partition nhận','Tải'], r.sticky.rows.map(function(x){return [x.consumer,x.parts,fnum(x.load)];}))+
+      '<p><small>Sticky luôn chuyển ít partition hơn hoặc bằng — đúng vì chỉ các partition mất chủ mới bắt buộc đổi.</small></p>';
+    renderMath(root);
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.algo_picker = function(root){
+  var table = [
+    { cond:'Tác vụ độc lập, nhiều máy, giảm Cmax', algo:'List Scheduling / LPT', note:'Máy giống nhau' },
+    { cond:'Tác vụ có phụ thuộc (DAG)', algo:'List Scheduling trên DAG', note:'Chỉ chọn tác vụ đã sẵn sàng' },
+    { cond:'1 máy, giảm ΣCj', algo:'SPT', note:'Tất cả có sẵn từ đầu' },
+    { cond:'1 máy, giảm Σ wⱼCⱼ', algo:'Smith', note:'Biết pj, wj, có sẵn từ đầu' },
+    { cond:'1 máy, tác vụ đến động, ngắt được', algo:'SRPT', note:'Biết độ dài, ngắt không mất phí' },
+    { cond:'Chia 1 loại tài nguyên công bằng', algo:'Tăng đều (progressive filling)', note:'Định nghĩa rõ nhu cầu' },
+    { cond:'Chia nhiều loại tài nguyên công bằng', algo:'DRF', note:'Xét dominant share' },
+    { cond:'Gán partition Kafka theo số lượng', algo:'Round Robin / Range', note:'Phụ thuộc subscription' },
+    { cond:'Giảm di chuyển khi tái cân bằng Kafka', algo:'Nguyên tắc sticky', note:'Ưu tiên giữ phân công hợp lệ' }
+  ];
+  frame(root,'Tra bảng chọn thuật toán theo đặc điểm bài toán',
+    '<div class="row"><label>Lọc theo từ khoá (vd "DAG", "Kafka", "1 máy"): <input id="q" size="30" value=""></label></div><div class="out"></div>');
+  function run(){
+    var q = $(root,'#q').value.trim().toLowerCase();
+    var rows = table.filter(function(r){ return !q || (r.cond+r.algo+r.note).toLowerCase().indexOf(q)>=0; })
+      .map(function(r){ return [r.cond, r.algo, r.note]; });
+    $(root,'.out').innerHTML = tbl(['Bài toán','Thuật toán cơ bản','Điều kiện cần nhớ'], rows);
+  }
+  $(root,'#q').addEventListener('input', run); run();
+};
+
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.sim[data-sim]').forEach(function(root){
     var f = W[root.getAttribute('data-sim')];

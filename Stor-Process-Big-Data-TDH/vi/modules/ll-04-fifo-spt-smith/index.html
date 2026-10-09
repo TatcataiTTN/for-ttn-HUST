@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 04: FIFO, SPT và quy tắc Smith · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 04 / 10</div>
+<h1>FIFO, SPT và quy tắc Smith</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 04 · Tổng thời gian hoàn thành trên 1 máy</div><h2>FIFO, SPT và quy tắc Smith</h2><p>Trên một máy, thứ tự chạy không đổi makespan nhưng thay đổi mạnh tổng thời gian hoàn thành. SPT và quy tắc Smith là hai kết quả tối ưu kinh điển, chứng minh được bằng lập luận đổi chỗ.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Bài toán và FIFO</h2>
+<ul class="part-list"><li>1 máy, giảm tổng Cj</li>
+<li>Ví dụ A(10),B(1),C(1): FIFO cho tổng 33</li>
+<li>Makespan không đổi, nhưng tổng Cj thay đổi mạnh theo thứ tự</li></ul></div><div class="mdeck-slide"><h2>Bài toán trên 1 máy: giảm tổng thời gian hoàn thành</h2>
+      <p>Một máy, các tác vụ độc lập đều sẵn sàng tại $t=0$, không bị ngắt.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Mục tiêu</div>
+      <div class="pd-formula-math">\min \sum_{j=1}^n C_j</div></div>
+      <p>Tối thiểu hoá tổng này cũng tối thiểu hoá trung bình $\tfrac1n\sum_j C_j$.</p>
+      <table><tr><th>Tác vụ</th><td>A</td><td>B</td><td>C</td></tr><tr><th>$p_j$</th><td>10</td><td>1</td><td>1</td></tr></table>
+      <p>Tổng thời gian xử lý luôn là 12, makespan (không khoảng rảnh) luôn là 12 — nhưng <b>thứ tự chạy vẫn
+      làm thay đổi mạnh tổng thời gian hoàn thành</b>.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.25.</p></div><div class="mdeck-slide"><h2>FIFO: xử lý theo thứ tự vào hàng đợi</h2>
+      <p>Khi máy rảnh, lấy công việc ở đầu hàng đợi. Thứ tự A,B,C:</p>
+      <p>$(C_A,C_B,C_C)=(10,11,12)$, $\sum_j C_j = 33$, trung bình $33/3=11$.</p>
+      <div class="callout info"><div class="lbl">Liên hệ</div>Spark có chế độ FIFO giữa các job trong một
+      SparkContext — cơ chế nhiều task của Spark phức tạp hơn hàng đợi một máy này.</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.26.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>SPT và quy tắc Smith</h2>
+<ul class="part-list"><li>SPT: ngắn trước, tổng giảm còn 15</li>
+<li>Chứng minh tối ưu bằng đổi chỗ</li>
+<li>Smith: ưu tiên theo p_j/w_j tăng dần</li></ul></div><div class="mdeck-slide"><h2>SPT: công việc ngắn chạy trước</h2>
+      <ol style="line-height:2"><li>Sắp tác vụ theo $p_j$ tăng dần</li><li>Chạy lần lượt theo thứ tự đó — $O(n\log n)$</li></ol>
+      <p>Thứ tự B,C,A: $(C_B,C_C,C_A)=(1,2,12)$, $\sum_j C_j=15$. Trung bình giảm từ 11 xuống 5 — makespan vẫn
+      bằng 12, chỉ tổng thời gian hoàn thành đổi.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.27.</p></div><div class="mdeck-slide"><h2>Chứng minh SPT tối ưu bằng đổi chỗ</h2>
+      <p>Xét 2 tác vụ kề nhau a, b bắt đầu từ thời điểm t, với $p_a>p_b$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">So sánh 2 thứ tự</div>
+      <div class="pd-formula-math">\text{Chạy } a\text{ rồi }b: 2t+2p_a+p_b \quad|\quad \text{Chạy }b\text{ rồi }a: 2t+2p_b+p_a</div></div>
+      <p>Đổi chỗ a,b làm tổng giảm một lượng $p_a-p_b>0$. Tác vụ trước cặp này không đổi, tổng độ dài cặp vẫn
+      bằng $p_a+p_b$ nên tác vụ phía sau không bị ảnh hưởng. Loại bỏ mọi cặp ngược thứ tự sẽ thu được lịch SPT
+      tối ưu — SPT là trường hợp mọi trọng số bằng nhau của quy tắc Smith.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.28.</p></div><div class="mdeck-slide"><h2>Smith: ưu tiên theo thời gian chia trọng số</h2>
+      <p>Mỗi tác vụ có trọng số $w_j>0$, mục tiêu $\min\sum_j w_jC_j$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Quy tắc Smith</div>
+      <div class="pd-formula-math">\text{Sắp theo } p_j/w_j \text{ tăng dần}</div></div>
+      <p>Ví dụ: A($p{=}6,w{=}1$), B($p{=}3,w{=}3$), C($p{=}2,w{=}2$). Thứ tự A,B,C cho $\sum w_jC_j=55$; theo
+      Smith (B,C,A) chỉ còn $30$.</p>
+      <div class="callout warn"><div class="lbl">Lưu ý</div>Trọng số $w_j$ ở đây (mức ưu tiên công việc) khác với
+      trọng số chia tài nguyên trong lập lịch công bằng (buổi ll-06, ll-07).</div>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.28-29.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="spt_smith"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Trong ví dụ A(10),B(1),C(1), FIFO theo thứ tự A,B,C cho tổng Cj bằng bao nhiêu?", "opts": ["15", "24", "33", "36"], "correct": 2, "explain": "(C_A,C_B,C_C)=(10,11,12), tổng = 33, đúng slide tr.26."}, {"q": "SPT theo thứ tự B,C,A trong CÙNG ví dụ đó cho tổng Cj bằng bao nhiêu?", "opts": ["12", "15", "24", "33"], "correct": 1, "explain": "(C_B,C_C,C_A)=(1,2,12), tổng = 15 — giảm hơn một nửa so với FIFO."}, {"q": "Makespan trong ví dụ A(10),B(1),C(1) có đổi theo thứ tự chạy không?", "opts": ["Có, makespan đổi theo thứ tự", "Không, makespan luôn bằng tổng p_j = 12 vì không có khoảng rảnh", "Chỉ đổi khi dùng SPT", "Chỉ đổi khi dùng FIFO"], "correct": 1, "explain": "Makespan trên 1 máy không khoảng rảnh luôn bằng tổng thời gian xử lý, bất kể thứ tự."}, {"q": "Lập luận chứng minh SPT tối ưu dựa trên kỹ thuật gì?", "opts": ["Quy hoạch động", "Đổi chỗ (exchange argument) hai tác vụ kề nhau", "Chia để trị", "Quy nạp trên số máy"], "correct": 1, "explain": "So sánh tổng C_a+C_b giữa 2 thứ tự liền kề, chứng minh đổi chỗ cặp ngược thứ tự luôn làm giảm tổng."}, {"q": "Quy tắc Smith sắp tác vụ theo tiêu chí nào?", "opts": ["p_j tăng dần", "w_j giảm dần", "p_j/w_j tăng dần", "w_j/p_j tăng dần"], "correct": 2, "explain": "Sắp theo tỉ số p_j/w_j tăng dần — SPT là trường hợp đặc biệt khi mọi w_j bằng nhau."}, {"q": "Trong ví dụ Smith (A: p=6,w=1; B: p=3,w=3; C: p=2,w=2), tổng w_jC_j tối ưu (thứ tự B,C,A) là bao nhiêu?", "opts": ["30", "40", "55", "60"], "correct": 0, "explain": "Σw_jC_j = 3·3+2·5+1·11 = 30, đúng số liệu slide tr.29."}, {"q": "Trọng số w_j trong quy tắc Smith khác gì với trọng số trong lập lịch công bằng (DRF)?", "opts": ["Không có gì khác, cùng một khái niệm", "w_j của Smith là mức ưu tiên công việc, còn DRF dùng để chia phần tài nguyên công bằng giữa người dùng", "DRF không dùng trọng số", "Smith chỉ áp dụng khi w_j=0"], "correct": 1, "explain": "Hai khái niệm trọng số phục vụ hai mục tiêu khác nhau — lưu ý được nêu rõ ở slide tr.29."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-03-dag-mapreduce/index.html">◀ Lập lịch 03: Lập lịch DAG, MapReduce và vị trí dữ liệu</a><a href="../ll-05-srpt/index.html">Lập lịch 05: SRPT và hàng đợi công việc động ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 09: Kafka: tái cân bằng & nguyên tắc Sticky · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 09 / 10</div>
+<h1>Kafka: tái cân bằng & nguyên tắc Sticky</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 09 · Giảm di chuyển khi consumer rời nhóm</div><h2>Kafka: tái cân bằng & nguyên tắc Sticky</h2><p>Khi một consumer rời nhóm, phân công lại toàn bộ theo Round Robin gây xáo trộn không cần thiết — mất cache, phải chuyển trạng thái. Nguyên tắc sticky giữ tối đa phân công cũ còn hợp lệ.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Tái cân bằng và nguyên tắc sticky</h2>
+<ul class="part-list"><li>Phân công lại toàn bộ: 4/6 partition đổi consumer</li>
+<li>Sticky: chỉ 2/6 partition đổi — tối thiểu</li>
+<li>Cân bằng tải và giảm di chuyển là 2 tiêu chí cạnh tranh</li></ul></div><div class="mdeck-slide"><h2>Tái cân bằng khi một consumer rời nhóm</h2>
+      <p>Bắt đầu từ phân công Round Robin (buổi ll-08): C1={P1,P4}, C2={P2,P5}, C3={P3,P6}. Consumer C2 rời
+      nhóm. Nếu phân công lại toàn bộ theo vòng C1, C3:</p>
+      <table><tr><th>Partition</th><th>Consumer cũ</th><th>Consumer mới</th><th>Có chuyển?</th></tr>
+      <tr><td>P1</td><td>C1</td><td>C1</td><td>Không</td></tr>
+      <tr><td>P2</td><td>C2</td><td>C3</td><td>Có</td></tr>
+      <tr><td>P3</td><td>C3</td><td>C1</td><td>Có</td></tr>
+      <tr><td>P4</td><td>C1</td><td>C3</td><td>Có</td></tr>
+      <tr><td>P5</td><td>C2</td><td>C1</td><td>Có</td></tr>
+      <tr><td>P6</td><td>C3</td><td>C3</td><td>Không</td></tr></table>
+      <p>Có 4 partition đổi consumer, dù chỉ P2, P5 là <b>bắt buộc</b> phải chuyển (vì mất consumer cũ). Phân
+      công lại toàn bộ làm mất cache hoặc phải chuyển/khôi phục trạng thái không cần thiết.</p>
+      <p style="color:var(--muted);font-size:.85rem">Động cơ giữ phân công cũ khi rebalance: StickyAssignor.
+      Nguồn: lap_lich_50_slides.pdf, tr.43.</p></div><div class="mdeck-slide"><h2>Nguyên tắc sticky: giữ lại phân công còn hợp lệ</h2>
+      <ol style="line-height:2"><li>Giữ C1:{P1,P4} và C3:{P3,P6} nguyên vẹn</li>
+      <li>Xét partition mất chủ theo thứ tự P2, P5</li>
+      <li>Giao cho consumer có ít partition hơn, hoà thì chọn C1</li></ol>
+      <table><tr><th>Consumer</th><th>Sau khi bổ sung</th><th>Số lượng</th><th>Tải</th></tr>
+      <tr><td>C1</td><td>P1,P4,P2</td><td>3</td><td>18</td></tr>
+      <tr><td>C3</td><td>P3,P6,P5</td><td>3</td><td>9</td></tr></table>
+      <p>Chỉ 2 partition chuyển — đây là <b>tối thiểu</b> vì P2, P5 bắt buộc đổi chủ. StickyAssignor của Kafka
+      ưu tiên cân bằng số partition rồi giữ phân công cũ.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.44.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Cân bằng tải và giảm di chuyển: 2 tiêu chí cạnh tranh</h2>
+<ul class="part-list"><li>3 phương án: Round Robin lại / giữ hoà chọn C1 / giữ xét thêm tải</li>
+<li>Hàm mục tiêu kết hợp max load + λ·số di chuyển</li></ul></div><div class="mdeck-slide"><h2>So sánh 3 phương án tái cân bằng</h2>
+      <p>Vẫn giữ các partition cũ nhưng đổi cách chọn: giao P5 cho C1, P2 cho C3 — $L_1=8+3+2=13$,
+      $L_3=6+1+7=14$.</p>
+      <table><tr><th>Phương án</th><th>Tải lớn nhất</th><th>Số partition chuyển D</th></tr>
+      <tr><td>Round Robin lại toàn bộ</td><td>16</td><td>4</td></tr>
+      <tr><td>Giữ phân công, hoà chọn C1</td><td>18</td><td>2</td></tr>
+      <tr><td>Giữ phân công, xét thêm tải</td><td>14</td><td>2</td></tr></table>
+      <div class="pd-formula"><div class="pd-formula-label">Hàm mục tiêu mở rộng</div>
+      <div class="pd-formula-math">\min_f \Big[\max_i L_i(f) + \lambda D(f)\Big],\quad \lambda\ge 0</div></div>
+      <p>f là phân công mới, $\lambda$ là hệ số đổi chi phí chuyển về cùng thang đo với tải. <b>Cân bằng tải và
+      giảm di chuyển là hai tiêu chí cạnh tranh</b> — không có phương án nào thắng tuyệt đối cả hai, cần chọn
+      $\lambda$ phù hợp với mức độ ưu tiên thực tế.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.45-46.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="kafka_rebalance"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Khi C2 rời nhóm, phân công lại TOÀN BỘ theo Round Robin làm bao nhiêu partition đổi consumer?", "opts": ["2", "4", "6", "0"], "correct": 1, "explain": "4/6 partition đổi, dù chỉ 2 (P2, P5) là bắt buộc phải đổi — slide tr.43."}, {"q": "Bao nhiêu partition BẮT BUỘC phải đổi consumer khi C2 rời nhóm (bất kể thuật toán nào)?", "opts": ["0", "2 (các partition thuộc C2 cũ)", "4", "6"], "correct": 1, "explain": "P2, P5 từng thuộc C2 — chắc chắn phải đổi chủ vì consumer đó không còn."}, {"q": "Nguyên tắc sticky ưu tiên điều gì khi tái cân bằng?", "opts": ["Luôn phân công lại từ đầu để đơn giản", "Giữ tối đa phân công cũ còn hợp lệ, chỉ xử lý phần mất chủ", "Luôn chọn consumer có tải thấp nhất bất kể lịch sử", "Bỏ qua cân bằng số lượng"], "correct": 1, "explain": "Giữ C1:{P1,P4} và C3:{P3,P6}, chỉ xét lại 2 partition mất chủ — đúng cách StickyAssignor hoạt động."}, {"q": "Trong 3 phương án so sánh ở slide, phương án nào có D (số partition chuyển) nhỏ nhất VÀ tải cân bằng hơn phương án sticky cơ bản?", "opts": ["Round Robin lại toàn bộ", "Giữ phân công, hoà chọn C1", "Giữ phân công, xét thêm tải (D=2, tải lớn nhất=14)", "Không phương án nào tốt hơn"], "correct": 2, "explain": "D=2 bằng phương án sticky cơ bản nhưng tải lớn nhất giảm từ 18 xuống 14 — đúng số liệu slide tr.45."}, {"q": "Hàm mục tiêu mở rộng min[max_i Li(f) + λD(f)] dùng để làm gì?", "opts": ["Chỉ tối ưu tải, bỏ qua số lần chuyển", "Kết hợp cả tải lớn nhất VÀ số partition phải chuyển, với λ điều chỉnh mức đánh đổi", "Chỉ tối ưu số lần chuyển, bỏ qua tải", "Tính tổng tải của mọi consumer"], "correct": 1, "explain": "λ là hệ số đổi chi phí chuyển về cùng thang đo với tải, cho phép cân bằng 2 tiêu chí cạnh tranh."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-08-kafka-roundrobin-range/index.html">◀ Lập lịch 08: Kafka: Round Robin & Range assignor</a><a href="../ll-10-tong-ket-lap-lich/index.html">Lập lịch 10: Tổng kết: chọn thuật toán & bài tập ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

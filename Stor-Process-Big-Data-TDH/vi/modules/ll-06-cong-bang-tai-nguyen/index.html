@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 06: Công bằng tài nguyên: max-min & progressive filling · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 06 / 10</div>
+<h1>Công bằng tài nguyên: max-min & progressive filling</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 06 · Chia 1 loại tài nguyên</div><h2>Công bằng tài nguyên: max-min & progressive filling</h2><p>Khi nhiều người dùng/hàng đợi chia một cụm dùng chung, cần một định nghĩa chặt chẽ về 'công bằng'. Max-min fairness và thuật toán progressive filling là nền tảng trước khi học DRF (buổi sau).</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/1</div>
+<div class="part-num">01</div><h2>Max-min fairness và progressive filling</h2>
+<ul class="part-list"><li>Bài toán: B tổng tài nguyên, nhu cầu d_i mỗi người</li>
+<li>Công bằng max-min: không tăng người này mà không giảm người đang nhận ít hơn</li>
+<li>Progressive filling: tăng đều tới khi đạt nhu cầu</li></ul></div><div class="mdeck-slide"><h2>Bài toán chia một loại tài nguyên</h2>
+      <p>Tổng tài nguyên $B$. Người dùng i có nhu cầu tối đa $d_i$. Chọn lượng cấp $x_i$ sao cho
+      $0\le x_i\le d_i$ và $\sum_i x_i \le B$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Công bằng max-min</div>
+      <div class="pd-formula-math">\text{Không thể tăng } x_i \text{ mà không giảm } x_k \text{ của người } k \text{ đang nhận} \le x_i</div></div>
+      <p>Ví dụ: $B=12$ CPU, ba người dùng $(d_1,d_2,d_3)=(2,8,8)$. Chia đều 4 mỗi người vượt nhu cầu người 1 —
+      cần phân phối lại phần dư.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.33.</p></div><div class="mdeck-slide"><h2>Progressive filling: tăng đều phần cấp</h2>
+      <ol style="line-height:2"><li>Ban đầu cấp 0 cho mọi người</li>
+      <li>Tăng đều phần cấp của người chưa đạt nhu cầu</li>
+      <li>Khi một người đạt nhu cầu, giữ nguyên phần cấp người đó</li>
+      <li>Tiếp tục đến khi hết tài nguyên hoặc mọi nhu cầu đều đủ</li></ol>
+      <table><tr><th>Giai đoạn</th><th>$x_1$</th><th>$x_2$</th><th>$x_3$</th><th>Tổng</th></tr>
+      <tr><td>Tăng đều đến mức 2</td><td>2</td><td>2</td><td>2</td><td>6</td></tr>
+      <tr><td>Giữ người 1, chia 6 còn lại</td><td>2</td><td>5</td><td>5</td><td>12</td></tr></table>
+      <div class="pd-formula"><div class="pd-formula-label">Công thức</div>
+      <div class="pd-formula-math">x_i = \min\{d_i,\lambda\},\quad \lambda=5</div></div>
+      <p style="color:var(--muted);font-size:.85rem">Với nhu cầu đã biết, có thể sắp các $d_i$ để tính mức tăng
+      trong $O(n\log n)$. Nguồn: lap_lich_50_slides.pdf, tr.34.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="progressive_filling"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Công bằng max-min nghĩa là gì?", "opts": ["Mọi người nhận đúng bằng nhau", "Không thể tăng phần cấp của một người mà không giảm phần của người đang nhận ít hơn hoặc bằng", "Người có nhu cầu cao nhất luôn được ưu tiên", "Tổng tài nguyên luôn được dùng hết"], "correct": 1, "explain": "Đúng định nghĩa chuẩn slide tr.33."}, {"q": "Với B=12, (d1,d2,d3)=(2,8,8), progressive filling cho kết quả cuối cùng (x1,x2,x3) là gì?", "opts": ["(4,4,4)", "(2,5,5)", "(2,8,2)", "(0,6,6)"], "correct": 1, "explain": "x_i=min(d_i,λ), λ=5 → (2,5,5), tổng=12, đúng slide tr.34."}, {"q": "Trong progressive filling, điều gì xảy ra khi một người đạt đúng nhu cầu d_i?", "opts": ["Người đó bị loại khỏi hệ thống", "Phần cấp của người đó được GIỮ NGUYÊN, phần tăng đều tiếp tục dồn cho người chưa đủ", "Người đó nhận thêm gấp đôi", "Toàn bộ quá trình dừng lại"], "correct": 1, "explain": "Bước 3 của thuật toán: giữ nguyên phần cấp của người đã đạt nhu cầu."}, {"q": "Độ phức tạp tính các mức tăng trong progressive filling khi đã biết nhu cầu là bao nhiêu?", "opts": ["O(n)", "O(n log n)", "O(n²)", "O(2ⁿ)"], "correct": 1, "explain": "Có thể sắp các d_i để tính mức tăng trong O(n log n), theo slide tr.34."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-05-srpt/index.html">◀ Lập lịch 05: SRPT và hàng đợi công việc động</a><a href="../ll-07-drf/index.html">Lập lịch 07: DRF — Dominant Resource Fairness ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

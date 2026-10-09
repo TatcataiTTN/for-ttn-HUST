@@ -118,11 +118,70 @@ Schwartz–Zippel bằng Monte Carlo.</div>
 <h3>Số học $\mathbb F_p$, đa thức & Schwartz–Zippel</h3>
 <span class="tag">Cấu trúc rời rạc</span>
 <div class="go">Mở bài giảng →</div></a></div>
+<h2>🗓️ Lập lịch trong hệ thống phân tán — 10 buổi bổ sung</h2>
+<p>Bám sát <i>lap_lich_50_slides.pdf</i> (50 trang): List Scheduling/LPT, lập lịch DAG, FIFO/SPT/Smith/SRPT,
+công bằng tài nguyên (progressive filling, DRF), và phân công/tái cân bằng partition Kafka — mỗi buổi liên hệ
+trực tiếp Spark/YARN/MapReduce/Kafka, có nguồn trích trang cụ thể.</p>
+<div class="grid"><a class="mod-card" href="modules/ll-01-mo-hinh-lap-lich/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 01</span>
+<h3>Mô hình bài toán lập lịch</h3>
+<span class="tag">Nhập môn lập lịch · liên hệ Spark/YARN/Kafka</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-02-list-scheduling-lpt/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 02</span>
+<h3>List Scheduling & LPT cho tác vụ độc lập</h3>
+<span class="tag">Makespan, 2 cận dưới, bảo đảm xấp xỉ</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-03-dag-mapreduce/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 03</span>
+<h3>Lập lịch DAG, MapReduce và vị trí dữ liệu</h3>
+<span class="tag">Critical path, rào chắn Map→Shuffle→Reduce</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-04-fifo-spt-smith/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 04</span>
+<h3>FIFO, SPT và quy tắc Smith</h3>
+<span class="tag">Tổng thời gian hoàn thành trên 1 máy</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-05-srpt/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 05</span>
+<h3>SRPT và hàng đợi công việc động</h3>
+<span class="tag">Lập lịch ngắt được, liên hệ Spark FIFO/FAIR</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-06-cong-bang-tai-nguyen/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 06</span>
+<h3>Công bằng tài nguyên: max-min & progressive filling</h3>
+<span class="tag">Chia 1 loại tài nguyên</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-07-drf/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 07</span>
+<h3>DRF — Dominant Resource Fairness</h3>
+<span class="tag">Nhiều loại tài nguyên, liên hệ YARN/Spark FAIR</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-08-kafka-roundrobin-range/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 08</span>
+<h3>Kafka: Round Robin & Range assignor</h3>
+<span class="tag">Phân công partition theo số lượng</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-09-kafka-sticky-rebalance/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 09</span>
+<h3>Kafka: tái cân bằng & nguyên tắc Sticky</h3>
+<span class="tag">Giảm di chuyển khi consumer rời nhóm</span>
+<div class="go">Mở bài giảng →</div></a><a class="mod-card" href="modules/ll-10-tong-ket-lap-lich/index.html" style="border-color:var(--accent2)">
+<span class="kicker">Lập lịch 10</span>
+<h3>Tổng kết: chọn thuật toán & bài tập</h3>
+<span class="tag">Bảng tra cứu, 3 bài tập có đáp số</span>
+<div class="go">Mở bài giảng →</div></a></div>
 <h2>Tài liệu bổ sung</h2>
-<div class="grid"><a class="mod-card" href="modules/00-slide-goc/index.html" style="border-color:var(--accent2)">
+<div class="grid"><a class="mod-card" href="../data/source/notes.pdf" target="_blank" style="border-color:var(--good)">
+<span class="kicker">Tài liệu nguồn gốc</span><h3>Lecture Notes — Sketching Algorithms (Jelani Nelson, PDF)</h3>
+<span class="tag">127 trang · nguồn chính của toàn bộ site</span>
+<div class="go">Mở / tải PDF →</div></a><a class="mod-card" href="../data/source/streaming-algorithms-vi.pdf" target="_blank" style="border-color:var(--good)">
+<span class="kicker">Tài liệu nguồn gốc</span><h3>Slide bài giảng gốc — Thuật toán trên luồng dữ liệu (PDF, tiếng Việt)</h3>
+<span class="tag">67 trang · dùng để soạn 20 bài "áp dụng slide gốc"</span>
+<div class="go">Mở / tải PDF →</div></a><a class="mod-card" href="modules/00-slide-goc/index.html" style="border-color:var(--accent2)">
 <span class="kicker">Bổ sung</span><h3>20 bài áp dụng trực tiếp lên slide gốc</h3>
 <span class="tag">Morris · FM · KMV · CountMin · AGM · AMS</span>
-<div class="go">Mở →</div></a></div>
+<div class="go">Mở →</div></a><a class="mod-card" href="../data/source/lap_lich_50_slides.pdf" target="_blank" style="border-color:var(--good)">
+<span class="kicker">Tài liệu nguồn gốc</span><h3>Slide bài giảng gốc — Bài toán lập lịch (PDF, tiếng Việt)</h3>
+<span class="tag">50 trang · dùng để soạn 10 buổi "Lập lịch trong hệ thống phân tán"</span>
+<div class="go">Mở / tải PDF →</div></a></div>
+<h2>Bài tập lớn môn học (ngoài 14 buổi tự học)</h2>
+<div class="grid"><a class="mod-card" href="group-1-slides.html" style="border-color:var(--accent2)">
+<span class="kicker">Bài tập lớn · Nhóm 1</span><h3>Hệ sinh thái Hadoop (Chương 2)</h3>
+<span class="tag">48 slide · Trương Tuấn Nghĩa, Nguyễn Vũ Việt Hoàng, Nguyễn Thế Hoàng</span>
+<div class="go">Mở slide thuyết trình →</div></a></div>
 
 </div>
 <footer>

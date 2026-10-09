@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Lập lịch 08: Kafka: Round Robin & Range assignor · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Lập lịch 08 / 10</div>
+<h1>Kafka: Round Robin & Range assignor</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">LẬP LỊCH 08 · Phân công partition theo số lượng</div><h2>Kafka: Round Robin & Range assignor</h2><p>Kafka consumer group phải gán mỗi partition cho đúng 1 consumer. Round Robin và Range là hai assignor built-in, cân bằng SỐ LƯỢNG partition nhưng không nhất thiết cân bằng TẢI xử lý.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Bài toán và Round Robin</h2>
+<ul class="part-list"><li>6 partition, 3 consumer, tải khác nhau aj</li>
+<li>Round Robin: cân bằng số lượng, không cân bằng tải</li>
+<li>LPT theo tải: phương án cân bằng tải tốt hơn</li></ul></div><div class="mdeck-slide"><h2>Bài toán phân công partition trong consumer group</h2>
+      <p>Partition là một phần dữ liệu của topic. Consumer là tiến trình đọc/xử lý. Xét consumer group
+      truyền thống: 6 partition, 3 consumer — mỗi partition giao cho đúng 1 consumer đủ điều kiện.</p>
+      <table><tr><th>Partition</th><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>P5</td><td>P6</td></tr>
+      <tr><th>Tải giả định $a_j$</th><td>8</td><td>7</td><td>6</td><td>3</td><td>2</td><td>1</td></tr></table>
+      <p>Đặt $P_i$ là tập partition của consumer i, $L_i=\sum_{j\in P_i}a_j$. Hai mục tiêu khác nhau: cân bằng
+      <b>số lượng</b> ($|P_i|$ gần nhau) và cân bằng <b>tải</b> (làm nhỏ $\max_i L_i$).</p>
+      <p style="color:var(--muted);font-size:.85rem">Phạm vi: consumer group dùng cơ chế gán partition, không
+      phải share group mới của Kafka. Nguồn: lap_lich_50_slides.pdf, tr.39.</p></div><div class="mdeck-slide"><h2>Round Robin: phân công lần lượt theo vòng</h2>
+      <p>Giả sử mọi consumer đăng ký cùng các topic. Lần lượt giao $P_1,\dots,P_6$ cho $C_1,C_2,C_3$ rồi quay
+      lại $C_1$.</p>
+      <table><tr><th>Consumer</th><th>Partition nhận</th><th>Số lượng</th><th>Tổng tải</th></tr>
+      <tr><td>C1</td><td>P1, P4</td><td>2</td><td>8+3=11</td></tr>
+      <tr><td>C2</td><td>P2, P5</td><td>2</td><td>7+2=9</td></tr>
+      <tr><td>C3</td><td>P3, P6</td><td>2</td><td>6+1=7</td></tr></table>
+      <p>$\max_i L_i=11$, $\max_i|P_i|-\min_i|P_i|=0$ — <b>số partition bằng nhau nhưng tải xử lý vẫn khác
+      nhau</b>. Đây là RoundRobinAssignor của Kafka.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.40.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Range assignor và so sánh với LPT</h2>
+<ul class="part-list"><li>Range: chia đoạn liên tiếp theo từng topic</li>
+<li>LPT theo tải: tối ưu cho ví dụ (max Li=9)</li></ul></div><div class="mdeck-slide"><h2>Range: chia các đoạn liên tiếp theo từng topic</h2>
+      <p>Topic có n partition, m consumer cùng đăng ký. Đặt $q=\lfloor n/m\rfloor$, $r=n\bmod m$: r consumer
+      đầu nhận $q+1$ partition, còn lại nhận $q$.</p>
+      <table><tr><th>Consumer</th><th>Đoạn nhận</th><th>Tổng tải</th></tr>
+      <tr><td>C1</td><td>P1, P2</td><td>8+7=15</td></tr>
+      <tr><td>C2</td><td>P3, P4</td><td>6+3=9</td></tr>
+      <tr><td>C3</td><td>P5, P6</td><td>2+1=3</td></tr></table>
+      <p>Range cân bằng số lượng theo <b>từng topic</b> — tải lệch hẳn (15 so với 3) vì tải không tương quan
+      với thứ tự partition. Nhiều topic có thể tạo lệch tổng số partition hơn nữa.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.41.</p></div><div class="mdeck-slide"><h2>LPT theo tải: phương án để so sánh</h2>
+      <p>Giả sử biết tải $a_j$ và mọi consumer cùng năng lực. Sắp partition theo tải giảm dần, giao partition
+      tiếp theo cho consumer đang có tải nhỏ nhất — chính là List Scheduling/LPT học ở buổi ll-02, áp dụng cho
+      bài toán Kafka.</p>
+      <table><tr><th>Consumer</th><th>Partition nhận</th><th>Tổng tải</th></tr>
+      <tr><td>C1</td><td>P1, P6</td><td>8+1=9</td></tr>
+      <tr><td>C2</td><td>P2, P5</td><td>7+2=9</td></tr>
+      <tr><td>C3</td><td>P3, P4</td><td>6+3=9</td></tr></table>
+      <p>Tổng tải 27, cận dưới $27/3=9$ — phương án này tối ưu cho ví dụ. Tuy vậy, Kafka built-in không có
+      assignor LPT-theo-tải sẵn; cần đo tải và xây cơ chế phân công tuỳ biến (custom `ConsumerPartitionAssignor`)
+      để áp dụng ý tưởng này trong thực tế.</p>
+      <p style="color:var(--muted);font-size:.85rem">Nguồn: lap_lich_50_slides.pdf, tr.42.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="kafka_assign"></div>
+
+<p><a href="../../../data/source/lap_lich_50_slides.pdf" target="_blank">📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, chứng minh trong buổi này trích nguyên từ tài liệu này.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Round Robin cân bằng tiêu chí nào giữa các consumer?", "opts": ["Tải xử lý Li", "Số lượng partition |Pi|", "Cả hai như nhau", "Không cân bằng gì"], "correct": 1, "explain": "Round Robin chỉ đảm bảo số lượng partition bằng nhau, không đảm bảo tải."}, {"q": "Trong ví dụ 6 partition tải (8,7,6,3,2,1), Round Robin cho max Li bằng bao nhiêu?", "opts": ["9", "10", "11", "15"], "correct": 2, "explain": "C1 nhận P1,P4: 8+3=11 — tải lớn nhất, đúng slide tr.40."}, {"q": "Range assignor chia partition theo nguyên tắc nào?", "opts": ["Ngẫu nhiên", "Theo tải xử lý giảm dần", "Chia đoạn liên tiếp theo từng topic (q=⌊n/m⌋ partition liền kề mỗi consumer)", "Theo round robin xen kẽ"], "correct": 2, "explain": "Range chia đoạn LIÊN TIẾP, khác hẳn cách xen kẽ của Round Robin."}, {"q": "Trong ví dụ, Range assignor cho tải lớn nhất bằng bao nhiêu, và vì sao tệ hơn Round Robin?", "opts": ["9, vì Range cân bằng tải tốt hơn", "15, vì partition tải cao (P1,P2) đều rơi vào cùng 1 consumer do chia liên tiếp", "11, bằng với Round Robin", "3, Range luôn tối ưu nhất"], "correct": 1, "explain": "C1 nhận P1,P2 liên tiếp: 8+7=15 — tệ hơn cả Round Robin vì partition tải cao đứng cạnh nhau."}, {"q": "Phương án LPT theo tải trong ví dụ 6 partition cho kết quả gì?", "opts": ["Không cân bằng được", "Cả 3 consumer đều có tải đúng bằng 9 — đạt cận dưới 27/3, tối ưu", "Giống hệt Round Robin", "Giống hệt Range"], "correct": 1, "explain": "LPT theo tải đạt max Li=9=27/3, tối ưu cho ví dụ này, đúng slide tr.42."}, {"q": "Kafka có sẵn một assignor built-in chạy đúng LPT theo tải không?", "opts": ["Có, đó là RangeAssignor", "Có, đó là RoundRobinAssignor", "Không — cần tự đo tải và xây assignor tuỳ biến để áp dụng ý tưởng LPT", "Có, mặc định từ Kafka 3.0"], "correct": 2, "explain": "Slide tr.42 nêu rõ: LPT là phương án để SO SÁNH, cần cơ chế phân công tuỳ biến mới áp dụng được thực tế."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../ll-07-drf/index.html">◀ Lập lịch 07: DRF — Dominant Resource Fairness</a><a href="../ll-09-kafka-sticky-rebalance/index.html">Lập lịch 09: Kafka: tái cân bằng & nguyên tắc Sticky ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+
+</body></html>

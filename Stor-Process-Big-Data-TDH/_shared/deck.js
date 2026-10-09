@@ -12,6 +12,20 @@ document.addEventListener('DOMContentLoaded', function(){
       dotsWrap.appendChild(d);
     });
     const dots = [...dotsWrap.children];
+    const canvasWrap = deck.querySelector('.mdeck-canvas-wrap');
+    const viewport = deck.querySelector('.mdeck-viewport');
+    const DESIGN_W = 1280, DESIGN_H = 720;
+    // Canvas thiết kế cố định 1280x720 được scale ĐỒNG NHẤT theo kích thước thật của
+    // khung chứa (canvas-wrap) — phóng to khi chiếu full màn hình lớn, thu nhỏ khi nhúng
+    // trong trang nhỏ. Không bao giờ co riêng từng slide theo nội dung nữa.
+    function fit(){
+      requestAnimationFrame(() => {
+        const boxW = canvasWrap.clientWidth, boxH = canvasWrap.clientHeight;
+        if (boxW <= 0 || boxH <= 0) return;
+        const scale = Math.min(boxW / DESIGN_W, boxH / DESIGN_H);
+        viewport.style.transform = `scale(${scale})`;
+      });
+    }
     function render(){
       slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
       dots.forEach((d, idx) => d.classList.toggle('on', idx === i));
@@ -23,8 +37,11 @@ document.addEventListener('DOMContentLoaded', function(){
           {left:'$', right:'$', display:false}
         ], macros: window.KATEX_MACROS || {}, throwOnError: false}); } catch(e){}
       }
+      fit();
     }
     function go(n){ i = Math.max(0, Math.min(slides.length - 1, n)); render(); }
+    window.addEventListener('resize', fit);
+    document.addEventListener('fullscreenchange', () => setTimeout(fit, 60));
     prevBtn.addEventListener('click', () => go(i - 1));
     nextBtn.addEventListener('click', () => go(i + 1));
     deck.tabIndex = 0;
@@ -36,5 +53,8 @@ document.addEventListener('DOMContentLoaded', function(){
       if (!document.fullscreenElement) deck.requestFullscreen?.(); else document.exitFullscreen?.();
     });
     render();
+    // ResizeObserver bắt mọi thay đổi kích thước khung chứa (không chỉ window resize),
+    // ví dụ khi sidebar/theme toggle làm layout trang đổi.
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(canvasWrap);
   });
 });

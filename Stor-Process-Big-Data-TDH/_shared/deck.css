@@ -1,19 +1,38 @@
 .mdeck{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--panel);
-  box-shadow:var(--shadow);margin:18px 0;outline:none}
-.mdeck-viewport{position:relative;min-height:340px}
-.mdeck-slide{display:none;padding:28px 30px 20px;min-height:340px}
-.mdeck-slide.active{display:block;animation:fadein .18s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-.mdeck-slide h2{margin:6px 0 10px;font-size:1.35rem}
-.mdeck-slide h3{margin:14px 0 6px;font-size:1.05rem;color:var(--accent)}
-.mdeck-slide.part-divider{display:none;background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;text-align:center;padding:50px 30px}
-.mdeck-slide.part-divider.active{display:flex;flex-direction:column;justify-content:center;align-items:center}
-.mdeck-slide.part-divider .kicker{color:#fff;opacity:.85}
-.mdeck-slide.part-divider .part-num{font-size:2.6rem;font-weight:900;opacity:.35;margin:4px 0}
-.mdeck-slide.part-divider h2{color:#fff;font-size:1.6rem}
-.mdeck-slide.part-divider .part-list{list-style:none;padding:0;margin-top:10px;text-align:left;max-width:480px}
-.mdeck-slide.part-divider .part-list li{padding:4px 0;opacity:.92}
+  box-shadow:var(--shadow);margin:18px 0;outline:none;display:flex;flex-direction:column}
+
+/* ---- Khung canvas: tỉ lệ 16:9 cố định, co theo chiều rộng khối chứa ---- */
+.mdeck-canvas-wrap{position:relative;width:100%;aspect-ratio:16/9;max-height:76vh;overflow:hidden;background:var(--panel)}
+
+/* ---- Canvas thiết kế: kích thước TUYỆT ĐỐI cố định 1280x720, không phụ thuộc viewport.
+   JS tính 1 hệ số scale DUY NHẤT (canvas-wrap / 1280x720) rồi phóng to/thu nhỏ toàn bộ
+   khối này — giống cách reveal.js / PowerPoint dựng "design resolution" rồi scale đồng nhất,
+   nên chữ không bao giờ bé tí khi chiếu full màn hình lớn, và không tràn khi nhúng nhỏ. ---- */
+.mdeck-viewport{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left}
+
+.mdeck-slide{display:none;position:absolute;inset:0;width:1280px;height:720px;box-sizing:border-box;
+  padding:56px 68px;overflow:auto}
+.mdeck-slide.active{display:flex;flex-direction:column;justify-content:center;animation:fadein .18s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.mdeck-slide h2{margin:0 0 20px;font-size:2.15rem;line-height:1.25}
+.mdeck-slide h3{margin:20px 0 10px;font-size:1.3rem;color:var(--accent)}
+.mdeck-slide p,.mdeck-slide li{font-size:1.18rem;line-height:1.55}
+.mdeck-slide table{font-size:1.02rem}
+.mdeck-slide .kicker{font-size:1.05rem}
+
+/* bảng dày (>8 dòng) tự thu cỡ chữ để vẫn vừa khung thiết kế */
+.mdeck-slide table.dense{font-size:.86rem}
+.mdeck-slide table.dense th,.mdeck-slide table.dense td{padding:5px 8px}
+
+.mdeck-slide.part-divider{background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;text-align:center;align-items:center;padding:0 80px}
+.mdeck-slide.part-divider .kicker{color:#fff;opacity:.85;font-size:1.15rem}
+.mdeck-slide.part-divider .part-num{font-size:4.2rem;font-weight:900;opacity:.35;margin:6px 0}
+.mdeck-slide.part-divider h2{color:#fff;font-size:2.6rem;margin-bottom:18px}
+.mdeck-slide.part-divider .part-list{list-style:none;padding:0;margin-top:14px;text-align:left;
+  max-width:620px;font-size:1.15rem}
+.mdeck-slide.part-divider .part-list li{padding:6px 0;opacity:.92}
 .mdeck-slide.part-divider .part-list li::before{content:"— "}
 
 .mdeck-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border);
@@ -26,3 +45,15 @@
 .mdeck-dots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:var(--border)}
 .mdeck-dots button.on{background:var(--accent)}
 .mdeck-fs{margin-left:6px}
+
+/* ---- Toàn màn hình: canvas-wrap lấp hết khung hình, hệ số scale JS tính lại theo kích
+   thước thật của màn hình (thường > 1, tức PHÓNG TO so với lúc nhúng trong trang) ---- */
+.mdeck:fullscreen{width:100vw;height:100vh;border-radius:0;background:var(--bg);
+  display:flex;flex-direction:column;justify-content:center}
+.mdeck:fullscreen .mdeck-canvas-wrap{flex:0 0 auto;width:100%;max-height:calc(100vh - 54px);
+  aspect-ratio:16/9}
+.mdeck:fullscreen .mdeck-bar{flex:0 0 auto}
+.mdeck:-webkit-full-screen{width:100vw;height:100vh;border-radius:0;background:var(--bg);
+  display:flex;flex-direction:column;justify-content:center}
+.mdeck:-webkit-full-screen .mdeck-canvas-wrap{flex:0 0 auto;width:100%;max-height:calc(100vh - 54px);
+  aspect-ratio:16/9}
