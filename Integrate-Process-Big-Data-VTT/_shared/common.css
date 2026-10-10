@@ -140,4 +140,48 @@ details.flashcard .dap{padding:2px 14px 14px;color:var(--good);font-weight:600;f
 ol.reflist{padding-left:20px;display:flex;flex-direction:column;gap:10px}
 ol.reflist li{font-size:.92rem}
 ol.reflist .meta{color:var(--muted);font-size:.82rem}
+
+/* ---- SQL Sandbox (sql.js) ---- */
+.sb-loading{padding:16px;color:var(--muted)}
+.sb-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.sb-toolbar select{padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)}
+.sb-progress{font-weight:700;font-size:.85rem;color:var(--accent)}
+.sb-reset-all{margin-left:auto;background:none;border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--muted);font-size:.8rem}
+.sb-main{display:grid;grid-template-columns:160px 1fr;gap:14px}
+@media (max-width:720px){.sb-main{grid-template-columns:1fr}}
+.sb-sidebar{display:flex;flex-direction:column;gap:3px;max-height:520px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:6px}
+.sb-item{text-align:left;background:none;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:.78rem;color:var(--text)}
+.sb-item:hover{background:var(--code)}
+.sb-item.active{background:var(--accent);color:#fff}
+.sb-panel{border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--panel)}
+.sb-q{margin-bottom:10px;font-size:.92rem;line-height:1.5}
+.sb-editor{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88rem;
+  padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--code);color:var(--text);resize:vertical}
+.sb-actions{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.sb-actions button{padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:.82rem}
+.sb-actions .mdeck-prev,.sb-actions .mdeck-next{border-color:var(--accent);background:var(--accent);color:#fff}
+.sb-result{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px}
+.sb-result th,.sb-result td{border:1px solid var(--border);padding:4px 8px;text-align:left}
+.sb-result th{background:var(--code)}
+.sb-empty{color:var(--muted);font-size:.85rem;margin-top:8px}
+.sb-sol{background:var(--code);padding:10px;border-radius:8px;overflow-x:auto;font-size:.82rem}
+
+/* ---- Ngân hàng trắc nghiệm (bank.js) ---- */
+.bk-pager{display:flex;align-items:center;justify-content:center;gap:14px;margin:16px 0;font-size:.85rem}
+.bk-pager button{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer}
+.bk-pager button:disabled{opacity:.4;cursor:not-allowed}
+.bk-item{border:1px solid var(--border);border-radius:12px;padding:14px;margin:10px 0;background:var(--panel)}
+.bk-qhead{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.bk-badge{font-size:.68rem;font-weight:800;text-transform:uppercase;padding:2px 8px;border-radius:999px}
+.bk-badge.goc{background:color-mix(in srgb, var(--good) 18%, var(--panel));color:var(--good)}
+.bk-badge.bosung{background:color-mix(in srgb, var(--accent) 16%, var(--panel));color:var(--accent)}
+.bk-topic{font-size:.72rem;color:var(--muted)}
+.bk-qtext{font-weight:600;margin-bottom:10px;line-height:1.5}
+.bk-opts{display:flex;flex-direction:column;gap:6px}
+.bk-opt{text-align:left;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:.88rem}
+.bk-opt:hover:not(:disabled){border-color:var(--accent)}
+.bk-opt.correct{border-color:var(--good);background:color-mix(in srgb, var(--good) 14%, var(--panel));font-weight:700}
+.bk-opt.picked-wrong{border-color:var(--bad);background:color-mix(in srgb, var(--bad) 14%, var(--panel))}
+.bk-explain{margin-top:10px;font-size:.85rem;padding:8px 10px;border-radius:8px;background:var(--code)}
+.bk-retry{margin-top:8px;background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:.78rem;color:var(--muted)}
 .sim .callout{margin-top:10px}

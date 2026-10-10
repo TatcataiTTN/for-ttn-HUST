@@ -1,0 +1,1550 @@
+[
+ {
+  "id": "m02-001",
+  "q": "Lấy toàn bộ cột của bảng S1.Movie (title, director, year, genre).",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT title, director, year, genre FROM s1_movie;",
+  "expectedCols": [
+   "title",
+   "director",
+   "year",
+   "genre"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Bong Joon-ho",
+    2019,
+    "Drama"
+   ],
+   [
+    "Inception",
+    "Christopher Nolan",
+    2010,
+    "SciFi"
+   ],
+   [
+    "The Godfather",
+    "Francis Ford Coppola",
+    1972,
+    "Crime"
+   ],
+   [
+    "Spirited Away",
+    "Hayao Miyazaki",
+    2001,
+    "Animation"
+   ],
+   [
+    "Oldboy",
+    "Park Chan-wook",
+    2003,
+    "Thriller"
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan",
+    2014,
+    "SciFi"
+   ],
+   [
+    "Memento",
+    "Christopher Nolan",
+    2000,
+    "Thriller"
+   ],
+   [
+    "Your Name",
+    "Makoto Shinkai",
+    2016,
+    "Animation"
+   ],
+   [
+    "Train to Busan",
+    "Yeon Sang-ho",
+    2016,
+    "Horror"
+   ],
+   [
+    "The Dark Knight",
+    "Christopher Nolan",
+    2008,
+    "Action"
+   ]
+  ]
+ },
+ {
+  "id": "m02-002",
+  "q": "Lấy title các phim do 'Christopher Nolan' đạo diễn, theo S1.Movie.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT title FROM s1_movie WHERE director = 'Christopher Nolan';",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Inception"
+   ],
+   [
+    "Interstellar"
+   ],
+   [
+    "Memento"
+   ],
+   [
+    "The Dark Knight"
+   ]
+  ]
+ },
+ {
+  "id": "m02-003",
+  "q": "Lấy title các phim thể loại 'SciFi' theo S5.MovieGenres, sắp xếp theo title tăng dần.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT title FROM s5_moviegenres WHERE genre = 'SciFi' ORDER BY title;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Inception"
+   ],
+   [
+    "Interstellar"
+   ]
+  ]
+ },
+ {
+  "id": "m02-004",
+  "q": "Đếm số phim (COUNT) có trong bảng S6.MovieDirectors.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT COUNT(*) AS so_phim FROM s6_moviedirectors;",
+  "expectedCols": [
+   "so_phim"
+  ],
+  "expectedRows": [
+   [
+    9
+   ]
+  ]
+ },
+ {
+  "id": "m02-005",
+  "q": "Lấy title, year của các phim có year < 2010 theo S7.MovieYears.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT title, year FROM s7_movieyears WHERE year < 2010;",
+  "expectedCols": [
+   "title",
+   "year"
+  ],
+  "expectedRows": [
+   [
+    "The Godfather",
+    1972
+   ],
+   [
+    "Spirited Away",
+    2001
+   ],
+   [
+    "Oldboy",
+    2003
+   ],
+   [
+    "Memento",
+    2000
+   ],
+   [
+    "The Dark Knight",
+    2008
+   ]
+  ]
+ },
+ {
+  "id": "m02-006",
+  "q": "Lấy place, movie, start từ S2.Cinemas nơi movie = 'Parasite'.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT place, movie, start FROM s2_cinemas WHERE movie = 'Parasite';",
+  "expectedCols": [
+   "place",
+   "movie",
+   "start"
+  ],
+  "expectedRows": [
+   [
+    "BHD Thanh Xuan",
+    "Parasite",
+    "19:30"
+   ]
+  ]
+ },
+ {
+  "id": "m02-007",
+  "q": "Lấy title và grade từ S4.Reviews có grade >= 9, sắp theo grade giảm dần.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT title, grade FROM s4_reviews WHERE grade >= 9 ORDER BY grade DESC;",
+  "expectedCols": [
+   "title",
+   "grade"
+  ],
+  "expectedRows": [
+   [
+    "The Godfather",
+    10
+   ],
+   [
+    "Parasite",
+    9
+   ],
+   [
+    "Oldboy",
+    9
+   ],
+   [
+    "The Dark Knight",
+    9
+   ]
+  ]
+ },
+ {
+  "id": "m02-008",
+  "q": "Lấy danh sách DISTINCT các giá trị genre xuất hiện trong S5.MovieGenres.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT DISTINCT genre FROM s5_moviegenres;",
+  "expectedCols": [
+   "genre"
+  ],
+  "expectedRows": [
+   [
+    "Drama"
+   ],
+   [
+    "SciFi"
+   ],
+   [
+    "Crime"
+   ],
+   [
+    "Animation"
+   ],
+   [
+    "Thriller"
+   ],
+   [
+    "Horror"
+   ],
+   [
+    "Action"
+   ]
+  ]
+ },
+ {
+  "id": "m02-009",
+  "q": "GAV: Movie(title,director,year,genre) ⊇ S1.Movie. Viết query GAV-unfold trả về title, director của mediated Movie, lấy từ S1.Movie, lọc year > 2010.",
+  "difficulty": 2,
+  "topic": "GAV unfolding",
+  "referenceSql": "SELECT title, director FROM s1_movie WHERE year > 2010;",
+  "expectedCols": [
+   "title",
+   "director"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Bong Joon-ho"
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan"
+   ],
+   [
+    "Your Name",
+    "Makoto Shinkai"
+   ],
+   [
+    "Train to Busan",
+    "Yeon Sang-ho"
+   ]
+  ]
+ },
+ {
+  "id": "m02-010",
+  "q": "GAV: Movie(title,director,year,genre) ⊇ S1.MovieDetails JOIN S1.ActorPlays JOIN S1.Movie (join theo MID). Viết query lấy title + S1.MovieDetails.director cho các phim có MovieDetails.year >= 2010 (join s1_moviedetails với s1_movie qua title trùng + năm trùng để xác định đúng phim, giả định mỗi MID ứng với đúng 1 title trong s1_movie có cùng year).",
+  "difficulty": 2,
+  "topic": "GAV unfolding",
+  "referenceSql": "SELECT m.title, d.director FROM s1_moviedetails d JOIN s1_movie m ON m.year = d.year AND m.director = d.director WHERE d.year >= 2010;",
+  "expectedCols": [
+   "title",
+   "director"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Bong Joon-ho"
+   ],
+   [
+    "Inception",
+    "Christopher Nolan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-011",
+  "q": "GAV: Reviews(title,rating,description) ⊇ S4.Reviews (đổi tên date→bỏ, grade→rating, review→description). Viết query trả về title AS title, grade AS rating, review AS description từ S4.Reviews.",
+  "difficulty": 2,
+  "topic": "GAV unfolding",
+  "referenceSql": "SELECT title, grade AS rating, review AS description FROM s4_reviews;",
+  "expectedCols": [
+   "title",
+   "rating",
+   "description"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    9,
+    "Dark social satire, flawless pacing"
+   ],
+   [
+    "Parasite",
+    8,
+    "Brilliant class commentary"
+   ],
+   [
+    "Inception",
+    8,
+    "Mind-bending but a bit cold"
+   ],
+   [
+    "The Godfather",
+    10,
+    "Genre-defining masterpiece"
+   ],
+   [
+    "Oldboy",
+    9,
+    "Brutal and unforgettable"
+   ],
+   [
+    "Interstellar",
+    7,
+    "Visually stunning, plot stretches logic"
+   ],
+   [
+    "Memento",
+    8,
+    "Clever reverse structure"
+   ],
+   [
+    "The Dark Knight",
+    9,
+    "Heath Ledger steals the film"
+   ]
+  ]
+ },
+ {
+  "id": "m02-012",
+  "q": "GAV: Plays(movie,location,startTime) ⊇ S2.Cinemas (đổi tên place→location, start→startTime). Viết query trả về movie, place AS location, start AS startTime từ S2.Cinemas, chỉ lấy suất chiếu sau 19:00 (so sánh chuỗi giờ dạng 'HH:MM' vẫn đúng thứ tự).",
+  "difficulty": 2,
+  "topic": "GAV unfolding",
+  "referenceSql": "SELECT movie, place AS location, start AS startTime FROM s2_cinemas WHERE start > '19:00';",
+  "expectedCols": [
+   "movie",
+   "location",
+   "startTime"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "BHD Thanh Xuan",
+    "19:30"
+   ],
+   [
+    "Inception",
+    "CGV Vincom",
+    "20:00"
+   ],
+   [
+    "Interstellar",
+    "BHD Thanh Xuan",
+    "21:00"
+   ]
+  ]
+ },
+ {
+  "id": "m02-013",
+  "q": "Plays(movie,location,startTime) được phủ bởi CẢ S2.Cinemas VÀ S3.NYCCinemas (NYC là tập con các rạp của S2 nhưng có thể có suất riêng). Viết query UNION 2 nguồn để liệt kê toàn bộ (movie, location, startTime) không trùng lặp, map S3: name→location, title→movie, startTime→startTime.",
+  "difficulty": 2,
+  "topic": "Hợp nhất nguồn (UNION)",
+  "referenceSql": "SELECT movie, place AS location, start AS startTime FROM s2_cinemas UNION SELECT title AS movie, name AS location, startTime FROM s3_nyccinemas;",
+  "expectedCols": [
+   "movie",
+   "location",
+   "startTime"
+  ],
+  "expectedRows": [
+   [
+    "Inception",
+    "CGV Vincom",
+    "20:00"
+   ],
+   [
+    "Interstellar",
+    "BHD Thanh Xuan",
+    "21:00"
+   ],
+   [
+    "Memento",
+    "IFC Center",
+    "18:00"
+   ],
+   [
+    "Oldboy",
+    "Film Forum",
+    "21:30"
+   ],
+   [
+    "Parasite",
+    "AMC Lincoln Square",
+    "19:00"
+   ],
+   [
+    "Parasite",
+    "BHD Thanh Xuan",
+    "19:30"
+   ],
+   [
+    "The Dark Knight",
+    "Lotte Lieu Giai",
+    "18:45"
+   ],
+   [
+    "Your Name",
+    "CGV Vincom",
+    "17:15"
+   ]
+  ]
+ },
+ {
+  "id": "m02-014",
+  "q": "Mediated 'đạo diễn của mọi phim đã biết' có thể lấy từ S1.Movie HOẶC S6.MovieDirectors. Viết query UNION title+director từ cả 2 nguồn (S6: dir AS director), rồi dùng DISTINCT để loại các dòng (title,director) trùng nhau giữa 2 nguồn.",
+  "difficulty": 3,
+  "topic": "Hợp nhất nguồn (UNION)",
+  "referenceSql": "SELECT DISTINCT title, director FROM (SELECT title, director FROM s1_movie UNION SELECT title, dir AS director FROM s6_moviedirectors);",
+  "expectedCols": [
+   "title",
+   "director"
+  ],
+  "expectedRows": [
+   [
+    "Inception",
+    "Christopher Nolan"
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan"
+   ],
+   [
+    "Memento",
+    "Christopher Nolan"
+   ],
+   [
+    "Oldboy",
+    "Park Chan-wook"
+   ],
+   [
+    "Parasite",
+    "Bong Joon-ho"
+   ],
+   [
+    "Spirited Away",
+    "Hayao Miyazaki"
+   ],
+   [
+    "The Dark Knight",
+    "Christopher Nolan"
+   ],
+   [
+    "The Godfather",
+    "Francis Ford Coppola"
+   ],
+   [
+    "The Godfather",
+    "Martin Scorsese"
+   ],
+   [
+    "Train to Busan",
+    "Yeon Sang-ho"
+   ],
+   [
+    "Your Name",
+    "Makoto Shinkai"
+   ]
+  ]
+ },
+ {
+  "id": "m02-015",
+  "q": "Certain Answer ví dụ: 1 phim có director được CẢ S1.Movie và S6.MovieDirectors cùng xác nhận (giao của 2 nguồn) thì chắc chắn đúng hơn phim chỉ có ở 1 nguồn. Viết query lấy title các phim mà (title,director) xuất hiện ĐỒNG THỜI ở S1.Movie và ở S6.MovieDirectors (dir trùng director) — dùng INTERSECT hoặc EXISTS.",
+  "difficulty": 3,
+  "topic": "Certain Answers",
+  "referenceSql": "SELECT m.title FROM s1_movie m WHERE EXISTS (SELECT 1 FROM s6_moviedirectors d WHERE d.title = m.title AND d.dir = m.director);",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Parasite"
+   ],
+   [
+    "Inception"
+   ],
+   [
+    "Spirited Away"
+   ],
+   [
+    "Oldboy"
+   ],
+   [
+    "Interstellar"
+   ],
+   [
+    "Memento"
+   ],
+   [
+    "Your Name"
+   ],
+   [
+    "The Dark Knight"
+   ]
+  ]
+ },
+ {
+  "id": "m02-016",
+  "q": "Ngược lại câu trước: tìm các title có trong S1.Movie nhưng director ghi trong S1.Movie KHÔNG khớp với director ghi trong S6.MovieDirectors (xung đột giữa 2 nguồn — minh hoạ lý do Certain Answers phải xét TẤT CẢ instance khả dĩ, không chỉ 1 nguồn).",
+  "difficulty": 3,
+  "topic": "Certain Answers",
+  "referenceSql": "SELECT m.title, m.director AS director_S1, d.dir AS director_S6 FROM s1_movie m JOIN s6_moviedirectors d ON d.title = m.title WHERE m.director <> d.dir;",
+  "expectedCols": [
+   "title",
+   "director_S1",
+   "director_S6"
+  ],
+  "expectedRows": [
+   [
+    "The Godfather",
+    "Francis Ford Coppola",
+    "Martin Scorsese"
+   ]
+  ]
+ },
+ {
+  "id": "m02-017",
+  "q": "Trong S1, lấy firstName, lastName của diễn viên cùng director của phim họ tham gia — join s1_actor JOIN s1_actorplays (qua AID) JOIN s1_moviedetails (qua MID).",
+  "difficulty": 2,
+  "topic": "Join nội bộ 1 nguồn",
+  "referenceSql": "SELECT a.firstName, a.lastName, d.director FROM s1_actor a JOIN s1_actorplays p ON p.AID = a.AID JOIN s1_moviedetails d ON d.MID = p.MID;",
+  "expectedCols": [
+   "firstName",
+   "lastName",
+   "director"
+  ],
+  "expectedRows": [
+   [
+    "Song",
+    "Kang-ho",
+    "Bong Joon-ho"
+   ],
+   [
+    "Leonardo",
+    "DiCaprio",
+    "Christopher Nolan"
+   ],
+   [
+    "Marlon",
+    "Brando",
+    "Francis Ford Coppola"
+   ],
+   [
+    "Choi",
+    "Min-sik",
+    "Park Chan-wook"
+   ],
+   [
+    "Christian",
+    "Bale",
+    "Christopher Nolan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-018",
+  "q": "Lấy firstName, lastName các diễn viên quốc tịch 'South Korea' trong S1.Actor.",
+  "difficulty": 2,
+  "topic": "Join nội bộ 1 nguồn",
+  "referenceSql": "SELECT firstName, lastName FROM s1_actor WHERE nationality = 'South Korea';",
+  "expectedCols": [
+   "firstName",
+   "lastName"
+  ],
+  "expectedRows": [
+   [
+    "Song",
+    "Kang-ho"
+   ],
+   [
+    "Choi",
+    "Min-sik"
+   ]
+  ]
+ },
+ {
+  "id": "m02-019",
+  "q": "Lấy title phim (từ s1_movie, join với s1_moviedetails qua director+year trùng) mà diễn viên sinh trước năm 1970 (yearofBirth < 1970) tham gia — join đủ 4 bảng S1.",
+  "difficulty": 2,
+  "topic": "Join nội bộ 1 nguồn",
+  "referenceSql": "SELECT DISTINCT m.title FROM s1_actor a JOIN s1_actorplays p ON p.AID = a.AID JOIN s1_moviedetails d ON d.MID = p.MID JOIN s1_movie m ON m.director = d.director AND m.year = d.year WHERE a.yearofBirth < 1970;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Parasite"
+   ],
+   [
+    "The Godfather"
+   ],
+   [
+    "Oldboy"
+   ]
+  ]
+ },
+ {
+  "id": "m02-020",
+  "q": "S4.Reviews chấm thang 1-10 ('grade'). Giả sử mediated Reviews.rating cần thang 1-5 (quy đổi rating = grade/2.0). Viết query trả title, grade/2.0 AS rating từ S4.Reviews.",
+  "difficulty": 2,
+  "topic": "Data-level heterogeneity",
+  "referenceSql": "SELECT title, grade / 2.0 AS rating FROM s4_reviews;",
+  "expectedCols": [
+   "title",
+   "rating"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    4.5
+   ],
+   [
+    "Parasite",
+    4.0
+   ],
+   [
+    "Inception",
+    4.0
+   ],
+   [
+    "The Godfather",
+    5.0
+   ],
+   [
+    "Oldboy",
+    4.5
+   ],
+   [
+    "Interstellar",
+    3.5
+   ],
+   [
+    "Memento",
+    4.0
+   ],
+   [
+    "The Dark Knight",
+    4.5
+   ]
+  ]
+ },
+ {
+  "id": "m02-021",
+  "q": "Tính rating trung bình (AVG) theo thang 1-5 (grade/2.0) cho từng title có nhiều review, nhóm theo title, chỉ giữ title có hơn 1 review (HAVING COUNT(*) > 1).",
+  "difficulty": 2,
+  "topic": "Data-level heterogeneity",
+  "referenceSql": "SELECT title, AVG(grade / 2.0) AS avg_rating, COUNT(*) AS n FROM s4_reviews GROUP BY title HAVING COUNT(*) > 1;",
+  "expectedCols": [
+   "title",
+   "avg_rating",
+   "n"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    4.25,
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m02-022",
+  "q": "Đếm số phim theo từng genre trong S1.Movie, sắp giảm dần theo số lượng.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT genre, COUNT(*) AS so_phim FROM s1_movie GROUP BY genre ORDER BY so_phim DESC;",
+  "expectedCols": [
+   "genre",
+   "so_phim"
+  ],
+  "expectedRows": [
+   [
+    "Thriller",
+    2
+   ],
+   [
+    "SciFi",
+    2
+   ],
+   [
+    "Animation",
+    2
+   ],
+   [
+    "Horror",
+    1
+   ],
+   [
+    "Drama",
+    1
+   ],
+   [
+    "Crime",
+    1
+   ],
+   [
+    "Action",
+    1
+   ]
+  ]
+ },
+ {
+  "id": "m02-023",
+  "q": "Đếm số phim theo từng director trong S1.Movie, chỉ giữ director có từ 2 phim trở lên.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT director, COUNT(*) AS so_phim FROM s1_movie GROUP BY director HAVING COUNT(*) >= 2;",
+  "expectedCols": [
+   "director",
+   "so_phim"
+  ],
+  "expectedRows": [
+   [
+    "Christopher Nolan",
+    4
+   ]
+  ]
+ },
+ {
+  "id": "m02-024",
+  "q": "Tính year trung bình (AVG) các phim trong S1.Movie theo từng genre.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT genre, AVG(year) AS avg_year FROM s1_movie GROUP BY genre;",
+  "expectedCols": [
+   "genre",
+   "avg_year"
+  ],
+  "expectedRows": [
+   [
+    "Action",
+    2008.0
+   ],
+   [
+    "Animation",
+    2008.5
+   ],
+   [
+    "Crime",
+    1972.0
+   ],
+   [
+    "Drama",
+    2019.0
+   ],
+   [
+    "Horror",
+    2016.0
+   ],
+   [
+    "SciFi",
+    2012.0
+   ],
+   [
+    "Thriller",
+    2001.5
+   ]
+  ]
+ },
+ {
+  "id": "m02-025",
+  "q": "Tìm year nhỏ nhất (MIN) và lớn nhất (MAX) trong S1.Movie.",
+  "difficulty": 1,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT MIN(year) AS year_min, MAX(year) AS year_max FROM s1_movie;",
+  "expectedCols": [
+   "year_min",
+   "year_max"
+  ],
+  "expectedRows": [
+   [
+    1972,
+    2019
+   ]
+  ]
+ },
+ {
+  "id": "m02-026",
+  "q": "Tìm các title có trong S1.Movie nhưng KHÔNG có trong S6.MovieDirectors (minh hoạ 'Different Coverage' của slide — S6 không biết hết mọi phim).",
+  "difficulty": 3,
+  "topic": "Schema Coverage",
+  "referenceSql": "SELECT title FROM s1_movie WHERE title NOT IN (SELECT title FROM s6_moviedirectors);",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Train to Busan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-027",
+  "q": "Tìm các title có trong S1.Movie nhưng KHÔNG có trong S7.MovieYears.",
+  "difficulty": 3,
+  "topic": "Schema Coverage",
+  "referenceSql": "SELECT title FROM s1_movie WHERE title NOT IN (SELECT title FROM s7_movieyears);",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Train to Busan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-028",
+  "q": "Liệt kê các title có mặt ở CẢ S5.MovieGenres, S6.MovieDirectors, S7.MovieYears (giao của 3 nguồn — dùng INTERSECT hoặc 3 lần EXISTS).",
+  "difficulty": 3,
+  "topic": "Schema Coverage",
+  "referenceSql": "SELECT title FROM s5_moviegenres INTERSECT SELECT title FROM s6_moviedirectors INTERSECT SELECT title FROM s7_movieyears;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Inception"
+   ],
+   [
+    "Interstellar"
+   ],
+   [
+    "Memento"
+   ],
+   [
+    "Oldboy"
+   ],
+   [
+    "Parasite"
+   ],
+   [
+    "Spirited Away"
+   ],
+   [
+    "The Dark Knight"
+   ],
+   [
+    "The Godfather"
+   ],
+   [
+    "Your Name"
+   ]
+  ]
+ },
+ {
+  "id": "m02-029",
+  "q": "Dựng lại mediated Movie(title,director,year,genre) đầy đủ nhất có thể bằng JOIN 3 nguồn S5 (genre), S6 (director), S7 (year) theo title — đây chính là ví dụ LAV: mỗi nguồn là 1 view chỉ biết 1 phần cột của mediated schema.",
+  "difficulty": 3,
+  "topic": "Schema Coverage",
+  "referenceSql": "SELECT g.title, d.dir AS director, y.year, g.genre FROM s5_moviegenres g JOIN s6_moviedirectors d ON d.title = g.title JOIN s7_movieyears y ON y.title = g.title;",
+  "expectedCols": [
+   "title",
+   "director",
+   "year",
+   "genre"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Bong Joon-ho",
+    2019,
+    "Drama"
+   ],
+   [
+    "Inception",
+    "Christopher Nolan",
+    2010,
+    "SciFi"
+   ],
+   [
+    "The Godfather",
+    "Martin Scorsese",
+    1972,
+    "Crime"
+   ],
+   [
+    "Spirited Away",
+    "Hayao Miyazaki",
+    2001,
+    "Animation"
+   ],
+   [
+    "Oldboy",
+    "Park Chan-wook",
+    2003,
+    "Thriller"
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan",
+    2014,
+    "SciFi"
+   ],
+   [
+    "Memento",
+    "Christopher Nolan",
+    2000,
+    "Thriller"
+   ],
+   [
+    "Your Name",
+    "Makoto Shinkai",
+    2016,
+    "Animation"
+   ],
+   [
+    "The Dark Knight",
+    "Christopher Nolan",
+    2008,
+    "Action"
+   ]
+  ]
+ },
+ {
+  "id": "m02-030",
+  "q": "Tìm title các phim trong S1.Movie có year lớn hơn year trung bình của toàn bộ S1.Movie.",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT title, year FROM s1_movie WHERE year > (SELECT AVG(year) FROM s1_movie);",
+  "expectedCols": [
+   "title",
+   "year"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    2019
+   ],
+   [
+    "Inception",
+    2010
+   ],
+   [
+    "Interstellar",
+    2014
+   ],
+   [
+    "Your Name",
+    2016
+   ],
+   [
+    "Train to Busan",
+    2016
+   ],
+   [
+    "The Dark Knight",
+    2008
+   ]
+  ]
+ },
+ {
+  "id": "m02-031",
+  "q": "Tìm title phim có grade (S4.Reviews) cao nhất trong toàn bộ bảng.",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT title, grade FROM s4_reviews WHERE grade = (SELECT MAX(grade) FROM s4_reviews);",
+  "expectedCols": [
+   "title",
+   "grade"
+  ],
+  "expectedRows": [
+   [
+    "The Godfather",
+    10
+   ]
+  ]
+ },
+ {
+  "id": "m02-032",
+  "q": "Tìm các director (S1.Movie) có TẤT CẢ phim của họ thuộc genre 'SciFi' (dùng NOT EXISTS để loại director có ít nhất 1 phim khác genre SciFi).",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT DISTINCT director FROM s1_movie m1 WHERE NOT EXISTS (SELECT 1 FROM s1_movie m2 WHERE m2.director = m1.director AND m2.genre <> 'SciFi');",
+  "expectedCols": [
+   "director"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m02-033",
+  "q": "LEFT JOIN S1.Movie với S4.Reviews (theo title) để thấy phim nào CHƯA có review nào (review columns sẽ là NULL) — trả về title, grade.",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & NULL",
+  "referenceSql": "SELECT m.title, r.grade FROM s1_movie m LEFT JOIN s4_reviews r ON r.title = m.title;",
+  "expectedCols": [
+   "title",
+   "grade"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    8
+   ],
+   [
+    "Parasite",
+    9
+   ],
+   [
+    "Inception",
+    8
+   ],
+   [
+    "The Godfather",
+    10
+   ],
+   [
+    "Spirited Away",
+    null
+   ],
+   [
+    "Oldboy",
+    9
+   ],
+   [
+    "Interstellar",
+    7
+   ],
+   [
+    "Memento",
+    8
+   ],
+   [
+    "Your Name",
+    null
+   ],
+   [
+    "Train to Busan",
+    null
+   ],
+   [
+    "The Dark Knight",
+    9
+   ]
+  ]
+ },
+ {
+  "id": "m02-034",
+  "q": "Từ kết quả LEFT JOIN trên, lọc ra CHỈ các title chưa có review nào (grade IS NULL).",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & NULL",
+  "referenceSql": "SELECT m.title FROM s1_movie m LEFT JOIN s4_reviews r ON r.title = m.title WHERE r.grade IS NULL;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Spirited Away"
+   ],
+   [
+    "Your Name"
+   ],
+   [
+    "Train to Busan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-035",
+  "q": "Lấy 3 phim có year lớn nhất trong S1.Movie (title, year), mới nhất trước.",
+  "difficulty": 1,
+  "topic": "ORDER BY/LIMIT",
+  "referenceSql": "SELECT title, year FROM s1_movie ORDER BY year DESC LIMIT 3;",
+  "expectedCols": [
+   "title",
+   "year"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    2019
+   ],
+   [
+    "Your Name",
+    2016
+   ],
+   [
+    "Train to Busan",
+    2016
+   ]
+  ]
+ },
+ {
+  "id": "m02-036",
+  "q": "Lấy phim có grade thấp nhất trong S4.Reviews (title, grade), chỉ 1 dòng.",
+  "difficulty": 1,
+  "topic": "ORDER BY/LIMIT",
+  "referenceSql": "SELECT title, grade FROM s4_reviews ORDER BY grade ASC LIMIT 1;",
+  "expectedCols": [
+   "title",
+   "grade"
+  ],
+  "expectedRows": [
+   [
+    "Interstellar",
+    7
+   ]
+  ]
+ },
+ {
+  "id": "m02-037",
+  "q": "Mediated query gốc: 'Lấy title, director các phim SciFi, kèm điểm review trung bình nếu có'. Reformulate: join S1.Movie (lọc genre='SciFi') LEFT JOIN S4.Reviews (GROUP BY title lấy AVG grade).",
+  "difficulty": 3,
+  "topic": "Query Reformulation",
+  "referenceSql": "SELECT m.title, m.director, (SELECT AVG(r.grade) FROM s4_reviews r WHERE r.title = m.title) AS avg_grade FROM s1_movie m WHERE m.genre = 'SciFi';",
+  "expectedCols": [
+   "title",
+   "director",
+   "avg_grade"
+  ],
+  "expectedRows": [
+   [
+    "Inception",
+    "Christopher Nolan",
+    8.0
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan",
+    7.0
+   ]
+  ]
+ },
+ {
+  "id": "m02-038",
+  "q": "Mediated query: 'phim nào có suất chiếu ở NYC VÀ có review >= 8'. Reformulate bằng JOIN S3.NYCCinemas với S4.Reviews qua title, lọc grade >= 8, DISTINCT title.",
+  "difficulty": 3,
+  "topic": "Query Reformulation",
+  "referenceSql": "SELECT DISTINCT c.title FROM s3_nyccinemas c JOIN s4_reviews r ON r.title = c.title WHERE r.grade >= 8;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Parasite"
+   ],
+   [
+    "Oldboy"
+   ],
+   [
+    "Memento"
+   ]
+  ]
+ },
+ {
+  "id": "m02-039",
+  "q": "Mediated query: 'phim có suất chiếu ở S2.Cinemas nhưng KHÔNG xuất hiện trong S3.NYCCinemas' (đang chiếu ở nơi khác ngoài NYC) — dùng NOT IN hoặc NOT EXISTS trên movie/title.",
+  "difficulty": 3,
+  "topic": "Query Reformulation",
+  "referenceSql": "SELECT DISTINCT movie FROM s2_cinemas WHERE movie NOT IN (SELECT title FROM s3_nyccinemas);",
+  "expectedCols": [
+   "movie"
+  ],
+  "expectedRows": [
+   [
+    "Inception"
+   ],
+   [
+    "The Dark Knight"
+   ],
+   [
+    "Interstellar"
+   ],
+   [
+    "Your Name"
+   ]
+  ]
+ },
+ {
+  "id": "m02-040",
+  "q": "TGD minh hoạ: nếu (title,genre) có ở S5 VÀ (title,dir) có ở S6 VÀ (title,year) có ở S7 THÌ suy ra tồn tại 1 dòng Movie(title,dir,year,genre) đầy đủ (đã làm ở m02-029) — ở đây hãy ĐẾM xem có bao nhiêu title thoả điều kiện tiền đề đó (đếm kết quả JOIN 3 nguồn).",
+  "difficulty": 3,
+  "topic": "GLAV/TGD",
+  "referenceSql": "SELECT COUNT(*) AS so_phim_day_du FROM (SELECT g.title FROM s5_moviegenres g JOIN s6_moviedirectors d ON d.title = g.title JOIN s7_movieyears y ON y.title = g.title);",
+  "expectedCols": [
+   "so_phim_day_du"
+  ],
+  "expectedRows": [
+   [
+    9
+   ]
+  ]
+ },
+ {
+  "id": "m02-041",
+  "q": "Tìm title có trong S5 (MovieGenres) nhưng KHÔNG thoả được tiền đề TGD ở câu trước (thiếu ở S6 hoặc S7) — minh hoạ 1 instance mediated KHÔNG suy luận được đầy đủ từ GLAV.",
+  "difficulty": 3,
+  "topic": "GLAV/TGD",
+  "referenceSql": "SELECT title FROM s5_moviegenres WHERE title NOT IN (SELECT g.title FROM s5_moviegenres g JOIN s6_moviedirectors d ON d.title = g.title JOIN s7_movieyears y ON y.title = g.title);",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Train to Busan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-042",
+  "q": "Phân loại phim theo thập niên bằng CASE WHEN: year < 2000 → 'pre-2000', 2000-2009 → '2000s', >=2010 → '2010s'. Trả về title, year, decade.",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT title, year, CASE WHEN year < 2000 THEN 'pre-2000' WHEN year < 2010 THEN '2000s' ELSE '2010s' END AS decade FROM s1_movie;",
+  "expectedCols": [
+   "title",
+   "year",
+   "decade"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    2019,
+    "2010s"
+   ],
+   [
+    "Inception",
+    2010,
+    "2010s"
+   ],
+   [
+    "The Godfather",
+    1972,
+    "pre-2000"
+   ],
+   [
+    "Spirited Away",
+    2001,
+    "2000s"
+   ],
+   [
+    "Oldboy",
+    2003,
+    "2000s"
+   ],
+   [
+    "Interstellar",
+    2014,
+    "2010s"
+   ],
+   [
+    "Memento",
+    2000,
+    "2000s"
+   ],
+   [
+    "Your Name",
+    2016,
+    "2010s"
+   ],
+   [
+    "Train to Busan",
+    2016,
+    "2010s"
+   ],
+   [
+    "The Dark Knight",
+    2008,
+    "2000s"
+   ]
+  ]
+ },
+ {
+  "id": "m02-043",
+  "q": "Đếm số phim theo từng decade (dùng lại logic CASE WHEN câu trước, GROUP BY decade).",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT decade, COUNT(*) AS so_phim FROM (SELECT CASE WHEN year < 2000 THEN 'pre-2000' WHEN year < 2010 THEN '2000s' ELSE '2010s' END AS decade FROM s1_movie) GROUP BY decade;",
+  "expectedCols": [
+   "decade",
+   "so_phim"
+  ],
+  "expectedRows": [
+   [
+    "2000s",
+    4
+   ],
+   [
+    "2010s",
+    5
+   ],
+   [
+    "pre-2000",
+    1
+   ]
+  ]
+ },
+ {
+  "id": "m02-044",
+  "q": "Tìm các cặp phim (title1, title2) cùng director trong S1.Movie, title1 < title2 (tránh trùng cặp và tránh so 1 phim với chính nó) — self-join s1_movie với chính nó.",
+  "difficulty": 3,
+  "topic": "Self-join",
+  "referenceSql": "SELECT a.title AS title1, b.title AS title2, a.director FROM s1_movie a JOIN s1_movie b ON a.director = b.director AND a.title < b.title;",
+  "expectedCols": [
+   "title1",
+   "title2",
+   "director"
+  ],
+  "expectedRows": [
+   [
+    "Inception",
+    "Interstellar",
+    "Christopher Nolan"
+   ],
+   [
+    "Inception",
+    "Memento",
+    "Christopher Nolan"
+   ],
+   [
+    "Inception",
+    "The Dark Knight",
+    "Christopher Nolan"
+   ],
+   [
+    "Interstellar",
+    "Memento",
+    "Christopher Nolan"
+   ],
+   [
+    "Interstellar",
+    "The Dark Knight",
+    "Christopher Nolan"
+   ],
+   [
+    "Memento",
+    "The Dark Knight",
+    "Christopher Nolan"
+   ]
+  ]
+ },
+ {
+  "id": "m02-045",
+  "q": "Tìm các cặp phim cùng genre VÀ cùng năm phát hành (year) trong S1.Movie (self-join 2 điều kiện), title1 < title2.",
+  "difficulty": 3,
+  "topic": "Self-join",
+  "referenceSql": "SELECT a.title AS title1, b.title AS title2, a.genre, a.year FROM s1_movie a JOIN s1_movie b ON a.genre = b.genre AND a.year = b.year AND a.title < b.title;",
+  "expectedCols": [
+   "title1",
+   "title2",
+   "genre",
+   "year"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m02-046",
+  "q": "Danh sách đầy đủ nhất có thể: với mỗi title trong S1.Movie, lấy kèm review trung bình (S4, có thể NULL), và đánh dấu có chiếu ở NYC hay không (EXISTS trên S3) — trả về title, avg_grade, co_chieu_nyc (1/0).",
+  "difficulty": 3,
+  "topic": "Tổng hợp nhiều nguồn",
+  "referenceSql": "SELECT m.title, (SELECT AVG(r.grade) FROM s4_reviews r WHERE r.title = m.title) AS avg_grade, (SELECT COUNT(*) > 0 FROM s3_nyccinemas c WHERE c.title = m.title) AS co_chieu_nyc FROM s1_movie m;",
+  "expectedCols": [
+   "title",
+   "avg_grade",
+   "co_chieu_nyc"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    8.5,
+    1
+   ],
+   [
+    "Inception",
+    8.0,
+    0
+   ],
+   [
+    "The Godfather",
+    10.0,
+    0
+   ],
+   [
+    "Spirited Away",
+    null,
+    0
+   ],
+   [
+    "Oldboy",
+    9.0,
+    1
+   ],
+   [
+    "Interstellar",
+    7.0,
+    0
+   ],
+   [
+    "Memento",
+    8.0,
+    1
+   ],
+   [
+    "Your Name",
+    null,
+    0
+   ],
+   [
+    "Train to Busan",
+    null,
+    0
+   ],
+   [
+    "The Dark Knight",
+    9.0,
+    0
+   ]
+  ]
+ },
+ {
+  "id": "m02-047",
+  "q": "Tìm title các phim có review trung bình (S4) >= 8.5 VÀ có chiếu ở S2.Cinemas (JOIN + subquery kết hợp HAVING).",
+  "difficulty": 3,
+  "topic": "Tổng hợp nhiều nguồn",
+  "referenceSql": "SELECT r.title FROM s4_reviews r WHERE r.title IN (SELECT movie FROM s2_cinemas) GROUP BY r.title HAVING AVG(r.grade) >= 8.5;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Parasite"
+   ],
+   [
+    "The Dark Knight"
+   ]
+  ]
+ },
+ {
+  "id": "m02-048",
+  "q": "Director nào (S1.Movie) có phim xuất hiện ở S2.Cinemas NHIỀU rạp nhất? Trả về director, số lượt chiếu (JOIN S1.Movie với S2.Cinemas qua title, GROUP BY director, ORDER BY COUNT DESC LIMIT 1).",
+  "difficulty": 3,
+  "topic": "Tổng hợp nhiều nguồn",
+  "referenceSql": "SELECT m.director, COUNT(*) AS so_luot_chieu FROM s1_movie m JOIN s2_cinemas c ON c.movie = m.title GROUP BY m.director ORDER BY so_luot_chieu DESC LIMIT 1;",
+  "expectedCols": [
+   "director",
+   "so_luot_chieu"
+  ],
+  "expectedRows": [
+   [
+    "Christopher Nolan",
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m02-049",
+  "q": "Liệt kê title, genre (S5) của các phim CÓ review (S4) nhưng KHÔNG có suất chiếu nào ở S2.Cinemas (phim được đánh giá nhưng hiện tại rạp không chiếu).",
+  "difficulty": 2,
+  "topic": "Tổng hợp nhiều nguồn",
+  "referenceSql": "SELECT DISTINCT g.title, g.genre FROM s5_moviegenres g WHERE g.title IN (SELECT title FROM s4_reviews) AND g.title NOT IN (SELECT movie FROM s2_cinemas);",
+  "expectedCols": [
+   "title",
+   "genre"
+  ],
+  "expectedRows": [
+   [
+    "The Godfather",
+    "Crime"
+   ],
+   [
+    "Oldboy",
+    "Thriller"
+   ],
+   [
+    "Memento",
+    "Thriller"
+   ]
+  ]
+ },
+ {
+  "id": "m02-050",
+  "q": "Bài tổng hợp cuối: với mỗi genre (S5), tính số phim (COUNT DISTINCT title) và review trung bình của TOÀN BỘ phim thuộc genre đó (JOIN S5 với S4 qua title, GROUP BY genre).",
+  "difficulty": 3,
+  "topic": "Tổng hợp nhiều nguồn",
+  "referenceSql": "SELECT g.genre, COUNT(DISTINCT g.title) AS so_phim, AVG(r.grade) AS avg_grade FROM s5_moviegenres g LEFT JOIN s4_reviews r ON r.title = g.title GROUP BY g.genre;",
+  "expectedCols": [
+   "genre",
+   "so_phim",
+   "avg_grade"
+  ],
+  "expectedRows": [
+   [
+    "Action",
+    1,
+    9.0
+   ],
+   [
+    "Animation",
+    2,
+    null
+   ],
+   [
+    "Crime",
+    1,
+    10.0
+   ],
+   [
+    "Drama",
+    1,
+    8.5
+   ],
+   [
+    "Horror",
+    1,
+    null
+   ],
+   [
+    "SciFi",
+    2,
+    7.5
+   ],
+   [
+    "Thriller",
+    2,
+    8.5
+   ]
+  ]
+ }
+]
