@@ -1,0 +1,562 @@
+[
+ {
+  "id": "m03-t1-mediation-semi",
+  "q": "'Mediation Query cho dữ liệu bán cấu trúc' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Quy trình sinh truy vấn tự động bằng cách decompose mediation schema thành sub-trees, tìm partial mapping ở từng nguồn, rồi combine",
+   "Một kỹ thuật mã hoá XML để giảm dung lượng lưu trữ — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ áp dụng được cho dữ liệu quan hệ (bảng), không áp dụng cho XML",
+   "Yêu cầu tất cả nguồn phải có cùng cấu trúc cây XML giống hệt nhau — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Quy trình sinh truy vấn tự động bằng cách decompose mediation schema thành sub-trees, tìm partial mapping ở từng nguồn, rồi combine"
+ },
+ {
+  "id": "m03-t1-subtree-condition",
+  "q": "'Điều kiện của 1 sub-tree khi decompose' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Mỗi sub-tree phải trùng khớp hoàn toàn với đúng 1 nguồn duy nhất",
+   "Root là node đa trị (multi-value) hoặc root của mediation schema; có ít nhất 1 text node",
+   "Sub-tree không được chứa quá 1 thuộc tính — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Root phải là node lá (không có con), không được là node trung gian"
+  ],
+  "correct": 1,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Root là node đa trị (multi-value) hoặc root của mediation schema; có ít nhất 1 text node"
+ },
+ {
+  "id": "m03-t1-partial-mapping",
+  "q": "'Partial Mapping' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Một ràng buộc toàn vẹn (integrity constraint) trên khoá ngoại — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Kết quả cuối cùng trả về cho người dùng sau khi thực thi truy vấn",
+   "Ánh xạ giữa 1 sub-tree của mediation schema với phần tương ứng ở 1 nguồn cụ thể",
+   "Ánh xạ đầy đủ toàn bộ mediation schema với 1 nguồn (đây không phải 'partial')"
+  ],
+  "correct": 2,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Ánh xạ giữa 1 sub-tree của mediation schema với phần tương ứng ở 1 nguồn cụ thể"
+ },
+ {
+  "id": "m03-t1-join-graph",
+  "q": "'Join Graph' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Một kỹ thuật index hoá giúp JOIN chạy nhanh hơn — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Đồ thị chỉ dùng để trực quan hoá, không ảnh hưởng tới kết quả sinh mediation query",
+   "Đồ thị biểu diễn thứ tự thực thi các câu lệnh SQL — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Đồ thị biểu diễn các phép join khả dĩ giữa các nguồn (node = nguồn, cạnh = điều kiện join dựa trên key/reference key)"
+  ],
+  "correct": 3,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Đồ thị biểu diễn các phép join khả dĩ giữa các nguồn (node = nguồn, cạnh = điều kiện join dựa trên key/reference key)"
+ },
+ {
+  "id": "m03-t1-mediation-query-output",
+  "q": "'Kết quả cuối của sinh Mediation Query' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "1 truy vấn XQuery thực thi được, sinh ra cây XML đúng cấu trúc mediation schema từ nhiều nguồn XML rời rạc",
+   "1 bảng quan hệ (relational table) chứa toàn bộ dữ liệu đã gộp",
+   "1 file cấu hình JSON mô tả mapping, không thực thi được trực tiếp",
+   "1 câu lệnh SQL duy nhất, không liên quan gì tới XML/XQuery — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 1 truy vấn XQuery thực thi được, sinh ra cây XML đúng cấu trúc mediation schema từ nhiều nguồn XML rời rạc"
+ },
+ {
+  "id": "m03-t1-deep-web-scale",
+  "q": "'Deep Web at Scale' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Một kỹ thuật mã hoá dữ liệu sâu (deep encryption) trên Web",
+   "Hàng chục triệu nguồn ẩn sau form web — không thể thiết kế mapping thủ công cho từng nguồn",
+   "Chỉ áp dụng cho dữ liệu đã có mediated schema sẵn — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ vài chục nguồn công khai, dễ thiết kế mapping thủ công"
+  ],
+  "correct": 1,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hàng chục triệu nguồn ẩn sau form web — không thể thiết kế mapping thủ công cho từng nguồn"
+ },
+ {
+  "id": "m03-t1-schema-explosion",
+  "q": "'Schema Explosion' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Hiện tượng 1 schema duy nhất phình to quá nhiều cột",
+   "Lỗi hệ thống khiến toàn bộ schema bị xoá đột ngột — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu ('database design by the masses')",
+   "Chỉ xảy ra khi dùng đúng 1 ngôn ngữ truy vấn duy nhất"
+  ],
+  "correct": 2,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu ('database design by the masses')"
+ },
+ {
+  "id": "m03-t1-modeling-everything",
+  "q": "'Modeling Everything' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Chỉ cần mô hình hoá đúng 1 lĩnh vực duy nhất là đủ cho Big Data",
+   "Chỉ áp dụng cho dữ liệu dạng số, không áp dụng cho văn bản — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Một kỹ thuật nén dữ liệu để lưu được 'mọi thứ' trong ít dung lượng hơn",
+   "Dữ liệu trải khắp mọi lĩnh vực tri thức loài người — 1 mediated schema duy nhất là bất khả thi"
+  ],
+  "correct": 3,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Dữ liệu trải khắp mọi lĩnh vực tri thức loài người — 1 mediated schema duy nhất là bất khả thi"
+ },
+ {
+  "id": "m03-t1-keyword-queries",
+  "q": "'Keyword Queries' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Người dùng web gõ từ khoá, không viết SQL theo đúng mediated schema nào cả",
+   "Chỉ áp dụng được khi đã có mediated schema tường minh từ trước",
+   "Một ngôn ngữ truy vấn hình thức thay thế SQL trong Data Integration truyền thống",
+   "Người dùng luôn viết đúng cú pháp SQL đầy đủ khi tìm kiếm trên Web"
+  ],
+  "correct": 0,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Người dùng web gõ từ khoá, không viết SQL theo đúng mediated schema nào cả"
+ },
+ {
+  "id": "m03-t1-featurerank",
+  "q": "'FeatureRank (WebTables)' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Chỉ xếp hạng được bảng tiếng Anh, không xếp hạng được ngôn ngữ khác",
+   "Xếp hạng bảng kết quả WebTables dựa trên đặc trưng của chính bảng đó (VD số cột, số dòng, có header rõ ràng...)",
+   "Giống hệt SchemaRank, không có gì khác biệt — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Xếp hạng chỉ dựa trên độ dài tên file HTML chứa bảng — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 1,
+  "topic": "WebTables Ranking",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Xếp hạng bảng kết quả WebTables dựa trên đặc trưng của chính bảng đó (VD số cột, số dòng, có header rõ ràng...)"
+ },
+ {
+  "id": "m03-t1-schemarank",
+  "q": "'SchemaRank (WebTables)' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Chạy độc lập hoàn toàn với FeatureRank, không kế thừa gì từ FeatureRank",
+   "Chỉ dùng độ dài bảng, không dùng đặc trưng nào khác (giống FeatureRank, không có gì mới)",
+   "FeatureRank cộng thêm đo độ nhất quán schema giữa các thuộc tính qua Pointwise Mutual Information (PMI)",
+   "Một thuật toán Clustering dùng để gộp các bảng trùng lặp — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "WebTables Ranking",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: FeatureRank cộng thêm đo độ nhất quán schema giữa các thuộc tính qua Pointwise Mutual Information (PMI)"
+ },
+ {
+  "id": "m03-t1-probabilistic-mapping",
+  "q": "'Probabilistic Mapping' được định nghĩa như thế nào (theo đúng nội dung slide buổi 3)?",
+  "opts": [
+   "Một kỹ thuật mã hoá mapping để bảo mật — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Chỉ áp dụng được cho GAV, không áp dụng được cho LAV/GLAV",
+   "Chỉ có đúng 1 mapping duy nhất được chọn, không có xác suất nào",
+   "Ánh xạ schema có gắn xác suất — nhiều mapping khả dĩ cùng tồn tại, mỗi cái 1 trọng số tin cậy"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data (mở rộng)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Ánh xạ schema có gắn xác suất — nhiều mapping khả dĩ cùng tồn tại, mỗi cái 1 trọng số tin cậy"
+ },
+ {
+  "id": "m03-t2-mediation-semi",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Quy trình sinh truy vấn tự động bằng cách decompose mediation schema thành sub-trees, tìm partial mapping ở từng nguồn, rồi combine\"",
+  "opts": [
+   "Mediation Query cho dữ liệu bán cấu trúc",
+   "Modeling Everything",
+   "Partial Mapping",
+   "Join Graph — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mediation Query cho dữ liệu bán cấu trúc"
+ },
+ {
+  "id": "m03-t2-subtree-condition",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Root là node đa trị (multi-value) hoặc root của mediation schema; có ít nhất 1 text node\"",
+  "opts": [
+   "Join Graph — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Điều kiện của 1 sub-tree khi decompose",
+   "SchemaRank (WebTables)",
+   "Schema Explosion"
+  ],
+  "correct": 1,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Điều kiện của 1 sub-tree khi decompose"
+ },
+ {
+  "id": "m03-t2-partial-mapping",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Ánh xạ giữa 1 sub-tree của mediation schema với phần tương ứng ở 1 nguồn cụ thể\"",
+  "opts": [
+   "FeatureRank (WebTables)",
+   "SchemaRank (WebTables)",
+   "Partial Mapping",
+   "Keyword Queries"
+  ],
+  "correct": 2,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Partial Mapping"
+ },
+ {
+  "id": "m03-t2-join-graph",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Đồ thị biểu diễn các phép join khả dĩ giữa các nguồn (node = nguồn, cạnh = điều kiện join dựa trên key/reference key)\"",
+  "opts": [
+   "Mediation Query cho dữ liệu bán cấu trúc",
+   "Keyword Queries",
+   "FeatureRank (WebTables)",
+   "Join Graph"
+  ],
+  "correct": 3,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Join Graph"
+ },
+ {
+  "id": "m03-t2-mediation-query-output",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"1 truy vấn XQuery thực thi được, sinh ra cây XML đúng cấu trúc mediation schema từ nhiều nguồn XML rời rạc\"",
+  "opts": [
+   "Kết quả cuối của sinh Mediation Query",
+   "Keyword Queries — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Probabilistic Mapping",
+   "FeatureRank (WebTables)"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Kết quả cuối của sinh Mediation Query"
+ },
+ {
+  "id": "m03-t2-deep-web-scale",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Hàng chục triệu nguồn ẩn sau form web — không thể thiết kế mapping thủ công cho từng nguồn\"",
+  "opts": [
+   "Mediation Query cho dữ liệu bán cấu trúc",
+   "Deep Web at Scale",
+   "Modeling Everything",
+   "FeatureRank (WebTables)"
+  ],
+  "correct": 1,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Deep Web at Scale"
+ },
+ {
+  "id": "m03-t2-schema-explosion",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu ('database design by the masses')\"",
+  "opts": [
+   "Partial Mapping",
+   "Kết quả cuối của sinh Mediation Query",
+   "Schema Explosion",
+   "FeatureRank (WebTables)"
+  ],
+  "correct": 2,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Schema Explosion"
+ },
+ {
+  "id": "m03-t2-modeling-everything",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Dữ liệu trải khắp mọi lĩnh vực tri thức loài người — 1 mediated schema duy nhất là bất khả thi\"",
+  "opts": [
+   "Deep Web at Scale",
+   "Partial Mapping",
+   "FeatureRank (WebTables)",
+   "Modeling Everything"
+  ],
+  "correct": 3,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Modeling Everything"
+ },
+ {
+  "id": "m03-t2-keyword-queries",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Người dùng web gõ từ khoá, không viết SQL theo đúng mediated schema nào cả\"",
+  "opts": [
+   "Keyword Queries",
+   "Schema Explosion",
+   "Kết quả cuối của sinh Mediation Query",
+   "Partial Mapping"
+  ],
+  "correct": 0,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Keyword Queries"
+ },
+ {
+  "id": "m03-t2-featurerank",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Xếp hạng bảng kết quả WebTables dựa trên đặc trưng của chính bảng đó (VD số cột, số dòng, có header rõ ràng...)\"",
+  "opts": [
+   "Điều kiện của 1 sub-tree khi decompose",
+   "FeatureRank (WebTables)",
+   "Keyword Queries",
+   "Join Graph"
+  ],
+  "correct": 1,
+  "topic": "WebTables Ranking",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: FeatureRank (WebTables)"
+ },
+ {
+  "id": "m03-t2-schemarank",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"FeatureRank cộng thêm đo độ nhất quán schema giữa các thuộc tính qua Pointwise Mutual Information (PMI)\"",
+  "opts": [
+   "Modeling Everything",
+   "Join Graph — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "SchemaRank (WebTables)",
+   "Schema Explosion"
+  ],
+  "correct": 2,
+  "topic": "WebTables Ranking",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: SchemaRank (WebTables)"
+ },
+ {
+  "id": "m03-t2-probabilistic-mapping",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Ánh xạ schema có gắn xác suất — nhiều mapping khả dĩ cùng tồn tại, mỗi cái 1 trọng số tin cậy\"",
+  "opts": [
+   "Điều kiện của 1 sub-tree khi decompose",
+   "Keyword Queries",
+   "Mediation Query cho dữ liệu bán cấu trúc",
+   "Probabilistic Mapping"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data (mở rộng)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Probabilistic Mapping"
+ },
+ {
+  "id": "m03-t3-mediation-semi",
+  "q": "Phát biểu nào sau đây về Mediation Query cho dữ liệu bán cấu trúc là ĐÚNG?",
+  "opts": [
+   "Quy trình sinh truy vấn tự động bằng cách decompose mediation schema thành sub-trees, tìm partial mapping ở từng nguồn, rồi combine",
+   "Một kỹ thuật mã hoá XML để giảm dung lượng lưu trữ — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Chỉ áp dụng được cho dữ liệu quan hệ (bảng), không áp dụng cho XML",
+   "Yêu cầu tất cả nguồn phải có cùng cấu trúc cây XML giống hệt nhau — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Quy trình sinh truy vấn tự động bằng cách decompose mediation schema thành sub-trees, tìm partial mapping ở từng nguồn, rồi combine"
+ },
+ {
+  "id": "m03-t3-subtree-condition",
+  "q": "Phát biểu nào sau đây về Điều kiện của 1 sub-tree khi decompose là ĐÚNG?",
+  "opts": [
+   "Root phải là node lá (không có con), không được là node trung gian",
+   "Root là node đa trị (multi-value) hoặc root của mediation schema; có ít nhất 1 text node",
+   "Sub-tree không được chứa quá 1 thuộc tính — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Mỗi sub-tree phải trùng khớp hoàn toàn với đúng 1 nguồn duy nhất"
+  ],
+  "correct": 1,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Root là node đa trị (multi-value) hoặc root của mediation schema; có ít nhất 1 text node"
+ },
+ {
+  "id": "m03-t3-partial-mapping",
+  "q": "Phát biểu nào sau đây về Partial Mapping là ĐÚNG?",
+  "opts": [
+   "Kết quả cuối cùng trả về cho người dùng sau khi thực thi truy vấn",
+   "Một ràng buộc toàn vẹn (integrity constraint) trên khoá ngoại — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Ánh xạ giữa 1 sub-tree của mediation schema với phần tương ứng ở 1 nguồn cụ thể",
+   "Ánh xạ đầy đủ toàn bộ mediation schema với 1 nguồn (đây không phải 'partial')"
+  ],
+  "correct": 2,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Ánh xạ giữa 1 sub-tree của mediation schema với phần tương ứng ở 1 nguồn cụ thể"
+ },
+ {
+  "id": "m03-t3-join-graph",
+  "q": "Phát biểu nào sau đây về Join Graph là ĐÚNG?",
+  "opts": [
+   "Đồ thị biểu diễn thứ tự thực thi các câu lệnh SQL — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Đồ thị chỉ dùng để trực quan hoá, không ảnh hưởng tới kết quả sinh mediation query — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một kỹ thuật index hoá giúp JOIN chạy nhanh hơn — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Đồ thị biểu diễn các phép join khả dĩ giữa các nguồn (node = nguồn, cạnh = điều kiện join dựa trên key/reference key)"
+  ],
+  "correct": 3,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Đồ thị biểu diễn các phép join khả dĩ giữa các nguồn (node = nguồn, cạnh = điều kiện join dựa trên key/reference key)"
+ },
+ {
+  "id": "m03-t3-mediation-query-output",
+  "q": "Phát biểu nào sau đây về Kết quả cuối của sinh Mediation Query là ĐÚNG?",
+  "opts": [
+   "1 truy vấn XQuery thực thi được, sinh ra cây XML đúng cấu trúc mediation schema từ nhiều nguồn XML rời rạc",
+   "1 bảng quan hệ (relational table) chứa toàn bộ dữ liệu đã gộp",
+   "1 file cấu hình JSON mô tả mapping, không thực thi được trực tiếp",
+   "1 câu lệnh SQL duy nhất, không liên quan gì tới XML/XQuery — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 1 truy vấn XQuery thực thi được, sinh ra cây XML đúng cấu trúc mediation schema từ nhiều nguồn XML rời rạc"
+ },
+ {
+  "id": "m03-t3-deep-web-scale",
+  "q": "Phát biểu nào sau đây về Deep Web at Scale là ĐÚNG?",
+  "opts": [
+   "Một kỹ thuật mã hoá dữ liệu sâu (deep encryption) trên Web",
+   "Hàng chục triệu nguồn ẩn sau form web — không thể thiết kế mapping thủ công cho từng nguồn",
+   "Chỉ vài chục nguồn công khai, dễ thiết kế mapping thủ công",
+   "Chỉ áp dụng cho dữ liệu đã có mediated schema sẵn — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 1,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hàng chục triệu nguồn ẩn sau form web — không thể thiết kế mapping thủ công cho từng nguồn"
+ },
+ {
+  "id": "m03-t3-schema-explosion",
+  "q": "Phát biểu nào sau đây về Schema Explosion là ĐÚNG?",
+  "opts": [
+   "Hiện tượng 1 schema duy nhất phình to quá nhiều cột",
+   "Chỉ xảy ra khi dùng đúng 1 ngôn ngữ truy vấn duy nhất",
+   "Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu ('database design by the masses')",
+   "Lỗi hệ thống khiến toàn bộ schema bị xoá đột ngột — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu ('database design by the masses')"
+ },
+ {
+  "id": "m03-t3-modeling-everything",
+  "q": "Phát biểu nào sau đây về Modeling Everything là ĐÚNG?",
+  "opts": [
+   "Một kỹ thuật nén dữ liệu để lưu được 'mọi thứ' trong ít dung lượng hơn",
+   "Chỉ cần mô hình hoá đúng 1 lĩnh vực duy nhất là đủ cho Big Data",
+   "Chỉ áp dụng cho dữ liệu dạng số, không áp dụng cho văn bản — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Dữ liệu trải khắp mọi lĩnh vực tri thức loài người — 1 mediated schema duy nhất là bất khả thi"
+  ],
+  "correct": 3,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Dữ liệu trải khắp mọi lĩnh vực tri thức loài người — 1 mediated schema duy nhất là bất khả thi"
+ },
+ {
+  "id": "m03-t3-keyword-queries",
+  "q": "Phát biểu nào sau đây về Keyword Queries là ĐÚNG?",
+  "opts": [
+   "Người dùng web gõ từ khoá, không viết SQL theo đúng mediated schema nào cả",
+   "Chỉ áp dụng được khi đã có mediated schema tường minh từ trước",
+   "Người dùng luôn viết đúng cú pháp SQL đầy đủ khi tìm kiếm trên Web",
+   "Một ngôn ngữ truy vấn hình thức thay thế SQL trong Data Integration truyền thống"
+  ],
+  "correct": 0,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Người dùng web gõ từ khoá, không viết SQL theo đúng mediated schema nào cả"
+ },
+ {
+  "id": "m03-t3-featurerank",
+  "q": "Phát biểu nào sau đây về FeatureRank (WebTables) là ĐÚNG?",
+  "opts": [
+   "Chỉ xếp hạng được bảng tiếng Anh, không xếp hạng được ngôn ngữ khác",
+   "Xếp hạng bảng kết quả WebTables dựa trên đặc trưng của chính bảng đó (VD số cột, số dòng, có header rõ ràng...)",
+   "Giống hệt SchemaRank, không có gì khác biệt — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Xếp hạng chỉ dựa trên độ dài tên file HTML chứa bảng"
+  ],
+  "correct": 1,
+  "topic": "WebTables Ranking",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Xếp hạng bảng kết quả WebTables dựa trên đặc trưng của chính bảng đó (VD số cột, số dòng, có header rõ ràng...)"
+ },
+ {
+  "id": "m03-t3-schemarank",
+  "q": "Phát biểu nào sau đây về SchemaRank (WebTables) là ĐÚNG?",
+  "opts": [
+   "Chạy độc lập hoàn toàn với FeatureRank, không kế thừa gì từ FeatureRank",
+   "Chỉ dùng độ dài bảng, không dùng đặc trưng nào khác (giống FeatureRank, không có gì mới)",
+   "FeatureRank cộng thêm đo độ nhất quán schema giữa các thuộc tính qua Pointwise Mutual Information (PMI)",
+   "Một thuật toán Clustering dùng để gộp các bảng trùng lặp — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "WebTables Ranking",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: FeatureRank cộng thêm đo độ nhất quán schema giữa các thuộc tính qua Pointwise Mutual Information (PMI)"
+ },
+ {
+  "id": "m03-t3-probabilistic-mapping",
+  "q": "Phát biểu nào sau đây về Probabilistic Mapping là ĐÚNG?",
+  "opts": [
+   "Chỉ áp dụng được cho GAV, không áp dụng được cho LAV/GLAV",
+   "Một kỹ thuật mã hoá mapping để bảo mật — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ có đúng 1 mapping duy nhất được chọn, không có xác suất nào",
+   "Ánh xạ schema có gắn xác suất — nhiều mapping khả dĩ cùng tồn tại, mỗi cái 1 trọng số tin cậy"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data (mở rộng)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Ánh xạ schema có gắn xác suất — nhiều mapping khả dĩ cùng tồn tại, mỗi cái 1 trọng số tin cậy"
+ },
+ {
+  "id": "m03-t4-00",
+  "q": "Join Graph và Partial Mapping đóng vai trò khác nhau thế nào trong quy trình sinh Mediation Query?",
+  "opts": [
+   "Partial Mapping xác định TỪNG sub-tree tương ứng nguồn nào; Join Graph xác định CÁCH NỐI các nguồn đó lại với nhau qua key/reference key",
+   "Chỉ cần Join Graph là đủ, không cần Partial Mapping — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Join Graph xác định sub-tree, Partial Mapping xác định cách nối (bị đảo ngược vai trò)",
+   "2 khái niệm này hoàn toàn giống nhau, chỉ khác tên gọi — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Mediation Query bán cấu trúc",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Partial Mapping xác định TỪNG sub-tree tương ứng nguồn nào; Join Graph xác định CÁCH NỐI các nguồn đó lại với nhau qua key/reference key"
+ },
+ {
+  "id": "m03-t4-01",
+  "q": "FeatureRank và SchemaRank trong WebTables khác nhau ở điểm nào?",
+  "opts": [
+   "FeatureRank dùng PMI, SchemaRank chỉ dùng đặc trưng bảng (bị đảo ngược)",
+   "SchemaRank = FeatureRank + đo độ nhất quán schema qua Pointwise Mutual Information giữa các thuộc tính",
+   "2 thuật toán này hoàn toàn độc lập, không cái nào kế thừa cái nào",
+   "SchemaRank chỉ áp dụng được cho bảng tiếng Việt — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 1,
+  "topic": "WebTables Ranking",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: SchemaRank = FeatureRank + đo độ nhất quán schema qua Pointwise Mutual Information giữa các thuộc tính"
+ },
+ {
+  "id": "m03-t4-02",
+  "q": "4 lý do Data Integration truyền thống không đủ ở quy mô Big Data gồm những gì?",
+  "opts": [
+   "Chỉ 2 lý do: thiếu phần cứng và thiếu băng thông mạng",
+   "Schema Explosion, Data Fusion, Record Linkage, Blocking (nhầm với khái niệm buổi 4)",
+   "Deep Web at Scale, Schema Explosion, Modeling Everything, Keyword Queries",
+   "Chỉ liên quan tới chi phí lưu trữ (storage cost), không liên quan tới schema/truy vấn"
+  ],
+  "correct": 2,
+  "topic": "Vì sao DI truyền thống không đủ ở Big Data",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Deep Web at Scale, Schema Explosion, Modeling Everything, Keyword Queries"
+ },
+ {
+  "id": "m03-t4-03",
+  "q": "Probabilistic Mapping (buổi 3b) khác Probabilistic Mediated Schema (đã học ở phần PAYGO buổi 3a) ở điểm nào?",
+  "opts": [
+   "2 khái niệm này hoàn toàn giống nhau, chỉ khác tên gọi — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Probabilistic Mapping chỉ áp dụng được khi KHÔNG dùng PAYGO — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Chỉ Probabilistic Mediated Schema mới có xác suất, Probabilistic Mapping là mapping chắc chắn 100% — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Probabilistic Mediated Schema gắn xác suất cho CẤU TRÚC mediated schema (nhiều phiên bản schema); Probabilistic Mapping gắn xác suất cho ÁNH XẠ (nhiều mapping khả dĩ giữa 1 schema cố định và nguồn)"
+  ],
+  "correct": 3,
+  "topic": "PAYGO & Big Data (mở rộng)",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Probabilistic Mediated Schema gắn xác suất cho CẤU TRÚC mediated schema (nhiều phiên bản schema); Probabilistic Mapping gắn xác suất cho ÁNH XẠ (nhiều mapping khả dĩ giữa 1 schema cố định và nguồn)"
+ }
+]

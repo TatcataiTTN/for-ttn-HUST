@@ -119,8 +119,26 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <summary>❓ Vì sao Soundex hoạt động kém với tên gốc Á Đông?</summary><div class="dap">💡 Vì Soundex bỏ qua nguyên âm, trong khi tên Á Đông phân biệt nhau chủ yếu qua nguyên âm.</div></details><details class="flashcard">
 <summary>❓ Class skew trong huấn luyện Learned Matchers nghĩa là gì?</summary><div class="dap">💡 Số cặp bản ghi match ít hơn rất nhiều so với số cặp non-match — mất cân bằng lớp nghiêm trọng.</div></details><details class="flashcard">
 <summary>❓ Incremental Data Deduplication dùng kỹ thuật gì để tránh tính lại từ đầu?</summary><div class="dap">💡 Greedy update: connect/merge/split/move trên similarity graph đã có, thay vì chạy lại Correlation Clustering toàn bộ.</div></details></div>
-
-
+<h2>🖥️ SQL Sandbox — 50 bài chạy thật (sql.js/SQLite, 100% trình duyệt)</h2>
+<p class="hint">2 nguồn rao vặt bất động sản độc lập (nguon_a/nguon_b), 7/10 tin trùng thực thể với giá lệch 4-10% — đúng mô phỏng ví dụ D2 trong Quiz-Buoi4-RecordLinkage-ER.md. Viết SQL vào ô bên dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với
+lời giải mẫu đã chạy thật trên dữ liệu (không gõ tay đáp án).</p>
+<div id="sb-mount-m04"></div>
+<script src="../../../_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({
+  mount: "#sb-mount-m04",
+  vendorUrl: "../../../vendor/sql-wasm/",
+  schemaUrl: "../../../data/sql/schema_m04.sql",
+  dataUrl: "../../../data/sql/questions_m04.json",
+  storageKey: "sqlbank:04-record-linkage-entity-resolution"
+});
+</script>
+<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">68 câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide/giáo trình hoặc bổ sung — ghi rõ
+từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../04-record-linkage-entity-resolution/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng 68 câu — Record Linkage & Entity Resolution</h3>
+<div class="go">Mở →</div></a>
 <h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
 <div class="quiz"><div class="quiz-root"></div>
 <script type="application/json">{"items": [{"q": "Theo Fellegi & Sunter (1969), khi so 1 cặp bản ghi có 3 kết luận. 'Possible-match' nghĩa là gì?", "opts": ["Chắc chắn là cùng 1 thực thể", "Chắc chắn khác thực thể", "Chưa đủ bằng chứng kết luận chắc chắn", "Lỗi dữ liệu"], "correct": 2, "explain": "Possible-match = chưa đủ tin cậy để khẳng định match hay non-match, cần thêm thông tin/con người xác nhận."}, {"q": "Edit Distance giữa 'color' và 'colour' là bao nhiêu, và vì sao?", "opts": ["0, vì giống hệt", "1, chỉ cần 1 phép chèn ký tự 'u'", "2, cần 2 phép biến đổi", "5, bằng độ dài chuỗi ngắn hơn"], "correct": 1, "explain": "color → colou+r: chỉ 1 phép insert 'u'. d=1."}, {"q": "Vì sao TF/IDF khớp đúng 'Apple Corporation, CA' với 'Apple Corp' thay vì 'IBM Corporation, CA'?", "opts": ["Vì TF/IDF luôn ưu tiên chuỗi ngắn hơn", "Vì TF/IDF cho trọng số cao hơn cho từ hiếm ('Apple'), thấp hơn cho từ phổ biến ('Corporation, CA')", "Vì TF/IDF không quan tâm nội dung", "Vì TF/IDF dùng edit distance"], "correct": 1, "explain": "IDF (inverse document frequency) làm từ hiếm có trọng số cao — đúng là tín hiệu phân biệt thật sự."}, {"q": "Soundex hoạt động kém với tên gốc Á Đông vì lý do gì?", "opts": ["Tên Á Đông quá ngắn", "Soundex bỏ qua nguyên âm, trong khi tên Á Đông phân biệt nhau chủ yếu qua nguyên âm", "Soundex chỉ hỗ trợ bảng chữ cái Latin hoa", "Soundex yêu cầu tên có dấu"], "correct": 1, "explain": "Thiết kế gốc cho tên Caucasian, bỏ nguyên âm — không phù hợp ngôn ngữ phân biệt nhiều qua nguyên âm."}, {"q": "Sorted Neighborhood giảm độ phức tạp blocking bằng cách nào?", "opts": ["So mọi cặp nhưng song song hoá", "Sắp xếp theo sorting key rồi chỉ so trong 1 cửa sổ trượt kích thước cố định", "Xoá bớt dữ liệu ngẫu nhiên", "Dùng GPU"], "correct": 1, "explain": "Giả định các bản ghi trùng nhau nằm gần nhau sau khi sort — chỉ cần so trong window, không phải toàn bộ n²."}, {"q": "Vấn đề 'class skew' khi huấn luyện Learned Matchers là gì?", "opts": ["Dữ liệu quá nhiều", "Số cặp match ít hơn rất nhiều so với số cặp non-match", "Mô hình quá đơn giản", "Không liên quan tới ER"], "correct": 1, "explain": "Hầu hết các cặp bản ghi KHÔNG match — mất cân bằng lớp nghiêm trọng, cần xử lý riêng khi huấn luyện."}, {"q": "Nhược điểm chính của Connected Components khi dùng làm thuật toán Clustering trong ER là gì?", "opts": ["Chạy quá chậm", "Không chạy được trên đồ thị lớn", "Tính bắc cầu dễ tạo cụm quá lớn, gộp nhầm các bản ghi không thực sự giống nhau", "Không thể implement"], "correct": 2, "explain": "A~B và B~C (qua cầu nối B) không đảm bảo A~C thực sự — nhưng Connected Components vẫn gộp cả 3 vào 1 cụm."}, {"q": "Incremental Data Deduplication dùng kỹ thuật gì để tránh tính lại Correlation Clustering từ đầu?", "opts": ["Xoá hết dữ liệu cũ, chạy lại toàn bộ", "Greedy update: connect/merge/split/move trên similarity graph đã có", "Chỉ xử lý dữ liệu mới, bỏ qua dữ liệu cũ hoàn toàn", "Dùng Soundex thay cho toàn bộ pipeline"], "correct": 1, "explain": "Giữ lại kết quả clustering cũ, cập nhật tăng dần bằng các thao tác đồ thị nhẹ — nhanh hơn nhiều so với tính lại từ đầu."}]}</script></div>

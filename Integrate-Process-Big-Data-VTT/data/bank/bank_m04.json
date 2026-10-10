@@ -1,0 +1,954 @@
+[
+ {
+  "id": "m04-t1-record-linkage",
+  "q": "'Record Linkage' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Tìm các cặp bản ghi ở 2 file khác nhau đại diện cho cùng 1 thực thể",
+   "Sắp xếp lại thứ tự các bản ghi theo khoá chính — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Tìm và xoá các bản ghi trùng lặp trong CHÍNH 1 file duy nhất",
+   "Mã hoá bản ghi để bảo mật khi truyền giữa 2 hệ thống"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Tìm các cặp bản ghi ở 2 file khác nhau đại diện cho cùng 1 thực thể"
+ },
+ {
+  "id": "m04-t1-entity-resolution",
+  "q": "'Entity Resolution (ER) / Deduplication' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Một bước trong Query Unfolding của GAV — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Trường hợp đặc biệt của Entity Linking — tìm/gộp các bản ghi trùng lặp (có thể trong cùng 1 file)",
+   "Chỉ áp dụng được khi có đúng 2 file dữ liệu, không áp dụng cho 1 file",
+   "Khái niệm rộng hơn Entity Linking, bao gồm cả Entity Linking"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Trường hợp đặc biệt của Entity Linking — tìm/gộp các bản ghi trùng lặp (có thể trong cùng 1 file)"
+ },
+ {
+  "id": "m04-t1-entity-linking",
+  "q": "'Entity Linking' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Chỉ dùng để liên kết bảng trong cùng 1 CSDL quan hệ — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Một thuật ngữ đồng nghĩa hoàn toàn với Schema Mapping — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Khái niệm rộng hơn ER — tạo liên kết giữa các bản ghi đại diện cho các thực thể có liên quan (không nhất thiết 'giống nhau')",
+   "Trường hợp đặc biệt của Entity Resolution (bị đảo ngược quan hệ bao hàm) — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Khái niệm rộng hơn ER — tạo liên kết giữa các bản ghi đại diện cho các thực thể có liên quan (không nhất thiết 'giống nhau')"
+ },
+ {
+  "id": "m04-t1-fellegi-sunter",
+  "q": "'3 kết luận của Fellegi & Sunter (1969)' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "True Positive, False Positive, True Negative, False Negative (4 khái niệm)",
+   "Match, Duplicate, và Error — 3 khái niệm khác — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Chỉ 2 kết luận: Match và Non-match, không có khả năng thứ 3",
+   "Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn)"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn)"
+ },
+ {
+  "id": "m04-t1-naive-dedup",
+  "q": "'Naïve Deduplication' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Cách khử trùng lặp đơn giản bằng UNION DISTINCT/group-by — chỉ bắt được exact match",
+   "Phương pháp luôn bắt được cả lỗi chính tả/viết tắt — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Một thuật toán Clustering phức tạp dùng Markov Chain",
+   "Phương pháp dùng Deep Learning để khử trùng lặp chính xác nhất"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Cách khử trùng lặp đơn giản bằng UNION DISTINCT/group-by — chỉ bắt được exact match"
+ },
+ {
+  "id": "m04-t1-edit-distance",
+  "q": "'Edit Distance (Levenshtein Distance)' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Số ký tự giống nhau giữa 2 chuỗi tại cùng vị trí",
+   "Số phép biến đổi tối thiểu (chèn/xoá/thay) để đổi chuỗi x thành y — tính bằng Dynamic Programming",
+   "Khoảng cách Euclid giữa 2 vector embedding của chuỗi",
+   "Số từ chung giữa 2 chuỗi sau khi tách token — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 1,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Số phép biến đổi tối thiểu (chèn/xoá/thay) để đổi chuỗi x thành y — tính bằng Dynamic Programming"
+ },
+ {
+  "id": "m04-t1-jaccard",
+  "q": "'Jaccard Measure' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Chỉ áp dụng được cho số, không áp dụng được cho tập token — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "J(x,y) = |Bx| + |By| − |Bx∩By| (công thức tính sai, đảo dấu)",
+   "J(x,y) = |Bx∩By| / |Bx∪By| — tỷ lệ phần chung trên tổng, rất phổ biến cho similarity dạng tập hợp",
+   "J(x,y) = |Bx∩By| / |Bx| — tỷ lệ phần chung trên tập x duy nhất (đây là Overlap chuẩn hoá lệch)"
+  ],
+  "correct": 2,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: J(x,y) = |Bx∩By| / |Bx∪By| — tỷ lệ phần chung trên tổng, rất phổ biến cho similarity dạng tập hợp"
+ },
+ {
+  "id": "m04-t1-tfidf",
+  "q": "'TF/IDF Measure' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Chỉ đo được độ dài chuỗi, không đo được nội dung từ",
+   "Một thuật toán Clustering, không phải similarity measure",
+   "Đo similarity coi mọi từ có trọng số bằng nhau, không phân biệt hiếm/phổ biến (đây là Jaccard thuần)",
+   "Đo similarity có trọng số theo độ hiếm của từ — từ phân biệt (hiếm) quan trọng hơn từ phổ biến"
+  ],
+  "correct": 3,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Đo similarity có trọng số theo độ hiếm của từ — từ phân biệt (hiếm) quan trọng hơn từ phổ biến"
+ },
+ {
+  "id": "m04-t1-soundex",
+  "q": "'Soundex' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Thuật toán mã hoá tên thành 1 chữ + 3 số theo cách phát âm, có điểm yếu với tên gốc Á Đông (bỏ qua nguyên âm)",
+   "Thuật toán chỉ hoạt động chính xác với mọi ngôn ngữ, không có điểm yếu nào",
+   "Thuật toán mã hoá tên theo đúng chính tả (không quan tâm phát âm)",
+   "Một kỹ thuật Blocking, không phải Phonetic Similarity — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 0,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Thuật toán mã hoá tên thành 1 chữ + 3 số theo cách phát âm, có điểm yếu với tên gốc Á Đông (bỏ qua nguyên âm)"
+ },
+ {
+  "id": "m04-t1-generalized-jaccard",
+  "q": "'Generalized Jaccard Measure' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Yêu cầu token phải trùng tuyệt đối, giống hệt Jaccard thường (không có gì mới) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Mở rộng Jaccard — cho phép token 'gần giống' (không cần trùng tuyệt đối) vào tập overlap, dùng similarity threshold + maximum-weight bipartite matching",
+   "Một thuật toán Clustering dùng để gộp cụm sau khi đã match — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Phiên bản Jaccard chỉ tính được trên số nguyên, không tính được trên chuỗi — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mở rộng Jaccard — cho phép token 'gần giống' (không cần trùng tuyệt đối) vào tập overlap, dùng similarity threshold + maximum-weight bipartite matching"
+ },
+ {
+  "id": "m04-t1-blocking",
+  "q": "'Blocking/Sorting' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Bước duy nhất của ER Pipeline, không cần Matching/Clustering sau đó",
+   "Bước cuối cùng của ER Pipeline, thực hiện sau Matching — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Bước 2 của ER Pipeline — giảm số cặp cần so khớp từ O(n²) xuống thấp hơn nhiều",
+   "Bước mã hoá dữ liệu để bảo mật trước khi truyền qua mạng"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Bước 2 của ER Pipeline — giảm số cặp cần so khớp từ O(n²) xuống thấp hơn nhiều"
+ },
+ {
+  "id": "m04-t1-sorted-neighborhood",
+  "q": "'Sorted Neighborhood' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "So khớp TẤT CẢ các cặp có thể, không bỏ qua cặp nào (đây là Naïve All-Pairs)",
+   "Chỉ hoạt động khi dữ liệu đã được mã hoá trước — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một thuật toán Clustering, không phải kỹ thuật Blocking",
+   "Sắp xếp toàn bộ bản ghi theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định"
+  ],
+  "correct": 3,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Sắp xếp toàn bộ bản ghi theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định"
+ },
+ {
+  "id": "m04-t1-lsh",
+  "q": "'Locality-Sensitive Hashing (LSH)' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Blocking bằng cách hash embedding của bản ghi — các bản ghi gần nhau trong không gian embedding rơi vào cùng bucket với xác suất cao",
+   "Kỹ thuật mã hoá (encryption) bản ghi để chống truy cập trái phép — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Một thuật toán Clustering dùng Markov Chain, không phải Blocking",
+   "Yêu cầu định nghĩa thủ công 1 blocking key cố định (đây là Sorted Neighborhood)"
+  ],
+  "correct": 0,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Blocking bằng cách hash embedding của bản ghi — các bản ghi gần nhau trong không gian embedding rơi vào cùng bucket với xác suất cao"
+ },
+ {
+  "id": "m04-t1-learned-matchers",
+  "q": "'Learned Matchers' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Chỉ áp dụng được khi có đủ 1 triệu bản ghi đã gán nhãn",
+   "Dùng ML (truyền thống hoặc Deep Learning: DeepER, Magellan) thay vì luật thủ công để quyết định match",
+   "Chỉ dùng được luật thủ công (if-else), không dùng Machine Learning",
+   "Một kỹ thuật Blocking, không phải bước Matching — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Dùng ML (truyền thống hoặc Deep Learning: DeepER, Magellan) thay vì luật thủ công để quyết định match"
+ },
+ {
+  "id": "m04-t1-class-skew",
+  "q": "'Class Skew (trong Learned Matchers)' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Vấn đề khi 2 nguồn dùng 2 ngôn ngữ lập trình khác nhau",
+   "Vấn đề chỉ xảy ra với Blocking, không xảy ra với Matching",
+   "Vấn đề khi huấn luyện — dữ liệu gán nhãn khan hiếm và số cặp match ít hơn nhiều so với non-match",
+   "Vấn đề khi dữ liệu có quá nhiều cột không liên quan — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Vấn đề khi huấn luyện — dữ liệu gán nhãn khan hiếm và số cặp match ít hơn nhiều so với non-match"
+ },
+ {
+  "id": "m04-t1-connected-components",
+  "q": "'Connected Components / Transitive Closure' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Một kỹ thuật Blocking, không phải bước Clustering — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ hoạt động khi đồ thị similarity có đúng 2 đỉnh — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Clustering phức tạp nhất, luôn chính xác tuyệt đối, không có nhược điểm nào — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Clustering đơn giản nhất — coi các bản ghi nối với nhau qua cạnh similarity là 1 cụm; nhược điểm: dễ tạo cụm quá lớn gồm bản ghi không thực sự giống nhau"
+  ],
+  "correct": 3,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Clustering đơn giản nhất — coi các bản ghi nối với nhau qua cạnh similarity là 1 cụm; nhược điểm: dễ tạo cụm quá lớn gồm bản ghi không thực sự giống nhau"
+ },
+ {
+  "id": "m04-t1-correlation-clustering",
+  "q": "'Correlation Clustering' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Clustering dựa trên cả cạnh dương (+) lẫn âm (−), tối ưu toàn cục — NP-hard",
+   "Luôn giải được trong thời gian đa thức (polynomial), không phải NP-hard",
+   "Một thuật toán Blocking chạy trong thời gian O(n log n)",
+   "Clustering chỉ dùng cạnh dương, giống Connected Components (không có gì khác biệt)"
+  ],
+  "correct": 0,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Clustering dựa trên cả cạnh dương (+) lẫn âm (−), tối ưu toàn cục — NP-hard"
+ },
+ {
+  "id": "m04-t1-incremental-dedup",
+  "q": "'Incremental Data Deduplication' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Một kỹ thuật Blocking, không phải bước Clustering/cập nhật kết quả — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Cập nhật kết quả linkage khi có dữ liệu mới, nhanh hơn tính lại toàn bộ — dùng greedy update (connect/merge/split/move)",
+   "Luôn phải tính lại toàn bộ Correlation Clustering từ đầu mỗi khi có dữ liệu mới",
+   "Chỉ áp dụng được khi xoá dữ liệu, không áp dụng khi thêm dữ liệu mới"
+  ],
+  "correct": 1,
+  "topic": "Mở rộng",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Cập nhật kết quả linkage khi có dữ liệu mới, nhanh hơn tính lại toàn bộ — dùng greedy update (connect/merge/split/move)"
+ },
+ {
+  "id": "m04-t1-similarity-vs-distance",
+  "q": "'Similarity measure vs Distance/Cost measure' được định nghĩa như thế nào (theo đúng nội dung slide buổi 4)?",
+  "opts": [
+   "Cả 2 đều có nghĩa giá trị càng cao càng giống, chỉ khác tên gọi",
+   "Distance luôn có giá trị âm, Similarity luôn có giá trị dương",
+   "Similarity: giá trị càng CAO càng giống; Distance/Cost: giá trị càng NHỎ càng giống",
+   "Similarity chỉ dùng cho số, Distance chỉ dùng cho chuỗi — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Similarity: giá trị càng CAO càng giống; Distance/Cost: giá trị càng NHỎ càng giống"
+ },
+ {
+  "id": "m04-t2-record-linkage",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Tìm các cặp bản ghi ở 2 file khác nhau đại diện cho cùng 1 thực thể\"",
+  "opts": [
+   "Correlation Clustering",
+   "Entity Linking",
+   "Learned Matchers",
+   "Record Linkage"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Record Linkage"
+ },
+ {
+  "id": "m04-t2-entity-resolution",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Trường hợp đặc biệt của Entity Linking — tìm/gộp các bản ghi trùng lặp (có thể trong cùng 1 file)\"",
+  "opts": [
+   "Entity Resolution (ER) / Deduplication",
+   "Locality-Sensitive Hashing (LSH)",
+   "Class Skew (trong Learned Matchers)",
+   "Soundex — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Entity Resolution (ER) / Deduplication"
+ },
+ {
+  "id": "m04-t2-entity-linking",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Khái niệm rộng hơn ER — tạo liên kết giữa các bản ghi đại diện cho các thực thể có liên quan (không nhất thiết 'giống nhau')\"",
+  "opts": [
+   "Naïve Deduplication",
+   "Entity Linking",
+   "Entity Resolution (ER) / Deduplication",
+   "Generalized Jaccard Measure"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Entity Linking"
+ },
+ {
+  "id": "m04-t2-fellegi-sunter",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn)\"",
+  "opts": [
+   "Sorted Neighborhood",
+   "Edit Distance (Levenshtein Distance)",
+   "3 kết luận của Fellegi & Sunter (1969)",
+   "TF/IDF Measure — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 3 kết luận của Fellegi & Sunter (1969)"
+ },
+ {
+  "id": "m04-t2-naive-dedup",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Cách khử trùng lặp đơn giản bằng UNION DISTINCT/group-by — chỉ bắt được exact match\"",
+  "opts": [
+   "TF/IDF Measure",
+   "Blocking/Sorting",
+   "Class Skew (trong Learned Matchers)",
+   "Naïve Deduplication"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Naïve Deduplication"
+ },
+ {
+  "id": "m04-t2-edit-distance",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Số phép biến đổi tối thiểu (chèn/xoá/thay) để đổi chuỗi x thành y — tính bằng Dynamic Programming\"",
+  "opts": [
+   "Edit Distance (Levenshtein Distance)",
+   "Jaccard Measure — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Sorted Neighborhood",
+   "Learned Matchers"
+  ],
+  "correct": 0,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Edit Distance (Levenshtein Distance)"
+ },
+ {
+  "id": "m04-t2-jaccard",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"J(x,y) = |Bx∩By| / |Bx∪By| — tỷ lệ phần chung trên tổng, rất phổ biến cho similarity dạng tập hợp\"",
+  "opts": [
+   "Edit Distance (Levenshtein Distance)",
+   "Jaccard Measure",
+   "Class Skew (trong Learned Matchers)",
+   "Soundex"
+  ],
+  "correct": 1,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Jaccard Measure"
+ },
+ {
+  "id": "m04-t2-tfidf",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Đo similarity có trọng số theo độ hiếm của từ — từ phân biệt (hiếm) quan trọng hơn từ phổ biến\"",
+  "opts": [
+   "Sorted Neighborhood",
+   "Edit Distance (Levenshtein Distance)",
+   "TF/IDF Measure",
+   "Soundex"
+  ],
+  "correct": 2,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: TF/IDF Measure"
+ },
+ {
+  "id": "m04-t2-soundex",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Thuật toán mã hoá tên thành 1 chữ + 3 số theo cách phát âm, có điểm yếu với tên gốc Á Đông (bỏ qua nguyên âm)\"",
+  "opts": [
+   "Correlation Clustering",
+   "Similarity measure vs Distance/Cost measure",
+   "Edit Distance (Levenshtein Distance)",
+   "Soundex"
+  ],
+  "correct": 3,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Soundex"
+ },
+ {
+  "id": "m04-t2-generalized-jaccard",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mở rộng Jaccard — cho phép token 'gần giống' (không cần trùng tuyệt đối) vào tập overlap, dùng similarity threshold + maximum-weight bipartite matching\"",
+  "opts": [
+   "Generalized Jaccard Measure",
+   "Incremental Data Deduplication",
+   "TF/IDF Measure",
+   "Similarity measure vs Distance/Cost measure"
+  ],
+  "correct": 0,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Generalized Jaccard Measure"
+ },
+ {
+  "id": "m04-t2-blocking",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Bước 2 của ER Pipeline — giảm số cặp cần so khớp từ O(n²) xuống thấp hơn nhiều\"",
+  "opts": [
+   "Sorted Neighborhood",
+   "Blocking/Sorting",
+   "Class Skew (trong Learned Matchers)",
+   "Edit Distance (Levenshtein Distance)"
+  ],
+  "correct": 1,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Blocking/Sorting"
+ },
+ {
+  "id": "m04-t2-sorted-neighborhood",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Sắp xếp toàn bộ bản ghi theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định\"",
+  "opts": [
+   "Jaccard Measure",
+   "Blocking/Sorting",
+   "Sorted Neighborhood",
+   "Class Skew (trong Learned Matchers)"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Sorted Neighborhood"
+ },
+ {
+  "id": "m04-t2-lsh",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Blocking bằng cách hash embedding của bản ghi — các bản ghi gần nhau trong không gian embedding rơi vào cùng bucket với xác suất cao\"",
+  "opts": [
+   "3 kết luận của Fellegi & Sunter (1969)",
+   "Generalized Jaccard Measure",
+   "Sorted Neighborhood",
+   "Locality-Sensitive Hashing (LSH)"
+  ],
+  "correct": 3,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Locality-Sensitive Hashing (LSH)"
+ },
+ {
+  "id": "m04-t2-learned-matchers",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Dùng ML (truyền thống hoặc Deep Learning: DeepER, Magellan) thay vì luật thủ công để quyết định match\"",
+  "opts": [
+   "Learned Matchers",
+   "Incremental Data Deduplication",
+   "Sorted Neighborhood",
+   "Soundex"
+  ],
+  "correct": 0,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Learned Matchers"
+ },
+ {
+  "id": "m04-t2-class-skew",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Vấn đề khi huấn luyện — dữ liệu gán nhãn khan hiếm và số cặp match ít hơn nhiều so với non-match\"",
+  "opts": [
+   "Jaccard Measure",
+   "Class Skew (trong Learned Matchers)",
+   "Soundex",
+   "Entity Resolution (ER) / Deduplication"
+  ],
+  "correct": 1,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Class Skew (trong Learned Matchers)"
+ },
+ {
+  "id": "m04-t2-connected-components",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Clustering đơn giản nhất — coi các bản ghi nối với nhau qua cạnh similarity là 1 cụm; nhược điểm: dễ tạo cụm quá lớn gồm bản ghi không thực sự giống nhau\"",
+  "opts": [
+   "Edit Distance (Levenshtein Distance)",
+   "Naïve Deduplication — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Connected Components / Transitive Closure",
+   "Class Skew (trong Learned Matchers)"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Connected Components / Transitive Closure"
+ },
+ {
+  "id": "m04-t2-correlation-clustering",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Clustering dựa trên cả cạnh dương (+) lẫn âm (−), tối ưu toàn cục — NP-hard\"",
+  "opts": [
+   "Entity Resolution (ER) / Deduplication",
+   "Record Linkage",
+   "Naïve Deduplication",
+   "Correlation Clustering"
+  ],
+  "correct": 3,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Correlation Clustering"
+ },
+ {
+  "id": "m04-t2-incremental-dedup",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Cập nhật kết quả linkage khi có dữ liệu mới, nhanh hơn tính lại toàn bộ — dùng greedy update (connect/merge/split/move)\"",
+  "opts": [
+   "Incremental Data Deduplication",
+   "Edit Distance (Levenshtein Distance)",
+   "Jaccard Measure",
+   "Blocking/Sorting"
+  ],
+  "correct": 0,
+  "topic": "Mở rộng",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Incremental Data Deduplication"
+ },
+ {
+  "id": "m04-t2-similarity-vs-distance",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Similarity: giá trị càng CAO càng giống; Distance/Cost: giá trị càng NHỎ càng giống\"",
+  "opts": [
+   "Edit Distance (Levenshtein Distance)",
+   "Similarity measure vs Distance/Cost measure",
+   "Sorted Neighborhood — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Incremental Data Deduplication"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Similarity measure vs Distance/Cost measure"
+ },
+ {
+  "id": "m04-t3-record-linkage",
+  "q": "Phát biểu nào sau đây về Record Linkage là ĐÚNG?",
+  "opts": [
+   "Tìm và xoá các bản ghi trùng lặp trong CHÍNH 1 file duy nhất",
+   "Sắp xếp lại thứ tự các bản ghi theo khoá chính — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Tìm các cặp bản ghi ở 2 file khác nhau đại diện cho cùng 1 thực thể",
+   "Mã hoá bản ghi để bảo mật khi truyền giữa 2 hệ thống"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Tìm các cặp bản ghi ở 2 file khác nhau đại diện cho cùng 1 thực thể"
+ },
+ {
+  "id": "m04-t3-entity-resolution",
+  "q": "Phát biểu nào sau đây về Entity Resolution (ER) / Deduplication là ĐÚNG?",
+  "opts": [
+   "Chỉ áp dụng được khi có đúng 2 file dữ liệu, không áp dụng cho 1 file",
+   "Một bước trong Query Unfolding của GAV — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Khái niệm rộng hơn Entity Linking, bao gồm cả Entity Linking",
+   "Trường hợp đặc biệt của Entity Linking — tìm/gộp các bản ghi trùng lặp (có thể trong cùng 1 file)"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Trường hợp đặc biệt của Entity Linking — tìm/gộp các bản ghi trùng lặp (có thể trong cùng 1 file)"
+ },
+ {
+  "id": "m04-t3-entity-linking",
+  "q": "Phát biểu nào sau đây về Entity Linking là ĐÚNG?",
+  "opts": [
+   "Khái niệm rộng hơn ER — tạo liên kết giữa các bản ghi đại diện cho các thực thể có liên quan (không nhất thiết 'giống nhau')",
+   "Một thuật ngữ đồng nghĩa hoàn toàn với Schema Mapping — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Trường hợp đặc biệt của Entity Resolution (bị đảo ngược quan hệ bao hàm)",
+   "Chỉ dùng để liên kết bảng trong cùng 1 CSDL quan hệ — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Khái niệm rộng hơn ER — tạo liên kết giữa các bản ghi đại diện cho các thực thể có liên quan (không nhất thiết 'giống nhau')"
+ },
+ {
+  "id": "m04-t3-fellegi-sunter",
+  "q": "Phát biểu nào sau đây về 3 kết luận của Fellegi & Sunter (1969) là ĐÚNG?",
+  "opts": [
+   "Match, Duplicate, và Error — 3 khái niệm khác — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn)",
+   "Chỉ 2 kết luận: Match và Non-match, không có khả năng thứ 3",
+   "True Positive, False Positive, True Negative, False Negative (4 khái niệm)"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Match, Non-match, và Possible-match (chưa đủ bằng chứng kết luận chắc chắn)"
+ },
+ {
+  "id": "m04-t3-naive-dedup",
+  "q": "Phát biểu nào sau đây về Naïve Deduplication là ĐÚNG?",
+  "opts": [
+   "Một thuật toán Clustering phức tạp dùng Markov Chain",
+   "Phương pháp luôn bắt được cả lỗi chính tả/viết tắt — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Cách khử trùng lặp đơn giản bằng UNION DISTINCT/group-by — chỉ bắt được exact match",
+   "Phương pháp dùng Deep Learning để khử trùng lặp chính xác nhất"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Cách khử trùng lặp đơn giản bằng UNION DISTINCT/group-by — chỉ bắt được exact match"
+ },
+ {
+  "id": "m04-t3-edit-distance",
+  "q": "Phát biểu nào sau đây về Edit Distance (Levenshtein Distance) là ĐÚNG?",
+  "opts": [
+   "Số ký tự giống nhau giữa 2 chuỗi tại cùng vị trí",
+   "Khoảng cách Euclid giữa 2 vector embedding của chuỗi",
+   "Số từ chung giữa 2 chuỗi sau khi tách token — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Số phép biến đổi tối thiểu (chèn/xoá/thay) để đổi chuỗi x thành y — tính bằng Dynamic Programming"
+  ],
+  "correct": 3,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Số phép biến đổi tối thiểu (chèn/xoá/thay) để đổi chuỗi x thành y — tính bằng Dynamic Programming"
+ },
+ {
+  "id": "m04-t3-jaccard",
+  "q": "Phát biểu nào sau đây về Jaccard Measure là ĐÚNG?",
+  "opts": [
+   "J(x,y) = |Bx∩By| / |Bx∪By| — tỷ lệ phần chung trên tổng, rất phổ biến cho similarity dạng tập hợp",
+   "J(x,y) = |Bx∩By| / |Bx| — tỷ lệ phần chung trên tập x duy nhất (đây là Overlap chuẩn hoá lệch)",
+   "Chỉ áp dụng được cho số, không áp dụng được cho tập token — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "J(x,y) = |Bx| + |By| − |Bx∩By| (công thức tính sai, đảo dấu)"
+  ],
+  "correct": 0,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: J(x,y) = |Bx∩By| / |Bx∪By| — tỷ lệ phần chung trên tổng, rất phổ biến cho similarity dạng tập hợp"
+ },
+ {
+  "id": "m04-t3-tfidf",
+  "q": "Phát biểu nào sau đây về TF/IDF Measure là ĐÚNG?",
+  "opts": [
+   "Đo similarity coi mọi từ có trọng số bằng nhau, không phân biệt hiếm/phổ biến (đây là Jaccard thuần)",
+   "Đo similarity có trọng số theo độ hiếm của từ — từ phân biệt (hiếm) quan trọng hơn từ phổ biến",
+   "Một thuật toán Clustering, không phải similarity measure",
+   "Chỉ đo được độ dài chuỗi, không đo được nội dung từ"
+  ],
+  "correct": 1,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Đo similarity có trọng số theo độ hiếm của từ — từ phân biệt (hiếm) quan trọng hơn từ phổ biến"
+ },
+ {
+  "id": "m04-t3-soundex",
+  "q": "Phát biểu nào sau đây về Soundex là ĐÚNG?",
+  "opts": [
+   "Một kỹ thuật Blocking, không phải Phonetic Similarity — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Thuật toán mã hoá tên theo đúng chính tả (không quan tâm phát âm)",
+   "Thuật toán mã hoá tên thành 1 chữ + 3 số theo cách phát âm, có điểm yếu với tên gốc Á Đông (bỏ qua nguyên âm)",
+   "Thuật toán chỉ hoạt động chính xác với mọi ngôn ngữ, không có điểm yếu nào"
+  ],
+  "correct": 2,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Thuật toán mã hoá tên thành 1 chữ + 3 số theo cách phát âm, có điểm yếu với tên gốc Á Đông (bỏ qua nguyên âm)"
+ },
+ {
+  "id": "m04-t3-generalized-jaccard",
+  "q": "Phát biểu nào sau đây về Generalized Jaccard Measure là ĐÚNG?",
+  "opts": [
+   "Một thuật toán Clustering dùng để gộp cụm sau khi đã match — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Yêu cầu token phải trùng tuyệt đối, giống hệt Jaccard thường (không có gì mới) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Phiên bản Jaccard chỉ tính được trên số nguyên, không tính được trên chuỗi — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Mở rộng Jaccard — cho phép token 'gần giống' (không cần trùng tuyệt đối) vào tập overlap, dùng similarity threshold + maximum-weight bipartite matching"
+  ],
+  "correct": 3,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mở rộng Jaccard — cho phép token 'gần giống' (không cần trùng tuyệt đối) vào tập overlap, dùng similarity threshold + maximum-weight bipartite matching"
+ },
+ {
+  "id": "m04-t3-blocking",
+  "q": "Phát biểu nào sau đây về Blocking/Sorting là ĐÚNG?",
+  "opts": [
+   "Bước 2 của ER Pipeline — giảm số cặp cần so khớp từ O(n²) xuống thấp hơn nhiều",
+   "Bước duy nhất của ER Pipeline, không cần Matching/Clustering sau đó",
+   "Bước cuối cùng của ER Pipeline, thực hiện sau Matching — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Bước mã hoá dữ liệu để bảo mật trước khi truyền qua mạng"
+  ],
+  "correct": 0,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Bước 2 của ER Pipeline — giảm số cặp cần so khớp từ O(n²) xuống thấp hơn nhiều"
+ },
+ {
+  "id": "m04-t3-sorted-neighborhood",
+  "q": "Phát biểu nào sau đây về Sorted Neighborhood là ĐÚNG?",
+  "opts": [
+   "Một thuật toán Clustering, không phải kỹ thuật Blocking",
+   "Sắp xếp toàn bộ bản ghi theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định",
+   "Chỉ hoạt động khi dữ liệu đã được mã hoá trước — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "So khớp TẤT CẢ các cặp có thể, không bỏ qua cặp nào (đây là Naïve All-Pairs)"
+  ],
+  "correct": 1,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Sắp xếp toàn bộ bản ghi theo sorting key, chỉ so khớp trong 1 cửa sổ trượt (sliding window) kích thước cố định"
+ },
+ {
+  "id": "m04-t3-lsh",
+  "q": "Phát biểu nào sau đây về Locality-Sensitive Hashing (LSH) là ĐÚNG?",
+  "opts": [
+   "Kỹ thuật mã hoá (encryption) bản ghi để chống truy cập trái phép — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Yêu cầu định nghĩa thủ công 1 blocking key cố định (đây là Sorted Neighborhood)",
+   "Blocking bằng cách hash embedding của bản ghi — các bản ghi gần nhau trong không gian embedding rơi vào cùng bucket với xác suất cao",
+   "Một thuật toán Clustering dùng Markov Chain, không phải Blocking"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Blocking bằng cách hash embedding của bản ghi — các bản ghi gần nhau trong không gian embedding rơi vào cùng bucket với xác suất cao"
+ },
+ {
+  "id": "m04-t3-learned-matchers",
+  "q": "Phát biểu nào sau đây về Learned Matchers là ĐÚNG?",
+  "opts": [
+   "Chỉ dùng được luật thủ công (if-else), không dùng Machine Learning",
+   "Một kỹ thuật Blocking, không phải bước Matching — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ áp dụng được khi có đủ 1 triệu bản ghi đã gán nhãn",
+   "Dùng ML (truyền thống hoặc Deep Learning: DeepER, Magellan) thay vì luật thủ công để quyết định match"
+  ],
+  "correct": 3,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Dùng ML (truyền thống hoặc Deep Learning: DeepER, Magellan) thay vì luật thủ công để quyết định match"
+ },
+ {
+  "id": "m04-t3-class-skew",
+  "q": "Phát biểu nào sau đây về Class Skew (trong Learned Matchers) là ĐÚNG?",
+  "opts": [
+   "Vấn đề khi huấn luyện — dữ liệu gán nhãn khan hiếm và số cặp match ít hơn nhiều so với non-match",
+   "Vấn đề khi 2 nguồn dùng 2 ngôn ngữ lập trình khác nhau",
+   "Vấn đề khi dữ liệu có quá nhiều cột không liên quan — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Vấn đề chỉ xảy ra với Blocking, không xảy ra với Matching"
+  ],
+  "correct": 0,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Vấn đề khi huấn luyện — dữ liệu gán nhãn khan hiếm và số cặp match ít hơn nhiều so với non-match"
+ },
+ {
+  "id": "m04-t3-connected-components",
+  "q": "Phát biểu nào sau đây về Connected Components / Transitive Closure là ĐÚNG?",
+  "opts": [
+   "Chỉ hoạt động khi đồ thị similarity có đúng 2 đỉnh — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Clustering đơn giản nhất — coi các bản ghi nối với nhau qua cạnh similarity là 1 cụm; nhược điểm: dễ tạo cụm quá lớn gồm bản ghi không thực sự giống nhau",
+   "Clustering phức tạp nhất, luôn chính xác tuyệt đối, không có nhược điểm nào — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một kỹ thuật Blocking, không phải bước Clustering — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 1,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Clustering đơn giản nhất — coi các bản ghi nối với nhau qua cạnh similarity là 1 cụm; nhược điểm: dễ tạo cụm quá lớn gồm bản ghi không thực sự giống nhau"
+ },
+ {
+  "id": "m04-t3-correlation-clustering",
+  "q": "Phát biểu nào sau đây về Correlation Clustering là ĐÚNG?",
+  "opts": [
+   "Một thuật toán Blocking chạy trong thời gian O(n log n)",
+   "Luôn giải được trong thời gian đa thức (polynomial), không phải NP-hard",
+   "Clustering dựa trên cả cạnh dương (+) lẫn âm (−), tối ưu toàn cục — NP-hard",
+   "Clustering chỉ dùng cạnh dương, giống Connected Components (không có gì khác biệt)"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Clustering dựa trên cả cạnh dương (+) lẫn âm (−), tối ưu toàn cục — NP-hard"
+ },
+ {
+  "id": "m04-t3-incremental-dedup",
+  "q": "Phát biểu nào sau đây về Incremental Data Deduplication là ĐÚNG?",
+  "opts": [
+   "Luôn phải tính lại toàn bộ Correlation Clustering từ đầu mỗi khi có dữ liệu mới",
+   "Một kỹ thuật Blocking, không phải bước Clustering/cập nhật kết quả — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ áp dụng được khi xoá dữ liệu, không áp dụng khi thêm dữ liệu mới",
+   "Cập nhật kết quả linkage khi có dữ liệu mới, nhanh hơn tính lại toàn bộ — dùng greedy update (connect/merge/split/move)"
+  ],
+  "correct": 3,
+  "topic": "Mở rộng",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Cập nhật kết quả linkage khi có dữ liệu mới, nhanh hơn tính lại toàn bộ — dùng greedy update (connect/merge/split/move)"
+ },
+ {
+  "id": "m04-t3-similarity-vs-distance",
+  "q": "Phát biểu nào sau đây về Similarity measure vs Distance/Cost measure là ĐÚNG?",
+  "opts": [
+   "Similarity: giá trị càng CAO càng giống; Distance/Cost: giá trị càng NHỎ càng giống",
+   "Similarity chỉ dùng cho số, Distance chỉ dùng cho chuỗi — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Cả 2 đều có nghĩa giá trị càng cao càng giống, chỉ khác tên gọi",
+   "Distance luôn có giá trị âm, Similarity luôn có giá trị dương"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Similarity: giá trị càng CAO càng giống; Distance/Cost: giá trị càng NHỎ càng giống"
+ },
+ {
+  "id": "m04-t7-00",
+  "q": "(Quiz buổi 4, câu B1) Edit Distance giữa 'color' và 'colour' là bao nhiêu?",
+  "opts": [
+   "6 (bằng độ dài chuỗi dài hơn)",
+   "1 (chỉ cần chèn ký tự 'u')",
+   "2 (cần 2 phép biến đổi)",
+   "0 (2 chuỗi giống nhau)"
+  ],
+  "correct": 1,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: 1 (chỉ cần chèn ký tự 'u')"
+ },
+ {
+  "id": "m04-t7-01",
+  "q": "(Quiz buổi 4, câu B2) Similarity score s(x,y)=1-d(x,y)/max(|x|,|y|) giữa 'color' và 'colour' (d=1) là bao nhiêu?",
+  "opts": [
+   "0.5",
+   "1.0 (hoàn toàn giống nhau)",
+   "5/6 ≈ 0.833",
+   "1/6 ≈ 0.167"
+  ],
+  "correct": 2,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: 5/6 ≈ 0.833"
+ },
+ {
+  "id": "m04-t7-02",
+  "q": "(Quiz buổi 4, câu B3) Cho Bx={a,b,c,d}, By={b,c,d,e}. Overlap measure O(x,y) là bao nhiêu?",
+  "opts": [
+   "5 (|Bx∪By|)",
+   "4 (|Bx|)",
+   "1 — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "3 (|{b,c,d}|)"
+  ],
+  "correct": 3,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: 3 (|{b,c,d}|)"
+ },
+ {
+  "id": "m04-t7-03",
+  "q": "(Quiz buổi 4, câu B3) Cùng Bx,By trên, Jaccard measure J(x,y) là bao nhiêu?",
+  "opts": [
+   "3/5 = 0.6",
+   "3/4 = 0.75",
+   "3/8 = 0.375",
+   "4/5 = 0.8"
+  ],
+  "correct": 0,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: 3/5 = 0.6"
+ },
+ {
+  "id": "m04-t7-04",
+  "q": "(Quiz buổi 4, câu B5) Áp dụng đúng 4 bước Soundex, mã của tên 'Williams' là gì?",
+  "opts": [
+   "W4520",
+   "W452",
+   "W450",
+   "L452"
+  ],
+  "correct": 1,
+  "topic": "Similarity Measures",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: W452"
+ },
+ {
+  "id": "m04-t7-05",
+  "q": "(Quiz buổi 4, câu A4) Theo Fellegi & Sunter (1969), 'possible-link' nghĩa là gì?",
+  "opts": [
+   "Chắc chắn là non-match — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chắc chắn là match, chỉ chưa xác nhận bằng tay",
+   "Chưa đủ bằng chứng để kết luận chắc chắn là match hay non-match",
+   "Một lỗi hệ thống cần sửa ngay"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Chưa đủ bằng chứng để kết luận chắc chắn là match hay non-match"
+ },
+ {
+  "id": "m04-t7-06",
+  "q": "(Quiz buổi 4, câu A6) Vì sao áp dụng similarity measure cho TẤT CẢ các cặp bị coi là không khả thi ở quy mô lớn?",
+  "opts": [
+   "Vì similarity measure luôn cho kết quả sai với n lớn",
+   "Độ phức tạp O(log n), nhanh nhưng tốn nhiều RAM",
+   "Vì SQL không hỗ trợ tính similarity — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Độ phức tạp bậc hai O(n²) (hay O(|X|×|Y|)) — bùng nổ số cặp cần xét khi n lớn"
+  ],
+  "correct": 3,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Độ phức tạp bậc hai O(n²) (hay O(|X|×|Y|)) — bùng nổ số cặp cần xét khi n lớn"
+ },
+ {
+  "id": "m04-t7-07",
+  "q": "(Quiz buổi 4, câu C1) Thứ tự ĐÚNG của 4 bước Entity Resolution Pipeline là gì?",
+  "opts": [
+   "Prepare Data → Blocking/Sorting → Matching → Clustering",
+   "Clustering → Matching → Blocking → Prepare Data",
+   "Matching → Blocking → Prepare Data → Clustering",
+   "Blocking → Prepare Data → Clustering → Matching — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 0,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Prepare Data → Blocking/Sorting → Matching → Clustering"
+ },
+ {
+  "id": "m04-t7-08",
+  "q": "(Quiz buổi 4, câu C3) Sorted Neighborhood và LSH khác nhau cơ bản ở điểm nào?",
+  "opts": [
+   "LSH cần sorting key thủ công, Sorted Neighborhood dùng hash (bị đảo ngược)",
+   "Sorted Neighborhood cần định nghĩa thủ công 1 sorting key; LSH hash embedding, không cần định nghĩa key thủ công",
+   "Sorted Neighborhood chỉ dùng được cho số, LSH chỉ dùng được cho chuỗi",
+   "2 kỹ thuật này hoàn toàn giống nhau, chỉ khác tên gọi — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 1,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Sorted Neighborhood cần định nghĩa thủ công 1 sorting key; LSH hash embedding, không cần định nghĩa key thủ công"
+ },
+ {
+  "id": "m04-t7-09",
+  "q": "(Quiz buổi 4, câu C4) 2 hướng giải pháp khi Learned Matchers thiếu dữ liệu gán nhãn là gì?",
+  "opts": [
+   "Chỉ cần dùng Naïve Deduplication thay thế hoàn toàn",
+   "Tăng số lượng cột dữ liệu và giảm số dòng dữ liệu — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Transfer Learning (học từ kịch bản nhiều dữ liệu, fine-tune ít nhãn) và Active Learning (chủ động chọn cặp cần gán nhãn)",
+   "Blocking chặt hơn và bỏ qua bước Matching — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 2,
+  "topic": "ER Pipeline",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Transfer Learning (học từ kịch bản nhiều dữ liệu, fine-tune ít nhãn) và Active Learning (chủ động chọn cặp cần gán nhãn)"
+ },
+ {
+  "id": "m04-t7-10",
+  "q": "(Quiz buổi 4, câu D1) Trong project tích hợp khí tượng (trạm điểm vs ô lưới ERA5), vì sao bước 'gán trạm vào ô lưới gần nhất' KHÔNG thể dùng Jaccard/Edit Distance trực tiếp?",
+  "opts": [
+   "Vì Jaccard/Edit Distance chỉ chạy được trên hệ điều hành Linux — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Vì trạm quan trắc không có toạ độ, chỉ có tên — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Thực ra vẫn dùng được Jaccard/Edit Distance trực tiếp, không cần kỹ thuật gì thêm — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Vì đây là bài toán khoảng cách KHÔNG GIAN ĐỊA LÝ giữa toạ độ điểm và ô lưới, cần kỹ thuật Spatial Interpolation (Kriging/Bilinear), không phải so khớp chuỗi ký tự"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "gốc-slide (chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Vì đây là bài toán khoảng cách KHÔNG GIAN ĐỊA LÝ giữa toạ độ điểm và ô lưới, cần kỹ thuật Spatial Interpolation (Kriging/Bilinear), không phải so khớp chuỗi ký tự"
+ }
+]

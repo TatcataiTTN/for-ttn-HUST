@@ -88,8 +88,26 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <summary>❓ Khoá ngoại (foreign key) dùng để làm gì?</summary><div class="dap">💡 Trỏ tới khoá chính của bảng khác để hiện thực 1 liên kết (relationship) giữa 2 thực thể.</div></details><details class="flashcard">
 <summary>❓ Vì sao 2 hệ thống cùng chuẩn hoá đúng kỹ thuật vẫn có thể ra lược đồ khác nhau?</summary><div class="dap">💡 Vì chuẩn hoá chỉ đảm bảo không dư thừa/dị thường — không ép duy nhất 1 cách tách bảng. Nhiều cách tách đều hợp lệ.</div></details><details class="flashcard">
 <summary>❓ Liên kết N-N có thuộc tính riêng thì xử lý thế nào khi chuyển sang bảng quan hệ?</summary><div class="dap">💡 Phải tách thành 1 bảng trung gian riêng (chứa 2 khoá ngoại + thuộc tính riêng của liên kết), không gộp vào bảng thực thể nào.</div></details></div>
-
-
+<h2>🖥️ SQL Sandbox — 50 bài chạy thật (sql.js/SQLite, 100% trình duyệt)</h2>
+<p class="hint">Lược đồ 'Người thuê — Thuê — Căn hộ' (bảng trung gian N-N) đúng ví dụ đã dùng trong bài tập làm giấy Module 00. Viết SQL vào ô bên dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với
+lời giải mẫu đã chạy thật trên dữ liệu (không gõ tay đáp án).</p>
+<div id="sb-mount-m00"></div>
+<script src="../../../_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({
+  mount: "#sb-mount-m00",
+  vendorUrl: "../../../vendor/sql-wasm/",
+  schemaUrl: "../../../data/sql/schema_m00.sql",
+  dataUrl: "../../../data/sql/questions_m00.json",
+  storageKey: "sqlbank:00-nen-tang-csdl"
+});
+</script>
+<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">57 câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide/giáo trình hoặc bổ sung — ghi rõ
+từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../00-nen-tang-csdl/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng 57 câu — Nền tảng: Mô hình quan hệ & Thực thể-Liên kết</h3>
+<div class="go">Mở →</div></a>
 <h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
 <div class="quiz"><div class="quiz-root"></div>
 <script type="application/json">{"items": [{"q": "Trong mô hình ER, 'Người thuê — Thuê — Căn hộ' thuộc loại thành phần nào?", "opts": ["Thực thể (Entity)", "Thuộc tính (Attribute)", "Liên kết (Relationship)", "Khoá ngoại"], "correct": 2, "explain": "Đây là quan hệ nối 2 thực thể (Người thuê, Căn hộ) — đúng định nghĩa Relationship trong ER."}, {"q": "Khoá ngoại (foreign key) dùng để làm gì?", "opts": ["Định danh duy nhất 1 dòng trong chính bảng đó", "Trỏ tới khoá chính của bảng khác để hiện thực liên kết", "Tăng tốc độ truy vấn", "Mã hoá dữ liệu nhạy cảm"], "correct": 1, "explain": "Khoá ngoại là cột tham chiếu khoá chính ở bảng khác — cơ chế hiện thực Relationship bằng bảng quan hệ."}, {"q": "Vì sao 2 hệ thống cùng chuẩn hoá đúng kỹ thuật vẫn có thể ra lược đồ khác nhau?", "opts": ["Vì 1 trong 2 bên làm sai", "Chuẩn hoá không duy nhất — nhiều cách tách bảng hợp lệ cho cùng miền dữ liệu", "Vì dùng hệ quản trị CSDL khác nhau", "Vì dữ liệu khác nhau"], "correct": 1, "explain": "Chuẩn hoá đảm bảo không dư thừa/dị thường, nhưng không ép buộc duy nhất 1 cách tách bảng — đây là gốc rễ của Structural Heterogeneity."}]}</script></div>

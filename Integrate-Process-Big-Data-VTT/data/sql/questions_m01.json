@@ -1,0 +1,536 @@
+[
+ {
+  "id": "m01-001",
+  "q": "Mô phỏng Wrapper cho nguồn S1: SELECT đúng 4 cột (title,director,year,genre) từ s1_movie — đây chính là việc Wrapper phải làm để trả dữ liệu về đúng mô hình mediated schema.",
+  "difficulty": 1,
+  "topic": "Wrapper (mô phỏng)",
+  "referenceSql": "SELECT title, director, year, genre FROM s1_movie;",
+  "expectedCols": [
+   "title",
+   "director",
+   "year",
+   "genre"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Bong Joon-ho",
+    2019,
+    "Drama"
+   ],
+   [
+    "Inception",
+    "Christopher Nolan",
+    2010,
+    "SciFi"
+   ],
+   [
+    "The Godfather",
+    "Francis Ford Coppola",
+    1972,
+    "Crime"
+   ],
+   [
+    "Spirited Away",
+    "Hayao Miyazaki",
+    2001,
+    "Animation"
+   ],
+   [
+    "Oldboy",
+    "Park Chan-wook",
+    2003,
+    "Thriller"
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan",
+    2014,
+    "SciFi"
+   ],
+   [
+    "Memento",
+    "Christopher Nolan",
+    2000,
+    "Thriller"
+   ],
+   [
+    "Your Name",
+    "Makoto Shinkai",
+    2016,
+    "Animation"
+   ],
+   [
+    "Train to Busan",
+    "Yeon Sang-ho",
+    2016,
+    "Horror"
+   ],
+   [
+    "The Dark Knight",
+    "Christopher Nolan",
+    2008,
+    "Action"
+   ]
+  ]
+ },
+ {
+  "id": "m01-002",
+  "q": "Mô phỏng Wrapper cho nguồn S2 (Cinemas): đổi tên cột place→location, start→startTime để khớp mediated schema Plays(movie,location,startTime).",
+  "difficulty": 2,
+  "topic": "Wrapper (mô phỏng)",
+  "referenceSql": "SELECT movie, place AS location, start AS startTime FROM s2_cinemas;",
+  "expectedCols": [
+   "movie",
+   "location",
+   "startTime"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "BHD Thanh Xuan",
+    "19:30"
+   ],
+   [
+    "Inception",
+    "CGV Vincom",
+    "20:00"
+   ],
+   [
+    "The Dark Knight",
+    "Lotte Lieu Giai",
+    "18:45"
+   ],
+   [
+    "Interstellar",
+    "BHD Thanh Xuan",
+    "21:00"
+   ],
+   [
+    "Your Name",
+    "CGV Vincom",
+    "17:15"
+   ]
+  ]
+ },
+ {
+  "id": "m01-003",
+  "q": "Mô phỏng Wrapper cho nguồn S4 (Reviews): đổi tên grade→rating, review→description để khớp mediated schema Reviews(title,rating,description).",
+  "difficulty": 2,
+  "topic": "Wrapper (mô phỏng)",
+  "referenceSql": "SELECT title, grade AS rating, review AS description FROM s4_reviews;",
+  "expectedCols": [
+   "title",
+   "rating",
+   "description"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    9,
+    "Dark social satire, flawless pacing"
+   ],
+   [
+    "Parasite",
+    8,
+    "Brilliant class commentary"
+   ],
+   [
+    "Inception",
+    8,
+    "Mind-bending but a bit cold"
+   ],
+   [
+    "The Godfather",
+    10,
+    "Genre-defining masterpiece"
+   ],
+   [
+    "Oldboy",
+    9,
+    "Brutal and unforgettable"
+   ],
+   [
+    "Interstellar",
+    7,
+    "Visually stunning, plot stretches logic"
+   ],
+   [
+    "Memento",
+    8,
+    "Clever reverse structure"
+   ],
+   [
+    "The Dark Knight",
+    9,
+    "Heath Ledger steals the film"
+   ]
+  ]
+ },
+ {
+  "id": "m01-004",
+  "q": "S1 lưu đạo diễn trong 4 bảng tách (Movie/Actor/ActorPlays/MovieDetails) trong khi mediated schema chỉ có 1 bảng Movie — đếm số bảng khác nhau mà Wrapper của S1 phải JOIN để trả về đủ thông tin 1 phim (Movie+MovieDetails).",
+  "difficulty": 1,
+  "topic": "System/Platform Heterogeneity",
+  "referenceSql": "SELECT COUNT(DISTINCT m.title) AS so_phim_can_join FROM s1_movie m JOIN s1_moviedetails d ON d.director = m.director AND d.year = m.year;",
+  "expectedCols": [
+   "so_phim_can_join"
+  ],
+  "expectedRows": [
+   [
+    5
+   ]
+  ]
+ },
+ {
+  "id": "m01-005",
+  "q": "Mô phỏng truy vấn 'query-time' kiểu Virtual Integration: lấy trực tiếp từ S5 (không cache) các phim thể loại 'Animation'.",
+  "difficulty": 1,
+  "topic": "Virtual vs Warehouse (mô phỏng)",
+  "referenceSql": "SELECT title FROM s5_moviegenres WHERE genre = 'Animation';",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Spirited Away"
+   ],
+   [
+    "Your Name"
+   ]
+  ]
+ },
+ {
+  "id": "m01-006",
+  "q": "Mô phỏng 'bản copy đã ETL' kiểu Data Warehousing: tạo 1 bảng tạm gộp sẵn title+genre+year từ S5+S7 (JOIN), coi như đã chạy ETL 1 lần — SELECT kết quả JOIN đó.",
+  "difficulty": 2,
+  "topic": "Virtual vs Warehouse (mô phỏng)",
+  "referenceSql": "SELECT g.title, g.genre, y.year FROM s5_moviegenres g JOIN s7_movieyears y ON y.title = g.title;",
+  "expectedCols": [
+   "title",
+   "genre",
+   "year"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Drama",
+    2019
+   ],
+   [
+    "Inception",
+    "SciFi",
+    2010
+   ],
+   [
+    "The Godfather",
+    "Crime",
+    1972
+   ],
+   [
+    "Spirited Away",
+    "Animation",
+    2001
+   ],
+   [
+    "Oldboy",
+    "Thriller",
+    2003
+   ],
+   [
+    "Interstellar",
+    "SciFi",
+    2014
+   ],
+   [
+    "Memento",
+    "Thriller",
+    2000
+   ],
+   [
+    "Your Name",
+    "Animation",
+    2016
+   ],
+   [
+    "The Dark Knight",
+    "Action",
+    2008
+   ]
+  ]
+ },
+ {
+  "id": "m01-007",
+  "q": "Mediated query: 'Lấy mọi phim SciFi có năm > 2010'. Reformulate thành truy vấn trên S1 (nguồn duy nhất có đủ cả genre và year trong 1 bảng).",
+  "difficulty": 2,
+  "topic": "Query Reformulation",
+  "referenceSql": "SELECT title FROM s1_movie WHERE genre = 'SciFi' AND year > 2010;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Interstellar"
+   ]
+  ]
+ },
+ {
+  "id": "m01-008",
+  "q": "Cùng mediated query trên nhưng giả sử CHỈ CÓ S5 (genre) và S7 (year), không có S1 — viết lại reformulation bằng JOIN 2 nguồn rồi lọc.",
+  "difficulty": 3,
+  "topic": "Query Reformulation",
+  "referenceSql": "SELECT g.title FROM s5_moviegenres g JOIN s7_movieyears y ON y.title = g.title WHERE g.genre = 'SciFi' AND y.year > 2010;",
+  "expectedCols": [
+   "title"
+  ],
+  "expectedRows": [
+   [
+    "Interstellar"
+   ]
+  ]
+ },
+ {
+  "id": "m01-009",
+  "q": "Mô phỏng đo 'Volume': đếm tổng số dòng dữ liệu đang có trên TOÀN BỘ các nguồn S1.Movie, S5, S6, S7 gộp lại (UNION ALL các COUNT).",
+  "difficulty": 1,
+  "topic": "5V (mô phỏng Volume)",
+  "referenceSql": "SELECT (SELECT COUNT(*) FROM s1_movie) + (SELECT COUNT(*) FROM s5_moviegenres) + (SELECT COUNT(*) FROM s6_moviedirectors) + (SELECT COUNT(*) FROM s7_movieyears) AS tong_volume;",
+  "expectedCols": [
+   "tong_volume"
+  ],
+  "expectedRows": [
+   [
+    38
+   ]
+  ]
+ },
+ {
+  "id": "m01-010",
+  "q": "Mô phỏng đo 'Variety': đếm số LƯỢC ĐỒ BẢNG khác nhau (ở đây đơn giản hoá = số bảng nguồn khác nhau) đang tồn tại cho miền dữ liệu Movie.",
+  "difficulty": 2,
+  "topic": "5V (mô phỏng Variety)",
+  "referenceSql": "SELECT COUNT(*) AS so_nguon_khac_nhau FROM (SELECT 's1' UNION SELECT 's2' UNION SELECT 's3' UNION SELECT 's4' UNION SELECT 's5' UNION SELECT 's6' UNION SELECT 's7');",
+  "expectedCols": [
+   "so_nguon_khac_nhau"
+  ],
+  "expectedRows": [
+   [
+    7
+   ]
+  ]
+ },
+ {
+  "id": "m01-011",
+  "q": "Bước 1 (Schema Alignment, mô phỏng): hợp nhất title+genre+director+year từ 3 nguồn S5/S6/S7 thành 1 'mediated view' tạm (đã làm ở Module 02 bài m02-029) — lặp lại ở đây cho đủ pipeline.",
+  "difficulty": 2,
+  "topic": "Pipeline Schema Alignment→ER→Fusion (mô phỏng)",
+  "referenceSql": "SELECT g.title, d.dir AS director, y.year, g.genre FROM s5_moviegenres g JOIN s6_moviedirectors d ON d.title = g.title JOIN s7_movieyears y ON y.title = g.title;",
+  "expectedCols": [
+   "title",
+   "director",
+   "year",
+   "genre"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    "Bong Joon-ho",
+    2019,
+    "Drama"
+   ],
+   [
+    "Inception",
+    "Christopher Nolan",
+    2010,
+    "SciFi"
+   ],
+   [
+    "The Godfather",
+    "Martin Scorsese",
+    1972,
+    "Crime"
+   ],
+   [
+    "Spirited Away",
+    "Hayao Miyazaki",
+    2001,
+    "Animation"
+   ],
+   [
+    "Oldboy",
+    "Park Chan-wook",
+    2003,
+    "Thriller"
+   ],
+   [
+    "Interstellar",
+    "Christopher Nolan",
+    2014,
+    "SciFi"
+   ],
+   [
+    "Memento",
+    "Christopher Nolan",
+    2000,
+    "Thriller"
+   ],
+   [
+    "Your Name",
+    "Makoto Shinkai",
+    2016,
+    "Animation"
+   ],
+   [
+    "The Dark Knight",
+    "Christopher Nolan",
+    2008,
+    "Action"
+   ]
+  ]
+ },
+ {
+  "id": "m01-012",
+  "q": "Bước 2 (Entity Resolution, mô phỏng): kiểm tra xem có title nào ở S1 bị TRÙNG LẶP nội bộ (xuất hiện quá 1 lần) — nếu có, đây là bước ER cần xử lý trước khi Fusion.",
+  "difficulty": 2,
+  "topic": "Pipeline Schema Alignment→ER→Fusion (mô phỏng)",
+  "referenceSql": "SELECT title, COUNT(*) AS so_lan FROM s1_movie GROUP BY title HAVING COUNT(*) > 1;",
+  "expectedCols": [
+   "title",
+   "so_lan"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m01-013",
+  "q": "Bước 3 (Data Fusion, mô phỏng): với các title có director khác nhau giữa S1 và S6 (xung đột, xem lại bài m02-016), chọn GIÁ TRỊ THẮNG theo luật đơn giản 'ưu tiên S1' (Survivorship Rule).",
+  "difficulty": 3,
+  "topic": "Pipeline Schema Alignment→ER→Fusion (mô phỏng)",
+  "referenceSql": "SELECT m.title, m.director AS director_thang_theo_S1 FROM s1_movie m JOIN s6_moviedirectors d ON d.title = m.title WHERE m.director <> d.dir;",
+  "expectedCols": [
+   "title",
+   "director_thang_theo_S1"
+  ],
+  "expectedRows": [
+   [
+    "The Godfather",
+    "Francis Ford Coppola"
+   ]
+  ]
+ },
+ {
+  "id": "m01-014",
+  "q": "Mô phỏng bước cuối 'Execution Engine gọi Wrapper' bằng 1 UNION gộp kết quả từ 2 wrapper (S2 và S3) cho cùng mediated Plays.",
+  "difficulty": 1,
+  "topic": "Query Processing pipeline",
+  "referenceSql": "SELECT movie, place AS location, start AS startTime FROM s2_cinemas UNION SELECT title AS movie, name AS location, startTime FROM s3_nyccinemas;",
+  "expectedCols": [
+   "movie",
+   "location",
+   "startTime"
+  ],
+  "expectedRows": [
+   [
+    "Inception",
+    "CGV Vincom",
+    "20:00"
+   ],
+   [
+    "Interstellar",
+    "BHD Thanh Xuan",
+    "21:00"
+   ],
+   [
+    "Memento",
+    "IFC Center",
+    "18:00"
+   ],
+   [
+    "Oldboy",
+    "Film Forum",
+    "21:30"
+   ],
+   [
+    "Parasite",
+    "AMC Lincoln Square",
+    "19:00"
+   ],
+   [
+    "Parasite",
+    "BHD Thanh Xuan",
+    "19:30"
+   ],
+   [
+    "The Dark Knight",
+    "Lotte Lieu Giai",
+    "18:45"
+   ],
+   [
+    "Your Name",
+    "CGV Vincom",
+    "17:15"
+   ]
+  ]
+ },
+ {
+  "id": "m01-015",
+  "q": "Mô phỏng Data-level Heterogeneity (đổi đơn vị): giả sử cần quy đổi grade (thang 1-10, S4) sang thang 1-5 bằng phép tính /2.0 — đây chính là ví dụ 'Celsius↔Fahrenheit' nhưng cho điểm đánh giá phim.",
+  "difficulty": 2,
+  "topic": "Data-level Heterogeneity",
+  "referenceSql": "SELECT title, grade / 2.0 AS rating_thang_5 FROM s4_reviews;",
+  "expectedCols": [
+   "title",
+   "rating_thang_5"
+  ],
+  "expectedRows": [
+   [
+    "Parasite",
+    4.5
+   ],
+   [
+    "Parasite",
+    4.0
+   ],
+   [
+    "Inception",
+    4.0
+   ],
+   [
+    "The Godfather",
+    5.0
+   ],
+   [
+    "Oldboy",
+    4.5
+   ],
+   [
+    "Interstellar",
+    3.5
+   ],
+   [
+    "Memento",
+    4.0
+   ],
+   [
+    "The Dark Knight",
+    4.5
+   ]
+  ]
+ },
+ {
+  "id": "m01-016",
+  "q": "Mô phỏng Temporal Heterogeneity: tìm các review (S4) cũ nhất và mới nhất theo cột date, để minh hoạ các nguồn có thể cập nhật ở tần suất khác nhau.",
+  "difficulty": 2,
+  "topic": "Temporal Heterogeneity (mô phỏng)",
+  "referenceSql": "SELECT MIN(date) AS review_cu_nhat, MAX(date) AS review_moi_nhat FROM s4_reviews;",
+  "expectedCols": [
+   "review_cu_nhat",
+   "review_moi_nhat"
+  ],
+  "expectedRows": [
+   [
+    "1972-03-24",
+    "2019-06-02"
+   ]
+  ]
+ }
+]

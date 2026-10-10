@@ -113,11 +113,27 @@ def render_hoidap(items):
 
 # slug module -> prefix file dữ liệu SQL sandbox (data/sql/schema_<prefix>.sql, questions_<prefix>.json)
 SQL_SANDBOX_FOR = {
+    "00-nen-tang-csdl": "m00",
+    "01-data-integration-overview": "m01",
     "02-schema-alignment": "m02",
+    "03-mediation-query-bigdata": "m03",
+    "04-record-linkage-entity-resolution": "m04",
 }
 # slug module -> đường dẫn trang ngân hàng trắc nghiệm sâu (bank.html riêng, build bằng build_bank.py)
 MCQ_BANK_FOR = {
+    "00-nen-tang-csdl": "m00",
+    "01-data-integration-overview": "m01",
     "02-schema-alignment": "m02",
+    "03-mediation-query-bigdata": "m03",
+    "04-record-linkage-entity-resolution": "m04",
+}
+# slug module -> mô tả ngắn nguồn gốc dữ liệu SQL sandbox của module đó
+SQL_DESC_FOR = {
+    "00-nen-tang-csdl": "Lược đồ 'Người thuê — Thuê — Căn hộ' (bảng trung gian N-N) đúng ví dụ đã dùng trong bài tập làm giấy Module 00.",
+    "01-data-integration-overview": "Dùng lại dataset Movie S1-S7 của Module 02 để mô phỏng Wrapper/Query Reformulation/5V (module này chủ yếu lý thuyết kiến trúc nên số bài ít hơn).",
+    "02-schema-alignment": "Lược đồ bảng S1-S7 lấy đúng nguyên văn slide gốc '2_SchemaAlignment.pdf'; dữ liệu 10 phim là dữ liệu minh hoạ tự soạn.",
+    "03-mediation-query-bigdata": "Dùng lại dataset Movie S1-S7 của Module 02 để mô phỏng Join Graph/PAYGO/WebTables (module này chủ yếu lý thuyết nên số bài ít hơn).",
+    "04-record-linkage-entity-resolution": "2 nguồn rao vặt bất động sản độc lập (nguon_a/nguon_b), 7/10 tin trùng thực thể với giá lệch 4-10% — đúng mô phỏng ví dụ D2 trong Quiz-Buoi4-RecordLinkage-ER.md.",
 }
 
 def build_module_page(mod, prev_mod, next_mod):
@@ -155,10 +171,11 @@ def build_module_page(mod, prev_mod, next_mod):
     sql_prefix = SQL_SANDBOX_FOR.get(mod["slug"])
     sql_html = ""
     if sql_prefix:
-        sql_html = f"""<h2>🖥️ SQL Sandbox — chạy thật trên dữ liệu ví dụ của slide (sql.js/SQLite)</h2>
-<p class="hint">Lược đồ bảng S1-S7 lấy đúng nguyên văn slide gốc (xem Module 02 phần "Vì sao cần Certain
-Answers"); dữ liệu 10 phim là dữ liệu minh hoạ tự soạn (gắn nhãn rõ trong mã nguồn). Viết SQL vào ô bên
-dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với lời giải mẫu đã chạy thật và lưu sẵn.</p>
+        sql_count = len(json.loads((ROOT / "data" / "sql" / f"questions_{sql_prefix}.json").read_text(encoding="utf-8")))
+        sql_desc = SQL_DESC_FOR.get(mod["slug"], "Dữ liệu minh hoạ tự soạn (gắn nhãn rõ trong mã nguồn).")
+        sql_html = f"""<h2>🖥️ SQL Sandbox — {sql_count} bài chạy thật (sql.js/SQLite, 100% trình duyệt)</h2>
+<p class="hint">{sql_desc} Viết SQL vào ô bên dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với
+lời giải mẫu đã chạy thật trên dữ liệu (không gõ tay đáp án).</p>
 <div id="sb-mount-{sql_prefix}"></div>
 <script src="{rel_root}_shared/sqlbank.js"></script>
 <script>
@@ -304,11 +321,13 @@ def build_index():
 <p>HUST, giảng viên <b>Vũ Tuyết Trinh</b>. Bám sát 4 buổi slide đã học: Data Integration overview → Schema
 Alignment &amp; Query Rewriting → Mediation Query (bán cấu trúc) &amp; Big Data challenges → Record Linkage
 &amp; Entity Resolution. Mỗi buổi có slide-deck tương tác, bài tập làm giấy có lời giải, flashcard hỏi-đáp,
-và trắc nghiệm tự chấm.</p>
+trắc nghiệm nhanh, <b>SQL Sandbox chạy thật</b> (sql.js/SQLite ngay trên trình duyệt, không cần cài gì), và
+<b>ngân hàng luyện tập sâu</b> (40-96 câu/buổi, lọc theo chủ đề/nguồn).</p>
 </div>
 <div class="callout good"><div class="lbl">Cách dùng</div>
 Học theo đúng thứ tự Buổi 00 (nền tảng, không bắt buộc) → 01 → 02 → 03 → 04. Mỗi buổi: đọc slide-deck (phím
-← →) → làm bài tập làm giấy (có lời giải để tự đối chiếu) → ôn flashcard hỏi-đáp → làm trắc nghiệm tự chấm.</div>
+← →) → làm bài tập làm giấy (có lời giải để tự đối chiếu) → ôn flashcard hỏi-đáp → luyện SQL Sandbox → làm
+trắc nghiệm nhanh → vào ngân hàng luyện tập sâu để ôn kỹ hơn.</div>
 <div class="callout warn"><div class="lbl">Phạm vi</div>
 Site hiện bám đúng 4 buổi slide đã có (buổi 2-4 trong đề cương chính thức, cộng buổi 00 tự bổ sung). Đề cương
 còn 5 buổi tiếp theo (Sources Profiling, Approximate Query Processing, Batch vs Streaming, Governance/
