@@ -9,6 +9,7 @@
 <title>Buổi 05: Bất đẳng thức Hoeffding & Union bound · Lưu trữ & xử lý dữ liệu lớn</title>
 <link rel="stylesheet" href="../../../_shared/common.css">
 <link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script>
 window.KATEX_MACROS = {
@@ -25,6 +26,10 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <body>
 <div class="topbar">
   <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
   <nav>
     <a href="../../index.html">Trang chủ</a>
     <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
@@ -66,7 +71,11 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
      $L=O(\log(1/\delta))$ hàng để đạt độ tin cậy $1-\delta$.</p>
      <div class="callout info"><div class="lbl">Liên hệ dyadic trick</div>
      Thủ thuật cây dyadic tìm heavy hitters cần union bound qua $O(\log n)$ tầng của cây nhị phân — mỗi tầng
-     được cấp một phần ngân sách lỗi $\delta/O(\log n)$ để tổng lỗi vẫn $\le \delta$.</div></div></div></div>
+     được cấp một phần ngân sách lỗi $\delta/O(\log n)$ để tổng lỗi vẫn $\le \delta$.</div>
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Kỹ thuật chặn đuôi này là công cụ chuẩn để
+phân tích lập lịch khi thời gian xử lý tác vụ $p_j$ là biến ngẫu nhiên — ví dụ chặn xác suất makespan
+$C_{max}$ vượt quá một ngưỡng cho trước. Xem buổi <a href="../ll-02-list-scheduling-lpt/index.html">Lập lịch 02
+— List Scheduling &amp; LPT</a>.</div></div></div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>
@@ -142,5 +151,6 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <script src="../../../_shared/deck.js"></script>
 <script src="../../../_shared/quiz.js"></script>
 <script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
 
 </body></html>

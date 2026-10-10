@@ -1,0 +1,19 @@
+/* Thanh tìm kiếm thuật ngữ toàn site — gắn trong .topbar, dropdown kết quả nổi phía dưới ô nhập. */
+.site-search{position:relative;flex:1 1 220px;max-width:420px;min-width:160px}
+.site-search input{width:100%;box-sizing:border-box;padding:7px 12px;border:1px solid var(--border);
+  border-radius:8px;background:var(--bg);color:var(--text);font-size:.85rem}
+.site-search input:focus{outline:2px solid var(--accent);outline-offset:1px}
+#site-search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;max-height:70vh;overflow:auto;
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);
+  z-index:60;padding:6px}
+#site-search-results .gs-empty{padding:10px;color:var(--muted);font-size:.85rem}
+#site-search-results .gs-item{display:block;padding:9px 10px;border-radius:8px;text-decoration:none;
+  color:var(--text);border-bottom:1px solid var(--border)}
+#site-search-results .gs-item:last-child{border-bottom:none}
+#site-search-results .gs-item:hover{background:var(--code)}
+#site-search-results .gs-term{font-weight:700;font-size:.88rem}
+#site-search-results .gs-mod{font-size:.72rem;color:var(--accent);font-weight:600;margin-left:6px}
+#site-search-results .gs-short{font-size:.8rem;color:var(--muted);margin-top:2px}
+@media (max-width:760px){
+  .site-search{order:10;flex-basis:100%;max-width:none;margin-top:6px}
+}

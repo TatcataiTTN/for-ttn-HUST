@@ -8,6 +8,36 @@ from scheduling_content import SCHED_MODULES
 for _m in MODULES:
     _m["quiz"] = _m["quiz"] + EXTRA_QUIZ.get(_m["n"], [])
 
+# Liên hệ lập lịch — chỉ thêm 1 callout vào module cũ nào có liên hệ kỹ thuật thật sự (xem kế hoạch),
+# KHÔNG ép đủ cả 14 module. Gắn vào slide CUỐI CÙNG của mỗi module (không thêm slide mới), chèn ngay sau
+# khi import MODULES (ở đây, không sửa modules_content.py) để tách bạch rõ nội dung gốc với phần bổ sung.
+SCHED_CALLOUT_TAIL_BOUND = """
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Kỹ thuật chặn đuôi này là công cụ chuẩn để
+phân tích lập lịch khi thời gian xử lý tác vụ $p_j$ là biến ngẫu nhiên — ví dụ chặn xác suất makespan
+$C_{max}$ vượt quá một ngưỡng cho trước. Xem buổi <a href="../ll-02-list-scheduling-lpt/index.html">Lập lịch 02
+— List Scheduling &amp; LPT</a>.</div>"""
+SCHED_CALLOUT_INDUCTION = """
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Kỹ thuật đổi chỗ/quy nạp ở đây chính là
+cách chứng minh SPT tối ưu và bảo đảm xấp xỉ (2−1/m) của List Scheduling. Xem buổi
+<a href="../ll-02-list-scheduling-lpt/index.html">Lập lịch 02</a> và
+<a href="../ll-04-fifo-spt-smith/index.html">Lập lịch 04 — FIFO, SPT, Smith</a>.</div>"""
+SCHED_CALLOUT_HASH = """
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Dùng hàm băm để phân phối giá trị vào bucket
+chính là nguyên lý Kafka dùng để chọn partition cho một key trước khi gán partition đó cho consumer. Xem buổi
+<a href="../ll-08-kafka-roundrobin-range/index.html">Lập lịch 08 — Kafka Round Robin &amp; Range</a>.</div>"""
+SCHED_CALLOUT_QUANTILE = """
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Ước lượng phân vị của một luồng dữ liệu là
+bài toán nền để biết phân phối $p_j$ trước khi chọn SPT/Smith, hoặc để theo dõi phân vị thời gian hoàn thành
+(SLA) trong một scheduler thật. Xem buổi
+<a href="../ll-04-fifo-spt-smith/index.html">Lập lịch 04 — FIFO, SPT, Smith</a>.</div>"""
+_SCHED_CALLOUT_BY_N = {2: SCHED_CALLOUT_TAIL_BOUND, 3: SCHED_CALLOUT_TAIL_BOUND, 4: SCHED_CALLOUT_TAIL_BOUND,
+                        5: SCHED_CALLOUT_TAIL_BOUND, 6: SCHED_CALLOUT_INDUCTION, 11: SCHED_CALLOUT_HASH,
+                        12: SCHED_CALLOUT_QUANTILE}
+for _m in MODULES:
+    _callout = _SCHED_CALLOUT_BY_N.get(_m["n"])
+    if _callout:
+        _m["parts"][-1]["slides"][-1]["body"] += _callout
+
 ALL_MODULES = MODULES + SCHED_MODULES
 
 ROOT = pathlib.Path(__file__).parent.parent
@@ -31,10 +61,15 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>"""
 
-def topbar(rel_lang):
-    """rel_lang: đường dẫn tương đối để về vi/ (thư mục ngôn ngữ), dùng cho index.html và modules/."""
+def topbar(rel_lang, rel_root):
+    """rel_lang: đường dẫn tương đối để về vi/ (thư mục ngôn ngữ). rel_root: đường dẫn tương đối về gốc
+    site (nơi có _shared/) — cần riêng vì thanh search (glossary.js) luôn nằm ở gốc, không phải vi/."""
     return f"""<div class="topbar">
   <a class="brand" href="{rel_lang}index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="{rel_root}">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
   <nav>
     <a href="{rel_lang}index.html">Trang chủ</a>
     <a href="{rel_lang}modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
@@ -75,10 +110,11 @@ def page_shell(title, rel_lang, rel_root, body, extra_script=""):
 <title>{title}</title>
 <link rel="stylesheet" href="{rel_root}_shared/common.css">
 <link rel="stylesheet" href="{rel_root}_shared/deck.css">
+<link rel="stylesheet" href="{rel_root}_shared/glossary.css">
 {KATEX}
 </head>
 <body>
-{topbar(rel_lang)}
+{topbar(rel_lang, rel_root)}
 <div class="wrap">
 {body}
 </div>
@@ -87,6 +123,7 @@ def page_shell(title, rel_lang, rel_root, body, extra_script=""):
 <script src="{rel_root}_shared/deck.js"></script>
 <script src="{rel_root}_shared/quiz.js"></script>
 <script src="{rel_root}_shared/sim.js"></script>
+<script src="{rel_root}_shared/glossary.js"></script>
 {extra_script}
 </body></html>"""
 
