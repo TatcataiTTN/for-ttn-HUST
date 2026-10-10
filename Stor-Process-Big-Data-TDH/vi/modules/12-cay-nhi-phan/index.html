@@ -9,6 +9,7 @@
 <title>Buổi 12: Cấu trúc cây nhị phân & rank/order statistics · Lưu trữ & xử lý dữ liệu lớn</title>
 <link rel="stylesheet" href="../../../_shared/common.css">
 <link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script>
 window.KATEX_MACROS = {
@@ -25,6 +26,10 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <body>
 <div class="topbar">
   <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
   <nav>
     <a href="../../index.html">Trang chủ</a>
     <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
@@ -64,7 +69,11 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
      <p>Xây cây nhị phân hoàn chỉnh trên $[n]$: mỗi tầng $j$ giữ 1 sketch CountMin cho vector đã "gộp đôi"
      $2^j$ lần. Cập nhật 1 phần tử phải cập nhật sketch ở MỌI tầng (mọi tổ tiên của lá tương ứng). Bù lại,
      truy vấn "chỉ đi tiếp vào nhánh có giá trị đủ lớn" giảm thời gian truy vấn từ $O(n\log(n/\delta))$
-     xuống $O(k\log(n/\delta)\log n)$ — minh chứng thực tế cho cây nhị phân + union bound (buổi 5) kết hợp.</p><p><img src="../../../assets/diagrams/dyadic-tree.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div></div>
+     xuống $O(k\log(n/\delta)\log n)$ — minh chứng thực tế cho cây nhị phân + union bound (buổi 5) kết hợp.</p>
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Ước lượng phân vị của một luồng dữ liệu là
+bài toán nền để biết phân phối $p_j$ trước khi chọn SPT/Smith, hoặc để theo dõi phân vị thời gian hoàn thành
+(SLA) trong một scheduler thật. Xem buổi
+<a href="../ll-04-fifo-spt-smith/index.html">Lập lịch 04 — FIFO, SPT, Smith</a>.</div><p><img src="../../../assets/diagrams/dyadic-tree.svg" alt="Sơ đồ minh hoạ" style="border:1px solid var(--border);border-radius:10px"></p></div></div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>
@@ -140,5 +149,6 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <script src="../../../_shared/deck.js"></script>
 <script src="../../../_shared/quiz.js"></script>
 <script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
 
 </body></html>

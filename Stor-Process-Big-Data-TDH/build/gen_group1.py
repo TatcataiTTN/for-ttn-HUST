@@ -493,15 +493,17 @@ html = f"""<!doctype html>
 <title>Nhóm 1: Hệ sinh thái Hadoop (Chương 2)</title>
 <link rel="stylesheet" href="{rel_root}_shared/common.css">
 <link rel="stylesheet" href="{rel_root}_shared/deck.css">
+<link rel="stylesheet" href="{rel_root}_shared/glossary.css">
 {KATEX}
 </head>
 <body>
-{topbar(rel_lang)}
+{topbar(rel_lang, rel_root)}
 <div class="wrap">
 {body}
 </div>
 {footer(rel_root)}
 <script src="{rel_root}_shared/deck.js"></script>
+<script src="{rel_root}_shared/glossary.js"></script>
 </body></html>"""
 
 out = ROOT / "vi" / "group-1-slides.html"

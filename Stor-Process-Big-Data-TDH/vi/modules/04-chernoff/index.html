@@ -9,6 +9,7 @@
 <title>Buổi 04: Bất đẳng thức Chernoff · Lưu trữ & xử lý dữ liệu lớn</title>
 <link rel="stylesheet" href="../../../_shared/common.css">
 <link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
 <script>
 window.KATEX_MACROS = {
@@ -25,6 +26,10 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <body>
 <div class="topbar">
   <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
   <nav>
     <a href="../../index.html">Trang chủ</a>
     <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
@@ -66,7 +71,11 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
      bản sao Morris+ độc lập, lấy <b>trung vị</b> → Hoeffding cho xác suất lỗi $\delta$ tuỳ ý.</p>
      <div class="callout warn"><div class="lbl">Bẫy</div>Nhầm lẫn phổ biến: tưởng cần tăng $s$ (không phải $t$)
      để giảm $\delta$ — sẽ tốn $\Theta(1/\delta)$ thay vì $\Theta(\log 1/\delta)$. Luôn tách 2 tham số:
-     $\varepsilon$ (độ chính xác, do $s$ quyết định) và $\delta$ (độ tin cậy, do $t$ quyết định).</div></div></div></div>
+     $\varepsilon$ (độ chính xác, do $s$ quyết định) và $\delta$ (độ tin cậy, do $t$ quyết định).</div>
+<div class="callout info"><div class="lbl">🔗 Liên hệ lập lịch</div>Kỹ thuật chặn đuôi này là công cụ chuẩn để
+phân tích lập lịch khi thời gian xử lý tác vụ $p_j$ là biến ngẫu nhiên — ví dụ chặn xác suất makespan
+$C_{max}$ vượt quá một ngưỡng cho trước. Xem buổi <a href="../ll-02-list-scheduling-lpt/index.html">Lập lịch 02
+— List Scheduling &amp; LPT</a>.</div></div></div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>
@@ -142,5 +151,6 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <script src="../../../_shared/deck.js"></script>
 <script src="../../../_shared/quiz.js"></script>
 <script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
 
 </body></html>
