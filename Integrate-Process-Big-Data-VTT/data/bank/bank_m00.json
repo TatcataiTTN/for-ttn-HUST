@@ -1,0 +1,800 @@
+[
+ {
+  "id": "m00-t1-entity",
+  "q": "'Thực thể (Entity)' được định nghĩa như thế nào?",
+  "opts": [
+   "Một đối tượng thế giới thực cần lưu trữ thông tin, ví dụ 'Căn hộ', 'Người thuê'",
+   "Một cột dữ liệu mô tả đặc điểm của đối tượng",
+   "Giá trị cụ thể lưu trong 1 ô của bảng",
+   "Quan hệ nối 2 đối tượng với nhau — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Một đối tượng thế giới thực cần lưu trữ thông tin, ví dụ 'Căn hộ', 'Người thuê'"
+ },
+ {
+  "id": "m00-t1-attribute",
+  "q": "'Thuộc tính (Attribute)' được định nghĩa như thế nào?",
+  "opts": [
+   "Quan hệ giữa 2 thực thể trở lên",
+   "Đặc điểm mô tả thực thể, ví dụ diện tích, giá thuê",
+   "Cột dùng để trỏ tới bảng khác — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Đối tượng thế giới thực cần lưu trữ"
+  ],
+  "correct": 1,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Đặc điểm mô tả thực thể, ví dụ diện tích, giá thuê"
+ },
+ {
+  "id": "m00-t1-relationship",
+  "q": "'Liên kết (Relationship)' được định nghĩa như thế nào?",
+  "opts": [
+   "Một ràng buộc chỉ áp dụng cho khoá ngoại",
+   "Giá trị định danh duy nhất 1 dòng trong bảng",
+   "Quan hệ giữa 2 hoặc nhiều thực thể, ví dụ 'Người thuê — Thuê — Căn hộ'",
+   "Đặc điểm mô tả 1 thực thể duy nhất — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 2,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Quan hệ giữa 2 hoặc nhiều thực thể, ví dụ 'Người thuê — Thuê — Căn hộ'"
+ },
+ {
+  "id": "m00-t1-primary-key",
+  "q": "'Khoá chính (Primary Key)' được định nghĩa như thế nào?",
+  "opts": [
+   "Cột luôn phải để trống (NULL) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Cột trỏ tới khoá chính của bảng khác",
+   "Cột duy nhất chứa kiểu dữ liệu số nguyên",
+   "Cột (hoặc tổ hợp cột) định danh DUY NHẤT mỗi dòng trong 1 bảng"
+  ],
+  "correct": 3,
+  "topic": "Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cột (hoặc tổ hợp cột) định danh DUY NHẤT mỗi dòng trong 1 bảng"
+ },
+ {
+  "id": "m00-t1-foreign-key",
+  "q": "'Khoá ngoại (Foreign Key)' được định nghĩa như thế nào?",
+  "opts": [
+   "Cột ở bảng này trỏ tới khoá chính của bảng khác, dùng để hiện thực 1 liên kết (relationship)",
+   "Cột bắt buộc phải là kiểu TEXT — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Cột định danh duy nhất mỗi dòng trong chính bảng đó",
+   "Chỉ mục (index) giúp tăng tốc truy vấn"
+  ],
+  "correct": 0,
+  "topic": "Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cột ở bảng này trỏ tới khoá chính của bảng khác, dùng để hiện thực 1 liên kết (relationship)"
+ },
+ {
+  "id": "m00-t1-many-to-many",
+  "q": "'Liên kết N-N (Many-to-Many)' được định nghĩa như thế nào?",
+  "opts": [
+   "Chỉ xảy ra khi 2 bảng có cùng số cột — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "1 thực thể A có thể liên kết với NHIỀU thực thể B, và ngược lại — cần 1 bảng trung gian riêng để hiện thực",
+   "1 thực thể A chỉ liên kết với đúng 1 thực thể B duy nhất — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Luôn hiện thực được bằng cách thêm 1 khoá ngoại vào 1 trong 2 bảng thực thể"
+  ],
+  "correct": 1,
+  "topic": "Liên kết N-N",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1 thực thể A có thể liên kết với NHIỀU thực thể B, và ngược lại — cần 1 bảng trung gian riêng để hiện thực"
+ },
+ {
+  "id": "m00-t1-junction-table",
+  "q": "'Bảng trung gian (Junction/Associative Table)' được định nghĩa như thế nào?",
+  "opts": [
+   "Một loại view ảo không lưu dữ liệu thật — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Bảng chỉ chứa đúng 1 khoá ngoại duy nhất — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Bảng riêng chứa 2 khoá ngoại (trỏ tới 2 thực thể) cộng thuộc tính riêng của liên kết, dùng để hiện thực quan hệ N-N",
+   "Bảng dùng để sao lưu (backup) dữ liệu — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Liên kết N-N",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Bảng riêng chứa 2 khoá ngoại (trỏ tới 2 thực thể) cộng thuộc tính riêng của liên kết, dùng để hiện thực quan hệ N-N"
+ },
+ {
+  "id": "m00-t1-normalization",
+  "q": "'Chuẩn hoá (Normalization)' được định nghĩa như thế nào?",
+  "opts": [
+   "Quá trình nén (compress) dữ liệu để giảm dung lượng đĩa",
+   "Quá trình sao chép dữ liệu ra nhiều server để tăng tốc",
+   "Quá trình mã hoá dữ liệu để bảo mật — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Quá trình tổ chức lại bảng (1NF→2NF→3NF...) nhằm giảm dư thừa dữ liệu và dị thường cập nhật"
+  ],
+  "correct": 3,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Quá trình tổ chức lại bảng (1NF→2NF→3NF...) nhằm giảm dư thừa dữ liệu và dị thường cập nhật"
+ },
+ {
+  "id": "m00-t1-normalization-not-unique",
+  "q": "'Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng' được định nghĩa như thế nào?",
+  "opts": [
+   "Nhiều cách tách bảng khác nhau đều có thể cùng đạt chuẩn 3NF cho cùng 1 miền dữ liệu — đây là gốc rễ của Schema Heterogeneity khi 2 đội thiết kế độc lập",
+   "2 đội thiết kế độc lập luôn ra cùng 1 lược đồ nếu áp dụng đúng chuẩn hoá — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chuẩn hoá chỉ áp dụng được cho bảng có dưới 5 cột — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chuẩn hoá luôn cho ra đúng 1 kết quả tách bảng duy nhất, không có cách khác — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Nhiều cách tách bảng khác nhau đều có thể cùng đạt chuẩn 3NF cho cùng 1 miền dữ liệu — đây là gốc rễ của Schema Heterogeneity khi 2 đội thiết kế độc lập"
+ },
+ {
+  "id": "m00-t1-redundancy",
+  "q": "'Dư thừa dữ liệu (Data Redundancy)' được định nghĩa như thế nào?",
+  "opts": [
+   "Tình trạng dữ liệu bị mất do lỗi ổ cứng — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Cùng 1 thông tin bị lưu lặp lại ở nhiều dòng/bảng — gây lãng phí và dễ sinh dữ liệu mâu thuẫn khi cập nhật",
+   "Tình trạng 1 bảng có nhiều khoá chính cùng lúc — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Tình trạng bảng có quá nhiều cột không dùng tới"
+  ],
+  "correct": 1,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cùng 1 thông tin bị lưu lặp lại ở nhiều dòng/bảng — gây lãng phí và dễ sinh dữ liệu mâu thuẫn khi cập nhật"
+ },
+ {
+  "id": "m00-t1-update-anomaly",
+  "q": "'Dị thường cập nhật (Update Anomaly)' được định nghĩa như thế nào?",
+  "opts": [
+   "Lỗi xảy ra khi xoá 1 bảng không tồn tại — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Lỗi cú pháp SQL khi viết câu UPDATE — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Lỗi phát sinh khi sửa 1 thông tin bị lưu lặp ở nhiều nơi nhưng chỉ sửa được 1 số dòng, khiến dữ liệu mâu thuẫn nhau",
+   "Lỗi chỉ xảy ra với khoá ngoại, không xảy ra với khoá chính — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Lỗi phát sinh khi sửa 1 thông tin bị lưu lặp ở nhiều nơi nhưng chỉ sửa được 1 số dòng, khiến dữ liệu mâu thuẫn nhau"
+ },
+ {
+  "id": "m00-t1-join-operation",
+  "q": "'Phép JOIN' được định nghĩa như thế nào?",
+  "opts": [
+   "Phép chỉ dùng được giữa 2 bảng có cùng số cột",
+   "Phép xoá toàn bộ dữ liệu của 1 bảng — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Phép tạo bản sao (copy) 1 bảng sang bảng mới",
+   "Phép kết hợp dòng từ 2 (hoặc nhiều) bảng dựa trên điều kiện khớp giữa khoá chính và khoá ngoại"
+  ],
+  "correct": 3,
+  "topic": "Join",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Phép kết hợp dòng từ 2 (hoặc nhiều) bảng dựa trên điều kiện khớp giữa khoá chính và khoá ngoại"
+ },
+ {
+  "id": "m00-t1-er-to-relational",
+  "q": "'Chuyển ER sang lược đồ quan hệ' được định nghĩa như thế nào?",
+  "opts": [
+   "Mỗi thực thể → 1 bảng với khoá chính; mỗi liên kết 1-N → thêm khoá ngoại; mỗi liên kết N-N → tạo bảng trung gian riêng",
+   "Mọi liên kết (1-1, 1-N, N-N) đều xử lý giống nhau bằng cách thêm 1 khoá ngoại",
+   "ER chỉ dùng để vẽ minh hoạ, không liên quan gì tới việc tạo bảng thật — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Mỗi thực thể → 1 cột duy nhất trong 1 bảng tổng — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Mỗi thực thể → 1 bảng với khoá chính; mỗi liên kết 1-N → thêm khoá ngoại; mỗi liên kết N-N → tạo bảng trung gian riêng"
+ },
+ {
+  "id": "m00-t1-why-matters-integration",
+  "q": "'Vì sao nền tảng CSDL quan hệ quan trọng cho môn Tích hợp dữ liệu' được định nghĩa như thế nào?",
+  "opts": [
+   "Vì CSDL quan hệ không liên quan gì tới Big Data Integration — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Record Linkage (buổi 4) thực chất là đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì chúng được thiết kế độc lập với nhau",
+   "Vì mọi nguồn dữ liệu trong Data Integration đều dùng chung 1 khoá ngoại có sẵn — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Vì Record Linkage chỉ áp dụng được khi dữ liệu đã chuẩn hoá đúng 3NF — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 1,
+  "topic": "Cầu nối sang Data Integration",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Record Linkage (buổi 4) thực chất là đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì chúng được thiết kế độc lập với nhau"
+ },
+ {
+  "id": "m00-t2-entity",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Một đối tượng thế giới thực cần lưu trữ thông tin, ví dụ 'Căn hộ', 'Người thuê'\"",
+  "opts": [
+   "Dư thừa dữ liệu (Data Redundancy)",
+   "Thuộc tính (Attribute)",
+   "Thực thể (Entity)",
+   "Liên kết (Relationship)"
+  ],
+  "correct": 2,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Thực thể (Entity)"
+ },
+ {
+  "id": "m00-t2-attribute",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Đặc điểm mô tả thực thể, ví dụ diện tích, giá thuê\"",
+  "opts": [
+   "Khoá chính (Primary Key)",
+   "Bảng trung gian (Junction/Associative Table)",
+   "Liên kết N-N (Many-to-Many)",
+   "Thuộc tính (Attribute)"
+  ],
+  "correct": 3,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Thuộc tính (Attribute)"
+ },
+ {
+  "id": "m00-t2-relationship",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Quan hệ giữa 2 hoặc nhiều thực thể, ví dụ 'Người thuê — Thuê — Căn hộ'\"",
+  "opts": [
+   "Liên kết (Relationship)",
+   "Khoá ngoại (Foreign Key)",
+   "Chuẩn hoá (Normalization)",
+   "Phép JOIN"
+  ],
+  "correct": 0,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Liên kết (Relationship)"
+ },
+ {
+  "id": "m00-t2-primary-key",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Cột (hoặc tổ hợp cột) định danh DUY NHẤT mỗi dòng trong 1 bảng\"",
+  "opts": [
+   "Chuẩn hoá (Normalization)",
+   "Khoá chính (Primary Key)",
+   "Thuộc tính (Attribute)",
+   "Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng"
+  ],
+  "correct": 1,
+  "topic": "Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Khoá chính (Primary Key)"
+ },
+ {
+  "id": "m00-t2-foreign-key",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Cột ở bảng này trỏ tới khoá chính của bảng khác, dùng để hiện thực 1 liên kết (relationship)\"",
+  "opts": [
+   "Bảng trung gian (Junction/Associative Table)",
+   "Dư thừa dữ liệu (Data Redundancy)",
+   "Khoá ngoại (Foreign Key)",
+   "Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng"
+  ],
+  "correct": 2,
+  "topic": "Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Khoá ngoại (Foreign Key)"
+ },
+ {
+  "id": "m00-t2-many-to-many",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"1 thực thể A có thể liên kết với NHIỀU thực thể B, và ngược lại — cần 1 bảng trung gian riêng để hiện thực\"",
+  "opts": [
+   "Dư thừa dữ liệu (Data Redundancy)",
+   "Chuẩn hoá (Normalization)",
+   "Thực thể (Entity)",
+   "Liên kết N-N (Many-to-Many)"
+  ],
+  "correct": 3,
+  "topic": "Liên kết N-N",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Liên kết N-N (Many-to-Many)"
+ },
+ {
+  "id": "m00-t2-junction-table",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Bảng riêng chứa 2 khoá ngoại (trỏ tới 2 thực thể) cộng thuộc tính riêng của liên kết, dùng để hiện thực quan hệ N-N\"",
+  "opts": [
+   "Bảng trung gian (Junction/Associative Table)",
+   "Khoá ngoại (Foreign Key)",
+   "Chuẩn hoá (Normalization)",
+   "Liên kết (Relationship) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 0,
+  "topic": "Liên kết N-N",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Bảng trung gian (Junction/Associative Table)"
+ },
+ {
+  "id": "m00-t2-normalization",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Quá trình tổ chức lại bảng (1NF→2NF→3NF...) nhằm giảm dư thừa dữ liệu và dị thường cập nhật\"",
+  "opts": [
+   "Khoá chính (Primary Key)",
+   "Chuẩn hoá (Normalization)",
+   "Bảng trung gian (Junction/Associative Table)",
+   "Dị thường cập nhật (Update Anomaly)"
+  ],
+  "correct": 1,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Chuẩn hoá (Normalization)"
+ },
+ {
+  "id": "m00-t2-normalization-not-unique",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Nhiều cách tách bảng khác nhau đều có thể cùng đạt chuẩn 3NF cho cùng 1 miền dữ liệu — đây là gốc rễ của Schema Heterogeneity khi 2 đội thiết kế độc lập\"",
+  "opts": [
+   "Thuộc tính (Attribute)",
+   "Thực thể (Entity) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng",
+   "Bảng trung gian (Junction/Associative Table)"
+  ],
+  "correct": 2,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng"
+ },
+ {
+  "id": "m00-t2-redundancy",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Cùng 1 thông tin bị lưu lặp lại ở nhiều dòng/bảng — gây lãng phí và dễ sinh dữ liệu mâu thuẫn khi cập nhật\"",
+  "opts": [
+   "Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng",
+   "Dị thường cập nhật (Update Anomaly)",
+   "Thuộc tính (Attribute)",
+   "Dư thừa dữ liệu (Data Redundancy)"
+  ],
+  "correct": 3,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Dư thừa dữ liệu (Data Redundancy)"
+ },
+ {
+  "id": "m00-t2-update-anomaly",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Lỗi phát sinh khi sửa 1 thông tin bị lưu lặp ở nhiều nơi nhưng chỉ sửa được 1 số dòng, khiến dữ liệu mâu thuẫn nhau\"",
+  "opts": [
+   "Dị thường cập nhật (Update Anomaly)",
+   "Dư thừa dữ liệu (Data Redundancy)",
+   "Liên kết (Relationship)",
+   "Thực thể (Entity) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 0,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Dị thường cập nhật (Update Anomaly)"
+ },
+ {
+  "id": "m00-t2-join-operation",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Phép kết hợp dòng từ 2 (hoặc nhiều) bảng dựa trên điều kiện khớp giữa khoá chính và khoá ngoại\"",
+  "opts": [
+   "Dư thừa dữ liệu (Data Redundancy)",
+   "Phép JOIN",
+   "Chuyển ER sang lược đồ quan hệ",
+   "Khoá ngoại (Foreign Key)"
+  ],
+  "correct": 1,
+  "topic": "Join",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Phép JOIN"
+ },
+ {
+  "id": "m00-t2-er-to-relational",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mỗi thực thể → 1 bảng với khoá chính; mỗi liên kết 1-N → thêm khoá ngoại; mỗi liên kết N-N → tạo bảng trung gian riêng\"",
+  "opts": [
+   "Thực thể (Entity) — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Liên kết (Relationship)",
+   "Chuyển ER sang lược đồ quan hệ",
+   "Khoá chính (Primary Key)"
+  ],
+  "correct": 2,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Chuyển ER sang lược đồ quan hệ"
+ },
+ {
+  "id": "m00-t2-why-matters-integration",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Record Linkage (buổi 4) thực chất là đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì chúng được thiết kế độc lập với nhau\"",
+  "opts": [
+   "Thuộc tính (Attribute) — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chuẩn hoá (Normalization)",
+   "Khoá chính (Primary Key)",
+   "Vì sao nền tảng CSDL quan hệ quan trọng cho môn Tích hợp dữ liệu"
+  ],
+  "correct": 3,
+  "topic": "Cầu nối sang Data Integration",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì sao nền tảng CSDL quan hệ quan trọng cho môn Tích hợp dữ liệu"
+ },
+ {
+  "id": "m00-t3-entity",
+  "q": "Phát biểu nào sau đây về Thực thể (Entity) là ĐÚNG?",
+  "opts": [
+   "Một đối tượng thế giới thực cần lưu trữ thông tin, ví dụ 'Căn hộ', 'Người thuê'",
+   "Giá trị cụ thể lưu trong 1 ô của bảng",
+   "Quan hệ nối 2 đối tượng với nhau — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Một cột dữ liệu mô tả đặc điểm của đối tượng"
+  ],
+  "correct": 0,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Một đối tượng thế giới thực cần lưu trữ thông tin, ví dụ 'Căn hộ', 'Người thuê'"
+ },
+ {
+  "id": "m00-t3-attribute",
+  "q": "Phát biểu nào sau đây về Thuộc tính (Attribute) là ĐÚNG?",
+  "opts": [
+   "Đối tượng thế giới thực cần lưu trữ",
+   "Đặc điểm mô tả thực thể, ví dụ diện tích, giá thuê",
+   "Quan hệ giữa 2 thực thể trở lên",
+   "Cột dùng để trỏ tới bảng khác — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 1,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Đặc điểm mô tả thực thể, ví dụ diện tích, giá thuê"
+ },
+ {
+  "id": "m00-t3-relationship",
+  "q": "Phát biểu nào sau đây về Liên kết (Relationship) là ĐÚNG?",
+  "opts": [
+   "Một ràng buộc chỉ áp dụng cho khoá ngoại",
+   "Giá trị định danh duy nhất 1 dòng trong bảng",
+   "Quan hệ giữa 2 hoặc nhiều thực thể, ví dụ 'Người thuê — Thuê — Căn hộ'",
+   "Đặc điểm mô tả 1 thực thể duy nhất — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Quan hệ giữa 2 hoặc nhiều thực thể, ví dụ 'Người thuê — Thuê — Căn hộ'"
+ },
+ {
+  "id": "m00-t3-primary-key",
+  "q": "Phát biểu nào sau đây về Khoá chính (Primary Key) là ĐÚNG?",
+  "opts": [
+   "Cột trỏ tới khoá chính của bảng khác",
+   "Cột luôn phải để trống (NULL) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Cột duy nhất chứa kiểu dữ liệu số nguyên",
+   "Cột (hoặc tổ hợp cột) định danh DUY NHẤT mỗi dòng trong 1 bảng"
+  ],
+  "correct": 3,
+  "topic": "Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cột (hoặc tổ hợp cột) định danh DUY NHẤT mỗi dòng trong 1 bảng"
+ },
+ {
+  "id": "m00-t3-foreign-key",
+  "q": "Phát biểu nào sau đây về Khoá ngoại (Foreign Key) là ĐÚNG?",
+  "opts": [
+   "Cột ở bảng này trỏ tới khoá chính của bảng khác, dùng để hiện thực 1 liên kết (relationship)",
+   "Cột định danh duy nhất mỗi dòng trong chính bảng đó",
+   "Chỉ mục (index) giúp tăng tốc truy vấn",
+   "Cột bắt buộc phải là kiểu TEXT — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 0,
+  "topic": "Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cột ở bảng này trỏ tới khoá chính của bảng khác, dùng để hiện thực 1 liên kết (relationship)"
+ },
+ {
+  "id": "m00-t3-many-to-many",
+  "q": "Phát biểu nào sau đây về Liên kết N-N (Many-to-Many) là ĐÚNG?",
+  "opts": [
+   "1 thực thể A chỉ liên kết với đúng 1 thực thể B duy nhất — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "1 thực thể A có thể liên kết với NHIỀU thực thể B, và ngược lại — cần 1 bảng trung gian riêng để hiện thực",
+   "Luôn hiện thực được bằng cách thêm 1 khoá ngoại vào 1 trong 2 bảng thực thể",
+   "Chỉ xảy ra khi 2 bảng có cùng số cột — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 1,
+  "topic": "Liên kết N-N",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1 thực thể A có thể liên kết với NHIỀU thực thể B, và ngược lại — cần 1 bảng trung gian riêng để hiện thực"
+ },
+ {
+  "id": "m00-t3-junction-table",
+  "q": "Phát biểu nào sau đây về Bảng trung gian (Junction/Associative Table) là ĐÚNG?",
+  "opts": [
+   "Bảng chỉ chứa đúng 1 khoá ngoại duy nhất — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Bảng dùng để sao lưu (backup) dữ liệu — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Bảng riêng chứa 2 khoá ngoại (trỏ tới 2 thực thể) cộng thuộc tính riêng của liên kết, dùng để hiện thực quan hệ N-N",
+   "Một loại view ảo không lưu dữ liệu thật — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "Liên kết N-N",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Bảng riêng chứa 2 khoá ngoại (trỏ tới 2 thực thể) cộng thuộc tính riêng của liên kết, dùng để hiện thực quan hệ N-N"
+ },
+ {
+  "id": "m00-t3-normalization",
+  "q": "Phát biểu nào sau đây về Chuẩn hoá (Normalization) là ĐÚNG?",
+  "opts": [
+   "Quá trình mã hoá dữ liệu để bảo mật — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Quá trình nén (compress) dữ liệu để giảm dung lượng đĩa",
+   "Quá trình sao chép dữ liệu ra nhiều server để tăng tốc",
+   "Quá trình tổ chức lại bảng (1NF→2NF→3NF...) nhằm giảm dư thừa dữ liệu và dị thường cập nhật"
+  ],
+  "correct": 3,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Quá trình tổ chức lại bảng (1NF→2NF→3NF...) nhằm giảm dư thừa dữ liệu và dị thường cập nhật"
+ },
+ {
+  "id": "m00-t3-normalization-not-unique",
+  "q": "Phát biểu nào sau đây về Chuẩn hoá không ép buộc duy nhất 1 cách tách bảng là ĐÚNG?",
+  "opts": [
+   "Nhiều cách tách bảng khác nhau đều có thể cùng đạt chuẩn 3NF cho cùng 1 miền dữ liệu — đây là gốc rễ của Schema Heterogeneity khi 2 đội thiết kế độc lập",
+   "Chuẩn hoá chỉ áp dụng được cho bảng có dưới 5 cột — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Chuẩn hoá luôn cho ra đúng 1 kết quả tách bảng duy nhất, không có cách khác",
+   "2 đội thiết kế độc lập luôn ra cùng 1 lược đồ nếu áp dụng đúng chuẩn hoá — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Nhiều cách tách bảng khác nhau đều có thể cùng đạt chuẩn 3NF cho cùng 1 miền dữ liệu — đây là gốc rễ của Schema Heterogeneity khi 2 đội thiết kế độc lập"
+ },
+ {
+  "id": "m00-t3-redundancy",
+  "q": "Phát biểu nào sau đây về Dư thừa dữ liệu (Data Redundancy) là ĐÚNG?",
+  "opts": [
+   "Tình trạng dữ liệu bị mất do lỗi ổ cứng — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Cùng 1 thông tin bị lưu lặp lại ở nhiều dòng/bảng — gây lãng phí và dễ sinh dữ liệu mâu thuẫn khi cập nhật",
+   "Tình trạng 1 bảng có nhiều khoá chính cùng lúc",
+   "Tình trạng bảng có quá nhiều cột không dùng tới"
+  ],
+  "correct": 1,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Cùng 1 thông tin bị lưu lặp lại ở nhiều dòng/bảng — gây lãng phí và dễ sinh dữ liệu mâu thuẫn khi cập nhật"
+ },
+ {
+  "id": "m00-t3-update-anomaly",
+  "q": "Phát biểu nào sau đây về Dị thường cập nhật (Update Anomaly) là ĐÚNG?",
+  "opts": [
+   "Lỗi chỉ xảy ra với khoá ngoại, không xảy ra với khoá chính — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Lỗi cú pháp SQL khi viết câu UPDATE — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Lỗi phát sinh khi sửa 1 thông tin bị lưu lặp ở nhiều nơi nhưng chỉ sửa được 1 số dòng, khiến dữ liệu mâu thuẫn nhau",
+   "Lỗi xảy ra khi xoá 1 bảng không tồn tại — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Lỗi phát sinh khi sửa 1 thông tin bị lưu lặp ở nhiều nơi nhưng chỉ sửa được 1 số dòng, khiến dữ liệu mâu thuẫn nhau"
+ },
+ {
+  "id": "m00-t3-join-operation",
+  "q": "Phát biểu nào sau đây về Phép JOIN là ĐÚNG?",
+  "opts": [
+   "Phép xoá toàn bộ dữ liệu của 1 bảng — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Phép tạo bản sao (copy) 1 bảng sang bảng mới",
+   "Phép chỉ dùng được giữa 2 bảng có cùng số cột",
+   "Phép kết hợp dòng từ 2 (hoặc nhiều) bảng dựa trên điều kiện khớp giữa khoá chính và khoá ngoại"
+  ],
+  "correct": 3,
+  "topic": "Join",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Phép kết hợp dòng từ 2 (hoặc nhiều) bảng dựa trên điều kiện khớp giữa khoá chính và khoá ngoại"
+ },
+ {
+  "id": "m00-t3-er-to-relational",
+  "q": "Phát biểu nào sau đây về Chuyển ER sang lược đồ quan hệ là ĐÚNG?",
+  "opts": [
+   "Mỗi thực thể → 1 bảng với khoá chính; mỗi liên kết 1-N → thêm khoá ngoại; mỗi liên kết N-N → tạo bảng trung gian riêng",
+   "Mọi liên kết (1-1, 1-N, N-N) đều xử lý giống nhau bằng cách thêm 1 khoá ngoại",
+   "Mỗi thực thể → 1 cột duy nhất trong 1 bảng tổng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "ER chỉ dùng để vẽ minh hoạ, không liên quan gì tới việc tạo bảng thật — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Mỗi thực thể → 1 bảng với khoá chính; mỗi liên kết 1-N → thêm khoá ngoại; mỗi liên kết N-N → tạo bảng trung gian riêng"
+ },
+ {
+  "id": "m00-t3-why-matters-integration",
+  "q": "Phát biểu nào sau đây về Vì sao nền tảng CSDL quan hệ quan trọng cho môn Tích hợp dữ liệu là ĐÚNG?",
+  "opts": [
+   "Vì mọi nguồn dữ liệu trong Data Integration đều dùng chung 1 khoá ngoại có sẵn — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Record Linkage (buổi 4) thực chất là đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì chúng được thiết kế độc lập với nhau",
+   "Vì CSDL quan hệ không liên quan gì tới Big Data Integration — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Vì Record Linkage chỉ áp dụng được khi dữ liệu đã chuẩn hoá đúng 3NF — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Cầu nối sang Data Integration",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Record Linkage (buổi 4) thực chất là đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì chúng được thiết kế độc lập với nhau"
+ },
+ {
+  "id": "m00-t5-00",
+  "q": "Mỗi thực thể trong ER, khi chuyển sang lược đồ quan hệ, thành 1 bảng với 1 ___ định danh duy nhất mỗi dòng.",
+  "opts": [
+   "chỉ mục phụ (secondary index)",
+   "ràng buộc CHECK",
+   "khoá chính (primary key)",
+   "khoá ngoại (foreign key)"
+  ],
+  "correct": 2,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: khoá chính (primary key)"
+ },
+ {
+  "id": "m00-t5-01",
+  "q": "Một liên kết (relationship) được hiện thực bằng ___ — cột ở bảng này trỏ tới khoá chính bảng kia.",
+  "opts": [
+   "view ảo (virtual view)",
+   "khoá chính (primary key)",
+   "trigger",
+   "khoá ngoại (foreign key)"
+  ],
+  "correct": 3,
+  "topic": "ER Model",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: khoá ngoại (foreign key)"
+ },
+ {
+  "id": "m00-t5-02",
+  "q": "Toàn bộ kỹ thuật Record Linkage thực chất là đi tìm lại '___' giữa 2 nguồn không hề chia sẻ cùng 1 khoá ngoại thật.",
+  "opts": [
+   "khoá chính ngầm",
+   "view vật lý",
+   "chỉ mục B-tree",
+   "mật khẩu quản trị"
+  ],
+  "correct": 0,
+  "topic": "Cầu nối sang Data Integration",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: khoá chính ngầm"
+ },
+ {
+  "id": "m00-t5-03",
+  "q": "Chuẩn hoá (1NF → 2NF → 3NF...) nhằm giảm ___ dữ liệu và dị thường cập nhật.",
+  "opts": [
+   "kích thước font chữ hiển thị",
+   "dư thừa (redundancy)",
+   "số lượng người dùng truy cập",
+   "tốc độ truy vấn"
+  ],
+  "correct": 1,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: dư thừa (redundancy)"
+ },
+ {
+  "id": "m00-t5-04",
+  "q": "'Chuẩn hoá đúng kỹ thuật ở từng nguồn' không có nghĩa là '___' giữa các nguồn.",
+  "opts": [
+   "không cần khoá chính",
+   "sẽ chạy chậm hơn",
+   "dễ tích hợp",
+   "sẽ tự động có cùng tên cột"
+  ],
+  "correct": 2,
+  "topic": "Chuẩn hoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: dễ tích hợp"
+ },
+ {
+  "id": "m00-t4-00",
+  "q": "Khoá chính và khoá ngoại khác nhau ở điểm nào?",
+  "opts": [
+   "Khoá ngoại luôn định danh duy nhất dòng, khoá chính thì không — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Chỉ bảng trung gian mới có khoá ngoại, bảng thực thể không bao giờ có",
+   "Khoá chính và khoá ngoại là 2 tên gọi khác nhau của cùng 1 khái niệm",
+   "Khoá chính định danh duy nhất dòng TRONG CHÍNH bảng đó; khoá ngoại trỏ TỚI khoá chính của BẢNG KHÁC"
+  ],
+  "correct": 3,
+  "topic": "So sánh Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Khoá chính định danh duy nhất dòng TRONG CHÍNH bảng đó; khoá ngoại trỏ TỚI khoá chính của BẢNG KHÁC"
+ },
+ {
+  "id": "m00-t4-01",
+  "q": "Liên kết 1-N và liên kết N-N khác nhau ở cách hiện thực thành bảng quan hệ như thế nào?",
+  "opts": [
+   "1-N: chỉ cần thêm 1 khoá ngoại vào bảng ở phía 'N'; N-N: phải tạo 1 bảng trung gian riêng",
+   "N-N không thể hiện thực được bằng CSDL quan hệ — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "1-N cần bảng trung gian, N-N chỉ cần thêm khoá ngoại (bị đảo ngược)",
+   "Cả 2 loại liên kết đều hiện thực giống nhau, chỉ thêm 1 khoá ngoại"
+  ],
+  "correct": 0,
+  "topic": "So sánh Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: 1-N: chỉ cần thêm 1 khoá ngoại vào bảng ở phía 'N'; N-N: phải tạo 1 bảng trung gian riêng"
+ },
+ {
+  "id": "m00-t4-02",
+  "q": "Vì sao bảng trung gian (junction table) của liên kết N-N thường có khoá chính là TỔ HỢP 2 khoá ngoại?",
+  "opts": [
+   "Vì tổ hợp khoá giúp bảng chạy nhanh hơn, không liên quan tới tính duy nhất — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Vì 1 cặp (thực thể A, thực thể B) cụ thể chỉ nên xuất hiện 1 lần trong bảng trung gian — tổ hợp 2 khoá ngoại định danh duy nhất 1 dòng liên kết",
+   "Vì nếu không tổ hợp khoá thì không thể JOIN được — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Vì SQL yêu cầu bảng trung gian phải có ít nhất 2 cột — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "So sánh Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì 1 cặp (thực thể A, thực thể B) cụ thể chỉ nên xuất hiện 1 lần trong bảng trung gian — tổ hợp 2 khoá ngoại định danh duy nhất 1 dòng liên kết"
+ },
+ {
+  "id": "m00-t4-03",
+  "q": "Dư thừa dữ liệu (Data Redundancy) và Dị thường cập nhật (Update Anomaly) liên hệ với nhau thế nào?",
+  "opts": [
+   "2 khái niệm hoàn toàn không liên quan tới nhau — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Dị thường cập nhật là nguyên nhân gây ra dư thừa dữ liệu (bị đảo ngược nhân-quả) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Dư thừa dữ liệu (lưu lặp cùng 1 thông tin) là NGUYÊN NHÂN trực tiếp dẫn tới dị thường cập nhật khi sửa không đồng bộ hết các bản lặp",
+   "Chỉ xảy ra khi dùng khoá ngoại sai kiểu dữ liệu — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 2,
+  "topic": "So sánh Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Dư thừa dữ liệu (lưu lặp cùng 1 thông tin) là NGUYÊN NHÂN trực tiếp dẫn tới dị thường cập nhật khi sửa không đồng bộ hết các bản lặp"
+ },
+ {
+  "id": "m00-t4-04",
+  "q": "Vì sao 2 đội thiết kế CSDL độc lập, cùng chuẩn hoá đúng kỹ thuật, vẫn có thể ra 2 lược đồ (bảng) khác nhau cho cùng 1 miền dữ liệu?",
+  "opts": [
+   "Vì 1 trong 2 đội chắc chắn đã làm sai kỹ thuật chuẩn hoá — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Vì 2 đội dùng 2 hệ quản trị CSDL khác nhau (MySQL vs PostgreSQL)",
+   "Chuẩn hoá đúng kỹ thuật luôn cho ra đúng 1 lược đồ duy nhất, tình huống này không xảy ra",
+   "Vì chuẩn hoá chỉ đảm bảo không dư thừa/dị thường — không ép buộc duy nhất 1 cách tách bảng cụ thể"
+  ],
+  "correct": 3,
+  "topic": "So sánh Khoá",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì chuẩn hoá chỉ đảm bảo không dư thừa/dị thường — không ép buộc duy nhất 1 cách tách bảng cụ thể"
+ },
+ {
+  "id": "m00-t4-05",
+  "q": "Record Linkage (buổi 4) liên hệ thế nào với khái niệm khoá chính/khoá ngoại đã học ở Module 00?",
+  "opts": [
+   "Record Linkage đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì 2 nguồn được thiết kế độc lập",
+   "Record Linkage chỉ cần join trực tiếp bằng khoá ngoại có sẵn giữa 2 nguồn — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Record Linkage không liên quan gì tới khoá chính/khoá ngoại — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Khoá chính/khoá ngoại chỉ tồn tại trong 1 CSDL duy nhất, không áp dụng khi có nhiều nguồn"
+  ],
+  "correct": 0,
+  "topic": "Cầu nối sang Data Integration",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Record Linkage đi tìm lại 'khoá chính ngầm' giữa 2 nguồn không chia sẻ cùng khoá ngoại thật, vì 2 nguồn được thiết kế độc lập"
+ },
+ {
+  "id": "m00-t6-00",
+  "q": "Trong ví dụ SQL Sandbox Module 00, vì sao bảng 'thue' cần khoá chính là TỔ HỢP (MaNguoiThue, MaCanHo, NgayBatDau) thay vì chỉ 1 cột?",
+  "opts": [
+   "Vì MaNguoiThue và MaCanHo có thể trùng giá trị với nhau — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Vì 1 người có thể thuê nhiều căn hộ qua nhiều lần (nhiều NgayBatDau khác nhau) — chỉ (MaNguoiThue,MaCanHo) không đủ phân biệt nếu thuê lại cùng căn hộ ở 2 giai đoạn khác nhau",
+   "Vì SQLite bắt buộc mọi bảng phải có khoá chính gồm 3 cột — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Chỉ để tăng tốc độ truy vấn, không liên quan tới tính duy nhất của dòng — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 1,
+  "topic": "Ví dụ nguoithue-canho-thue",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì 1 người có thể thuê nhiều căn hộ qua nhiều lần (nhiều NgayBatDau khác nhau) — chỉ (MaNguoiThue,MaCanHo) không đủ phân biệt nếu thuê lại cùng căn hộ ở 2 giai đoạn khác nhau"
+ },
+ {
+  "id": "m00-t6-01",
+  "q": "Trong ví dụ Module 00, cột nào của bảng 'thue' là khoá ngoại trỏ tới bảng 'canho'?",
+  "opts": [
+   "NgayBatDau",
+   "MaNguoiThue",
+   "MaCanHo",
+   "GiaThueThucTe"
+  ],
+  "correct": 2,
+  "topic": "Ví dụ nguoithue-canho-thue",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: MaCanHo"
+ },
+ {
+  "id": "m00-t6-02",
+  "q": "Vì sao KHÔNG nên thêm trực tiếp cột 'HoTen' vào bảng 'thue' (dù sẽ giúp truy vấn đỡ phải JOIN)?",
+  "opts": [
+   "Vì JOIN luôn chạy nhanh hơn so với không JOIN, nên không có lý do gì để thêm cột",
+   "Vì SQL không cho phép 1 bảng có cột kiểu TEXT — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Vì HoTen phải luôn là khoá chính của bảng chứa nó",
+   "Vì HoTen sẽ bị lặp lại ở mọi hợp đồng của cùng 1 người — gây dư thừa dữ liệu và dị thường cập nhật nếu người đó đổi tên"
+  ],
+  "correct": 3,
+  "topic": "Ví dụ nguoithue-canho-thue",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: Vì HoTen sẽ bị lặp lại ở mọi hợp đồng của cùng 1 người — gây dư thừa dữ liệu và dị thường cập nhật nếu người đó đổi tên"
+ },
+ {
+  "id": "m00-t6-03",
+  "q": "Cột GiaThueNiemYet (ở bảng canho) và GiaThueThucTe (ở bảng thue) khác nhau ở điểm gì, theo đúng thiết kế ví dụ Module 00?",
+  "opts": [
+   "GiaThueNiemYet là giá rao ban đầu của căn hộ (thuộc tính của thực thể CanHo); GiaThueThucTe là giá đã thương lượng cho 1 hợp đồng cụ thể (thuộc tính của liên kết Thue)",
+   "2 cột này thực chất là 1, chỉ đặt tên khác nhau cho dễ nhớ — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "GiaThueThucTe luôn phải lớn hơn GiaThueNiemYet — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "GiaThueNiemYet chỉ tồn tại ở bảng thue, không tồn tại ở bảng canho — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 0,
+  "topic": "Ví dụ nguoithue-canho-thue",
+  "src": "bổ-sung",
+  "explain": "Đáp án đúng: GiaThueNiemYet là giá rao ban đầu của căn hộ (thuộc tính của thực thể CanHo); GiaThueThucTe là giá đã thương lượng cho 1 hợp đồng cụ thể (thuộc tính của liên kết Thue)"
+ }
+]

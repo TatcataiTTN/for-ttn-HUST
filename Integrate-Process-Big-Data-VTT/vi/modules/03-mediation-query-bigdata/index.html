@@ -105,8 +105,26 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <summary>❓ Join Graph dùng để làm gì trong sinh mediation query?</summary><div class="dap">💡 Biểu diễn các phép join khả dĩ giữa các nguồn, dựa trên key/reference-key — node=nguồn, cạnh=điều kiện join.</div></details><details class="flashcard">
 <summary>❓ PAYGO khác Data Integration truyền thống ở nguyên lý cốt lõi nào?</summary><div class="dap">💡 Bắt đầu với ít ràng buộc ngữ nghĩa, trả lời tốt nhất có thể ngay, cải thiện dần theo thời gian — không chờ thiết kế hoàn chỉnh.</div></details><details class="flashcard">
 <summary>❓ WebTables xếp hạng bảng kết quả bằng 2 phương pháp nào?</summary><div class="dap">💡 FeatureRank (dùng đặc trưng bảng) và SchemaRank (cộng thêm độ nhất quán schema qua Pointwise Mutual Information).</div></details></div>
-
-
+<h2>🖥️ SQL Sandbox — 16 bài chạy thật (sql.js/SQLite, 100% trình duyệt)</h2>
+<p class="hint">Dùng lại dataset Movie S1-S7 của Module 02 để mô phỏng Join Graph/PAYGO/WebTables (module này chủ yếu lý thuyết nên số bài ít hơn). Viết SQL vào ô bên dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với
+lời giải mẫu đã chạy thật trên dữ liệu (không gõ tay đáp án).</p>
+<div id="sb-mount-m03"></div>
+<script src="../../../_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({
+  mount: "#sb-mount-m03",
+  vendorUrl: "../../../vendor/sql-wasm/",
+  schemaUrl: "../../../data/sql/schema_m03.sql",
+  dataUrl: "../../../data/sql/questions_m03.json",
+  storageKey: "sqlbank:03-mediation-query-bigdata"
+});
+</script>
+<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">40 câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide/giáo trình hoặc bổ sung — ghi rõ
+từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../03-mediation-query-bigdata/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng 40 câu — Mediation Query bán cấu trúc & Big Data Integration Challenges</h3>
+<div class="go">Mở →</div></a>
 <h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
 <div class="quiz"><div class="quiz-root"></div>
 <script type="application/json">{"items": [{"q": "Khi decompose mediation schema XML thành sub-tree, điều kiện bắt buộc của mỗi sub-tree là gì?", "opts": ["Phải có đúng 1 node", "Root là node đa trị hoặc gốc cây, và có ít nhất 1 text node trong sub-tree", "Không được chứa thuộc tính nào", "Phải trùng khớp hoàn toàn 1 nguồn"], "correct": 1, "explain": "Slide định nghĩa rõ: root = multi-value node hoặc root của mediation schema; node mono-value; có ít nhất 1 text node."}, {"q": "Join Graph trong sinh mediation query dùng để làm gì?", "opts": ["Biểu diễn các phép join khả dĩ giữa các nguồn dựa trên key/reference-key", "Tối ưu hoá tốc độ mạng", "Mã hoá dữ liệu", "Chuẩn hoá bảng"], "correct": 0, "explain": "Node = nguồn, cạnh = điều kiện join (VD authorId=id) — dùng để kết hợp các partial mapping."}, {"q": "'Schema Explosion' trong Big Data Integration nghĩa là gì?", "opts": ["Dữ liệu bị mất do lỗi hệ thống", "Hàng trăm nghìn schema khác nhau cùng tồn tại cho cùng 1 miền dữ liệu", "Mediated schema tự động xoá", "Tốc độ truy vấn giảm"], "correct": 1, "explain": "'Database design by the masses' tạo ra vô số schema khác nhau cho cùng ý tưởng — không thể gộp thủ công."}, {"q": "Nguyên lý cốt lõi của PAYGO là gì?", "opts": ["Thiết kế mediated schema hoàn chỉnh trước khi dùng", "Bắt đầu với ít ràng buộc ngữ nghĩa, cải thiện dần theo thời gian/phản hồi", "Chỉ dùng được với dữ liệu quan hệ", "Yêu cầu toàn bộ nguồn phải có cùng schema"], "correct": 1, "explain": "Pay-As-You-Go: trả lời tốt nhất có thể ngay từ đầu, tự động cải thiện mapping dần, không chờ thiết kế hoàn chỉnh."}, {"q": "Probabilistic Mediated Schema được tạo ra bằng cách nào?", "opts": ["Chuyên gia thiết kế thủ công", "Clustering tự động các thuộc tính nguồn, kèm xác suất cho mỗi phiên bản", "Dịch máy", "Random ngẫu nhiên hoàn toàn"], "correct": 1, "explain": "Tạo tự động bằng clustering thuộc tính — do Volume/Variety quá lớn để thiết kế thủ công."}, {"q": "SchemaRank trong WebTables khác FeatureRank ở điểm nào?", "opts": ["SchemaRank không dùng máy học", "SchemaRank cộng thêm đo độ nhất quán schema qua Pointwise Mutual Information", "SchemaRank chỉ dùng cho bảng tiếng Anh", "SchemaRank chậm hơn nhưng không chính xác hơn"], "correct": 1, "explain": "SchemaRank = FeatureRank + đo coherence giữa các thuộc tính bằng pmi(a,b), cải thiện chất lượng xếp hạng đo được trong slide."}]}</script></div>

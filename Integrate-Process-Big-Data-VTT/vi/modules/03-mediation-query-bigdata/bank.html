@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Ngân hàng trắc nghiệm · Buổi 3 · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Luyện tập sâu · Buổi 03</div>
+<h1>Ngân hàng trắc nghiệm — Mediation Query bán cấu trúc & Big Data Integration Challenges</h1>
+<p>Mỗi câu ghi rõ nguồn (gốc slide/giáo trình hay bổ sung tự soạn), đáp án đã chấm &amp; giải thích ngay,
+lưu tiến độ trên trình duyệt. Lọc theo chủ đề/nguồn, xem lại riêng các câu đã sai.</p></div>
+<div id="bank-mount"></div>
+<script src="../../../_shared/bank.js"></script>
+<script>
+BankUI.init({
+  mount: "#bank-mount",
+  dataUrl: "../../../data/bank/bank_m03.json",
+  storageKey: "bank:03-mediation-query-bigdata"
+});
+</script>
+<div class="callout info" style="margin-top:18px">
+<a href="index.html">◀ Về trang bài giảng Buổi 3: Mediation Query bán cấu trúc & Big Data Integration Challenges</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 4 file slide bài giảng gốc + 23 bài báo khoa học đã xác minh. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Bám sát 4 buổi slide đã học (Data Integration overview → Schema Alignment → Mediation Query → Record
+  Linkage/Entity Resolution), cộng 1 module nền tảng CSDL tự bổ sung. Toàn bộ nội dung chạy tĩnh, không
+  backend. Bài tập "làm giấy" ưu tiên câu gốc từ slide (ghi rõ nguồn), câu bổ sung gắn nhãn rõ ràng.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

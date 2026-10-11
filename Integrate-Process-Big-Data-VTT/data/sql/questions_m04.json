@@ -1,0 +1,1587 @@
+[
+ {
+  "id": "m04-001",
+  "q": "Lấy toàn bộ cột của nguon_a.",
+  "difficulty": 1,
+  "topic": "Data Preparation",
+  "referenceSql": "SELECT * FROM nguon_a;",
+  "expectedCols": [
+   "id",
+   "tieu_de",
+   "dia_chi",
+   "quan",
+   "dien_tich",
+   "gia_trieu",
+   "sdt"
+  ],
+  "expectedRows": [
+   [
+    1,
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    "12 Láng Hạ",
+    "Đống Đa",
+    35.0,
+    8.0,
+    "0901111111"
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    "45 Cầu Giấy",
+    "Cầu Giấy",
+    50.0,
+    11.0,
+    "0902222222"
+   ],
+   [
+    3,
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    "78 Nguyễn Trãi",
+    "Thanh Xuân",
+    28.0,
+    6.5,
+    "0903333333"
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    "9 Trần Duy Hưng",
+    "Cầu Giấy",
+    60.0,
+    14.0,
+    "0904444444"
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    "22 Hoàng Quốc Việt",
+    "Cầu Giấy",
+    40.0,
+    9.0,
+    "0905555555"
+   ],
+   [
+    6,
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    "Khu đô thị Linh Đàm",
+    "Hoàng Mai",
+    80.0,
+    18.0,
+    "0906666666"
+   ],
+   [
+    7,
+    "Căn hộ Mỹ Đình 2PN, 65m2",
+    "Mỹ Đình",
+    "Nam Từ Liêm",
+    65.0,
+    15.0,
+    "0907777777"
+   ],
+   [
+    8,
+    "Studio Hào Nam giá tốt",
+    "12 Hào Nam",
+    "Đống Đa",
+    25.0,
+    5.5,
+    "0908888888"
+   ],
+   [
+    9,
+    "Căn hộ Royal City",
+    "72A Nguyễn Trãi",
+    "Thanh Xuân",
+    70.0,
+    20.0,
+    "0909999999"
+   ],
+   [
+    10,
+    "Nhà trọ sinh viên Cầu Giấy",
+    "100 Cầu Giấy",
+    "Cầu Giấy",
+    20.0,
+    3.5,
+    "0900000000"
+   ]
+  ]
+ },
+ {
+  "id": "m04-002",
+  "q": "Lấy tieu_de, gia_trieu từ nguon_a, sắp theo gia_trieu tăng dần.",
+  "difficulty": 1,
+  "topic": "Data Preparation",
+  "referenceSql": "SELECT tieu_de, gia_trieu FROM nguon_a ORDER BY gia_trieu ASC;",
+  "expectedCols": [
+   "tieu_de",
+   "gia_trieu"
+  ],
+  "expectedRows": [
+   [
+    "Nhà trọ sinh viên Cầu Giấy",
+    3.5
+   ],
+   [
+    "Studio Hào Nam giá tốt",
+    5.5
+   ],
+   [
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    6.5
+   ],
+   [
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    8.0
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    9.0
+   ],
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    11.0
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    14.0
+   ],
+   [
+    "Căn hộ Mỹ Đình 2PN, 65m2",
+    15.0
+   ],
+   [
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    18.0
+   ],
+   [
+    "Căn hộ Royal City",
+    20.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-003",
+  "q": "Đếm số tin đăng theo từng quan trong nguon_a.",
+  "difficulty": 1,
+  "topic": "Data Preparation",
+  "referenceSql": "SELECT quan, COUNT(*) AS so_tin FROM nguon_a GROUP BY quan;",
+  "expectedCols": [
+   "quan",
+   "so_tin"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    4
+   ],
+   [
+    "Hoàng Mai",
+    1
+   ],
+   [
+    "Nam Từ Liêm",
+    1
+   ],
+   [
+    "Thanh Xuân",
+    2
+   ],
+   [
+    "Đống Đa",
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m04-004",
+  "q": "Lấy danh sách DISTINCT các giá trị quan xuất hiện ở CẢ nguon_a và nguon_b (UNION).",
+  "difficulty": 1,
+  "topic": "Data Preparation",
+  "referenceSql": "SELECT DISTINCT quan FROM nguon_a UNION SELECT DISTINCT quan FROM nguon_b;",
+  "expectedCols": [
+   "quan"
+  ],
+  "expectedRows": [
+   [
+    "Ba Đình"
+   ],
+   [
+    "Cầu Giấy"
+   ],
+   [
+    "Hai Bà Trưng"
+   ],
+   [
+    "Hoàng Mai"
+   ],
+   [
+    "Hà Đông"
+   ],
+   [
+    "Nam Từ Liêm"
+   ],
+   [
+    "Thanh Xuân"
+   ],
+   [
+    "Đống Đa"
+   ]
+  ]
+ },
+ {
+  "id": "m04-005",
+  "q": "Chuẩn hoá: chuyển sdt về dạng chỉ giữ số (ở đây sdt đã toàn số) — đếm độ dài ký tự (LENGTH) của từng sdt trong nguon_a để kiểm tra đồng nhất định dạng.",
+  "difficulty": 1,
+  "topic": "Data Preparation",
+  "referenceSql": "SELECT DISTINCT LENGTH(sdt) AS do_dai_sdt FROM nguon_a;",
+  "expectedCols": [
+   "do_dai_sdt"
+  ],
+  "expectedRows": [
+   [
+    10
+   ]
+  ]
+ },
+ {
+  "id": "m04-006",
+  "q": "Blocking đơn giản nhất: JOIN nguon_a với nguon_b CHỈ theo đúng quan trùng nhau (blocking key = quan) — đây là bước LỌC ỨNG VIÊN trước khi so khớp kỹ hơn.",
+  "difficulty": 2,
+  "topic": "Blocking",
+  "referenceSql": "SELECT a.id, a.tieu_de, b.id, b.ten_tin FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan;",
+  "expectedCols": [
+   "id",
+   "tieu_de",
+   "id",
+   "ten_tin"
+  ],
+  "expectedRows": [
+   [
+    1,
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    201,
+    "CC 12 Lang Ha full noi that"
+   ],
+   [
+    1,
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    207,
+    "Studio Hao Nam"
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    202,
+    "Can ho Cau Giay 50m2 view dep"
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    204,
+    "Can ho Tran Duy Hung cao cap"
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    205,
+    "Chung cu mini Hoang Quoc Viet"
+   ],
+   [
+    3,
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    203,
+    "Phong tro Nguyen Trai"
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    202,
+    "Can ho Cau Giay 50m2 view dep"
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    204,
+    "Can ho Tran Duy Hung cao cap"
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    205,
+    "Chung cu mini Hoang Quoc Viet"
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    202,
+    "Can ho Cau Giay 50m2 view dep"
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    204,
+    "Can ho Tran Duy Hung cao cap"
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    205,
+    "Chung cu mini Hoang Quoc Viet"
+   ],
+   [
+    6,
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    206,
+    "Nha Linh Dam 80m2"
+   ],
+   [
+    8,
+    "Studio Hào Nam giá tốt",
+    201,
+    "CC 12 Lang Ha full noi that"
+   ],
+   [
+    8,
+    "Studio Hào Nam giá tốt",
+    207,
+    "Studio Hao Nam"
+   ],
+   [
+    9,
+    "Căn hộ Royal City",
+    203,
+    "Phong tro Nguyen Trai"
+   ],
+   [
+    10,
+    "Nhà trọ sinh viên Cầu Giấy",
+    202,
+    "Can ho Cau Giay 50m2 view dep"
+   ],
+   [
+    10,
+    "Nhà trọ sinh viên Cầu Giấy",
+    204,
+    "Can ho Tran Duy Hung cao cap"
+   ],
+   [
+    10,
+    "Nhà trọ sinh viên Cầu Giấy",
+    205,
+    "Chung cu mini Hoang Quoc Viet"
+   ]
+  ]
+ },
+ {
+  "id": "m04-007",
+  "q": "Đếm số CẶP ỨNG VIÊN sinh ra bởi blocking theo quan (so với Naive All-Pairs sẽ là 10x10=100 cặp).",
+  "difficulty": 2,
+  "topic": "Blocking",
+  "referenceSql": "SELECT COUNT(*) AS so_cap_ung_vien FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan;",
+  "expectedCols": [
+   "so_cap_ung_vien"
+  ],
+  "expectedRows": [
+   [
+    19
+   ]
+  ]
+ },
+ {
+  "id": "m04-008",
+  "q": "Blocking bằng diện tích: JOIN nguon_a với nguon_b khi dien_tich = dt_m2 (giả định diện tích ít khi bị ghi sai giữa 2 nguồn).",
+  "difficulty": 2,
+  "topic": "Blocking",
+  "referenceSql": "SELECT a.id, a.tieu_de, b.id, b.ten_tin, a.dien_tich FROM nguon_a a JOIN nguon_b b ON a.dien_tich = b.dt_m2;",
+  "expectedCols": [
+   "id",
+   "tieu_de",
+   "id",
+   "ten_tin",
+   "dien_tich"
+  ],
+  "expectedRows": [
+   [
+    1,
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    201,
+    "CC 12 Lang Ha full noi that",
+    35.0
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    202,
+    "Can ho Cau Giay 50m2 view dep",
+    50.0
+   ],
+   [
+    3,
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    203,
+    "Phong tro Nguyen Trai",
+    28.0
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    204,
+    "Can ho Tran Duy Hung cao cap",
+    60.0
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    205,
+    "Chung cu mini Hoang Quoc Viet",
+    40.0
+   ],
+   [
+    6,
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    206,
+    "Nha Linh Dam 80m2",
+    80.0
+   ],
+   [
+    8,
+    "Studio Hào Nam giá tốt",
+    207,
+    "Studio Hao Nam",
+    25.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-009",
+  "q": "Blocking kết hợp 2 điều kiện (quan VÀ dien_tich) để giảm số ứng viên hơn nữa so với chỉ dùng 1 điều kiện.",
+  "difficulty": 2,
+  "topic": "Blocking",
+  "referenceSql": "SELECT a.id, b.id FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan AND a.dien_tich = b.dt_m2;",
+  "expectedCols": [
+   "id",
+   "id"
+  ],
+  "expectedRows": [
+   [
+    1,
+    201
+   ],
+   [
+    2,
+    202
+   ],
+   [
+    3,
+    203
+   ],
+   [
+    4,
+    204
+   ],
+   [
+    5,
+    205
+   ],
+   [
+    6,
+    206
+   ],
+   [
+    8,
+    207
+   ]
+  ]
+ },
+ {
+  "id": "m04-010",
+  "q": "Sorted Neighborhood đơn giản hoá: sắp nguon_a theo dien_tich, lấy 3 tin có dien_tich gần giá trị 50 nhất (ORDER BY ABS(dien_tich-50) LIMIT 3) — mô phỏng 'cửa sổ trượt' quanh 1 giá trị.",
+  "difficulty": 2,
+  "topic": "Blocking",
+  "referenceSql": "SELECT tieu_de, dien_tich FROM nguon_a ORDER BY ABS(dien_tich - 50) LIMIT 3;",
+  "expectedCols": [
+   "tieu_de",
+   "dien_tich"
+  ],
+  "expectedRows": [
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    50.0
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    60.0
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    40.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-011",
+  "q": "Matching theo giá với ngưỡng 10%: JOIN nguon_a với nguon_b (đã lọc theo quan+dien_tich ở câu trước) với điều kiện |gia_trieu - gia_rao_trieu| / gia_trieu <= 0.10.",
+  "difficulty": 2,
+  "topic": "Matching theo giá",
+  "referenceSql": "SELECT a.id, a.tieu_de, b.id, b.ten_tin, a.gia_trieu, b.gia_rao_trieu FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan AND a.dien_tich = b.dt_m2 WHERE ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu <= 0.10;",
+  "expectedCols": [
+   "id",
+   "tieu_de",
+   "id",
+   "ten_tin",
+   "gia_trieu",
+   "gia_rao_trieu"
+  ],
+  "expectedRows": [
+   [
+    1,
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    201,
+    "CC 12 Lang Ha full noi that",
+    8.0,
+    8.4
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    202,
+    "Can ho Cau Giay 50m2 view dep",
+    11.0,
+    10.5
+   ],
+   [
+    3,
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    203,
+    "Phong tro Nguyen Trai",
+    6.5,
+    6.8
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    204,
+    "Can ho Tran Duy Hung cao cap",
+    14.0,
+    14.5
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    205,
+    "Chung cu mini Hoang Quoc Viet",
+    9.0,
+    8.7
+   ],
+   [
+    6,
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    206,
+    "Nha Linh Dam 80m2",
+    18.0,
+    17.5
+   ],
+   [
+    8,
+    "Studio Hào Nam giá tốt",
+    207,
+    "Studio Hao Nam",
+    5.5,
+    5.7
+   ]
+  ]
+ },
+ {
+  "id": "m04-012",
+  "q": "So sánh 2 ngưỡng: với ngưỡng 3% (quá chặt), bao nhiêu cặp match theo giá tìm được (trên tập đã blocking theo quan+dien_tich)?",
+  "difficulty": 3,
+  "topic": "Matching theo giá",
+  "referenceSql": "SELECT COUNT(*) AS so_cap_match_3pct FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan AND a.dien_tich = b.dt_m2 WHERE ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu <= 0.03;",
+  "expectedCols": [
+   "so_cap_match_3pct"
+  ],
+  "expectedRows": [
+   [
+    1
+   ]
+  ]
+ },
+ {
+  "id": "m04-013",
+  "q": "Với ngưỡng 10% (hợp lý hơn), bao nhiêu cặp match theo giá tìm được? So sánh với câu trước để thấy ngưỡng quá chặt làm RECALL giảm (bỏ sót các cặp match thật).",
+  "difficulty": 3,
+  "topic": "Matching theo giá",
+  "referenceSql": "SELECT COUNT(*) AS so_cap_match_10pct FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan AND a.dien_tich = b.dt_m2 WHERE ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu <= 0.10;",
+  "expectedCols": [
+   "so_cap_match_10pct"
+  ],
+  "expectedRows": [
+   [
+    7
+   ]
+  ]
+ },
+ {
+  "id": "m04-014",
+  "q": "Tìm các cặp (nguon_a, nguon_b) có dia_chi của A xuất hiện là SUBSTRING của khu_vuc ở B hoặc ngược lại (dùng LIKE với '%'||...||'%') — minh hoạ so khớp chuỗi thô sơ không cần UDF.",
+  "difficulty": 2,
+  "topic": "Matching theo địa chỉ",
+  "referenceSql": "SELECT a.id, a.dia_chi, b.id, b.khu_vuc FROM nguon_a a JOIN nguon_b b ON b.khu_vuc LIKE '%' || SUBSTR(a.dia_chi, 1, 6) || '%' OR a.dia_chi LIKE '%' || SUBSTR(b.khu_vuc,1,6) || '%';",
+  "expectedCols": [
+   "id",
+   "dia_chi",
+   "id",
+   "khu_vuc"
+  ],
+  "expectedRows": [
+   [
+    3,
+    "78 Nguyễn Trãi",
+    203,
+    "78 Nguyen Trai"
+   ]
+  ]
+ },
+ {
+  "id": "m04-015",
+  "q": "Chuẩn hoá đơn giản: SUBSTR 6 ký tự đầu của dia_chi (nguon_a) và khu_vuc (nguon_b), so sánh có BẰNG NHAU không sau khi chuẩn hoá (coi như đã bỏ dấu, viết thường — ở đây dữ liệu đã sẵn không dấu nên so trực tiếp được).",
+  "difficulty": 2,
+  "topic": "Matching theo địa chỉ",
+  "referenceSql": "SELECT a.id, a.dia_chi, b.id, b.khu_vuc FROM nguon_a a JOIN nguon_b b WHERE SUBSTR(a.dia_chi,1,6) = SUBSTR(b.khu_vuc,1,6);",
+  "expectedCols": [
+   "id",
+   "dia_chi",
+   "id",
+   "khu_vuc"
+  ],
+  "expectedRows": [
+   [
+    3,
+    "78 Nguyễn Trãi",
+    203,
+    "78 Nguyen Trai"
+   ]
+  ]
+ },
+ {
+  "id": "m04-016",
+  "q": "Tìm TOÀN BỘ cặp match THẬT (ground truth) bằng khoá chắc chắn nhất: sdt = lien_he.",
+  "difficulty": 2,
+  "topic": "Matching bằng SĐT",
+  "referenceSql": "SELECT a.id AS id_a, b.id AS id_b FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he;",
+  "expectedCols": [
+   "id_a",
+   "id_b"
+  ],
+  "expectedRows": [
+   [
+    1,
+    201
+   ],
+   [
+    2,
+    202
+   ],
+   [
+    3,
+    203
+   ],
+   [
+    4,
+    204
+   ],
+   [
+    5,
+    205
+   ],
+   [
+    6,
+    206
+   ],
+   [
+    8,
+    207
+   ]
+  ]
+ },
+ {
+  "id": "m04-017",
+  "q": "So sánh với ground truth (câu trước): tìm các cặp match THEO GIÁ (ngưỡng 10%, đã blocking theo quan) nhưng KHÔNG nằm trong ground truth theo SĐT — đây là FALSE POSITIVE của phương pháp matching theo giá.",
+  "difficulty": 3,
+  "topic": "Matching bằng SĐT",
+  "referenceSql": "SELECT a.id, b.id FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan AND ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu <= 0.10 WHERE NOT EXISTS (SELECT 1 FROM nguon_a a2 JOIN nguon_b b2 ON a2.sdt = b2.lien_he WHERE a2.id = a.id AND b2.id = b.id);",
+  "expectedCols": [
+   "id",
+   "id"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m04-018",
+  "q": "Tìm các cặp match THẬT (ground truth SĐT) nhưng KHÔNG được blocking-theo-quan+dien_tich tìm ra (FALSE NEGATIVE — bị bỏ sót bởi bước blocking, nếu có).",
+  "difficulty": 3,
+  "topic": "Matching bằng SĐT",
+  "referenceSql": "SELECT a.id, b.id FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he WHERE NOT EXISTS (SELECT 1 FROM nguon_a a2 JOIN nguon_b b2 ON a2.quan=b2.quan AND a2.dien_tich=b2.dt_m2 WHERE a2.id=a.id AND b2.id=b.id);",
+  "expectedCols": [
+   "id",
+   "id"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m04-019",
+  "q": "Tìm các tin trong nguon_a KHÔNG có cặp match nào trong nguon_b (theo SĐT) — đây là các tin chỉ đăng ở 1 nguồn (non-match thật).",
+  "difficulty": 2,
+  "topic": "Non-match",
+  "referenceSql": "SELECT id, tieu_de FROM nguon_a WHERE sdt NOT IN (SELECT lien_he FROM nguon_b);",
+  "expectedCols": [
+   "id",
+   "tieu_de"
+  ],
+  "expectedRows": [
+   [
+    7,
+    "Căn hộ Mỹ Đình 2PN, 65m2"
+   ],
+   [
+    9,
+    "Căn hộ Royal City"
+   ],
+   [
+    10,
+    "Nhà trọ sinh viên Cầu Giấy"
+   ]
+  ]
+ },
+ {
+  "id": "m04-020",
+  "q": "Tìm các tin trong nguon_b KHÔNG có cặp match nào trong nguon_a (theo SĐT).",
+  "difficulty": 2,
+  "topic": "Non-match",
+  "referenceSql": "SELECT id, ten_tin FROM nguon_b WHERE lien_he NOT IN (SELECT sdt FROM nguon_a);",
+  "expectedCols": [
+   "id",
+   "ten_tin"
+  ],
+  "expectedRows": [
+   [
+    208,
+    "Can ho Van Phu Ha Dong"
+   ],
+   [
+    209,
+    "Nha mat pho Kim Ma"
+   ],
+   [
+    210,
+    "Can ho Time City"
+   ]
+  ]
+ },
+ {
+  "id": "m04-021",
+  "q": "Đếm tổng số tin ĐÃ match (theo SĐT) so với tổng số tin ở nguon_a — tính tỷ lệ match (%).",
+  "difficulty": 1,
+  "topic": "Non-match",
+  "referenceSql": "SELECT 100.0 * (SELECT COUNT(*) FROM nguon_a a WHERE a.sdt IN (SELECT lien_he FROM nguon_b)) / (SELECT COUNT(*) FROM nguon_a) AS ty_le_match_pct;",
+  "expectedCols": [
+   "ty_le_match_pct"
+  ],
+  "expectedRows": [
+   [
+    70.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-022",
+  "q": "Dựng danh sách thực thể HỢP NHẤT: với mỗi cặp match (theo SĐT), lấy tieu_de từ nguon_a, gia trung bình của 2 nguồn (Data Fusion đơn giản = trung bình 2 giá).",
+  "difficulty": 3,
+  "topic": "Clustering/Hợp nhất",
+  "referenceSql": "SELECT a.tieu_de, (a.gia_trieu + b.gia_rao_trieu) / 2.0 AS gia_hop_nhat FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he;",
+  "expectedCols": [
+   "tieu_de",
+   "gia_hop_nhat"
+  ],
+  "expectedRows": [
+   [
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    8.2
+   ],
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    10.75
+   ],
+   [
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    6.65
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    14.25
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    8.85
+   ],
+   [
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    17.75
+   ],
+   [
+    "Studio Hào Nam giá tốt",
+    5.6
+   ]
+  ]
+ },
+ {
+  "id": "m04-023",
+  "q": "Danh sách thực thể ĐẦY ĐỦ sau khi hợp nhất: UNION các tin match (lấy 1 đại diện từ nguon_a) với các tin non-match riêng của cả 2 nguồn — tổng số thực thể duy nhất phải là 13 (7 match + 3 non-match A + 3 non-match B).",
+  "difficulty": 3,
+  "topic": "Clustering/Hợp nhất",
+  "referenceSql": "SELECT tieu_de AS ten FROM nguon_a UNION SELECT ten_tin FROM nguon_b WHERE lien_he NOT IN (SELECT sdt FROM nguon_a);",
+  "expectedCols": [
+   "ten"
+  ],
+  "expectedRows": [
+   [
+    "Can ho Time City"
+   ],
+   [
+    "Can ho Van Phu Ha Dong"
+   ],
+   [
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất"
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt"
+   ],
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2"
+   ],
+   [
+    "Căn hộ Mỹ Đình 2PN, 65m2"
+   ],
+   [
+    "Căn hộ Royal City"
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2"
+   ],
+   [
+    "Nha mat pho Kim Ma"
+   ],
+   [
+    "Nhà nguyên căn Linh Đàm, 80m2"
+   ],
+   [
+    "Nhà trọ sinh viên Cầu Giấy"
+   ],
+   [
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ"
+   ],
+   [
+    "Studio Hào Nam giá tốt"
+   ]
+  ]
+ },
+ {
+  "id": "m04-024",
+  "q": "Đếm số thực thể duy nhất sau hợp nhất (kết quả của câu trước) để xác nhận đúng 13.",
+  "difficulty": 2,
+  "topic": "Clustering/Hợp nhất",
+  "referenceSql": "SELECT COUNT(*) AS so_thuc_the_duy_nhat FROM (SELECT tieu_de AS ten FROM nguon_a UNION SELECT ten_tin FROM nguon_b WHERE lien_he NOT IN (SELECT sdt FROM nguon_a));",
+  "expectedCols": [
+   "so_thuc_the_duy_nhat"
+  ],
+  "expectedRows": [
+   [
+    13
+   ]
+  ]
+ },
+ {
+  "id": "m04-025",
+  "q": "Tính giá trung bình (gia_trieu) theo quan trong nguon_a.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT quan, AVG(gia_trieu) AS gia_tb FROM nguon_a GROUP BY quan;",
+  "expectedCols": [
+   "quan",
+   "gia_tb"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    9.375
+   ],
+   [
+    "Hoàng Mai",
+    18.0
+   ],
+   [
+    "Nam Từ Liêm",
+    15.0
+   ],
+   [
+    "Thanh Xuân",
+    13.25
+   ],
+   [
+    "Đống Đa",
+    6.75
+   ]
+  ]
+ },
+ {
+  "id": "m04-026",
+  "q": "Tính giá trung bình (gia_rao_trieu) theo quan trong nguon_b.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT quan, AVG(gia_rao_trieu) AS gia_tb FROM nguon_b GROUP BY quan;",
+  "expectedCols": [
+   "quan",
+   "gia_tb"
+  ],
+  "expectedRows": [
+   [
+    "Ba Đình",
+    25.0
+   ],
+   [
+    "Cầu Giấy",
+    11.233333333333334
+   ],
+   [
+    "Hai Bà Trưng",
+    19.0
+   ],
+   [
+    "Hoàng Mai",
+    17.5
+   ],
+   [
+    "Hà Đông",
+    10.0
+   ],
+   [
+    "Thanh Xuân",
+    6.8
+   ],
+   [
+    "Đống Đa",
+    7.050000000000001
+   ]
+  ]
+ },
+ {
+  "id": "m04-027",
+  "q": "So sánh giá trung bình theo quan giữa 2 nguồn (JOIN 2 bảng kết quả GROUP BY theo quan).",
+  "difficulty": 3,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT x.quan, x.gia_tb_a, y.gia_tb_b FROM (SELECT quan, AVG(gia_trieu) AS gia_tb_a FROM nguon_a GROUP BY quan) x JOIN (SELECT quan, AVG(gia_rao_trieu) AS gia_tb_b FROM nguon_b GROUP BY quan) y ON x.quan = y.quan;",
+  "expectedCols": [
+   "quan",
+   "gia_tb_a",
+   "gia_tb_b"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    9.375,
+    11.233333333333334
+   ],
+   [
+    "Hoàng Mai",
+    18.0,
+    17.5
+   ],
+   [
+    "Thanh Xuân",
+    13.25,
+    6.8
+   ],
+   [
+    "Đống Đa",
+    6.75,
+    7.050000000000001
+   ]
+  ]
+ },
+ {
+  "id": "m04-028",
+  "q": "Tìm giá cao nhất (gia_trieu) trong nguon_a.",
+  "difficulty": 1,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT tieu_de, gia_trieu FROM nguon_a WHERE gia_trieu = (SELECT MAX(gia_trieu) FROM nguon_a);",
+  "expectedCols": [
+   "tieu_de",
+   "gia_trieu"
+  ],
+  "expectedRows": [
+   [
+    "Căn hộ Royal City",
+    20.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-029",
+  "q": "LEFT JOIN nguon_a với nguon_b (theo SĐT) để gắn nhãn từng tin ở nguon_a là 'co_match' hay 'khong_match'.",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & trạng thái match",
+  "referenceSql": "SELECT a.id, a.tieu_de, CASE WHEN b.id IS NULL THEN 'khong_match' ELSE 'co_match' END AS trang_thai FROM nguon_a a LEFT JOIN nguon_b b ON a.sdt = b.lien_he;",
+  "expectedCols": [
+   "id",
+   "tieu_de",
+   "trang_thai"
+  ],
+  "expectedRows": [
+   [
+    1,
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    "co_match"
+   ],
+   [
+    2,
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    "co_match"
+   ],
+   [
+    3,
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    "co_match"
+   ],
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    "co_match"
+   ],
+   [
+    5,
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    "co_match"
+   ],
+   [
+    6,
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    "co_match"
+   ],
+   [
+    7,
+    "Căn hộ Mỹ Đình 2PN, 65m2",
+    "khong_match"
+   ],
+   [
+    8,
+    "Studio Hào Nam giá tốt",
+    "co_match"
+   ],
+   [
+    9,
+    "Căn hộ Royal City",
+    "khong_match"
+   ],
+   [
+    10,
+    "Nhà trọ sinh viên Cầu Giấy",
+    "khong_match"
+   ]
+  ]
+ },
+ {
+  "id": "m04-030",
+  "q": "Từ kết quả LEFT JOIN trên, đếm số tin 'co_match' và 'khong_match'.",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & trạng thái match",
+  "referenceSql": "SELECT trang_thai, COUNT(*) AS so_tin FROM (SELECT CASE WHEN b.id IS NULL THEN 'khong_match' ELSE 'co_match' END AS trang_thai FROM nguon_a a LEFT JOIN nguon_b b ON a.sdt = b.lien_he) GROUP BY trang_thai;",
+  "expectedCols": [
+   "trang_thai",
+   "so_tin"
+  ],
+  "expectedRows": [
+   [
+    "co_match",
+    7
+   ],
+   [
+    "khong_match",
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m04-031",
+  "q": "Tìm tin ở nguon_a có gia_trieu CAO HƠN giá trung bình của TOÀN BỘ nguon_a VÀ cũng có 1 cặp match ở nguon_b (theo SĐT).",
+  "difficulty": 3,
+  "topic": "Subquery",
+  "referenceSql": "SELECT a.id, a.tieu_de, a.gia_trieu FROM nguon_a a WHERE a.gia_trieu > (SELECT AVG(gia_trieu) FROM nguon_a) AND a.sdt IN (SELECT lien_he FROM nguon_b);",
+  "expectedCols": [
+   "id",
+   "tieu_de",
+   "gia_trieu"
+  ],
+  "expectedRows": [
+   [
+    4,
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    14.0
+   ],
+   [
+    6,
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    18.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-032",
+  "q": "Tìm quan có số tin đăng (nguon_a) NHIỀU NHẤT.",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT quan, COUNT(*) AS so_tin FROM nguon_a GROUP BY quan ORDER BY so_tin DESC LIMIT 1;",
+  "expectedCols": [
+   "quan",
+   "so_tin"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    4
+   ]
+  ]
+ },
+ {
+  "id": "m04-033",
+  "q": "Với các cặp match (theo SĐT), tính % chênh lệch giá tuyệt đối (|gia_trieu-gia_rao_trieu|/gia_trieu*100), sắp giảm dần — xem cặp nào lệch giá nhiều nhất.",
+  "difficulty": 2,
+  "topic": "Chênh lệch giá",
+  "referenceSql": "SELECT a.tieu_de, a.gia_trieu, b.gia_rao_trieu, ROUND(ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu * 100, 1) AS pct_lech FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he ORDER BY pct_lech DESC;",
+  "expectedCols": [
+   "tieu_de",
+   "gia_trieu",
+   "gia_rao_trieu",
+   "pct_lech"
+  ],
+  "expectedRows": [
+   [
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    8.0,
+    8.4,
+    5.0
+   ],
+   [
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    6.5,
+    6.8,
+    4.6
+   ],
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    11.0,
+    10.5,
+    4.5
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    14.0,
+    14.5,
+    3.6
+   ],
+   [
+    "Studio Hào Nam giá tốt",
+    5.5,
+    5.7,
+    3.6
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    9.0,
+    8.7,
+    3.3
+   ],
+   [
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    18.0,
+    17.5,
+    2.8
+   ]
+  ]
+ },
+ {
+  "id": "m04-034",
+  "q": "Tính % chênh lệch giá TRUNG BÌNH qua toàn bộ 7 cặp match — đây chính là con số thực tế đứng sau ví dụ '~5%' nêu trong câu hỏi D2 của Quiz buổi 4.",
+  "difficulty": 2,
+  "topic": "Chênh lệch giá",
+  "referenceSql": "SELECT AVG(ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu * 100) AS pct_lech_tb FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he;",
+  "expectedCols": [
+   "pct_lech_tb"
+  ],
+  "expectedRows": [
+   [
+    3.925677497106071
+   ]
+  ]
+ },
+ {
+  "id": "m04-035",
+  "q": "Tính số cặp Naive All-Pairs (không blocking) = số dòng nguon_a × số dòng nguon_b.",
+  "difficulty": 2,
+  "topic": "Hiệu quả Blocking",
+  "referenceSql": "SELECT (SELECT COUNT(*) FROM nguon_a) * (SELECT COUNT(*) FROM nguon_b) AS so_cap_naive;",
+  "expectedCols": [
+   "so_cap_naive"
+  ],
+  "expectedRows": [
+   [
+    100
+   ]
+  ]
+ },
+ {
+  "id": "m04-036",
+  "q": "Tính tỷ lệ GIẢM số cặp cần xét khi dùng blocking theo quan+dien_tich so với Naive All-Pairs (%).",
+  "difficulty": 2,
+  "topic": "Hiệu quả Blocking",
+  "referenceSql": "SELECT 100.0 * (1.0 - CAST((SELECT COUNT(*) FROM nguon_a a JOIN nguon_b b ON a.quan=b.quan AND a.dien_tich=b.dt_m2) AS REAL) / ((SELECT COUNT(*) FROM nguon_a) * (SELECT COUNT(*) FROM nguon_b))) AS pct_giam;",
+  "expectedCols": [
+   "pct_giam"
+  ],
+  "expectedRows": [
+   [
+    93.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-037",
+  "q": "Phân loại tin nguon_a theo khoảng giá: <7 'rẻ', 7-13 'vừa', >13 'cao'.",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT tieu_de, gia_trieu, CASE WHEN gia_trieu < 7 THEN 'rẻ' WHEN gia_trieu <= 13 THEN 'vừa' ELSE 'cao' END AS phan_loai FROM nguon_a;",
+  "expectedCols": [
+   "tieu_de",
+   "gia_trieu",
+   "phan_loai"
+  ],
+  "expectedRows": [
+   [
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    8.0,
+    "vừa"
+   ],
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    11.0,
+    "vừa"
+   ],
+   [
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    6.5,
+    "rẻ"
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    14.0,
+    "cao"
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    9.0,
+    "vừa"
+   ],
+   [
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    18.0,
+    "cao"
+   ],
+   [
+    "Căn hộ Mỹ Đình 2PN, 65m2",
+    15.0,
+    "cao"
+   ],
+   [
+    "Studio Hào Nam giá tốt",
+    5.5,
+    "rẻ"
+   ],
+   [
+    "Căn hộ Royal City",
+    20.0,
+    "cao"
+   ],
+   [
+    "Nhà trọ sinh viên Cầu Giấy",
+    3.5,
+    "rẻ"
+   ]
+  ]
+ },
+ {
+  "id": "m04-038",
+  "q": "Đếm số tin theo từng phân loại giá (rẻ/vừa/cao) ở nguon_a.",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT phan_loai, COUNT(*) AS so_tin FROM (SELECT CASE WHEN gia_trieu < 7 THEN 'rẻ' WHEN gia_trieu <= 13 THEN 'vừa' ELSE 'cao' END AS phan_loai FROM nguon_a) GROUP BY phan_loai;",
+  "expectedCols": [
+   "phan_loai",
+   "so_tin"
+  ],
+  "expectedRows": [
+   [
+    "cao",
+    4
+   ],
+   [
+    "rẻ",
+    3
+   ],
+   [
+    "vừa",
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m04-039",
+  "q": "Giả sử cần Naive Deduplication NGAY TRONG nguon_a (tìm tin trùng lặp do đăng nhầm 2 lần) — self-join theo sdt trùng nhau, id khác nhau (nếu có). Kết quả rỗng nghĩa là nguon_a không có trùng lặp nội bộ.",
+  "difficulty": 3,
+  "topic": "Deduplication nội bộ",
+  "referenceSql": "SELECT a1.id, a2.id, a1.sdt FROM nguon_a a1 JOIN nguon_a a2 ON a1.sdt = a2.sdt AND a1.id < a2.id;",
+  "expectedCols": [
+   "id",
+   "id",
+   "sdt"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m04-040",
+  "q": "Tương tự, kiểm tra nguon_b có trùng lặp nội bộ theo lien_he không.",
+  "difficulty": 2,
+  "topic": "Deduplication nội bộ",
+  "referenceSql": "SELECT b1.id, b2.id, b1.lien_he FROM nguon_b b1 JOIN nguon_b b2 ON b1.lien_he = b2.lien_he AND b1.id < b2.id;",
+  "expectedCols": [
+   "id",
+   "id",
+   "lien_he"
+  ],
+  "expectedRows": []
+ },
+ {
+  "id": "m04-041",
+  "q": "Pipeline đầy đủ 1 câu: Blocking (quan) → Matching (giá ngưỡng 10%) → liệt kê kèm % lệch giá, sắp theo % lệch giá tăng dần (cặp khớp tốt nhất lên đầu).",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT a.tieu_de, b.ten_tin, ROUND(ABS(a.gia_trieu-b.gia_rao_trieu)/a.gia_trieu*100,1) AS pct_lech FROM nguon_a a JOIN nguon_b b ON a.quan = b.quan WHERE ABS(a.gia_trieu - b.gia_rao_trieu) / a.gia_trieu <= 0.10 ORDER BY pct_lech ASC;",
+  "expectedCols": [
+   "tieu_de",
+   "ten_tin",
+   "pct_lech"
+  ],
+  "expectedRows": [
+   [
+    "Nhà nguyên căn Linh Đàm, 80m2",
+    "Nha Linh Dam 80m2",
+    2.8
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt",
+    "Chung cu mini Hoang Quoc Viet",
+    3.3
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2",
+    "Can ho Tran Duy Hung cao cap",
+    3.6
+   ],
+   [
+    "Studio Hào Nam giá tốt",
+    "Studio Hao Nam",
+    3.6
+   ],
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2",
+    "Can ho Cau Giay 50m2 view dep",
+    4.5
+   ],
+   [
+    "Phòng trọ 78 Nguyễn Trãi giá rẻ",
+    "Phong tro Nguyen Trai",
+    4.6
+   ],
+   [
+    "Cho thuê căn hộ 12 Láng Hạ, 35m2, đầy đủ nội thất",
+    "CC 12 Lang Ha full noi that",
+    5.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-042",
+  "q": "Liệt kê HoTen... (ở đây là tieu_de) các tin nguon_a thuộc quan 'Cầu Giấy' CÓ match ở nguon_b.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT a.tieu_de FROM nguon_a a WHERE a.quan = 'Cầu Giấy' AND a.sdt IN (SELECT lien_he FROM nguon_b);",
+  "expectedCols": [
+   "tieu_de"
+  ],
+  "expectedRows": [
+   [
+    "Căn hộ 45 Cầu Giấy view đẹp, 50m2"
+   ],
+   [
+    "Căn hộ cao cấp 9 Trần Duy Hưng, 60m2"
+   ],
+   [
+    "Chung cư mini 22 Hoàng Quốc Việt"
+   ]
+  ]
+ },
+ {
+  "id": "m04-043",
+  "q": "Liệt kê các tin nguon_a thuộc quan 'Cầu Giấy' KHÔNG có match ở nguon_b.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT a.tieu_de FROM nguon_a a WHERE a.quan = 'Cầu Giấy' AND a.sdt NOT IN (SELECT lien_he FROM nguon_b);",
+  "expectedCols": [
+   "tieu_de"
+  ],
+  "expectedRows": [
+   [
+    "Nhà trọ sinh viên Cầu Giấy"
+   ]
+  ]
+ },
+ {
+  "id": "m04-044",
+  "q": "Tính dien_tich trung bình CHỈ của các tin ĐÃ match (theo SĐT) ở nguon_a.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT AVG(dien_tich) AS dt_tb_matched FROM nguon_a WHERE sdt IN (SELECT lien_he FROM nguon_b);",
+  "expectedCols": [
+   "dt_tb_matched"
+  ],
+  "expectedRows": [
+   [
+    45.42857142857143
+   ]
+  ]
+ },
+ {
+  "id": "m04-045",
+  "q": "Tính dien_tich trung bình CHỈ của các tin KHÔNG match ở nguon_a — so với câu trước để xem tin không-match có xu hướng diện tích khác biệt không.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT AVG(dien_tich) AS dt_tb_non_matched FROM nguon_a WHERE sdt NOT IN (SELECT lien_he FROM nguon_b);",
+  "expectedCols": [
+   "dt_tb_non_matched"
+  ],
+  "expectedRows": [
+   [
+    51.666666666666664
+   ]
+  ]
+ },
+ {
+  "id": "m04-046",
+  "q": "Tìm quan xuất hiện ở nguon_a nhưng KHÔNG xuất hiện ở nguon_b (nếu có) — minh hoạ Schema Coverage khác nhau giữa 2 nguồn tương tự Module 02.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT DISTINCT quan FROM nguon_a WHERE quan NOT IN (SELECT quan FROM nguon_b);",
+  "expectedCols": [
+   "quan"
+  ],
+  "expectedRows": [
+   [
+    "Nam Từ Liêm"
+   ]
+  ]
+ },
+ {
+  "id": "m04-047",
+  "q": "Tìm quan xuất hiện ở nguon_b nhưng KHÔNG xuất hiện ở nguon_a.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT DISTINCT quan FROM nguon_b WHERE quan NOT IN (SELECT quan FROM nguon_a);",
+  "expectedCols": [
+   "quan"
+  ],
+  "expectedRows": [
+   [
+    "Hà Đông"
+   ],
+   [
+    "Ba Đình"
+   ],
+   [
+    "Hai Bà Trưng"
+   ]
+  ]
+ },
+ {
+  "id": "m04-048",
+  "q": "Đếm tổng số tin đăng của CẢ 2 nguồn gộp lại (không loại trùng, dùng UNION ALL).",
+  "difficulty": 1,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT (SELECT COUNT(*) FROM nguon_a) + (SELECT COUNT(*) FROM nguon_b) AS tong_tin_tho;",
+  "expectedCols": [
+   "tong_tin_tho"
+  ],
+  "expectedRows": [
+   [
+    20
+   ]
+  ]
+ },
+ {
+  "id": "m04-049",
+  "q": "Tính tỷ lệ phần trăm số thực thể TRÙNG LẶP (7 cặp match) trên tổng số tin thô (20) — minh hoạ mức độ trùng lặp dữ liệu thực tế giữa 2 nguồn rao vặt độc lập.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT 100.0 * 7 / ((SELECT COUNT(*) FROM nguon_a) + (SELECT COUNT(*) FROM nguon_b)) AS pct_trung_lap;",
+  "expectedCols": [
+   "pct_trung_lap"
+  ],
+  "expectedRows": [
+   [
+    35.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-050",
+  "q": "Bài tổng hợp cuối: với mỗi quan có ít nhất 1 cặp match, tính số cặp match và % lệch giá trung bình của các cặp đó.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT a.quan, COUNT(*) AS so_cap, AVG(ABS(a.gia_trieu-b.gia_rao_trieu)/a.gia_trieu*100) AS pct_lech_tb FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he GROUP BY a.quan;",
+  "expectedCols": [
+   "quan",
+   "so_cap",
+   "pct_lech_tb"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    3,
+    3.8167388167388197
+   ],
+   [
+    "Hoàng Mai",
+    1,
+    2.7777777777777777
+   ],
+   [
+    "Thanh Xuân",
+    1,
+    4.615384615384613
+   ],
+   [
+    "Đống Đa",
+    2,
+    4.318181818181822
+   ]
+  ]
+ }
+]

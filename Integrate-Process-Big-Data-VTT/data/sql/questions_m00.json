@@ -1,0 +1,1359 @@
+[
+ {
+  "id": "m00-001",
+  "q": "Lấy toàn bộ cột của bảng nguoithue.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT * FROM nguoithue;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "HoTen",
+   "SDT",
+   "NamSinh"
+  ],
+  "expectedRows": [
+   [
+    1,
+    "Nguyễn Văn An",
+    "0901111111",
+    1995
+   ],
+   [
+    2,
+    "Trần Thị Bình",
+    "0902222222",
+    1998
+   ],
+   [
+    3,
+    "Lê Minh Châu",
+    "0903333333",
+    1990
+   ],
+   [
+    4,
+    "Phạm Thu Dung",
+    "0904444444",
+    2000
+   ],
+   [
+    5,
+    "Hoàng Văn Em",
+    "0905555555",
+    1993
+   ],
+   [
+    6,
+    "Vũ Thị Phượng",
+    "0906666666",
+    1997
+   ]
+  ]
+ },
+ {
+  "id": "m00-002",
+  "q": "Lấy HoTen, SDT của người thuê sinh sau năm 1995.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT HoTen, SDT FROM nguoithue WHERE NamSinh > 1995;",
+  "expectedCols": [
+   "HoTen",
+   "SDT"
+  ],
+  "expectedRows": [
+   [
+    "Trần Thị Bình",
+    "0902222222"
+   ],
+   [
+    "Phạm Thu Dung",
+    "0904444444"
+   ],
+   [
+    "Vũ Thị Phượng",
+    "0906666666"
+   ]
+  ]
+ },
+ {
+  "id": "m00-003",
+  "q": "Lấy DiaChi các căn hộ ở quận 'Cầu Giấy'.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT DiaChi FROM canho WHERE Quan = 'Cầu Giấy';",
+  "expectedCols": [
+   "DiaChi"
+  ],
+  "expectedRows": [
+   [
+    "45 Cầu Giấy"
+   ],
+   [
+    "9 Trần Duy Hưng"
+   ],
+   [
+    "22 Hoàng Quốc Việt"
+   ],
+   [
+    "5 Dương Đình Nghệ"
+   ]
+  ]
+ },
+ {
+  "id": "m00-004",
+  "q": "Lấy DiaChi, GiaThueNiemYet các căn hộ có giá niêm yết trên 9000000, sắp giảm dần theo giá.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT DiaChi, GiaThueNiemYet FROM canho WHERE GiaThueNiemYet > 9000000 ORDER BY GiaThueNiemYet DESC;",
+  "expectedCols": [
+   "DiaChi",
+   "GiaThueNiemYet"
+  ],
+  "expectedRows": [
+   [
+    "9 Trần Duy Hưng",
+    14000000.0
+   ],
+   [
+    "45 Cầu Giấy",
+    11000000.0
+   ],
+   [
+    "5 Dương Đình Nghệ",
+    10000000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-005",
+  "q": "Đếm số căn hộ có diện tích (DienTich) lớn hơn 40.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT COUNT(*) AS so_can FROM canho WHERE DienTich > 40;",
+  "expectedCols": [
+   "so_can"
+  ],
+  "expectedRows": [
+   [
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m00-006",
+  "q": "Lấy danh sách DISTINCT các quận (Quan) xuất hiện trong bảng canho.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT DISTINCT Quan FROM canho;",
+  "expectedCols": [
+   "Quan"
+  ],
+  "expectedRows": [
+   [
+    "Đống Đa"
+   ],
+   [
+    "Cầu Giấy"
+   ],
+   [
+    "Thanh Xuân"
+   ]
+  ]
+ },
+ {
+  "id": "m00-007",
+  "q": "Tìm hợp đồng thuê (thue) đang còn hiệu lực (NgayKetThuc IS NULL).",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT * FROM thue WHERE NgayKetThuc IS NULL;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "MaCanHo",
+   "NgayBatDau",
+   "NgayKetThuc",
+   "GiaThueThucTe"
+  ],
+  "expectedRows": [
+   [
+    3,
+    105,
+    "2024-01-01",
+    null,
+    8800000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-008",
+  "q": "Lấy GiaThueThucTe nhỏ nhất và lớn nhất trong bảng thue.",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT MIN(GiaThueThucTe) AS gia_min, MAX(GiaThueThucTe) AS gia_max FROM thue;",
+  "expectedCols": [
+   "gia_min",
+   "gia_max"
+  ],
+  "expectedRows": [
+   [
+    6300000.0,
+    13500000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-009",
+  "q": "JOIN thue với nguoithue (qua MaNguoiThue) để lấy HoTen cùng GiaThueThucTe của từng hợp đồng.",
+  "difficulty": 2,
+  "topic": "Join khoá chính-ngoại",
+  "referenceSql": "SELECT n.HoTen, t.GiaThueThucTe FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue;",
+  "expectedCols": [
+   "HoTen",
+   "GiaThueThucTe"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An",
+    7800000.0
+   ],
+   [
+    "Nguyễn Văn An",
+    6300000.0
+   ],
+   [
+    "Trần Thị Bình",
+    9800000.0
+   ],
+   [
+    "Lê Minh Châu",
+    13500000.0
+   ],
+   [
+    "Lê Minh Châu",
+    8800000.0
+   ],
+   [
+    "Phạm Thu Dung",
+    8000000.0
+   ],
+   [
+    "Hoàng Văn Em",
+    6500000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-010",
+  "q": "JOIN thue với canho (qua MaCanHo) để lấy DiaChi cùng NgayBatDau của từng hợp đồng.",
+  "difficulty": 2,
+  "topic": "Join khoá chính-ngoại",
+  "referenceSql": "SELECT c.DiaChi, t.NgayBatDau FROM thue t JOIN canho c ON c.MaCanHo = t.MaCanHo;",
+  "expectedCols": [
+   "DiaChi",
+   "NgayBatDau"
+  ],
+  "expectedRows": [
+   [
+    "12 Láng Hạ",
+    "2023-01-01"
+   ],
+   [
+    "78 Nguyễn Trãi",
+    "2024-01-01"
+   ],
+   [
+    "45 Cầu Giấy",
+    "2023-06-01"
+   ],
+   [
+    "9 Trần Duy Hưng",
+    "2022-01-01"
+   ],
+   [
+    "22 Hoàng Quốc Việt",
+    "2024-01-01"
+   ],
+   [
+    "12 Láng Hạ",
+    "2024-01-01"
+   ],
+   [
+    "78 Nguyễn Trãi",
+    "2023-01-01"
+   ]
+  ]
+ },
+ {
+  "id": "m00-011",
+  "q": "JOIN đủ 3 bảng (nguoithue-thue-canho) để lấy HoTen, DiaChi, GiaThueThucTe của mọi hợp đồng.",
+  "difficulty": 3,
+  "topic": "Join khoá chính-ngoại",
+  "referenceSql": "SELECT n.HoTen, c.DiaChi, t.GiaThueThucTe FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue JOIN canho c ON c.MaCanHo = t.MaCanHo;",
+  "expectedCols": [
+   "HoTen",
+   "DiaChi",
+   "GiaThueThucTe"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An",
+    "12 Láng Hạ",
+    7800000.0
+   ],
+   [
+    "Nguyễn Văn An",
+    "78 Nguyễn Trãi",
+    6300000.0
+   ],
+   [
+    "Trần Thị Bình",
+    "45 Cầu Giấy",
+    9800000.0
+   ],
+   [
+    "Lê Minh Châu",
+    "9 Trần Duy Hưng",
+    13500000.0
+   ],
+   [
+    "Lê Minh Châu",
+    "22 Hoàng Quốc Việt",
+    8800000.0
+   ],
+   [
+    "Phạm Thu Dung",
+    "12 Láng Hạ",
+    8000000.0
+   ],
+   [
+    "Hoàng Văn Em",
+    "78 Nguyễn Trãi",
+    6500000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-012",
+  "q": "Tìm HoTen người thuê căn hộ ở quận 'Thanh Xuân' (join thue-nguoithue-canho, lọc Quan).",
+  "difficulty": 2,
+  "topic": "Join khoá chính-ngoại",
+  "referenceSql": "SELECT DISTINCT n.HoTen FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue JOIN canho c ON c.MaCanHo = t.MaCanHo WHERE c.Quan = 'Thanh Xuân';",
+  "expectedCols": [
+   "HoTen"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An"
+   ],
+   [
+    "Hoàng Văn Em"
+   ]
+  ]
+ },
+ {
+  "id": "m00-013",
+  "q": "Tìm những người thuê (MaNguoiThue) đã thuê NHIỀU HƠN 1 căn hộ (GROUP BY + HAVING).",
+  "difficulty": 2,
+  "topic": "Liên kết N-N",
+  "referenceSql": "SELECT MaNguoiThue, COUNT(*) AS so_can_da_thue FROM thue GROUP BY MaNguoiThue HAVING COUNT(*) > 1;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "so_can_da_thue"
+  ],
+  "expectedRows": [
+   [
+    1,
+    2
+   ],
+   [
+    3,
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m00-014",
+  "q": "Tìm những căn hộ (MaCanHo) đã được CHO THUÊ CHO NHIỀU HƠN 1 người khác nhau theo thời gian.",
+  "difficulty": 2,
+  "topic": "Liên kết N-N",
+  "referenceSql": "SELECT MaCanHo, COUNT(DISTINCT MaNguoiThue) AS so_nguoi_da_thue FROM thue GROUP BY MaCanHo HAVING COUNT(DISTINCT MaNguoiThue) > 1;",
+  "expectedCols": [
+   "MaCanHo",
+   "so_nguoi_da_thue"
+  ],
+  "expectedRows": [
+   [
+    101,
+    2
+   ],
+   [
+    103,
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m00-015",
+  "q": "Lấy HoTen và danh sách DiaChi (dùng GROUP_CONCAT) của mọi căn hộ mà người đó đã từng thuê.",
+  "difficulty": 3,
+  "topic": "Liên kết N-N",
+  "referenceSql": "SELECT n.HoTen, GROUP_CONCAT(c.DiaChi, '; ') AS cac_can_ho FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue JOIN canho c ON c.MaCanHo = t.MaCanHo GROUP BY n.HoTen;",
+  "expectedCols": [
+   "HoTen",
+   "cac_can_ho"
+  ],
+  "expectedRows": [
+   [
+    "Hoàng Văn Em",
+    "78 Nguyễn Trãi"
+   ],
+   [
+    "Lê Minh Châu",
+    "9 Trần Duy Hưng; 22 Hoàng Quốc Việt"
+   ],
+   [
+    "Nguyễn Văn An",
+    "12 Láng Hạ; 78 Nguyễn Trãi"
+   ],
+   [
+    "Phạm Thu Dung",
+    "12 Láng Hạ"
+   ],
+   [
+    "Trần Thị Bình",
+    "45 Cầu Giấy"
+   ]
+  ]
+ },
+ {
+  "id": "m00-016",
+  "q": "So sánh GiaThueNiemYet (canho) với GiaThueThucTe (thue) cho từng hợp đồng — trả về DiaChi, GiaThueNiemYet, GiaThueThucTe, và chênh lệch (niêm yết - thực tế).",
+  "difficulty": 2,
+  "topic": "So sánh giá",
+  "referenceSql": "SELECT c.DiaChi, c.GiaThueNiemYet, t.GiaThueThucTe, c.GiaThueNiemYet - t.GiaThueThucTe AS chenh_lech FROM thue t JOIN canho c ON c.MaCanHo = t.MaCanHo;",
+  "expectedCols": [
+   "DiaChi",
+   "GiaThueNiemYet",
+   "GiaThueThucTe",
+   "chenh_lech"
+  ],
+  "expectedRows": [
+   [
+    "12 Láng Hạ",
+    8000000.0,
+    7800000.0,
+    200000.0
+   ],
+   [
+    "78 Nguyễn Trãi",
+    6500000.0,
+    6300000.0,
+    200000.0
+   ],
+   [
+    "45 Cầu Giấy",
+    11000000.0,
+    9800000.0,
+    1200000.0
+   ],
+   [
+    "9 Trần Duy Hưng",
+    14000000.0,
+    13500000.0,
+    500000.0
+   ],
+   [
+    "22 Hoàng Quốc Việt",
+    9000000.0,
+    8800000.0,
+    200000.0
+   ],
+   [
+    "12 Láng Hạ",
+    8000000.0,
+    8000000.0,
+    0.0
+   ],
+   [
+    "78 Nguyễn Trãi",
+    6500000.0,
+    6500000.0,
+    0.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-017",
+  "q": "Tìm các hợp đồng có GiaThueThucTe thấp hơn GiaThueNiemYet hơn 1.000.000 VNĐ (khách thuê được giảm giá đáng kể).",
+  "difficulty": 2,
+  "topic": "So sánh giá",
+  "referenceSql": "SELECT n.HoTen, c.DiaChi, c.GiaThueNiemYet, t.GiaThueThucTe FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue JOIN canho c ON c.MaCanHo = t.MaCanHo WHERE c.GiaThueNiemYet - t.GiaThueThucTe > 1000000;",
+  "expectedCols": [
+   "HoTen",
+   "DiaChi",
+   "GiaThueNiemYet",
+   "GiaThueThucTe"
+  ],
+  "expectedRows": [
+   [
+    "Trần Thị Bình",
+    "45 Cầu Giấy",
+    11000000.0,
+    9800000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-018",
+  "q": "Tính GiaThueNiemYet trung bình theo từng Quan trong bảng canho.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT Quan, AVG(GiaThueNiemYet) AS gia_tb FROM canho GROUP BY Quan;",
+  "expectedCols": [
+   "Quan",
+   "gia_tb"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    11000000.0
+   ],
+   [
+    "Thanh Xuân",
+    6500000.0
+   ],
+   [
+    "Đống Đa",
+    8000000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-019",
+  "q": "Đếm số căn hộ theo từng Quan, sắp giảm dần theo số lượng.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT Quan, COUNT(*) AS so_can FROM canho GROUP BY Quan ORDER BY so_can DESC;",
+  "expectedCols": [
+   "Quan",
+   "so_can"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    4
+   ],
+   [
+    "Đống Đa",
+    1
+   ],
+   [
+    "Thanh Xuân",
+    1
+   ]
+  ]
+ },
+ {
+  "id": "m00-020",
+  "q": "Tính tổng doanh thu thực tế (SUM GiaThueThucTe) theo từng người thuê (MaNguoiThue).",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT MaNguoiThue, SUM(GiaThueThucTe) AS tong_tien FROM thue GROUP BY MaNguoiThue;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "tong_tien"
+  ],
+  "expectedRows": [
+   [
+    1,
+    14100000.0
+   ],
+   [
+    2,
+    9800000.0
+   ],
+   [
+    3,
+    22300000.0
+   ],
+   [
+    4,
+    8000000.0
+   ],
+   [
+    5,
+    6500000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-021",
+  "q": "Tính diện tích trung bình (AVG DienTich) của các căn hộ theo từng Quan, chỉ giữ Quan có từ 2 căn hộ trở lên.",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT Quan, AVG(DienTich) AS dt_tb FROM canho GROUP BY Quan HAVING COUNT(*) >= 2;",
+  "expectedCols": [
+   "Quan",
+   "dt_tb"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    48.75
+   ]
+  ]
+ },
+ {
+  "id": "m00-022",
+  "q": "LEFT JOIN canho với thue (qua MaCanHo) để tìm các căn hộ CHƯA TỪNG được thuê (không xuất hiện trong thue).",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & NULL",
+  "referenceSql": "SELECT c.MaCanHo, c.DiaChi FROM canho c LEFT JOIN thue t ON t.MaCanHo = c.MaCanHo WHERE t.MaCanHo IS NULL;",
+  "expectedCols": [
+   "MaCanHo",
+   "DiaChi"
+  ],
+  "expectedRows": [
+   [
+    106,
+    "5 Dương Đình Nghệ"
+   ]
+  ]
+ },
+ {
+  "id": "m00-023",
+  "q": "LEFT JOIN nguoithue với thue để tìm người chưa từng thuê căn hộ nào.",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & NULL",
+  "referenceSql": "SELECT n.MaNguoiThue, n.HoTen FROM nguoithue n LEFT JOIN thue t ON t.MaNguoiThue = n.MaNguoiThue WHERE t.MaNguoiThue IS NULL;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "HoTen"
+  ],
+  "expectedRows": [
+   [
+    6,
+    "Vũ Thị Phượng"
+   ]
+  ]
+ },
+ {
+  "id": "m00-024",
+  "q": "Tìm căn hộ có GiaThueNiemYet CAO HƠN giá trung bình của toàn bộ bảng canho.",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT DiaChi, GiaThueNiemYet FROM canho WHERE GiaThueNiemYet > (SELECT AVG(GiaThueNiemYet) FROM canho);",
+  "expectedCols": [
+   "DiaChi",
+   "GiaThueNiemYet"
+  ],
+  "expectedRows": [
+   [
+    "45 Cầu Giấy",
+    11000000.0
+   ],
+   [
+    "9 Trần Duy Hưng",
+    14000000.0
+   ],
+   [
+    "5 Dương Đình Nghệ",
+    10000000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-025",
+  "q": "Tìm người thuê (HoTen) đã trả GiaThueThucTe cao nhất trong toàn bộ bảng thue.",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT n.HoTen, t.GiaThueThucTe FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue WHERE t.GiaThueThucTe = (SELECT MAX(GiaThueThucTe) FROM thue);",
+  "expectedCols": [
+   "HoTen",
+   "GiaThueThucTe"
+  ],
+  "expectedRows": [
+   [
+    "Lê Minh Châu",
+    13500000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-026",
+  "q": "Tìm những người thuê (HoTen) CHỈ thuê căn hộ ở quận 'Cầu Giấy' (không có hợp đồng nào ở quận khác).",
+  "difficulty": 3,
+  "topic": "Subquery",
+  "referenceSql": "SELECT n.HoTen FROM nguoithue n WHERE n.MaNguoiThue IN (SELECT MaNguoiThue FROM thue) AND NOT EXISTS (SELECT 1 FROM thue t JOIN canho c ON c.MaCanHo = t.MaCanHo WHERE t.MaNguoiThue = n.MaNguoiThue AND c.Quan <> 'Cầu Giấy');",
+  "expectedCols": [
+   "HoTen"
+  ],
+  "expectedRows": [
+   [
+    "Trần Thị Bình"
+   ],
+   [
+    "Lê Minh Châu"
+   ]
+  ]
+ },
+ {
+  "id": "m00-027",
+  "q": "Lấy 2 căn hộ có diện tích lớn nhất (DiaChi, DienTich).",
+  "difficulty": 1,
+  "topic": "ORDER BY/LIMIT",
+  "referenceSql": "SELECT DiaChi, DienTich FROM canho ORDER BY DienTich DESC LIMIT 2;",
+  "expectedCols": [
+   "DiaChi",
+   "DienTich"
+  ],
+  "expectedRows": [
+   [
+    "9 Trần Duy Hưng",
+    60.0
+   ],
+   [
+    "45 Cầu Giấy",
+    50.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-028",
+  "q": "Lấy người thuê trẻ tuổi nhất (NamSinh lớn nhất) — HoTen, NamSinh, chỉ 1 dòng.",
+  "difficulty": 1,
+  "topic": "ORDER BY/LIMIT",
+  "referenceSql": "SELECT HoTen, NamSinh FROM nguoithue ORDER BY NamSinh DESC LIMIT 1;",
+  "expectedCols": [
+   "HoTen",
+   "NamSinh"
+  ],
+  "expectedRows": [
+   [
+    "Phạm Thu Dung",
+    2000
+   ]
+  ]
+ },
+ {
+  "id": "m00-029",
+  "q": "Phân loại căn hộ theo diện tích bằng CASE WHEN: <30 → 'nhỏ', 30-49 → 'vừa', >=50 → 'lớn'.",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT DiaChi, DienTich, CASE WHEN DienTich < 30 THEN 'nhỏ' WHEN DienTich < 50 THEN 'vừa' ELSE 'lớn' END AS loai FROM canho;",
+  "expectedCols": [
+   "DiaChi",
+   "DienTich",
+   "loai"
+  ],
+  "expectedRows": [
+   [
+    "12 Láng Hạ",
+    35.0,
+    "vừa"
+   ],
+   [
+    "45 Cầu Giấy",
+    50.0,
+    "lớn"
+   ],
+   [
+    "78 Nguyễn Trãi",
+    28.0,
+    "nhỏ"
+   ],
+   [
+    "9 Trần Duy Hưng",
+    60.0,
+    "lớn"
+   ],
+   [
+    "22 Hoàng Quốc Việt",
+    40.0,
+    "vừa"
+   ],
+   [
+    "5 Dương Đình Nghệ",
+    45.0,
+    "vừa"
+   ]
+  ]
+ },
+ {
+  "id": "m00-030",
+  "q": "Đếm số căn hộ theo từng loại (nhỏ/vừa/lớn) dùng lại logic CASE WHEN ở trên.",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT loai, COUNT(*) AS so_can FROM (SELECT CASE WHEN DienTich < 30 THEN 'nhỏ' WHEN DienTich < 50 THEN 'vừa' ELSE 'lớn' END AS loai FROM canho) GROUP BY loai;",
+  "expectedCols": [
+   "loai",
+   "so_can"
+  ],
+  "expectedRows": [
+   [
+    "lớn",
+    2
+   ],
+   [
+    "nhỏ",
+    1
+   ],
+   [
+    "vừa",
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m00-031",
+  "q": "Tìm các cặp người thuê (ten1,ten2) đã từng thuê CÙNG 1 căn hộ (không nhất thiết cùng lúc) — self-join bảng thue qua MaCanHo, MaNguoiThue1 < MaNguoiThue2 để tránh trùng cặp.",
+  "difficulty": 3,
+  "topic": "Self-join",
+  "referenceSql": "SELECT n1.HoTen AS ten1, n2.HoTen AS ten2, t1.MaCanHo FROM thue t1 JOIN thue t2 ON t1.MaCanHo = t2.MaCanHo AND t1.MaNguoiThue < t2.MaNguoiThue JOIN nguoithue n1 ON n1.MaNguoiThue = t1.MaNguoiThue JOIN nguoithue n2 ON n2.MaNguoiThue = t2.MaNguoiThue;",
+  "expectedCols": [
+   "ten1",
+   "ten2",
+   "MaCanHo"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An",
+    "Phạm Thu Dung",
+    101
+   ],
+   [
+    "Nguyễn Văn An",
+    "Hoàng Văn Em",
+    103
+   ]
+  ]
+ },
+ {
+  "id": "m00-032",
+  "q": "Minh hoạ vì sao KHÔNG nên gộp cột HoTen vào bảng thue (tránh dư thừa): đếm xem HoTen 'Nguyễn Văn An' sẽ bị lặp lại bao nhiêu dòng nếu join thue với nguoithue.",
+  "difficulty": 2,
+  "topic": "Chuẩn hoá",
+  "referenceSql": "SELECT n.HoTen, COUNT(*) AS so_dong_se_lap_lai FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue WHERE n.HoTen = 'Nguyễn Văn An' GROUP BY n.HoTen;",
+  "expectedCols": [
+   "HoTen",
+   "so_dong_se_lap_lai"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An",
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m00-033",
+  "q": "Với mỗi quận (Quan), tính số hợp đồng thuê đã ký (join canho-thue qua MaCanHo, GROUP BY Quan).",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT c.Quan, COUNT(*) AS so_hop_dong FROM thue t JOIN canho c ON c.MaCanHo = t.MaCanHo GROUP BY c.Quan;",
+  "expectedCols": [
+   "Quan",
+   "so_hop_dong"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    3
+   ],
+   [
+    "Thanh Xuân",
+    2
+   ],
+   [
+    "Đống Đa",
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m00-034",
+  "q": "Tìm quận (Quan) có tổng doanh thu thực tế (SUM GiaThueThucTe) cao nhất.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT c.Quan, SUM(t.GiaThueThucTe) AS tong_doanh_thu FROM thue t JOIN canho c ON c.MaCanHo = t.MaCanHo GROUP BY c.Quan ORDER BY tong_doanh_thu DESC LIMIT 1;",
+  "expectedCols": [
+   "Quan",
+   "tong_doanh_thu"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    32100000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-035",
+  "q": "Liệt kê HoTen, DiaChi, NgayBatDau, NgayKetThuc của các hợp đồng ĐÃ KẾT THÚC (NgayKetThuc khác NULL), sắp theo NgayBatDau tăng dần.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT n.HoTen, c.DiaChi, t.NgayBatDau, t.NgayKetThuc FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue JOIN canho c ON c.MaCanHo = t.MaCanHo WHERE t.NgayKetThuc IS NOT NULL ORDER BY t.NgayBatDau;",
+  "expectedCols": [
+   "HoTen",
+   "DiaChi",
+   "NgayBatDau",
+   "NgayKetThuc"
+  ],
+  "expectedRows": [
+   [
+    "Lê Minh Châu",
+    "9 Trần Duy Hưng",
+    "2022-01-01",
+    "2023-12-31"
+   ],
+   [
+    "Nguyễn Văn An",
+    "12 Láng Hạ",
+    "2023-01-01",
+    "2023-12-31"
+   ],
+   [
+    "Hoàng Văn Em",
+    "78 Nguyễn Trãi",
+    "2023-01-01",
+    "2023-06-30"
+   ],
+   [
+    "Trần Thị Bình",
+    "45 Cầu Giấy",
+    "2023-06-01",
+    "2024-05-31"
+   ],
+   [
+    "Nguyễn Văn An",
+    "78 Nguyễn Trãi",
+    "2024-01-01",
+    "2024-12-31"
+   ],
+   [
+    "Phạm Thu Dung",
+    "12 Láng Hạ",
+    "2024-01-01",
+    "2024-12-31"
+   ]
+  ]
+ },
+ {
+  "id": "m00-036",
+  "q": "Tính độ tuổi gần đúng của từng người thuê tại năm 2026 (2026 - NamSinh), trả về HoTen, tuoi.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT HoTen, 2026 - NamSinh AS tuoi FROM nguoithue;",
+  "expectedCols": [
+   "HoTen",
+   "tuoi"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An",
+    31
+   ],
+   [
+    "Trần Thị Bình",
+    28
+   ],
+   [
+    "Lê Minh Châu",
+    36
+   ],
+   [
+    "Phạm Thu Dung",
+    26
+   ],
+   [
+    "Hoàng Văn Em",
+    33
+   ],
+   [
+    "Vũ Thị Phượng",
+    29
+   ]
+  ]
+ },
+ {
+  "id": "m00-037",
+  "q": "Tìm các căn hộ có GiaThueNiemYet trong khoảng [7000000, 10000000] (BETWEEN).",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT DiaChi, GiaThueNiemYet FROM canho WHERE GiaThueNiemYet BETWEEN 7000000 AND 10000000;",
+  "expectedCols": [
+   "DiaChi",
+   "GiaThueNiemYet"
+  ],
+  "expectedRows": [
+   [
+    "12 Láng Hạ",
+    8000000.0
+   ],
+   [
+    "22 Hoàng Quốc Việt",
+    9000000.0
+   ],
+   [
+    "5 Dương Đình Nghệ",
+    10000000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-038",
+  "q": "Tìm các căn hộ có DiaChi chứa chữ 'Cầu' (LIKE '%Cầu%').",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT DiaChi FROM canho WHERE DiaChi LIKE '%Cầu%';",
+  "expectedCols": [
+   "DiaChi"
+  ],
+  "expectedRows": [
+   [
+    "45 Cầu Giấy"
+   ]
+  ]
+ },
+ {
+  "id": "m00-039",
+  "q": "Với mỗi người thuê, tính số ngày đã thuê CĂN HỘ ĐẦU TIÊN của họ (NgayKetThuc - NgayBatDau, dùng julianday; chỉ tính các hợp đồng đã có NgayKetThuc).",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT MaNguoiThue, MaCanHo, CAST(julianday(NgayKetThuc) - julianday(NgayBatDau) AS INTEGER) AS so_ngay FROM thue WHERE NgayKetThuc IS NOT NULL;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "MaCanHo",
+   "so_ngay"
+  ],
+  "expectedRows": [
+   [
+    1,
+    101,
+    364
+   ],
+   [
+    1,
+    103,
+    365
+   ],
+   [
+    2,
+    102,
+    365
+   ],
+   [
+    3,
+    104,
+    729
+   ],
+   [
+    4,
+    101,
+    365
+   ],
+   [
+    5,
+    103,
+    180
+   ]
+  ]
+ },
+ {
+  "id": "m00-040",
+  "q": "Tìm người thuê có SDT bắt đầu bằng '090' và sinh trước năm 1996.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT HoTen, SDT, NamSinh FROM nguoithue WHERE SDT LIKE '090%' AND NamSinh < 1996;",
+  "expectedCols": [
+   "HoTen",
+   "SDT",
+   "NamSinh"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An",
+    "0901111111",
+    1995
+   ],
+   [
+    "Lê Minh Châu",
+    "0903333333",
+    1990
+   ],
+   [
+    "Hoàng Văn Em",
+    "0905555555",
+    1993
+   ]
+  ]
+ },
+ {
+  "id": "m00-041",
+  "q": "Tìm căn hộ có MaCanHo = 102 (SELECT * duy nhất 1 dòng).",
+  "difficulty": 1,
+  "topic": "Cơ bản",
+  "referenceSql": "SELECT * FROM canho WHERE MaCanHo = 102;",
+  "expectedCols": [
+   "MaCanHo",
+   "DiaChi",
+   "Quan",
+   "DienTich",
+   "GiaThueNiemYet"
+  ],
+  "expectedRows": [
+   [
+    102,
+    "45 Cầu Giấy",
+    "Cầu Giấy",
+    50.0,
+    11000000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-042",
+  "q": "Tìm DiaChi các căn hộ mà người tên 'Lê Minh Châu' đã từng thuê.",
+  "difficulty": 2,
+  "topic": "Join khoá chính-ngoại",
+  "referenceSql": "SELECT c.DiaChi FROM thue t JOIN canho c ON c.MaCanHo = t.MaCanHo JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue WHERE n.HoTen = 'Lê Minh Châu';",
+  "expectedCols": [
+   "DiaChi"
+  ],
+  "expectedRows": [
+   [
+    "9 Trần Duy Hưng"
+   ],
+   [
+    "22 Hoàng Quốc Việt"
+   ]
+  ]
+ },
+ {
+  "id": "m00-043",
+  "q": "Tính số lượng hợp đồng (COUNT) đã ký theo từng năm bắt đầu (lấy 4 ký tự đầu NgayBatDau).",
+  "difficulty": 2,
+  "topic": "Aggregate",
+  "referenceSql": "SELECT SUBSTR(NgayBatDau,1,4) AS nam, COUNT(*) AS so_hop_dong FROM thue GROUP BY nam;",
+  "expectedCols": [
+   "nam",
+   "so_hop_dong"
+  ],
+  "expectedRows": [
+   [
+    "2022",
+    1
+   ],
+   [
+    "2023",
+    3
+   ],
+   [
+    "2024",
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m00-044",
+  "q": "Tìm căn hộ có diện tích nhỏ hơn diện tích TRUNG BÌNH của các căn hộ ở quận 'Cầu Giấy'.",
+  "difficulty": 2,
+  "topic": "Subquery",
+  "referenceSql": "SELECT DiaChi, DienTich FROM canho WHERE DienTich < (SELECT AVG(DienTich) FROM canho WHERE Quan = 'Cầu Giấy');",
+  "expectedCols": [
+   "DiaChi",
+   "DienTich"
+  ],
+  "expectedRows": [
+   [
+    "12 Láng Hạ",
+    35.0
+   ],
+   [
+    "78 Nguyễn Trãi",
+    28.0
+   ],
+   [
+    "22 Hoàng Quốc Việt",
+    40.0
+   ],
+   [
+    "5 Dương Đình Nghệ",
+    45.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-045",
+  "q": "LEFT JOIN để liệt kê MỌI người thuê kèm tổng số hợp đồng họ đã ký (0 nếu chưa từng thuê).",
+  "difficulty": 2,
+  "topic": "LEFT JOIN & NULL",
+  "referenceSql": "SELECT n.HoTen, COUNT(t.MaCanHo) AS so_hop_dong FROM nguoithue n LEFT JOIN thue t ON t.MaNguoiThue = n.MaNguoiThue GROUP BY n.HoTen;",
+  "expectedCols": [
+   "HoTen",
+   "so_hop_dong"
+  ],
+  "expectedRows": [
+   [
+    "Hoàng Văn Em",
+    1
+   ],
+   [
+    "Lê Minh Châu",
+    2
+   ],
+   [
+    "Nguyễn Văn An",
+    2
+   ],
+   [
+    "Phạm Thu Dung",
+    1
+   ],
+   [
+    "Trần Thị Bình",
+    1
+   ],
+   [
+    "Vũ Thị Phượng",
+    0
+   ]
+  ]
+ },
+ {
+  "id": "m00-046",
+  "q": "Tìm người thuê đã ký hợp đồng ở ÍT NHẤT 2 quận khác nhau.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT n.HoTen FROM nguoithue n JOIN thue t ON t.MaNguoiThue = n.MaNguoiThue JOIN canho c ON c.MaCanHo = t.MaCanHo GROUP BY n.HoTen HAVING COUNT(DISTINCT c.Quan) >= 2;",
+  "expectedCols": [
+   "HoTen"
+  ],
+  "expectedRows": [
+   [
+    "Nguyễn Văn An"
+   ]
+  ]
+ },
+ {
+  "id": "m00-047",
+  "q": "Gắn nhãn hợp đồng 'đang thuê' (NgayKetThuc IS NULL) hay 'đã kết thúc' cho từng dòng thue.",
+  "difficulty": 2,
+  "topic": "CASE WHEN",
+  "referenceSql": "SELECT MaNguoiThue, MaCanHo, CASE WHEN NgayKetThuc IS NULL THEN 'đang thuê' ELSE 'đã kết thúc' END AS trang_thai FROM thue;",
+  "expectedCols": [
+   "MaNguoiThue",
+   "MaCanHo",
+   "trang_thai"
+  ],
+  "expectedRows": [
+   [
+    1,
+    101,
+    "đã kết thúc"
+   ],
+   [
+    1,
+    103,
+    "đã kết thúc"
+   ],
+   [
+    2,
+    102,
+    "đã kết thúc"
+   ],
+   [
+    3,
+    104,
+    "đã kết thúc"
+   ],
+   [
+    3,
+    105,
+    "đang thuê"
+   ],
+   [
+    4,
+    101,
+    "đã kết thúc"
+   ],
+   [
+    5,
+    103,
+    "đã kết thúc"
+   ]
+  ]
+ },
+ {
+  "id": "m00-048",
+  "q": "Tính GiaThueThucTe trung bình CHỈ của các hợp đồng đã kết thúc (NgayKetThuc IS NOT NULL).",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT AVG(GiaThueThucTe) AS gia_tb_da_ket_thuc FROM thue WHERE NgayKetThuc IS NOT NULL;",
+  "expectedCols": [
+   "gia_tb_da_ket_thuc"
+  ],
+  "expectedRows": [
+   [
+    8650000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-049",
+  "q": "Xếp hạng (ORDER BY) các người thuê theo tổng tiền đã trả (SUM GiaThueThucTe) giảm dần, lấy top 3.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT n.HoTen, SUM(t.GiaThueThucTe) AS tong_tien FROM thue t JOIN nguoithue n ON n.MaNguoiThue = t.MaNguoiThue GROUP BY n.HoTen ORDER BY tong_tien DESC LIMIT 3;",
+  "expectedCols": [
+   "HoTen",
+   "tong_tien"
+  ],
+  "expectedRows": [
+   [
+    "Lê Minh Châu",
+    22300000.0
+   ],
+   [
+    "Nguyễn Văn An",
+    14100000.0
+   ],
+   [
+    "Trần Thị Bình",
+    9800000.0
+   ]
+  ]
+ },
+ {
+  "id": "m00-050",
+  "q": "Bài tổng hợp cuối: với mỗi quận, tính số căn hộ, số hợp đồng, và doanh thu trung bình mỗi hợp đồng (SUM/COUNT), chỉ giữ quận có ít nhất 1 hợp đồng.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT c.Quan, COUNT(DISTINCT c.MaCanHo) AS so_can, COUNT(t.MaCanHo) AS so_hop_dong, AVG(t.GiaThueThucTe) AS doanh_thu_tb FROM canho c JOIN thue t ON t.MaCanHo = c.MaCanHo GROUP BY c.Quan;",
+  "expectedCols": [
+   "Quan",
+   "so_can",
+   "so_hop_dong",
+   "doanh_thu_tb"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    3,
+    3,
+    10700000.0
+   ],
+   [
+    "Thanh Xuân",
+    1,
+    2,
+    6400000.0
+   ],
+   [
+    "Đống Đa",
+    1,
+    2,
+    7900000.0
+   ]
+  ]
+ }
+]

@@ -113,8 +113,26 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <summary>❓ Instance/Identity Heterogeneity giải quyết bằng kỹ thuật nào, học ở buổi nào?</summary><div class="dap">💡 Entity Resolution / Record Linkage — buổi 4 (Module 04 của site này).</div></details><details class="flashcard">
 <summary>❓ Ưu điểm chính của Data Warehousing so với Virtual Integration?</summary><div class="dap">💡 Có thể chạy tính toán nặng (data mining/ML) trên bản copy mà không làm phiền nguồn gốc mỗi lần truy vấn.</div></details><details class="flashcard">
 <summary>❓ 3 bước pipeline tổng thể của Big Data Integration là gì?</summary><div class="dap">💡 Schema Alignment → Entity Resolution → Data Fusion.</div></details></div>
-
-
+<h2>🖥️ SQL Sandbox — 16 bài chạy thật (sql.js/SQLite, 100% trình duyệt)</h2>
+<p class="hint">Dùng lại dataset Movie S1-S7 của Module 02 để mô phỏng Wrapper/Query Reformulation/5V (module này chủ yếu lý thuyết kiến trúc nên số bài ít hơn). Viết SQL vào ô bên dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với
+lời giải mẫu đã chạy thật trên dữ liệu (không gõ tay đáp án).</p>
+<div id="sb-mount-m01"></div>
+<script src="../../../_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({
+  mount: "#sb-mount-m01",
+  vendorUrl: "../../../vendor/sql-wasm/",
+  schemaUrl: "../../../data/sql/schema_m01.sql",
+  dataUrl: "../../../data/sql/questions_m01.json",
+  storageKey: "sqlbank:01-data-integration-overview"
+});
+</script>
+<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">41 câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide/giáo trình hoặc bổ sung — ghi rõ
+từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../01-data-integration-overview/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng 41 câu — Data Integration — Tổng quan & Dị biệt dữ liệu</h3>
+<div class="go">Mở →</div></a>
 <h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
 <div class="quiz"><div class="quiz-root"></div>
 <script type="application/json">{"items": [{"q": "Mediated Schema giúp người dùng độc lập với điều gì?", "opts": ["Chỉ vị trí lưu trữ nguồn", "Vị trí, mô hình/cú pháp dữ liệu, và biến thể ngữ nghĩa giữa các nguồn", "Chỉ tốc độ mạng", "Chỉ giá dịch vụ cloud"], "correct": 1, "explain": "Slide liệt kê rõ 3 thứ: source & location, data model & syntax, semantic variations."}, {"q": "Wrapper nằm ở vị trí nào trong pipeline Query Processing?", "opts": ["Trước Query Reformulation", "Giữa Query Optimizer và Execution Engine", "Sau Execution Engine, kết nối trực tiếp tới từng nguồn", "Không thuộc pipeline này"], "correct": 2, "explain": "Pipeline: Query → Reformulation → Optimizer → Execution Engine → Wrapper(s) → Sources."}, {"q": "Hai nguồn cùng lưu 'căn hộ cho thuê' nhưng 1 bên tách riêng bảng Địa chỉ, bên kia gộp chung — đây là dị biệt tầng nào?", "opts": ["Syntactic/Format", "Structural/Schema", "Semantic/Conceptual", "Temporal/Process"], "correct": 1, "explain": "Khác biệt về tổ chức bảng/độ chi tiết = Structural/Schema Heterogeneity (tầng 3)."}, {"q": "'Apartment' và 'Flat' cùng nghĩa nhưng viết khác nhau ở 2 nguồn — đây là dị biệt tầng nào?", "opts": ["Structural/Schema", "Instance/Identity", "Semantic/Conceptual (đồng nghĩa)", "System/Platform"], "correct": 2, "explain": "Đồng nghĩa (synonym) giữa các thuật ngữ là ví dụ kinh điển của Semantic/Conceptual Heterogeneity."}, {"q": "Cùng 1 căn hộ thật bị đăng tin ở 2 website khác nhau, không có ID chung — đây là dị biệt tầng nào, và buổi học nào giải quyết?", "opts": ["Structural, buổi 3", "Instance/Identity, buổi 4", "Temporal, không buổi nào giải quyết", "Quality, buổi 2"], "correct": 1, "explain": "Đây đúng định nghĩa Instance/Identity Heterogeneity — giải quyết bằng Record Linkage/Entity Resolution ở buổi 4."}, {"q": "Ưu điểm chính của Data Warehousing so với Virtual Integration là gì?", "opts": ["Dữ liệu luôn mới nhất", "Không cần thiết kế lược đồ vật lý", "Có thể chạy tính toán nặng (data mining/ML) mà không làm phiền nguồn gốc mỗi lần", "Không cần ETL"], "correct": 2, "explain": "Vì dữ liệu đã copy về kho, có thể chạy tính toán nặng tuỳ ý trên bản copy, không đụng tới nguồn gốc."}]}</script></div>
