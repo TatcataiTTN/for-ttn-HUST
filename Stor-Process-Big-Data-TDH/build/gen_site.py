@@ -4,6 +4,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from modules_content import MODULES
 from quiz_extra import EXTRA_QUIZ
 from scheduling_content import SCHED_MODULES
+from hadoop_deepdive_content import HADOOP_MODULES
 
 for _m in MODULES:
     _m["quiz"] = _m["quiz"] + EXTRA_QUIZ.get(_m["n"], [])
@@ -38,7 +39,7 @@ for _m in MODULES:
     if _callout:
         _m["parts"][-1]["slides"][-1]["body"] += _callout
 
-ALL_MODULES = MODULES + SCHED_MODULES
+ALL_MODULES = MODULES + SCHED_MODULES + HADOOP_MODULES
 
 ROOT = pathlib.Path(__file__).parent.parent
 EX = json.loads((pathlib.Path(__file__).parent / "exercises.json").read_text(encoding="utf-8"))
@@ -189,12 +190,16 @@ def buoi_label(mod):
     if mod["slug"].startswith("ll-"):
         idx = SCHED_MODULES.index(mod) + 1
         return f"Lập lịch {idx:02d}"
+    if mod["slug"].startswith("hd-"):
+        idx = HADOOP_MODULES.index(mod) + 1
+        return f"Hadoop {idx:02d}"
     return f"Buổi {mod['n']:02d}"
 
 def build_module_page(mod, prev_mod, next_mod):
     rel_lang = "../../"      # vi/modules/<slug>/index.html -> vi/
     rel_root = "../../../"   # vi/modules/<slug>/index.html -> site root
     is_sched = mod["slug"].startswith("ll-")
+    is_hadoop = mod["slug"].startswith("hd-")
     diagram = DIAGRAM_FOR.get(mod["slug"])
     slides = [f'<div class="mdeck-slide"><div class="kicker">{buoi_label(mod).upper()} · {mod["tag"]}</div>'
               f'<h2>{mod["title"]}</h2><p>{mod["intro"]}</p></div>']
@@ -224,6 +229,13 @@ def build_module_page(mod, prev_mod, next_mod):
         nb_link = (f'<p><a href="{rel_root}data/source/lap_lich_50_slides.pdf" target="_blank">'
                    f'📄 Slide bài giảng gốc — Bài toán lập lịch (PDF, 50 trang)</a> — mọi số liệu, ví dụ, '
                    f'chứng minh trong buổi này trích nguyên từ tài liệu này.</p>')
+    elif is_hadoop:
+        ex_section = ""
+        nb_link = (f'<p><a href="{rel_root}data/source/IT4931_lecture_notes.pdf" target="_blank">'
+                   f'📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> '
+                   f'— module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, '
+                   f'ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). '
+                   f'Xem bản trình bày gốc của Nhóm 1: <a href="{rel_root}vi/group-1-slides.html">group-1-slides.html</a>.</p>')
     else:
         ex_html = "\n".join([
             render_exlist("📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code)", EX["phan1"].get(str(n), [])),
@@ -249,7 +261,7 @@ def build_module_page(mod, prev_mod, next_mod):
             if next_mod else '<span></span>')
     nav += '</div>'
 
-    track_total = "10" if is_sched else "14"
+    track_total = "10" if is_sched else ("6" if is_hadoop else "14")
     body = f"""<div class="hero"><div class="kicker">{buoi_label(mod)} / {track_total}</div>
 <h1>{mod["title"]}</h1></div>
 {deck}
@@ -302,6 +314,13 @@ def build_index():
 <h3>{m['title']}</h3>
 <span class="tag">{m['tag']}</span>
 <div class="go">Mở bài giảng →</div></a>""")
+    hadoop_cards = []
+    for i, m in enumerate(HADOOP_MODULES, 1):
+        hadoop_cards.append(f"""<a class="mod-card" href="modules/{m['slug']}/index.html" style="border-color:var(--warn)">
+<span class="kicker">Hadoop {i:02d}</span>
+<h3>{m['title']}</h3>
+<span class="tag">{m['tag']}</span>
+<div class="go">Mở bài giảng →</div></a>""")
     slide_card = """<a class="mod-card" href="modules/00-slide-goc/index.html" style="border-color:var(--accent2)">
 <span class="kicker">Bổ sung</span><h3>20 bài áp dụng trực tiếp lên slide gốc</h3>
 <span class="tag">Morris · FM · KMV · CountMin · AGM · AMS</span>
@@ -349,6 +368,12 @@ Schwartz–Zippel bằng Monte Carlo.</div>
 công bằng tài nguyên (progressive filling, DRF), và phân công/tái cân bằng partition Kafka — mỗi buổi liên hệ
 trực tiếp Spark/YARN/MapReduce/Kafka, có nguồn trích trang cụ thể.</p>
 <div class="grid">{''.join(sched_cards)}</div>
+<h2>🐘 Hệ sinh thái Hadoop — Tự học sâu (Chương 2, dành cho nhóm bài tập lớn)</h2>
+<p>6 module tự học sâu, tách biệt khỏi slide thuyết trình gốc của Nhóm 1: không lặp lại Chương 2, mà đi sâu
+vào <b>lịch sử ra đời thật</b>, <b>động lực nghiệp vụ</b> và <b>ảnh hưởng tới thế giới</b> của từng công nghệ
+(Hadoop/HDFS, MapReduce/YARN, Pig/Hive, HBase/Sqoop, Kafka, Oozie/ZooKeeper) — mỗi fact lịch sử đều trích
+nguồn kiểm chứng được.</p>
+<div class="grid">{''.join(hadoop_cards)}</div>
 <h2>Tài liệu bổ sung</h2>
 <div class="grid">{notes_card}{slide_pdf_card}{slide_card}{sched_pdf_card}</div>
 <h2>Bài tập lớn môn học (ngoài 14 buổi tự học)</h2>
@@ -375,6 +400,11 @@ if __name__ == "__main__":
         prev_mod = SCHED_MODULES[i-1] if i > 0 else None
         next_mod = SCHED_MODULES[i+1] if i < len(SCHED_MODULES)-1 else None
         build_module_page(m, prev_mod, next_mod)
+    for i, m in enumerate(HADOOP_MODULES):
+        prev_mod = HADOOP_MODULES[i-1] if i > 0 else None
+        next_mod = HADOOP_MODULES[i+1] if i < len(HADOOP_MODULES)-1 else None
+        build_module_page(m, prev_mod, next_mod)
     build_index()
     build_root_redirect()
-    print("Đã sinh", len(MODULES), "module streaming +", len(SCHED_MODULES), "module lập lịch + 1 trang slide-ref + index")
+    print("Đã sinh", len(MODULES), "module streaming +", len(SCHED_MODULES), "module lập lịch +",
+          len(HADOOP_MODULES), "module Hadoop deep-dive + 1 trang slide-ref + index")

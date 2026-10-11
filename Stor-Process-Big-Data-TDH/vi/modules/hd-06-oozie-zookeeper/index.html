@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 06: Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 06 / 6</div>
+<h1>Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 06 · Lịch sử Oozie · ZooKeeper (Chubby/ZAB) · Tổng kết chương</div><h2>Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán</h2><p>ZooKeeper là công nghệ ít ai 'nhìn thấy' trực tiếp nhưng gần như MỌI hệ thống phân tán lớn (HBase, Kafka cũ, Solr, Mesos) đều phụ thuộc vào nó để tồn tại. Oozie là lớp điều phối để các job Hadoop không phải chạy rời rạc, thủ công.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/4</div>
+<div class="part-num">01</div><h2>Apache Oozie: điều phối workflow trên cụm Hadoop</h2>
+<ul class="part-list"><li>Ra đời ở Yahoo! năm 2008, mã nguồn mở qua Apache năm 2011, top-level project 2012</li>
+<li>Workflow là đồ thị có hướng không chu trình (DAG) của các action</li>
+<li>Hỗ trợ đa dạng: MapReduce, Pig/Hive script, Java/Shell, SSH, email</li></ul></div><div class="mdeck-slide"><h2>Vì sao cần một hệ thống điều phối riêng?</h2>
+      <p>Một pipeline xử lý dữ liệu thực tế hiếm khi chỉ có 1 job MapReduce — thường là chuỗi nhiều bước: chạy
+      Sqoop import dữ liệu mới → chạy Hive script làm sạch → chạy job MapReduce tổng hợp → gửi email báo cáo
+      hoàn tất. Nếu làm thủ công (cron job gọi lần lượt từng bước), rất dễ vỡ khi 1 bước lỗi hoặc chạy chậm
+      hơn dự kiến.</p>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Oozie được phát triển lần đầu tại
+      Yahoo! năm 2008 để giải quyết chính xác bài toán điều phối và lập lịch cho các triển khai Hadoop quy mô
+      lớn; được mở ra như một dự án Apache (incubator) năm 2011, và trở thành Apache top-level project năm
+      2012. Nguồn: <a href="https://attic.apache.org/projects/oozie.html" target="_blank">Apache Attic — Oozie</a>,
+      <a href="https://www.dremio.com/wiki/apache-oozie" target="_blank">Dremio — What is Apache Oozie?</a>.</div>
+      <p>Oozie biểu diễn workflow dưới dạng <b>DAG</b> (đồ thị có hướng không chu trình) các "action" — đúng
+      khái niệm DAG đã học ở <a href="../ll-03-dag-mapreduce/index.html">Lập lịch 03 — Lập lịch DAG,
+      MapReduce và vị trí dữ liệu</a>, nhưng ở đây DAG biểu diễn thứ tự phụ thuộc giữa các JOB hoàn chỉnh,
+      không phải giữa các TASK nhỏ trong 1 job.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/4</div>
+<div class="part-num">02</div><h2>Apache ZooKeeper: lấy cảm hứng từ Chubby của Google</h2>
+<ul class="part-list"><li>Ra đời ở Yahoo Research khoảng 2007, mở nguồn trên SourceForge cùng năm</li>
+<li>Mô phỏng theo Chubby (Google, paper Mike Burrows) — dịch vụ lock phân tán nội bộ của Google</li>
+<li>Dùng thuật toán ZAB (biến thể Paxos) để đạt đồng thuận (consensus) phân tán</li></ul></div><div class="mdeck-slide"><h2>Từ paper Chubby của Google tới dịch vụ mở cho mọi người</h2>
+      <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>ZooKeeper được mô hình hoá theo dịch
+      vụ lock Chubby của Google (paper của Mike Burrows), và ban đầu được phát triển tại Yahoo Research
+      khoảng năm 2007, mở nguồn trên SourceForge cùng năm đó. Kỹ sư Yahoo (trong đó có Ben Reed và Flavio
+      Junqueira) khi đọc paper Chubby nhận thấy đây chính là công cụ có thể giải quyết nhiều vấn đề sản xuất
+      ("production problems") họ đang gặp phải, và xây một phiên bản tương đương, tổng quát hoá giao diện
+      Chubby thành dịch vụ "coordination-as-a-service" dùng chung cho nhiều hệ thống.
+      Nguồn: <a href="https://en.wikipedia.org/wiki/Apache_ZooKeeper" target="_blank">Apache ZooKeeper — Wikipedia</a>.</div>
+      <p>ZooKeeper dùng <b>ZAB</b> (ZooKeeper Atomic Broadcast) — một biến thể của thuật toán Paxos — để đạt
+      đồng thuận phân tán: mọi thay đổi trạng thái phải được 1 "leader" đề xuất và đa số (majority) các node
+      "follower" xác nhận trước khi được coi là chính thức.</p>
+      <div class="callout warn"><div class="lbl">Liên kết video đã có trong Chương 2 gốc</div>Chương 2 gốc
+      (slide gốc) đã dẫn 1 video giới thiệu thuật toán PAXOS — module này đi sâu hơn: PAXOS/ZAB không chỉ là
+      lý thuyết hàn lâm, mà là CƠ CHẾ THẬT đứng sau việc ZooKeeper có thể trả lời đúng "ai đang là leader" dù
+      nhiều node cùng tham gia bầu cử đồng thời.</div></div><div class="mdeck-slide"><h2>4 chức năng cốt lõi ZooKeeper cung cấp</h2>
+      <table><tr><th>Chức năng</th><th>Ý nghĩa thực tế</th></tr>
+      <tr><td>Quản lý thành viên nhóm (group membership)</td><td>Biết chính xác node nào đang sống trong cluster tại mọi thời điểm</td></tr>
+      <tr><td>Bầu cử leader (leader election)</td><td>Khi node leader cũ chết, nhanh chóng và AN TOÀN chọn ra 1 leader mới duy nhất (không bao giờ có 2 leader cùng lúc)</td></tr>
+      <tr><td>Quản lý cấu hình động</td><td>Thay đổi cấu hình hệ thống mà không cần restart từng node</td></tr>
+      <tr><td>Giám sát trạng thái hệ thống</td><td>Theo dõi sức khoẻ cluster theo thời gian thực</td></tr></table>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới — "xương sống vô hình"</div>
+      ZooKeeper trở thành thành phần coordination nền tảng cho rất nhiều hệ thống phân tán lớn: HBase (bầu
+      leader cho region server), Kafka bản cũ trước KRaft (quản lý metadata cluster), Apache Solr (coordination
+      cho SolrCloud), Apache Mesos (quản lý trạng thái cluster). Phần lớn người dùng cuối không bao giờ "thấy"
+      ZooKeeper trực tiếp — nhưng khi ZooKeeper gặp sự cố, toàn bộ hệ thống phía trên (HBase, Kafka cũ...) đều
+      ngừng hoạt động đúng. Đây là lý do nó được gọi là "xương sống vô hình" của hệ phân tán.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/4</div>
+<div class="part-num">03</div><h2>Ví dụ minh hoạ: bầu leader ZooKeeper & 1 workflow Oozie 4 bước</h2>
+<ul class="part-list"><li>Bầu leader bằng znode tuần tự (sequential znode) — zxid nhỏ nhất thắng</li>
+<li>Workflow Oozie: Sqoop import → Hive clean → MapReduce tổng hợp → gửi email</li></ul></div><div class="mdeck-slide"><h2>Bầu leader bằng znode tuần tự — từng bước</h2>
+      <p>Một cách triển khai leader election phổ biến trên ZooKeeper: mỗi node ứng viên tạo 1 <b>znode tuần
+      tự</b> (sequential znode) dưới cùng 1 đường dẫn cha, ví dụ <code>/election/candidate-</code>. ZooKeeper
+      tự gắn thêm 1 số thứ tự tăng dần (zxid) vào tên mỗi znode được tạo.</p>
+      <table><tr><th>Node</th><th>znode được tạo</th></tr>
+      <tr><td>Node A</td><td><code>/election/candidate-0000000007</code></td></tr>
+      <tr><td>Node B</td><td><code>/election/candidate-0000000005</code></td></tr>
+      <tr><td>Node C</td><td><code>/election/candidate-0000000009</code></td></tr></table>
+      <p>Quy tắc: node tạo được znode có số thứ tự <b>nhỏ nhất</b> trong số các znode con hiện có sẽ là
+      leader → ở đây là <b>Node B</b> (0000000005). Nếu Node B chết, znode của nó tự bị xoá (vì là znode
+      "ephemeral" gắn với session của B); các node còn lại kiểm tra lại danh sách con, znode nhỏ nhất còn lại
+      (Node A, 0000000007) trở thành leader mới — không cần bất kỳ node nào "thông báo" trực tiếp cho node
+      khác.</p>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu sau đó Node D tham gia muộn và tạo
+      znode <code>candidate-0000000011</code>, ai là leader hiện tại? (Đáp: vẫn là Node A với
+      0000000007 — Node D có số thứ tự lớn hơn, không giành được vai trò leader khi A còn sống.)</div></div><div class="mdeck-slide"><h2>1 workflow Oozie 4 bước, có phụ thuộc rõ ràng</h2>
+      <p>Workflow Oozie cho pipeline "cập nhật báo cáo doanh số hàng ngày":</p>
+      <div class="pd-formula"><div class="pd-formula-label">DAG 4 action (ký hiệu A → B nghĩa là B chỉ chạy khi A xong)</div>
+      <div class="pd-formula-math">\text{Sqoop import} \to \text{Hive clean} \to \text{MapReduce tổng hợp} \to \text{Gửi email báo cáo}</div></div>
+      <p>Nếu bước "Hive clean" thất bại, Oozie KHÔNG chạy tiếp "MapReduce tổng hợp" hay "Gửi email" — toàn bộ
+      workflow dừng và báo lỗi đúng tại điểm hỏng, thay vì gửi 1 email báo cáo dựa trên dữ liệu chưa được làm
+      sạch (lỗi rất nguy hiểm nếu chạy bằng cron job thủ công không kiểm tra phụ thuộc).</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/4</div>
+<div class="part-num">04</div><h2>Tổng kết Chương 2 dưới góc nhìn lịch sử: 1 dòng thời gian</h2>
+<ul class="part-list"><li>2003-04: 2 paper Google (GFS, MapReduce) khởi nguồn mọi thứ</li>
+<li>2006-2008: Hadoop, Pig, Hive, HBase, ZooKeeper ra đời gần như cùng lúc ở Yahoo/Facebook/Powerset</li>
+<li>2009-2012: Sqoop, Oozie, YARN hoàn thiện hệ sinh thái; 2010-2011: Kafka ra đời ở LinkedIn</li></ul></div><div class="mdeck-slide"><h2>Một hệ sinh thái, nhưng không phải một công ty</h2>
+      <p>Điều đáng chú ý nhất khi nhìn lại lịch sử cả Chương 2: <b>hệ sinh thái Hadoop không do 1 công ty hay
+      1 nhóm thiết kế từ đầu</b> — mỗi công nghệ ra đời ở một công ty khác nhau, để giải quyết một bài toán nội
+      bộ cụ thể của công ty đó, rồi được mã nguồn mở hoá và ghép lại thành "hệ sinh thái" qua Apache Software
+      Foundation:</p>
+      <table><tr><th>Năm</th><th>Công nghệ</th><th>Nơi ra đời</th><th>Bài toán nội bộ ban đầu</th></tr>
+      <tr><td>2003-2004</td><td>GFS, MapReduce (paper)</td><td>Google</td><td>Lưu trữ &amp; xử lý chỉ mục web quy mô Internet</td></tr>
+      <tr><td>2006</td><td>Hadoop (tách từ Nutch)</td><td>Yahoo!</td><td>Công cụ tìm kiếm mở không scale được</td></tr>
+      <tr><td>2006-2008</td><td>Pig</td><td>Yahoo Research</td><td>MapReduce quá cấp thấp cho nghiên cứu ad hoc</td></tr>
+      <tr><td>2007</td><td>ZooKeeper</td><td>Yahoo Research</td><td>Cần coordination phân tán kiểu Chubby của Google</td></tr>
+      <tr><td>2008</td><td>HBase</td><td>Powerset</td><td>Tìm kiếm ngôn ngữ tự nhiên cần CSDL kiểu Bigtable</td></tr>
+      <tr><td>2008</td><td>Oozie</td><td>Yahoo!</td><td>Điều phối nhiều job Hadoop phụ thuộc nhau</td></tr>
+      <tr><td>2009</td><td>Sqoop</td><td>Cloudera</td><td>Cầu nối dữ liệu RDBMS cũ ↔ Hadoop mới cho doanh nghiệp</td></tr>
+      <tr><td>2010-2011</td><td>Hive</td><td>Facebook</td><td>Data warehouse Hadoop chỉ 6 người dùng được vì quá khó</td></tr>
+      <tr><td>2010-2011</td><td>Kafka</td><td>LinkedIn</td><td>Activity-stream bùng nổ, pub-sub cũ không chịu được</td></tr>
+      <tr><td>2012</td><td>YARN</td><td>Yahoo!/Hortonworks</td><td>JobTracker nghẽn, cần tách resource management</td></tr></table>
+      <div class="callout good"><div class="lbl">🌍 Bài học lớn nhất của cả Chương 2</div>"Hệ sinh thái Hadoop"
+      thực ra là lịch sử của NHIỀU công ty cùng đối mặt một dạng bài toán giống nhau (dữ liệu vượt quá 1 máy)
+      ở những thời điểm gần nhau (2006-2012), và văn hoá mã nguồn mở của Apache Software Foundation là thứ
+      cho phép các giải pháp riêng lẻ đó ghép lại thành 1 hệ sinh thái liên vận hành được — không ai đó ngồi
+      "thiết kế" cả hệ sinh thái này từ đầu.</div></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). Xem bản trình bày gốc của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Apache Oozie ra đời ở đâu, năm nào?", "opts": ["Facebook, 2010", "Yahoo!, 2008", "LinkedIn, 2011", "Google, 2004"], "correct": 1, "explain": "Oozie phát triển lần đầu tại Yahoo! năm 2008 để điều phối job Hadoop quy mô lớn."}, {"q": "Workflow trong Oozie được biểu diễn dưới dạng cấu trúc gì?", "opts": ["Danh sách tuyến tính đơn giản", "Đồ thị có hướng không chu trình (DAG) của các action", "Cây nhị phân", "Bảng băm"], "correct": 1, "explain": "Giống khái niệm DAG đã học ở Lập lịch 03, nhưng ở mức JOB hoàn chỉnh, không phải TASK."}, {"q": "ZooKeeper được mô phỏng theo hệ thống nào của Google?", "opts": ["Bigtable", "GFS", "Chubby (dịch vụ lock phân tán)", "Spanner"], "correct": 2, "explain": "ZooKeeper dựa trên ý tưởng từ paper Chubby của Mike Burrows (Google)."}, {"q": "ZooKeeper ra đời ở đâu, khoảng năm nào?", "opts": ["Yahoo Research, khoảng 2007", "Facebook, 2010", "LinkedIn, 2011", "Powerset, 2008"], "correct": 0, "explain": "Phát triển ở Yahoo Research khoảng 2007, mở nguồn trên SourceForge cùng năm."}, {"q": "ZAB (dùng trong ZooKeeper) là biến thể của thuật toán đồng thuận nào?", "opts": ["Raft", "Paxos", "Two-Phase Commit", "Gossip protocol"], "correct": 1, "explain": "ZAB (ZooKeeper Atomic Broadcast) là một biến thể của Paxos."}, {"q": "Trong bầu leader bằng znode tuần tự, node nào trở thành leader?", "opts": ["Node tạo znode cuối cùng (số thứ tự lớn nhất)", "Node tạo znode có số thứ tự NHỎ NHẤT trong các znode con hiện có", "Node có địa chỉ IP nhỏ nhất", "Node khởi động ZooKeeper đầu tiên"], "correct": 1, "explain": "Quy tắc: số thứ tự (zxid) nhỏ nhất trong các znode con hiện có sẽ là leader."}, {"q": "Khi leader hiện tại chết, điều gì xảy ra với znode của nó, và hệ quả là gì?", "opts": ["Znode vẫn còn, hệ thống không có leader mới", "Znode (ephemeral) tự bị xoá do gắn với session đã chết; node còn lại có số thứ tự nhỏ nhất kế tiếp trở thành leader mới", "Toàn bộ cluster phải khởi động lại", "ZooKeeper tự chọn leader ngẫu nhiên"], "correct": 1, "explain": "Đây là cơ chế bầu leader an toàn, tự động, không cần node nào 'thông báo' trực tiếp cho node khác."}, {"q": "Hệ thống nào KHÔNG phụ thuộc vào ZooKeeper để coordination (theo nội dung đã học)?", "opts": ["HBase (bầu leader region server)", "Kafka bản cũ trước KRaft (quản lý metadata cluster)", "Apache Solr (SolrCloud)", "RDBMS truyền thống đơn lẻ không phân tán"], "correct": 3, "explain": "RDBMS đơn lẻ không cần coordination phân tán kiểu ZooKeeper; HBase/Kafka cũ/Solr/Mesos đều phụ thuộc vào nó."}, {"q": "Trong workflow Oozie 4 bước (Sqoop → Hive clean → MapReduce → Email), nếu bước Hive clean thất bại, điều gì xảy ra?", "opts": ["Oozie vẫn chạy tiếp các bước sau với dữ liệu cũ", "Oozie dừng workflow, không chạy MapReduce/Email, báo lỗi đúng điểm hỏng", "Toàn bộ cluster Hadoop dừng hoạt động", "Email báo cáo vẫn được gửi nhưng ghi chú lỗi"], "correct": 1, "explain": "Đây là lợi ích chính của điều phối workflow có khai báo phụ thuộc rõ ràng, so với chạy cron job thủ công không kiểm tra."}, {"q": "Theo dòng thời gian tổng kết, công nghệ nào ra đời SỚM NHẤT làm nền tảng cho cả hệ sinh thái?", "opts": ["Kafka (LinkedIn)", "2 paper GFS và MapReduce của Google (2003-2004)", "YARN (2012)", "Hive (Facebook)"], "correct": 1, "explain": "2 paper Google là điểm khởi nguồn, truyền cảm hứng trực tiếp cho Hadoop và hầu hết công nghệ sau đó."}, {"q": "Bài học lớn nhất rút ra từ việc nhìn lại lịch sử toàn Chương 2 là gì?", "opts": ["Tất cả công nghệ đều do 1 nhóm ở Google thiết kế sẵn từ đầu", "Hệ sinh thái Hadoop là kết quả của NHIỀU công ty khác nhau giải quyết bài toán nội bộ riêng, rồi mã nguồn mở hoá và ghép lại qua Apache Software Foundation", "Mọi công nghệ trong hệ sinh thái đều ra đời cùng 1 năm", "Hệ sinh thái Hadoop không còn công nghệ nào được dùng tới ngày nay"], "correct": 1, "explain": "Đây là thông điệp tổng kết chính của cả 6 module deep-dive: hệ sinh thái là 'ghép lại' từ nhiều lời giải độc lập, không phải thiết kế tập trung."}, {"q": "Công nghệ nào trong hệ sinh thái đã chính thức bị 'nghỉ hưu' (Apache Attic), cho thấy không phải mọi thành phần đều tồn tại mãi?", "opts": ["Hive", "HBase", "Sqoop", "ZooKeeper"], "correct": 2, "explain": "Sqoop bị retired vào Apache Attic tháng 6/2021, nhường vai trò ETL batch cho các giải pháp CDC streaming."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../hd-05-kafka/index.html">◀ Hadoop 05: Apache Kafka: từ bài toán nội bộ LinkedIn tới xương sống streaming của cả ngành</a><span></span></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>

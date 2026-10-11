@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 05: Apache Kafka: từ bài toán nội bộ LinkedIn tới xương sống streaming của cả ngành · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 05 / 6</div>
+<h1>Apache Kafka: từ bài toán nội bộ LinkedIn tới xương sống streaming của cả ngành</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 05 · Lịch sử Kafka (LinkedIn) · Kiến trúc · Confluent</div><h2>Apache Kafka: từ bài toán nội bộ LinkedIn tới xương sống streaming của cả ngành</h2><p>Kafka không được thiết kế như một message queue thông thường — nó được thiết kế lại từ đầu như một log phân tán, vì các hệ thống pub-sub cũ không chịu được quy mô activity-stream của LinkedIn.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/4</div>
+<div class="part-num">01</div><h2>LinkedIn, 2010-2011: động lực ra đời Kafka</h2>
+<ul class="part-list"><li>Jay Kreps, Neha Narkhede, Jun Rao cùng xây Kafka khi làm ở LinkedIn</li>
+<li>Vấn đề: dữ liệu activity-stream (click, view, log) tăng bùng nổ, công cụ pub-sub cũ không đáp ứng được</li>
+<li>Kreps viết phần lớn Kafka trong kỳ nghỉ Giáng sinh; mã nguồn mở hoá đầu năm 2011</li></ul></div><div class="mdeck-slide"><h2>Vì sao các công cụ cũ không đủ dùng?</h2>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Apache Kafka được phát triển năm 2010
+      bởi Jay Kreps, Neha Narkhede và Jun Rao khi họ làm việc tại LinkedIn, và trở thành nền tảng mã nguồn mở
+      vào đầu năm 2011. Jay Kreps — kiến trúc sư chính cho hạ tầng dữ liệu tại LinkedIn — đã viết phần lớn
+      Kafka trong kỳ nghỉ Giáng sinh. Nguồn gốc hệ thống nằm ở chỗ các công cụ trước đó thiếu những thuộc tính
+      cần có của một hệ thống phân tán hiện đại để chuyển dữ liệu an toàn ở quy mô mà một công ty tăng trưởng
+      nhanh như LinkedIn cần.
+      Nguồn: <a href="https://www.frontier-enterprise.com/?p=15028" target="_blank">Frontier Enterprise — Kafka history</a>,
+      <a href="https://developer.confluent.io/podcast/jay-kreps-on-the-last-10-years-of-apache-kafka-and-event-streaming" target="_blank">Confluent — Jay Kreps podcast</a>.</div>
+      <p>Jun Rao trước đó là nhà nghiên cứu ở IBM Almaden, chuyên về CSDL và hệ thống phân tán; Neha Narkhede
+      sau khi rời Oracle gia nhập LinkedIn và dẫn dắt mảng hạ tầng streams. Cả ba hợp lực giải quyết đúng 1 bài
+      toán: làm sao chuyển dữ liệu sự kiện (activity data) từ hàng trăm nguồn khác nhau tới hàng trăm hệ thống
+      tiêu thụ khác nhau (báo cáo, Hadoop, cảnh báo thời gian thực...) một cách tin cậy và có thể mở rộng.</p>
+      <div class="callout good"><div class="lbl">📄 Nguồn tham khảo đã có trong materials.zip</div>
+      Garg, N. (2013). <i>Apache Kafka</i>. Packt Publishing — tài liệu kỹ thuật chi tiết về kiến trúc Kafka
+      (đã có sẵn trong <code>materials/papers/</code>, chỉ trích dẫn bibliographic, không host lại file).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/4</div>
+<div class="part-num">02</div><h2>Kiến trúc Kafka: log phân tán, không phải message queue thường</h2>
+<ul class="part-list"><li>Producer ghi vào Topic, Topic chia thành nhiều Partition</li>
+<li>Broker lưu trữ, ZooKeeper điều phối cluster metadata (ở các bản Kafka trước KRaft)</li>
+<li>Consumer đọc theo Offset — Kafka giữ log, không xoá message sau khi đọc như queue truyền thống</li></ul></div><div class="mdeck-slide"><h2>Vì sao gọi Kafka là 'log phân tán' chứ không phải 'message queue'?</h2>
+      <p>Khác biệt cốt lõi: một message queue truyền thống (RabbitMQ kiểu cũ) XOÁ message sau khi được 1
+      consumer đọc xong. Kafka thì giữ nguyên message trong 1 khoảng thời gian cấu hình được (retention), và
+      CHO PHÉP nhiều consumer group độc lập đọc lại cùng dữ liệu đó, mỗi group tự theo dõi vị trí đọc riêng
+      bằng <b>offset</b> của mình.</p>
+      <ul class="pd-legend"><li><b>Topic</b><span>một luồng dữ liệu được đặt tên (vd "user-clicks")</span></li>
+      <li><b>Partition</b><span>Topic được chia thành nhiều partition để phân tán tải — đây chính là bài toán
+      gán partition cho consumer đã học ở <a href="../ll-08-kafka-roundrobin-range/index.html">Lập lịch 08</a>
+      và <a href="../ll-09-kafka-sticky-rebalance/index.html">Lập lịch 09</a></span></li>
+      <li><b>Broker</b><span>server lưu trữ thật các partition</span></li>
+      <li><b>Offset</b><span>vị trí đọc hiện tại của 1 consumer group trong 1 partition — KHÔNG phải vị trí
+      toàn cục, mỗi consumer group có offset riêng</span></li></ul>
+      <div class="callout info"><div class="lbl">🔗 Liên hệ trực tiếp, không viết lại thuật toán</div>Việc gán
+      partition cho consumer (RoundRobinAssignor/RangeAssignor/StickyAssignor) và bài toán tái cân bằng khi 1
+      consumer rời nhóm đã được giải thích đầy đủ, kèm demo tương tác thật, ở
+      <a href="../ll-08-kafka-roundrobin-range/index.html">Lập lịch 08</a> và
+      <a href="../ll-09-kafka-sticky-rebalance/index.html">Lập lịch 09</a> — module này không lặp lại, chỉ
+      liên kết tới đúng nội dung đó.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/4</div>
+<div class="part-num">03</div><h2>Confluent (2014): từ dự án nội bộ tới công ty tỷ đô</h2>
+<ul class="part-list"><li>Kreps, Narkhede, Rao thành lập Confluent năm 2014 với 500.000 USD đầu tư từ LinkedIn</li>
+<li>Mô hình: mã nguồn mở Kafka + dịch vụ/tiện ích thương mại xung quanh</li>
+<li>Confluent IPO năm 2021, doanh thu hàng năm vượt 300 triệu USD tại thời điểm nộp hồ sơ</li></ul></div><div class="mdeck-slide"><h2>Vì sao 3 kỹ sư LinkedIn lập công ty riêng?</h2>
+      <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Dù vẫn hài lòng làm việc tại LinkedIn,
+      cả ba liên tục nhận được yêu cầu hỗ trợ và đề xuất xây thêm tiện ích cho Kafka từ các công ty khác đang
+      dùng nó. Họ nhận ra có cơ hội kinh doanh thực sự trong việc tạo và thương mại hoá công cụ xung quanh
+      Kafka, trong khi vẫn duy trì gốc mã nguồn mở. Confluent được thành lập năm 2014 với khoản đầu tư khoảng
+      500.000 USD từ LinkedIn.
+      Nguồn: <a href="https://www.hpcwire.com/bigdatawire/2014/11/10/linkedin-spinoff-confluent-extend-kafka" target="_blank">HPCwire — LinkedIn spinoff Confluent</a>,
+      <a href="https://www.cnbc.com/2021/06/01/linkedin-backed-confluent-files-s-1-as-yearly-sales-top-300-million.html" target="_blank">CNBC — Confluent S-1 filing</a>.</div>
+      <p>Đây là một mẫu hình lặp lại nhiều lần trong ngành dữ liệu lớn: công nghệ giải quyết bài toán nội bộ
+      của 1 công ty lớn (LinkedIn, giống Hadoop ra đời từ Yahoo) → mã nguồn mở hoá → chính người tạo ra nó
+      thành lập công ty thương mại hoá nó.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/4</div>
+<div class="part-num">04</div><h2>Ảnh hưởng tới thế giới: kiến trúc 'log-centric' định hình lại cách công ty xử lý dữ liệu</h2>
+<ul class="part-list"><li>Uber, Netflix, Airbnb đều dùng Kafka làm xương sống event streaming</li>
+<li>Khai sinh tư duy kiến trúc 'event sourcing'/'log là nguồn sự thật duy nhất' (log as single source of truth)</li></ul></div><div class="mdeck-slide"><h2>Từ activity-stream nội bộ tới chuẩn kiến trúc dữ liệu hiện đại</h2>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>Kafka không chỉ là một công
+      cụ nhắn tin — nó khai sinh một triết lý kiến trúc: dùng 1 log sự kiện bất biến (immutable log) làm
+      "nguồn sự thật duy nhất" (single source of truth), mọi hệ thống khác (database, cache, dashboard phân
+      tích thời gian thực, mô hình machine learning) đều là "view" được xây lại từ log đó. Triết lý này (gọi
+      là <i>event sourcing</i>/<i>log-centric architecture</i>) hiện là nền tảng hạ tầng dữ liệu tại các công
+      ty công nghệ lớn nhất: Uber (theo dõi chuyến đi thời gian thực), Netflix (telemetry/đề xuất nội dung),
+      Airbnb (pipeline dữ liệu sự kiện người dùng).</p>
+      <p>Điều này nối thẳng với nội dung đã học ở <a href="../ll-05-srpt/index.html">Lập lịch 05 — SRPT và
+      hàng đợi công việc động</a>: Kafka chính là lớp hạ tầng hàng đợi thực tế mà các hệ thống xử lý luồng như
+      Spark Streaming/Flink đọc dữ liệu đầu vào từ đó, biến lý thuyết lập lịch hàng đợi thành hệ thống chạy
+      thật ở quy mô hàng triệu sự kiện/giây.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). Xem bản trình bày gốc của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Kafka được phát triển bởi 3 kỹ sư nào, tại công ty nào?", "opts": ["Jay Kreps, Neha Narkhede, Jun Rao — tại LinkedIn", "Doug Cutting, Mike Cafarella — tại Yahoo", "Jeff Dean, Sanjay Ghemawat — tại Google", "Joydeep Sen Sarma, Ashish Thusoo — tại Facebook"], "correct": 0, "explain": "Ba người này phát triển Kafka tại LinkedIn năm 2010, mã nguồn mở hoá đầu 2011."}, {"q": "Jay Kreps được cho là đã viết phần lớn Kafka trong hoàn cảnh nào?", "opts": ["Một hackathon công khai", "Kỳ nghỉ Giáng sinh", "Trong lúc thực tập đại học", "Theo yêu cầu trực tiếp từ khách hàng bên ngoài"], "correct": 1, "explain": "Theo nguồn lịch sử đã trích, Kreps viết phần lớn Kafka trong kỳ nghỉ Giáng sinh khi làm ở LinkedIn."}, {"q": "Khác biệt cốt lõi giữa Kafka ('log phân tán') và message queue truyền thống là gì?", "opts": ["Kafka nhanh hơn ở mọi trường hợp", "Kafka giữ lại message sau khi đọc (retention), cho nhiều consumer group đọc lại độc lập; queue truyền thống xoá message sau khi đọc", "Kafka không hỗ trợ nhiều consumer", "Không có khác biệt thực sự"], "correct": 1, "explain": "Đây là khác biệt triết lý kiến trúc quan trọng nhất của Kafka so với message queue cổ điển."}, {"q": "Trong Kafka, 'offset' đại diện cho điều gì?", "opts": ["Độ trễ mạng giữa producer và broker", "Vị trí đọc hiện tại của MỘT consumer group trong MỘT partition cụ thể", "Số lượng broker trong cluster", "Kích thước tối đa của 1 message"], "correct": 1, "explain": "Mỗi consumer group có offset riêng — không phải vị trí đọc toàn cục chung cho mọi người."}, {"q": "Bài toán gán partition cho consumer (RoundRobin/Range/Sticky) đã được học chi tiết ở đâu trong site này?", "opts": ["Chính module này, phần kiến trúc Kafka", "Lập lịch 08 và Lập lịch 09 (có demo tương tác thật)", "Không có trong site này", "Module Hive & Pig"], "correct": 1, "explain": "Module này chủ động liên kết tới Lập lịch 08/09 thay vì lặp lại nội dung, đúng nguyên tắc tránh trùng lặp."}, {"q": "Confluent được thành lập năm nào, với khoản đầu tư ban đầu từ đâu?", "opts": ["2010, tự vốn hoàn toàn", "2014, khoảng 500.000 USD từ LinkedIn", "2018, từ quỹ chính phủ", "2021, từ IPO"], "correct": 1, "explain": "Confluent thành lập năm 2014 với khoảng 500.000 USD đầu tư từ LinkedIn."}, {"q": "Mô hình kinh doanh của Confluent là gì?", "opts": ["Đóng toàn bộ mã nguồn, bán license độc quyền", "Giữ Kafka mã nguồn mở, thương mại hoá dịch vụ/tiện ích xung quanh nó", "Chỉ bán phần cứng chuyên dụng", "Không có mô hình kinh doanh rõ ràng"], "correct": 1, "explain": "Confluent duy trì gốc mã nguồn mở Kafka, kinh doanh qua dịch vụ/tiện ích/nền tảng cloud xung quanh."}, {"q": "Công ty nào KHÔNG được nêu là ví dụ dùng Kafka làm xương sống event streaming trong bài học này?", "opts": ["Uber", "Netflix", "Airbnb", "Nokia"], "correct": 3, "explain": "Uber, Netflix, Airbnb được nêu làm ví dụ; Nokia không được đề cập trong nội dung đã học."}, {"q": "Triết lý kiến trúc mà Kafka khai sinh, coi log sự kiện là 'nguồn sự thật duy nhất', được gọi là gì?", "opts": ["Object-oriented architecture", "Event sourcing / log-centric architecture", "Relational normalization", "Master-slave replication"], "correct": 1, "explain": "Event sourcing/log-centric architecture: mọi hệ thống khác là 'view' xây lại từ log bất biến."}, {"q": "Jun Rao có kinh nghiệm nền tảng gì trước khi tham gia phát triển Kafka?", "opts": ["Kỹ sư phần cứng tại Intel", "Nhà nghiên cứu tại IBM Almaden, chuyên CSDL và hệ thống phân tán", "Giảng viên đại học về mạng máy tính", "Không có kinh nghiệm liên quan"], "correct": 1, "explain": "Jun Rao từng là nghiên cứu viên ở IBM Almaden, nghiên cứu CSDL/hệ thống phân tán trước khi vào LinkedIn."}, {"q": "Kafka liên hệ trực tiếp tới lý thuyết lập lịch hàng đợi nào đã học trước đó?", "opts": ["List Scheduling & LPT (Lập lịch 02)", "SRPT và hàng đợi công việc động (Lập lịch 05)", "DRF (Lập lịch 07)", "Không liên hệ tới lý thuyết lập lịch nào"], "correct": 1, "explain": "Kafka là lớp hạ tầng hàng đợi thực tế cho các hệ thống xử lý luồng, nối trực tiếp lý thuyết SRPT/hàng đợi vào hệ thống chạy thật."}, {"q": "Paper/tài liệu nào trong materials.zip được dùng làm nguồn chính cho kiến trúc Kafka trong module này?", "opts": ["Dean & Ghemawat (2004) MapReduce", "Garg (2013) 'Apache Kafka', Packt Publishing", "Decandia et al. (2007) Dynamo", "Ghodsi et al. (2011) DRF"], "correct": 1, "explain": "Garg (2013) là tài liệu kỹ thuật về Kafka có sẵn trong materials/papers/, trích dẫn bibliographic, không host file."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../hd-04-hbase-sqoop/index.html">◀ Hadoop 04: HBase & Sqoop: NoSQL lấy cảm hứng từ Bigtable, và cầu nối với thế giới RDBMS cũ</a><a href="../hd-06-oozie-zookeeper/index.html">Hadoop 06: Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 04: HBase & Sqoop: NoSQL lấy cảm hứng từ Bigtable, và cầu nối với thế giới RDBMS cũ · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 04 / 6</div>
+<h1>HBase & Sqoop: NoSQL lấy cảm hứng từ Bigtable, và cầu nối với thế giới RDBMS cũ</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 04 · Lịch sử HBase (Powerset/Bigtable) · Sqoop (Cloudera)</div><h2>HBase & Sqoop: NoSQL lấy cảm hứng từ Bigtable, và cầu nối với thế giới RDBMS cũ</h2><p>HBase không phải ý tưởng của Hadoop — nó là bản sao chép (re-implementation) mã nguồn mở của một hệ thống nội bộ của Google. Và Sqoop nhắc chúng ta rằng công nghệ Big Data không tồn tại mãi.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/4</div>
+<div class="part-num">01</div><h2>HBase: lấy cảm hứng trực tiếp từ Bigtable của Google</h2>
+<ul class="part-list"><li>Powerset xây HBase (phát hành 28/3/2008) để phục vụ tìm kiếm ngôn ngữ tự nhiên (NLP)</li>
+<li>Mô hình theo sát paper Bigtable (Google, 2006): CSDL cột mở rộng phân tán</li>
+<li>HBase = 'hệ quản trị CSDL của Hadoop', lưu trên HDFS</li></ul></div><div class="mdeck-slide"><h2>Từ bài toán tìm kiếm ngôn ngữ tự nhiên tới HBase</h2>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>HBase ban đầu do công ty Powerset xây
+      dựng, phát hành lần đầu ngày 28/3/2008 — mô hình dữ liệu và kiến trúc lấy cảm hứng trực tiếp từ hệ thống
+      Bigtable của Google (công bố qua paper năm 2006). Powerset cần xử lý khối lượng dữ liệu khổng lồ cho bài
+      toán tìm kiếm ngôn ngữ tự nhiên (NLP), và nhận thấy mô hình "CSDL cột mở rộng phân tán" của Bigtable là
+      lời giải phù hợp — nhưng Bigtable là hệ thống nội bộ đóng của Google, nên Powerset xây một bản mã nguồn
+      mở tương đương, chạy trên nền HDFS thay vì GFS.
+      Nguồn: <a href="https://en.wikipedia.org/wiki/Apache_HBase" target="_blank">Apache HBase — Wikipedia</a>.</div>
+      <p>HBase được xem như "hệ quản trị CSDL của Hadoop": dữ liệu tổ chức logic thành bảng (hàng × cột), kích
+      thước bảng có thể tới Terabyte/Petabyte, hàng ngàn cột, hỗ trợ hàng trăm ngàn thao tác INSERT/giây.</p>
+      <div class="callout warn"><div class="lbl">Nhưng là NoSQL — đánh đổi có chủ đích</div>So với RDBMS
+      truyền thống, HBase không có ngôn ngữ truy vấn mức cao như SQL — phải dùng API <code>get</code>/<code>put</code>/
+      <code>scan</code> theo khoá (row key). Đây là đánh đổi: bỏ tính linh hoạt truy vấn để đạt khả mở và
+      băng thông ghi cực cao.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/4</div>
+<div class="part-num">02</div><h2>Facebook Messages 2010: ca sử dụng nổi tiếng nhất của HBase</h2>
+<ul class="part-list"><li>Facebook chọn HBase cho hệ thống Messages mới (triển khai tháng 11/2010)</li>
+<li>Là minh chứng HBase có thể vận hành ở quy mô hàng trăm triệu người dùng</li>
+<li>Nhưng: Facebook sau đó đã chuyển Messages sang MyRocks (2018) — công nghệ không tồn tại mãi</li></ul></div><div class="mdeck-slide"><h2>Vì sao Facebook chọn HBase cho Messages?</h2>
+      <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Để xây hệ thống tin nhắn mới, Facebook
+      đã dựng nhiều prototype và thử nghiệm trên nhiều nền tảng lưu trữ phân tán khác nhau — HBase (mô phỏng
+      theo Bigtable của Google) là nền tảng thắng cuộc, và Facebook triển khai hệ thống Messages dựa trên
+      HBase vào tháng 11/2010.
+      Nguồn: <a href="https://www.theregister.com/2010/12/17/facebook_messages_tech" target="_blank">The Register — Facebook Messages tech</a>.</div>
+      <p>Đây là minh chứng công khai lớn nhất ở thời điểm đó cho thấy HBase/mô hình Bigtable có thể vận hành
+      ổn định ở quy mô hàng trăm triệu người dùng hoạt động — câu chuyện này góp phần lớn khiến HBase trở
+      thành lựa chọn NoSQL hàng đầu trong hệ sinh thái Hadoop suốt nhiều năm sau.</p>
+      <div class="callout warn"><div class="lbl">Bài học trung thực: không công nghệ nào tồn tại mãi</div>
+      Facebook sau đó đã di chuyển (migrate) hạ tầng Messages từ HBase sang MyRocks (một storage engine dựa
+      trên RocksDB) vào năm 2018. Điều này không có nghĩa HBase "thất bại" — mà cho thấy lựa chọn công nghệ
+      luôn gắn với một giai đoạn và một bộ yêu cầu cụ thể, và các hệ thống lớn tiếp tục tiến hoá khi yêu cầu
+      thay đổi theo thời gian.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/4</div>
+<div class="part-num">03</div><h2>Apache Sqoop: cầu nối RDBMS cũ ↔ Hadoop mới</h2>
+<ul class="part-list"><li>Aaron Kimball (Cloudera) phát triển, nộp patch đầu tiên tháng 5/2009</li>
+<li>Giải quyết bài toán rất thực tế: doanh nghiệp có hàng chục năm dữ liệu trong RDBMS, không thể bỏ qua khi chuyển sang Hadoop</li>
+<li>Trở thành Apache top-level project tháng 4/2012 — nhưng bị "nghỉ hưu" (Apache Attic) tháng 6/2021</li></ul></div><div class="mdeck-slide"><h2>Sqoop giải quyết bài toán gì, và hoạt động ra sao?</h2>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Sqoop do Aaron Kimball cùng nhóm phát
+      triển tại Cloudera xây dựng, bắt đầu như một contrib module của Hadoop từ tháng 5/2009 (patch đầu tiên:
+      HADOOP-5815). Tháng 4/2010 tách khỏi Hadoop contrib, do Cloudera duy trì trên GitHub; ngày 23/7/2011
+      được incubate thành dự án Apache; tháng 4/2012 trở thành Apache top-level project.
+      Nguồn: <a href="https://en.wikipedia.org/wiki/Sqoop" target="_blank">Sqoop — Wikipedia</a>.</div>
+      <p>Bài toán Sqoop giải quyết rất thực tế: hầu hết doanh nghiệp lớn đã có hàng chục năm dữ liệu nằm trong
+      RDBMS (Oracle, MySQL, SQL Server...) từ trước khi Hadoop ra đời. Không ai muốn/có thể bỏ dữ liệu đó —
+      Sqoop cho phép <b>import</b> (toàn bộ bảng, 1 bảng, hoặc 1 phần bảng) từ RDBMS vào HDFS qua job Map-only
+      hoặc MapReduce, và <b>export</b> dữ liệu ngược lại từ HDFS ra RDBMS.</p></div><div class="mdeck-slide"><h2>Vì sao Sqoop bị "nghỉ hưu" năm 2021 — bài học về chu kỳ sống công nghệ</h2>
+      <div class="callout warn"><div class="lbl">📚 Nguồn lịch sử</div>Dự án Apache Sqoop chính thức bị
+      retired (chuyển vào Apache Attic — nơi lưu các dự án Apache không còn được duy trì tích cực) vào tháng
+      6/2021. Nguồn: <a href="https://en.wikipedia.org/wiki/Sqoop" target="_blank">Sqoop — Wikipedia</a>.</div>
+      <p>Lý do thực tế (không phải vì Sqoop "làm sai" điều gì): cách doanh nghiệp đồng bộ dữ liệu giữa RDBMS và
+      hệ thống Big Data đã dịch chuyển sang các công cụ Change Data Capture (CDC) streaming thời gian thực
+      (ví dụ Debezium kết hợp Kafka — xem buổi tiếp theo) thay vì các job batch import/export định kỳ kiểu
+      Sqoop. Đây là một ví dụ rõ ràng cho quy luật chung của ngành: công cụ ETL batch dần nhường vai trò cho
+      kiến trúc streaming khi yêu cầu độ trễ dữ liệu ngày càng khắt khe hơn.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/4</div>
+<div class="part-num">04</div><h2>Ví dụ minh hoạ: thiết kế row key HBase & 1 lệnh Sqoop import</h2>
+<ul class="part-list"><li>Thiết kế row key cho bảng log sự kiện người dùng (tránh hotspotting)</li>
+<li>1 câu lệnh Sqoop import bảng 'orders' từ MySQL vào HDFS</li></ul></div><div class="mdeck-slide"><h2>Thiết kế row key: quyết định quan trọng nhất khi dùng HBase</h2>
+      <p>Giả sử cần lưu log sự kiện người dùng (user_id, timestamp, event_type). Hai cách thiết kế row key:</p>
+      <table><tr><th>Thiết kế</th><th>Row key</th><th>Vấn đề</th></tr>
+      <tr><td>Sai (hotspotting)</td><td><code>timestamp_userid</code></td><td>Mọi event MỚI đều có timestamp
+      lớn nhất → luôn ghi vào cùng 1 vùng (region) ở "cuối" bảng → 1 region server bị quá tải, các server khác
+      rảnh rỗi</td></tr>
+      <tr><td>Tốt hơn</td><td><code>userid_reversedTimestamp</code> (đảo ngược timestamp)</td><td>Ghi dữ liệu
+      của các user khác nhau phân tán đều lên nhiều region; vẫn giữ được thứ tự mới-nhất-trước khi đọc theo 1
+      user cụ thể</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Vì sao đặt <code>timestamp</code> làm
+      tiền tố (prefix) của row key luôn là thiết kế nguy hiểm trong HBase khi hệ thống đang ghi dữ liệu MỚI
+      liên tục? (Đáp: vì các row mới luôn có khoá lớn nhất, dồn hết việc ghi vào 1 region "nóng" ở cuối bảng —
+      đúng vấn đề "hotspotting" nêu trên — mất hết lợi thế phân tán ghi của HBase.)</div></div><div class="mdeck-slide"><h2>1 lệnh Sqoop import thực tế</h2>
+      <div class="pd-formula"><div class="pd-formula-label">Sqoop import bảng orders từ MySQL vào HDFS</div>
+      <div class="pd-formula-math">\text{sqoop import --connect jdbc:mysql://host/db --table orders --target-dir /data/orders}</div></div>
+      <p>Kết quả: Sqoop sinh 1 job Map-only (không cần Reduce vì đây chỉ là copy dữ liệu, không tổng hợp), mỗi
+      Mapper đọc 1 phần của bảng <code>orders</code> (chia theo khoá chính), ghi ra các tệp văn bản trong thư
+      mục HDFS <code>/data/orders</code>, các trường phân tách bởi dấu phẩy mặc định.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). Xem bản trình bày gốc của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "HBase lấy cảm hứng kiến trúc trực tiếp từ hệ thống nào của Google?", "opts": ["GFS", "MapReduce", "Bigtable", "Chubby"], "correct": 2, "explain": "HBase là bản mã nguồn mở theo mô hình Bigtable (paper Google 2006), chạy trên HDFS."}, {"q": "Công ty nào ban đầu xây dựng HBase, và để giải quyết bài toán gì?", "opts": ["Facebook, cho hệ thống Messages", "Powerset, cho tìm kiếm ngôn ngữ tự nhiên (NLP)", "Cloudera, cho ETL", "LinkedIn, cho activity stream"], "correct": 1, "explain": "Powerset xây HBase (phát hành 28/3/2008) để phục vụ bài toán tìm kiếm NLP ở quy mô lớn."}, {"q": "Khác biệt chính giữa HBase và RDBMS truyền thống là gì?", "opts": ["HBase nhanh hơn ở mọi tác vụ", "HBase là NoSQL, không có ngôn ngữ truy vấn mức cao như SQL, dùng API get/put/scan theo khoá", "HBase không hỗ trợ lưu bảng lớn", "HBase chạy trên 1 máy duy nhất"], "correct": 1, "explain": "Đánh đổi: bỏ ngôn ngữ truy vấn linh hoạt để đạt khả mở/băng thông ghi cao."}, {"q": "Facebook triển khai hệ thống Messages dựa trên HBase vào thời điểm nào?", "opts": ["2008", "11/2010", "2015", "2021"], "correct": 1, "explain": "Tháng 11/2010, sau khi thử nghiệm nhiều nền tảng lưu trữ phân tán khác."}, {"q": "Điều gì xảy ra với hệ thống Messages của Facebook sau đó (2018)?", "opts": ["Vẫn dùng HBase không đổi tới nay", "Facebook migrate sang MyRocks (dựa trên RocksDB)", "Facebook đóng dịch vụ Messages", "Facebook quay lại dùng RDBMS truyền thống"], "correct": 1, "explain": "Đây là bài học về chu kỳ sống công nghệ: không hệ thống nào tồn tại mãi dù từng rất thành công."}, {"q": "Aaron Kimball phát triển Sqoop ở công ty nào, nộp patch đầu tiên khi nào?", "opts": ["Yahoo, 2006", "Cloudera, 5/2009", "Facebook, 2010", "Google, 2004"], "correct": 1, "explain": "Aaron Kimball tại Cloudera, patch đầu tiên HADOOP-5815 nộp tháng 5/2009."}, {"q": "Sqoop giải quyết bài toán thực tế gì cho doanh nghiệp?", "opts": ["Thay thế hoàn toàn RDBMS", "Trung chuyển dữ liệu theo khối giữa Hadoop và RDBMS có cấu trúc (import/export)", "Tăng tốc truy vấn SQL", "Mã hoá dữ liệu nhạy cảm"], "correct": 1, "explain": "Doanh nghiệp có nhiều năm dữ liệu trong RDBMS — Sqoop là cầu nối 2 chiều với HDFS."}, {"q": "Apache Sqoop hiện ở trạng thái nào (tính tới thời điểm viết bài)?", "opts": ["Vẫn đang phát triển tích cực", "Đã bị retired, chuyển vào Apache Attic từ tháng 6/2021", "Chưa từng chính thức công bố", "Vừa được tách thành 2 dự án mới"], "correct": 1, "explain": "Sqoop bị retired tháng 6/2021 khi CDC streaming (vd Debezium+Kafka) thay thế vai trò ETL batch của nó."}, {"q": "Vì sao dùng timestamp làm tiền tố row key trong HBase là thiết kế nguy hiểm khi ghi dữ liệu liên tục?", "opts": ["Vì timestamp không phải số", "Vì mọi row mới đều có khoá lớn nhất, dồn ghi vào 1 region 'nóng' duy nhất (hotspotting)", "Vì HBase không hỗ trợ timestamp", "Vì row key phải là số nguyên"], "correct": 1, "explain": "Đây là vấn đề hotspotting kinh điển trong thiết kế schema HBase."}, {"q": "Trong câu lệnh 'sqoop import --connect ... --table orders --target-dir /data/orders', job sinh ra có cần bước Reduce không?", "opts": ["Có, luôn cần Reduce để tổng hợp", "Không, đây là job Map-only vì chỉ copy dữ liệu, không tổng hợp", "Chỉ cần Reduce nếu bảng có khoá chính", "Phụ thuộc vào kích thước bảng"], "correct": 1, "explain": "Sqoop import là copy dữ liệu theo phân vùng, không cần bước tổng hợp Reduce."}, {"q": "HBase được gọi là gì trong hệ sinh thái Hadoop?", "opts": ["Công cụ ETL", "'Hệ quản trị CSDL của Hadoop'", "Hệ thống lập lịch workflow", "Công cụ coordination phân tán"], "correct": 1, "explain": "Vì lưu dữ liệu có cấu trúc dạng bảng trên HDFS với khả năng đọc/ghi tốc độ cao, HBase đóng vai trò tương tự 1 hệ quản trị CSDL cho Hadoop."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../hd-03-pig-hive/index.html">◀ Hadoop 03: Pig & Hive: hai cách khác nhau để "thoát" khỏi việc viết MapReduce tay</a><a href="../hd-05-kafka/index.html">Hadoop 05: Apache Kafka: từ bài toán nội bộ LinkedIn tới xương sống streaming của cả ngành ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>

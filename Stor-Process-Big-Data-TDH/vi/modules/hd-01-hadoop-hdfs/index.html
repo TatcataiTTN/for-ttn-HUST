@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 01: Vì sao Hadoop ra đời, và HDFS giải quyết bài toán gì · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 01 / 6</div>
+<h1>Vì sao Hadoop ra đời, và HDFS giải quyết bài toán gì</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 01 · Lịch sử Hadoop · Kiến trúc HDFS</div><h2>Vì sao Hadoop ra đời, và HDFS giải quyết bài toán gì</h2><p>Hadoop không phải một sản phẩm được thiết kế trong phòng họp — nó ra đời từ nhu cầu rất cụ thể của một công cụ tìm kiếm mã nguồn mở đang chết dần vì không mở rộng được.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/4</div>
+<div class="part-num">01</div><h2>Từ Nutch tới Hadoop: một câu chuyện có thật</h2>
+<ul class="part-list"><li>2002: Doug Cutting & Mike Cafarella xây Nutch — công cụ tìm kiếm mở, nhưng kiến trúc không scale</li>
+<li>2003-2004: hai bài báo của Google (GFS, MapReduce) chỉ ra lối ra</li>
+<li>2006: Cutting vào Yahoo, phần lưu trữ+xử lý của Nutch được tách ra, đặt tên Hadoop</li></ul></div><div class="mdeck-slide"><h2>Nutch: công cụ tìm kiếm sinh ra Hadoop</h2>
+      <p>Trước khi có Hadoop, Doug Cutting và Mike Cafarella đã xây <b>Apache Nutch</b> (2002) — một công cụ
+      tìm kiếm web mã nguồn mở. Vấn đề: muốn thu thập và đánh chỉ mục cả Internet, Nutch cần lưu trữ và xử lý
+      dữ liệu ở quy mô vượt xa khả năng một máy chủ, nhưng chưa có kiến trúc phân tán phù hợp.</p>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Doug Cutting và Mike Cafarella hình thành
+      ý tưởng Hadoop dựa trên bài báo <i>Google File System</i> (tháng 10/2003); phát triển ban đầu nằm trong
+      dự án Apache Nutch, rồi tách sang dự án con Hadoop vào tháng 1/2006.
+      Nguồn: <a href="https://en.wikipedia.org/wiki/Apache_Hadoop" target="_blank">Apache Hadoop — Wikipedia</a>,
+      <a href="https://informationweek.com/software-services/hadoop-at-10-doug-cutting-on-making-big-data-work" target="_blank">InformationWeek — Hadoop at 10</a>.</div>
+      <p>Đây là chi tiết quan trọng để hiểu <b>vì sao</b> Hadoop có 2 trụ cột tách biệt (lưu trữ HDFS + xử lý
+      MapReduce) — vì chính 2 bài báo Google mà Cutting/Cafarella đọc cũng tách biệt 2 vấn đề đó.</p></div><div class="mdeck-slide"><h2>Vì sao tên là "Hadoop"?</h2>
+      <p>Không phải một từ viết tắt kỹ thuật nào cả.</p>
+      <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Doug Cutting (khi đó làm ở Yahoo!) đặt
+      tên Hadoop theo <b>tên con voi nhồi bông</b> của con trai ông. Theo lời Cutting: "Cái tên con tôi đặt cho
+      một con voi nhồi bông màu vàng. Ngắn, dễ đánh vần, dễ đọc, vô nghĩa, và chưa ai dùng — đó là tiêu chí đặt
+      tên của tôi." Con voi này giờ "nghỉ hưu" trong tủ đồ của Cutting, chỉ được mang ra trong các buổi keynote.
+      Nguồn: <a href="https://www.cio.com/article/3027631/apache-hadoop-turns-10.html" target="_blank">CIO.com — Apache Hadoop turns 10</a>.</div>
+      <p>Chi tiết này không phải giai thoại vô bổ: nó cho thấy văn hoá đặt tên "ngắn - dễ nhớ - không gây hiểu
+      lầm về công nghệ" của cả hệ sinh thái Hadoop sau này (Pig, Hive, ZooKeeper, Oozie, Sqoop... đều là tên
+      vật/khái niệm đời thường, không phải từ viết tắt).</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/4</div>
+<div class="part-num">02</div><h2>Kiến trúc HDFS: Master/Slave</h2>
+<ul class="part-list"><li>NameNode quản lý namespace & metadata, DataNode lưu dữ liệu thật</li>
+<li>Tệp chia thành block lớn (64MB/128MB) để giảm chi phí quản lý metadata</li>
+<li>Mỗi block nhân bản 3 lần trên các DataNode khác nhau để chịu lỗi</li></ul></div><div class="mdeck-slide"><h2>NameNode & DataNode: ai làm gì?</h2>
+      <p>HDFS theo kiến trúc <b>Master/Slave</b>: <b>NameNode</b> (master) chỉ lưu <i>metadata</i> — cấu trúc
+      thư mục, tên tệp, và bảng ánh xạ tệp → vị trí các block trên DataNode nào. <b>DataNode</b> (slave) mới
+      là nơi lưu dữ liệu thật và trực tiếp phục vụ đọc/ghi.</p>
+      <ul class="pd-legend"><li><b>fsimage</b><span>ảnh chụp toàn bộ namespace tại một thời điểm</span></li>
+      <li><b>edit log</b><span>nhật ký các thay đổi từ sau fsimage gần nhất — NameNode phát lại log này khi
+      khởi động để khôi phục trạng thái mới nhất</span></li></ul>
+      <div class="callout warn"><div class="lbl">Vì sao đây là điểm yếu kiến trúc ban đầu</div>Vì toàn bộ
+      metadata chỉ nằm ở 1 NameNode, nên bản Hadoop 1.0 có 1 <b>Single Point of Failure</b>: NameNode hỏng là
+      cả cụm mất khả năng định vị dữ liệu, dù dữ liệu vật lý trên DataNode vẫn còn nguyên. Hadoop 2.0 sau này
+      giải quyết bằng Standby NameNode (High Availability) — khác với Secondary NameNode (chỉ gộp log, không
+      phải bản dự phòng nóng).</div></div><div class="mdeck-slide"><h2>Block & Replication: hai quyết định thiết kế cốt lõi</h2>
+      <p>Hai lựa chọn thiết kế này quyết định toàn bộ hiệu năng và độ tin cậy của HDFS:</p>
+      <div class="pd-formula"><div class="pd-formula-label">Kích thước block mặc định</div>
+      <div class="pd-formula-math">64\text{ MB (ban đầu)} \to 128\text{ MB (mặc định từ các bản sau)}</div></div>
+      <div class="pd-formula"><div class="pd-formula-label">Hệ số nhân bản mặc định</div>
+      <div class="pd-formula-math">3\text{ bản sao, đặt trên 3 DataNode khác nhau (thường khác rack)}</div></div>
+      <div class="callout info"><div class="lbl">Vì sao block lớn, không nhỏ như hệ file thường (4KB)</div>
+      Block lớn giảm số lượng entry metadata mà NameNode phải giữ trong RAM — đây là lý do HDFS tối ưu cho
+      "vài trăm MB đến vài TB" một tệp, không phải cho rất nhiều tệp nhỏ: nhiều tệp nhỏ sẽ làm phình metadata
+      và trở thành nút nghẽn bộ nhớ của NameNode (bài toán "small files problem" nổi tiếng của HDFS).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/4</div>
+<div class="part-num">03</div><h2>Ví dụ minh hoạ: ghi một tệp 300MB vào HDFS</h2>
+<ul class="part-list"><li>Tệp 300MB với block 128MB → 3 block (128+128+44)</li>
+<li>Mỗi block có 3 bản sao → tổng 9 lượt ghi vật lý trên các DataNode</li>
+<li>Mô phỏng: 1 DataNode hỏng → NameNode phát hiện, ra lệnh tái nhân bản</li></ul></div><div class="mdeck-slide"><h2>Từng bước: client ghi 1 tệp 300MB</h2>
+      <p>Giả sử client ghi tệp <code>bao_cao.csv</code> dung lượng 300MB vào HDFS với block size 128MB,
+      hệ số nhân bản 3:</p>
+      <table><tr><th>Bước</th><th>Diễn ra gì</th></tr>
+      <tr><td>1</td><td>Client hỏi NameNode: "tôi muốn ghi tệp này" → NameNode chia tệp thành 3 block:
+      B1 (128MB), B2 (128MB), B3 (44MB)</td></tr>
+      <tr><td>2</td><td>NameNode trả về danh sách DataNode cho từng block (vd B1 → DN2, DN5, DN7)</td></tr>
+      <tr><td>3</td><td>Client ghi trực tiếp tới DataNode đầu tiên của mỗi block; DataNode đó tự chuyển tiếp
+      (pipeline) bản sao sang 2 DataNode còn lại</td></tr>
+      <tr><td>4</td><td>Khi đủ 3×3 = 9 bản ghi vật lý hoàn tất, NameNode cập nhật metadata, xác nhận ghi
+      thành công</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu hệ số nhân bản đổi thành 2 thay vì 3,
+      tổng số lượt ghi vật lý cho tệp này sẽ là bao nhiêu? (Đáp: 3 block × 2 bản sao = 6 lượt ghi — ít tốn
+      dung lượng hơn nhưng khả năng chịu lỗi giảm, chỉ chịu được 1 DataNode hỏng thay vì tối đa 2.)</div></div><div class="mdeck-slide"><h2>Khi một DataNode hỏng giữa đường</h2>
+      <p>Giả sử sau khi ghi xong, <b>DN5</b> (đang giữ 1 bản sao của block B1) gặp lỗi phần cứng.</p>
+      <ol><li>DataNode gửi <i>heartbeat</i> định kỳ cho NameNode; khi NameNode không nhận heartbeat từ DN5
+      trong một khoảng thời gian, nó coi DN5 đã chết.</li>
+      <li>NameNode rà soát metadata: block B1 hiện chỉ còn 2 bản sao hợp lệ (trên DN2, DN7) — thiếu 1 so với
+      hệ số nhân bản mặc định 3.</li>
+      <li>NameNode ra lệnh cho DN2 (hoặc DN7) sao chép thêm 1 bản của B1 sang một DataNode còn sống khác,
+      khôi phục lại đủ 3 bản sao — toàn bộ quá trình này KHÔNG cần ứng dụng phía trên biết hay can thiệp.</li></ol>
+      <div class="callout warn"><div class="lbl">Điểm mấu chốt cần nhớ</div>HDFS không "ngăn" lỗi phần cứng
+      xảy ra — nó <b>giả định lỗi là bình thường</b> và xây cơ chế tự phục hồi xung quanh giả định đó. Đây
+      chính là tư duy "chịu lỗi qua dư thừa" khác hẳn triết lý RDBMS truyền thống (ngăn lỗi bằng phần cứng đắt,
+      RAID chuyên dụng).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/4</div>
+<div class="part-num">04</div><h2>Ảnh hưởng của Hadoop/HDFS tới thế giới</h2>
+<ul class="part-list"><li>2008: Hadoop trở thành dự án Apache cấp cao nhất (top-level project)</li>
+<li>Khai sinh 2 công ty thương mại lớn: Cloudera (2008), Hortonworks (2011)</li>
+<li>Đặt nền tảng cho toàn bộ ngành công nghiệp 'Big Data' và sau này là data lake/lakehouse trên cloud</li></ul></div><div class="mdeck-slide"><h2>Từ một dự án nội bộ Yahoo tới chuẩn công nghiệp</h2>
+      <p>Yahoo! là công ty đầu tiên triển khai Hadoop ở quy mô sản xuất lớn (phục vụ đánh chỉ mục tìm kiếm),
+      và là nơi nuôi dưỡng dự án trong giai đoạn đầu then chốt (2006 trở đi). Hadoop trở thành dự án Apache
+      cấp cao nhất năm 2008.</p>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>
+      Hadoop là nền tảng mở đầu cho tư duy "lưu trữ rẻ, mở rộng ngang, chấp nhận lỗi phần cứng" — tư duy này
+      sau đó định hình toàn bộ kiến trúc <b>data lake</b> trên cloud (AWS S3 + EMR, Azure Data Lake, GCS +
+      Dataproc): thay HDFS bằng object storage, nhưng triết lý "scale-out, lưu trước xử lý sau" vẫn giữ
+      nguyên tới ngày nay trong các nền tảng data lakehouse (Delta Lake, Iceberg, Hudi).</div>
+      <p>Hai công ty thương mại lớn nhất của hệ sinh thái Hadoop — <b>Cloudera</b> (2008) và
+      <b>Hortonworks</b> (2011, sau sáp nhập lại với Cloudera năm 2019) — ra đời trực tiếp từ nhu cầu đóng gói,
+      hỗ trợ doanh nghiệp triển khai Hadoop, cho thấy quy mô ảnh hưởng kinh tế thực sự của công nghệ này.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). Xem bản trình bày gốc của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Hadoop ra đời trực tiếp từ dự án nào, và vì vấn đề gì?", "opts": ["Dự án Nutch (công cụ tìm kiếm), vì Nutch không mở rộng được khi dữ liệu lớn", "Dự án nghiên cứu học thuật thuần túy, không liên quan sản phẩm thật", "Một hackathon nội bộ Google", "Một yêu cầu trực tiếp từ khách hàng của Yahoo"], "correct": 0, "explain": "Nutch (2002, Cutting & Cafarella) là công cụ tìm kiếm mở gặp giới hạn mở rộng, dẫn tới việc tách phần lưu trữ/xử lý ra thành Hadoop sau khi đọc 2 bài báo GFS/MapReduce của Google."}, {"q": "Hadoop được đặt tên theo điều gì?", "opts": ["Viết tắt của 'Hadoop Distributed Architecture for Online Processing'", "Tên một thuật toán nén dữ liệu", "Tên con voi nhồi bông của con trai Doug Cutting", "Tên công ty sáng lập"], "correct": 2, "explain": "Không có ý nghĩa kỹ thuật gì — Cutting chọn vì ngắn, dễ phát âm, chưa ai dùng."}, {"q": "Trong kiến trúc HDFS, NameNode chịu trách nhiệm chính về điều gì?", "opts": ["Lưu toàn bộ dữ liệu thật của mọi tệp", "Lưu metadata: namespace, ánh xạ tệp → block → DataNode", "Chạy các tác vụ MapReduce", "Nhân bản vật lý từng block"], "correct": 1, "explain": "NameNode chỉ giữ metadata (fsimage + edit log); dữ liệu thật và việc nhân bản do DataNode xử lý."}, {"q": "Vì sao Hadoop 1.0 coi NameNode là một Single Point of Failure?", "opts": ["Vì NameNode chạy chậm hơn DataNode", "Vì mọi metadata chỉ tồn tại ở 1 NameNode, hỏng là mất khả năng định vị dữ liệu", "Vì NameNode không hỗ trợ nhân bản", "Vì NameNode cần GPU"], "correct": 1, "explain": "Dữ liệu vật lý trên DataNode vẫn còn, nhưng không ai biết nó ở đâu nếu NameNode (và metadata) hỏng — đây là động lực ra đời Standby NameNode (HA) ở Hadoop 2.0."}, {"q": "Block size lớn (64MB/128MB) trong HDFS giúp giải quyết vấn đề gì?", "opts": ["Tăng độ trễ đọc/ghi", "Giảm số lượng entry metadata mà NameNode phải lưu trong RAM", "Giảm hệ số nhân bản cần thiết", "Tăng số lượng tệp nhỏ có thể lưu hiệu quả"], "correct": 1, "explain": "Block lớn → ít block hơn cho cùng dung lượng dữ liệu → ít metadata hơn trên NameNode. Hệ quả phụ: HDFS KÉM hiệu quả với rất nhiều tệp nhỏ (small-files problem)."}, {"q": "Một tệp 300MB với block size 128MB được chia thành mấy block?", "opts": ["2 block", "3 block (128+128+44)", "4 block", "300 block"], "correct": 1, "explain": "⌈300/128⌉ = 3 block: hai block đầy 128MB, block cuối 44MB."}, {"q": "Với tệp 300MB chia 3 block, hệ số nhân bản 3, tổng số lượt ghi vật lý trên các DataNode là bao nhiêu?", "opts": ["3", "6", "9", "12"], "correct": 2, "explain": "3 block × 3 bản sao/block = 9 lượt ghi vật lý."}, {"q": "Khi một DataNode giữ bản sao của 1 block bị lỗi, hệ thống phản ứng ra sao?", "opts": ["Toàn bộ tệp bị xoá để đảm bảo nhất quán", "NameNode phát hiện qua heartbeat và ra lệnh tái nhân bản sang DataNode khác", "Client phải tự ghi lại toàn bộ tệp", "Không có cơ chế tự động, cần quản trị viên can thiệp thủ công"], "correct": 1, "explain": "Cơ chế heartbeat + tái nhân bản tự động là nền tảng của khả năng chịu lỗi HDFS, không cần ứng dụng hay người quản trị can thiệp."}, {"q": "Hadoop trở thành dự án Apache cấp cao nhất (top-level project) vào năm nào?", "opts": ["2004", "2006", "2008", "2012"], "correct": 2, "explain": "2006 là năm Hadoop tách thành dự án con từ Nutch; 2008 mới là năm trở thành top-level Apache project."}, {"q": "Hai công ty thương mại lớn nhất xây quanh hệ sinh thái Hadoop là gì?", "opts": ["Confluent và Databricks", "Cloudera và Hortonworks", "MongoDB Inc. và Snowflake", "Oracle và IBM"], "correct": 1, "explain": "Cloudera (2008) và Hortonworks (2011) — hai công ty này sau sáp nhập lại năm 2019."}, {"q": "Triết lý 'scale-out, lưu trước xử lý sau' của Hadoop ảnh hưởng trực tiếp tới kiến trúc nào phổ biến hiện nay?", "opts": ["Máy chủ mainframe tập trung", "Data lake/lakehouse trên cloud (S3+EMR, Delta Lake, Iceberg)", "Cơ sở dữ liệu quan hệ truyền thống on-premise duy nhất", "Không có ảnh hưởng gì tới kiến trúc hiện đại"], "correct": 1, "explain": "HDFS được thay bằng object storage (S3/GCS/ADLS) nhưng tư duy lưu trữ rẻ + mở rộng ngang vẫn là nền tảng của data lake/lakehouse ngày nay."}, {"q": "Secondary NameNode trong Hadoop 1.0 khác gì so với Standby NameNode (HA) của Hadoop 2.0?", "opts": ["Chúng là một, chỉ đổi tên", "Secondary NameNode chỉ gộp fsimage+edit log định kỳ, KHÔNG phải bản dự phòng nóng; Standby NameNode mới thực sự có thể thay thế NameNode chính khi lỗi", "Secondary NameNode nhanh hơn Standby NameNode", "Standby NameNode chỉ dùng để lưu dữ liệu, không liên quan metadata"], "correct": 1, "explain": "Đây là nhầm lẫn phổ biến nhất về HDFS: Secondary NameNode KHÔNG phải cơ chế failover."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><span></span><a href="../hd-02-mapreduce-yarn/index.html">Hadoop 02: MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>

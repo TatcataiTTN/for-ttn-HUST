@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 02: MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 02 / 6</div>
+<h1>MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 02 · Lịch sử MapReduce · Vì sao YARN ra đời</div><h2>MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm</h2><p>MapReduce giải quyết bài toán xử lý; nhưng chính MapReduce bản đầu lại tạo ra một điểm nghẽn mới — JobTracker. Câu chuyện YARN là câu chuyện sửa lỗi kiến trúc của chính Hadoop.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/4</div>
+<div class="part-num">01</div><h2>MapReduce: mô hình lập trình từ Google</h2>
+<ul class="part-list"><li>Google công bố MapReduce năm 2004 (Dean & Ghemawat)</li>
+<li>Mô hình: Map → Shuffle & Sort → Reduce trên cặp key-value</li>
+<li>Ưu điểm được thiết kế có chủ đích: đơn giản, linh hoạt, khả mở</li></ul></div><div class="mdeck-slide"><h2>Vì sao Google cần MapReduce?</h2>
+      <p>Trước MapReduce, kỹ sư Google phải tự viết code xử lý song song/phân tán cho từng bài toán — dễ lỗi,
+      khó bảo trì, logic phân tán (chia việc, xử lý lỗi node, gộp kết quả) trộn lẫn với logic nghiệp vụ.
+      MapReduce tách 2 phần này: người viết code chỉ cần định nghĩa 2 hàm <code>map</code> và <code>reduce</code>,
+      còn framework tự lo phân tán, chịu lỗi, gộp kết quả.</p>
+      <table><tr><th>Giai đoạn</th><th>Việc làm</th></tr>
+      <tr><td>Map</td><td>Đọc từng bản ghi đầu vào (key, value), sinh ra 0 hoặc nhiều cặp (key', value') trung gian</td></tr>
+      <tr><td>Shuffle &amp; Sort</td><td>Hadoop tự gộp và sắp xếp output của mọi Mapper theo key', chia vào các partition — mỗi partition là đầu vào của 1 Reducer</td></tr>
+      <tr><td>Reduce</td><td>Mỗi Reducer nhận toàn bộ value' của 1 key', xử lý và sinh ra cặp (key'', value'') cuối cùng</td></tr></table>
+      <div class="callout info"><div class="lbl">Nguồn: materials/hangout/2024/2_hadoop_ecosystem_vn.pdf (Chương 2)</div>
+      Ví dụ Word Count trong giáo trình chính là minh hoạ kinh điển nhất của mô hình này: Map phát ra (từ, 1)
+      cho mỗi từ, Reduce cộng tổng các giá trị 1 theo từng từ khoá.</div></div><div class="mdeck-slide"><h2>Combiner & Partitioner — chi tiết hay bị bỏ qua</h2>
+      <p>Giáo trình gốc không nhấn vào 2 thành phần tối ưu quan trọng này — nhưng thiếu chúng, MapReduce thực
+      tế sẽ chậm hơn rất nhiều so với lý thuyết:</p>
+      <ul class="pd-legend"><li><b>Combiner</b><span>một "mini-Reducer" chạy ngay trên node Map, gộp trước
+      các giá trị cùng key TRƯỚC khi gửi qua mạng tới Reducer — giảm mạnh lưu lượng shuffle. Với Word Count,
+      combiner cộng tổng từng từ ngay tại Mapper trước khi gửi đi.</span></li>
+      <li><b>Partitioner</b><span>quyết định cặp (key', value') trung gian nào đi vào Reducer nào — mặc định
+      dùng hash(key) mod số-Reducer, đảm bảo mọi value' của cùng 1 key' luôn vào đúng 1 Reducer duy nhất.</span></li></ul>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>Combiner chỉ áp dụng được khi hàm reduce có
+      tính <b>kết hợp và giao hoán</b> (associative, commutative) — như cộng tổng, lấy max/min. Với phép tính
+      trung bình (average), combiner ngây thơ sẽ cho kết quả SAI nếu không cẩn thận (phải gộp cả tổng và số
+      lượng, không gộp trực tiếp giá trị trung bình).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/4</div>
+<div class="part-num">02</div><h2>Giới hạn của Hadoop 1.0: JobTracker là điểm nghẽn</h2>
+<ul class="part-list"><li>1 JobTracker duy nhất quản lý TOÀN BỘ job + giám sát TaskTracker trên mọi node</li>
+<li>Giới hạn thực tế: cụm tối đa ~4.000 node, ~40.000 task đồng thời</li>
+<li>JobTracker vừa là lập lịch tài nguyên, vừa là giám sát tiến trình — gộp 2 vai trò khác nhau vào 1 chỗ</li></ul></div><div class="mdeck-slide"><h2>Vai trò quá tải của JobTracker</h2>
+      <p>Trong Hadoop 1.0, <b>JobTracker</b> (chạy trên 1 node duy nhất) đảm nhiệm cả 2 việc hoàn toàn khác
+      nhau: (1) quản lý tài nguyên cụm (máy nào còn trống để giao việc), và (2) theo dõi tiến trình của mọi
+      MapReduce job. <b>TaskTracker</b> chạy trên từng node, thực thi task và báo cáo tiến trình ngược lại
+      cho JobTracker.</p>
+      <div class="callout warn"><div class="lbl">📚 Nguồn lịch sử</div>Có 1 JobTracker duy nhất tạo ra giới
+      hạn mở rộng thực tế: kích thước cụm tối đa khoảng hơn 4.000 node, và số lượng task đồng thời giới hạn ở
+      khoảng 40.000 — vượt ngưỡng này, JobTracker trở thành nút nghẽn hiệu năng và điểm lỗi đơn (SPOF).
+      Nguồn: <a href="https://www.infoworld.com/article/2171598/hadoop-2-big-data-s-big-leap-forward.html" target="_blank">InfoWorld — Hadoop 2: Big data's big leap forward</a>.</div>
+      <p>Đây chính là động lực trực tiếp dẫn tới YARN: tách vai trò "quản lý tài nguyên" (ResourceManager) ra
+      khỏi vai trò "theo dõi 1 job cụ thể" (ApplicationMaster, giờ mỗi job có 1 cái riêng thay vì dồn hết vào
+      1 JobTracker).</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/4</div>
+<div class="part-num">03</div><h2>YARN (Hadoop 2.0, 2012): tách resource management khỏi xử lý</h2>
+<ul class="part-list"><li>ResourceManager (toàn cụm) + NodeManager (mỗi node) + ApplicationMaster (mỗi job)</li>
+<li>YARN = Yet Another Resource Negotiator — đúng nghĩa đen, một cái tên tự trào</li>
+<li>Hệ quả quan trọng nhất: KHÔNG CHỈ MapReduce mới chạy được trên cụm Hadoop nữa</li></ul></div><div class="mdeck-slide"><h2>Ba vai trò mới của YARN</h2>
+      <div class="pd-formula"><div class="pd-formula-label">Kiến trúc YARN</div>
+      <div class="pd-formula-math">\text{ResourceManager (1/cụm)} + \text{NodeManager (1/node)} + \text{ApplicationMaster (1/job)}</div></div>
+      <ul class="pd-legend"><li><b>ResourceManager</b><span>quản lý toàn bộ tài nguyên cụm (CPU, RAM theo
+      Container), quyết định cấp bao nhiêu tài nguyên cho ứng dụng nào</span></li>
+      <li><b>NodeManager</b><span>chạy trên mỗi node, báo cáo tài nguyên khả dụng của node đó, giám sát
+      Container chạy trên node mình</span></li>
+      <li><b>ApplicationMaster</b><span>MỖI job có 1 ApplicationMaster riêng, tự thương lượng tài nguyên với
+      ResourceManager cho job của mình — đây là điểm khác biệt cốt lõi: trách nhiệm theo dõi tiến trình được
+      PHÂN TÁN ra từng job, không dồn về 1 JobTracker duy nhất nữa</span></li></ul>
+      <div class="callout good"><div class="lbl">Vì sao đây là bước nhảy kiến trúc, không chỉ bản vá lỗi</div>
+      YARN biến Hadoop từ "một hệ thống chỉ chạy được MapReduce" thành "một hệ điều hành cấp tài nguyên cho
+      NHIỀU loại ứng dụng khác nhau cùng lúc" — đây là lý do Spark, Tez, Flink đều có thể chạy trên cùng 1 cụm
+      Hadoop với YARN làm lớp cấp phát tài nguyên bên dưới.</div></div><div class="mdeck-slide"><h2>Ví dụ minh hoạ: 2 job xin tài nguyên đồng thời</h2>
+      <p>Giả sử cụm có tổng 20 Container trống. Job A (Spark) xin 12 Container, Job B (MapReduce) xin 10
+      Container, nộp gần như cùng lúc.</p>
+      <table><tr><th>Bước</th><th>ResourceManager làm gì</th></tr>
+      <tr><td>1</td><td>ApplicationMaster của Job A và Job B đều gửi yêu cầu tài nguyên tới ResourceManager</td></tr>
+      <tr><td>2</td><td>ResourceManager áp dụng chính sách lập lịch (Capacity Scheduler hoặc Fair Scheduler —
+      xem lại liên hệ với buổi Lập lịch 06/07 công bằng tài nguyên) để chia 20 Container đang có</td></tr>
+      <tr><td>3</td><td>Ví dụ dùng Fair Scheduler: Job A nhận 11 Container, Job B nhận 9 — không ai nhận đủ
+      100% yêu cầu ngay, nhưng cả hai được cấp một phần công bằng và tiếp tục xin thêm khi có Container trống</td></tr></table>
+      <div class="callout info"><div class="lbl">🔗 Liên hệ trực tiếp</div>Đây chính là bài toán công bằng tài
+      nguyên đã học ở <a href="../ll-07-drf/index.html">Lập lịch 07 — DRF</a>: YARN Fair Scheduler/Capacity
+      Scheduler là triển khai THỰC TẾ của đúng lý thuyết max-min fairness/DRF đó, không phải khái niệm tách
+      biệt.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/4</div>
+<div class="part-num">04</div><h2>Ảnh hưởng tới thế giới: từ YARN tới tư duy 'hệ điều hành cụm'</h2>
+<ul class="part-list"><li>YARN mở đường cho Spark thay thế MapReduce làm engine xử lý chính (giữ nguyên lớp resource negotiation)</li>
+<li>Tư duy tách 'quản lý tài nguyên' khỏi 'logic ứng dụng' là tiền thân trực tiếp của Kubernetes</li></ul></div><div class="mdeck-slide"><h2>Từ YARN tới Kubernetes: cùng một ý tưởng, 10 năm sau</h2>
+      <p>YARN ra đời năm 2012 để giải quyết đúng 1 bài toán: làm sao nhiều loại ứng dụng khác nhau có thể
+      xin và được cấp tài nguyên (CPU/RAM) một cách công bằng trên cùng 1 cụm máy, mà không cần biết gì về
+      logic nội bộ của ứng dụng khác.</p>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>Đây chính xác là bài toán mà
+      <b>Kubernetes</b> (ra đời 2014 ở Google, dựa trên kinh nghiệm hệ thống nội bộ Borg) giải quyết cho toàn
+      bộ ngành công nghiệp phần mềm nói chung, không chỉ Big Data: YARN là minh chứng sớm cho thấy việc tách
+      lớp "cấp phát tài nguyên cụm" ra khỏi lớp "logic ứng dụng cụ thể" là một ý tưởng kiến trúc đúng đắn và
+      bền vững — ý tưởng này lặp lại ở quy mô lớn hơn nhiều với Kubernetes ngày nay.</div>
+      <p>Hệ quả trực tiếp với Hadoop: nhờ YARN, khi Apache Spark ra đời và chứng minh xử lý in-memory nhanh
+      hơn MapReduce rất nhiều lần cho các bài toán lặp (machine learning, graph), các công ty có thể CHUYỂN
+      engine xử lý từ MapReduce sang Spark mà KHÔNG cần xây lại toàn bộ cụm — chỉ cần Spark biết "nói chuyện"
+      với YARN. Đây là lý do MapReduce dần mất vai trò engine chính, nhưng YARN (ý tưởng resource negotiation)
+      vẫn tồn tại.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). Xem bản trình bày gốc của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "MapReduce tách biệt điều gì khỏi logic nghiệp vụ của người lập trình?", "opts": ["Logic bảo mật", "Logic phân tán: chia việc, xử lý lỗi node, gộp kết quả", "Logic giao diện người dùng", "Logic cơ sở dữ liệu"], "correct": 1, "explain": "Người viết chỉ định nghĩa map/reduce; framework tự lo phân tán/chịu lỗi/gộp kết quả."}, {"q": "Combiner trong MapReduce chỉ dùng đúng khi hàm reduce có tính chất gì?", "opts": ["Không có điều kiện gì", "Kết hợp và giao hoán (associative, commutative)", "Chỉ dùng với số nguyên", "Chỉ dùng khi có 1 Reducer duy nhất"], "correct": 1, "explain": "Với trung bình (average) chẳng hạn, combiner ngây thơ cho kết quả sai nếu không gộp đúng (tổng + số lượng)."}, {"q": "Trong Hadoop 1.0, JobTracker đồng thời đảm nhiệm bao nhiêu vai trò khác nhau?", "opts": ["1 vai trò duy nhất: theo dõi tiến trình", "2 vai trò: quản lý tài nguyên cụm VÀ theo dõi tiến trình mọi job", "3 vai trò gồm cả lưu trữ dữ liệu", "0, JobTracker chỉ chuyển tiếp thông điệp"], "correct": 1, "explain": "Gộp 2 vai trò khác nhau vào 1 node là nguyên nhân chính gây nghẽn và SPOF."}, {"q": "Giới hạn thực tế của cụm Hadoop 1.0 (theo JobTracker) khoảng bao nhiêu node?", "opts": ["400 node", "~4.000 node", "40.000 node", "Không giới hạn"], "correct": 1, "explain": "Khoảng hơn 4.000 node và ~40.000 task đồng thời là giới hạn thực tế được ghi nhận."}, {"q": "YARN viết tắt của gì, và ý nghĩa cái tên đó?", "opts": ["Yet Another Resource Negotiator — một cái tên tự trào của nhóm phát triển", "Yarn Architecture for Resource Networks", "Young Allocation Resource Node", "Không viết tắt gì, chỉ là tên thương hiệu"], "correct": 0, "explain": "YARN = Yet Another Resource Negotiator, đặt tên có chủ đích hài hước vì đây là framework quản lý tài nguyên 'thêm một cái nữa'."}, {"q": "ApplicationMaster trong YARN khác JobTracker cũ ở điểm cốt lõi nào?", "opts": ["ApplicationMaster chạy trên máy nhanh hơn", "MỖI job có 1 ApplicationMaster riêng, thay vì dồn theo dõi mọi job vào 1 JobTracker", "ApplicationMaster không cần tài nguyên", "Không có khác biệt, chỉ đổi tên"], "correct": 1, "explain": "Đây là thay đổi kiến trúc cốt lõi: phân tán trách nhiệm theo dõi tiến trình ra từng job."}, {"q": "Nhờ YARN, điều gì trở nên khả thi mà Hadoop 1.0 không làm được?", "opts": ["Lưu trữ dữ liệu lớn hơn", "Chạy nhiều loại ứng dụng khác nhau (Spark, Tez, MapReduce...) cùng lúc trên 1 cụm", "Tăng hệ số nhân bản HDFS", "Giảm kích thước block"], "correct": 1, "explain": "Trước YARN, cụm Hadoop chỉ chạy được MapReduce; YARN biến Hadoop thành nền tảng đa ứng dụng."}, {"q": "YARN ra đời vào năm nào, cùng với phiên bản Hadoop nào?", "opts": ["2008, Hadoop 1.0", "2010, Hadoop 1.5", "2012, Hadoop 2.0", "2015, Hadoop 3.0"], "correct": 2, "explain": "YARN được đưa ra từ Hadoop 2.0, năm 2012."}, {"q": "Trong ví dụ 2 job xin 12 và 10 Container trên cụm chỉ có 20 Container trống, Fair Scheduler làm gì?", "opts": ["Chỉ cấp cho job nộp trước, job sau phải chờ", "Chia một phần công bằng cho cả hai, không ai nhận đủ 100% ngay lập tức", "Từ chối cả hai yêu cầu", "Tạo thêm Container mới ngay lập tức"], "correct": 1, "explain": "Fair Scheduler chia sẻ công bằng tài nguyên hiện có, đúng nguyên lý max-min fairness đã học ở module Lập lịch 06/07."}, {"q": "Ý tưởng kiến trúc nào của YARN lặp lại ở quy mô lớn hơn trong Kubernetes?", "opts": ["Lưu trữ phân tán có nhân bản", "Tách lớp cấp phát tài nguyên cụm khỏi lớp logic ứng dụng cụ thể", "Ngôn ngữ lập trình Java", "Mô hình key-value"], "correct": 1, "explain": "Kubernetes (2014, dựa trên Borg của Google) áp dụng đúng ý tưởng này cho toàn ngành phần mềm, không chỉ Big Data."}, {"q": "Vì sao Spark có thể dần thay thế MapReduce làm engine xử lý chính mà không cần xây lại cụm?", "opts": ["Vì Spark không cần tài nguyên", "Vì Spark nói chuyện với YARN giống MapReduce, chỉ thay đổi engine xử lý phía trên lớp resource negotiation", "Vì Spark lưu trữ dữ liệu khác HDFS hoàn toàn", "Vì Spark không chạy trên cụm Hadoop được"], "correct": 1, "explain": "YARN tách biệt resource negotiation khỏi engine xử lý — đây là lý do engine có thể thay đổi (MapReduce → Spark) mà hạ tầng cấp tài nguyên giữ nguyên."}, {"q": "Partitioner mặc định trong MapReduce dùng cơ chế gì để chọn Reducer cho 1 key?", "opts": ["Ngẫu nhiên hoàn toàn", "hash(key) mod số-Reducer", "Theo thứ tự xuất hiện trong file", "Theo kích thước giá trị"], "correct": 1, "explain": "hash(key) mod R đảm bảo mọi value của cùng 1 key luôn vào đúng 1 Reducer duy nhất."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../hd-01-hadoop-hdfs/index.html">◀ Hadoop 01: Vì sao Hadoop ra đời, và HDFS giải quyết bài toán gì</a><a href="../hd-03-pig-hive/index.html">Hadoop 03: Pig & Hive: hai cách khác nhau để "thoát" khỏi việc viết MapReduce tay ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>
