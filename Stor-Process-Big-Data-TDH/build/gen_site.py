@@ -347,6 +347,10 @@ def build_index():
 <span class="kicker">Bài tập lớn · Nhóm 1</span><h3>Hệ sinh thái Hadoop (Chương 2)</h3>
 <span class="tag">48 slide · Trương Tuấn Nghĩa, Nguyễn Vũ Việt Hoàng, Nguyễn Thế Hoàng</span>
 <div class="go">Mở slide thuyết trình →</div></a>"""
+    hadoop_deck_card = """<a class="mod-card" href="hadoop-deep-dive-slides.html" style="border-color:var(--warn)">
+<span class="kicker">Tự học sâu · Chương 2</span><h3>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng (deck tổng hợp)</h3>
+<span class="tag">18 slide · tóm lược cả 6 module hd-01..hd-06 · không sửa slide Nhóm 1</span>
+<div class="go">Mở deck tổng hợp →</div></a>"""
     body = f"""<div class="hero">
 <div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
 <h1>Lưu trữ &amp; xử lý dữ liệu lớn</h1>
@@ -383,7 +387,7 @@ nguồn kiểm chứng được.</p>
 <h2>Tài liệu bổ sung</h2>
 <div class="grid">{notes_card}{slide_pdf_card}{slide_card}{sched_pdf_card}</div>
 <h2>Bài tập lớn môn học (ngoài 14 buổi tự học)</h2>
-<div class="grid">{group1_card}</div>
+<div class="grid">{group1_card}{hadoop_deck_card}</div>
 """
     # index.html nằm trực tiếp trong vi/ -> rel_root phải là "../"
     html = page_shell("Lưu trữ & xử lý dữ liệu lớn — Streaming & Sketching Algorithms", rel_lang, rel_root, body)

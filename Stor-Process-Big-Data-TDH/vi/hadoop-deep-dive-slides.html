@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng — Tự học sâu</title>
+<link rel="stylesheet" href="../_shared/common.css">
+<link rel="stylesheet" href="../_shared/deck.css">
+<link rel="stylesheet" href="../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Tự học sâu · Chương 2</div>
+<h1>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h1>
+<p>Bản deck tổng hợp riêng cho nhóm tự học, tách biệt hoàn toàn khỏi slide thuyết trình bài tập lớn của Nhóm 1.
+Mọi fact lịch sử trong deck này đã được trích nguồn đầy đủ trong 6 module chi tiết tương ứng (xem link cuối trang).</p></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">IT4931: Lưu trữ &amp; xử lý dữ liệu lớn · Tự học sâu Chương 2</div>
+<h2>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h2>
+<p style="font-size:1.05rem;color:var(--muted)">Bản deep-dive riêng cho nhóm tự học — tách biệt hoàn toàn khỏi
+slide thuyết trình bài tập lớn của Nhóm 1 (group-1-slides.html)</p>
+<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Môn Lưu trữ &amp; xử lý dữ liệu lớn &nbsp;·&nbsp; 18 slide</p></div><div class="mdeck-slide"><h2>Vì sao có bản deck này?</h2>
+<p>Nhóm đã đọc <i>group-1-slides.html</i> (55 slide bám đúng Chương 2 giáo trình, tr.23–36) và nhận xét
+<i>"nửa sau đúng không hiểu gì"</i>. Bản deck này KHÔNG lặp lại Chương 2 — nó trả lời 3 câu hỏi mà Chương 2
+không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>
+<table><tr><th>Phần</th><th>Công nghệ</th><th>Trọng tâm</th></tr><tr><td>1</td><td>Hadoop &amp; HDFS</td><td>Nutch → 2 paper Google → Yahoo → kiến trúc Master/Slave</td></tr><tr><td>2</td><td>MapReduce &amp; YARN</td><td>Mô hình Google 2004 → JobTracker nghẽn → YARN 2012</td></tr><tr><td>3</td><td>Pig &amp; Hive</td><td>Yahoo Research vs Facebook — 2 triết lý ngôn ngữ khác nhau</td></tr><tr><td>4</td><td>HBase &amp; Sqoop</td><td>Bigtable → Powerset → Facebook Messages; cầu nối RDBMS↔Hadoop</td></tr><tr><td>5</td><td>Kafka</td><td>LinkedIn 2010-2011 → log-centric architecture → Confluent</td></tr><tr><td>6</td><td>Oozie &amp; ZooKeeper</td><td>Điều phối workflow; Chubby → ZAB → 'xương sống vô hình'</td></tr></table>
+<div class="callout info"><div class="lbl">Mỗi module đầy đủ (lịch sử, ví dụ, demo tương tác, 11-12 câu quiz) nằm ở</div>site: mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ. Deck này chỉ tóm lược để trình bày/ôn nhanh.</div>
+</div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/6</div>
+<div class="part-num">01</div><h2>Hadoop &amp; HDFS</h2><ul class="part-list"><li>Nutch (2002) không scale được → đọc 2 paper Google</li><li>2006: Cutting vào Yahoo, Hadoop tách từ Nutch</li><li>Tên: con voi nhồi bông của con trai Doug Cutting</li><li>Kiến trúc Master/Slave: NameNode/DataNode, block, replication</li></ul></div><div class="mdeck-slide"><h2>Từ một công cụ tìm kiếm thất bại, tới chuẩn công nghiệp</h2>
+<p>Doug Cutting &amp; Mike Cafarella xây <b>Nutch</b> (2002) — công cụ tìm kiếm mở không scale được. Đọc paper
+<b>GFS</b> (2003) và <b>MapReduce</b> (2004) của Google, họ tách phần lưu trữ/xử lý ra thành dự án con
+<b>Hadoop</b> (tháng 1/2006), ngay khi Cutting gia nhập Yahoo!.</p>
+<div class="callout good"><div class="lbl">Tên Hadoop từ đâu?</div>Tên con voi nhồi bông của con trai Doug Cutting — tiêu chí: ngắn, dễ đọc, vô nghĩa, chưa ai dùng.</div>
+<div class="callout warn"><div class="lbl">Điểm yếu kiến trúc ban đầu</div>1 NameNode duy nhất giữ mọi metadata → Single Point of Failure ở Hadoop 1.0 (khắc phục bằng Standby NameNode ở Hadoop 2.0, KHÁC Secondary NameNode).</div>
+</div><div class="mdeck-slide"><h2>HDFS: 2 quyết định thiết kế quyết định tất cả</h2><table><tr><th>Quyết định</th><th>Giá trị</th><th>Vì sao</th></tr><tr><td>Block size</td><td>64MB → 128MB</td><td>Giảm số entry metadata trên NameNode</td></tr><tr><td>Hệ số nhân bản</td><td>3 bản sao/block, trên 3 DataNode khác nhau</td><td>Chịu lỗi qua dư thừa, không ngăn lỗi phần cứng</td></tr></table><div class="callout info"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>2008: Hadoop thành top-level Apache project → Cloudera (2008), Hortonworks (2011) → đặt nền tảng cho data lake/lakehouse (S3+EMR, Delta Lake, Iceberg) ngày nay.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/6</div>
+<div class="part-num">02</div><h2>MapReduce &amp; YARN</h2><ul class="part-list"><li>MapReduce (Dean &amp; Ghemawat, Google 2004): Map→Shuffle&amp;Sort→Reduce</li><li>Hadoop 1.0: JobTracker vừa quản lý tài nguyên vừa theo dõi job → nghẽn, SPOF</li><li>YARN (Hadoop 2.0, 2012): tách ResourceManager / NodeManager / ApplicationMaster</li></ul></div><div class="mdeck-slide"><h2>JobTracker: khi 1 thành phần làm quá nhiều việc</h2>
+<p>Hadoop 1.0: <b>JobTracker</b> (1 node duy nhất) vừa quản lý tài nguyên cụm, vừa theo dõi tiến trình MỌI
+MapReduce job. Giới hạn thực tế: ~4.000 node, ~40.000 task đồng thời — vượt ngưỡng này là nghẽn.</p>
+<div class="callout good"><div class="lbl">YARN sửa gì?</div>ResourceManager (tài nguyên toàn cụm) + NodeManager (mỗi node) + ApplicationMaster (MỖI JOB có 1 cái riêng) — phân tán trách nhiệm theo dõi tiến trình ra từng job.</div>
+<div class="callout info"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>Tách "cấp phát tài nguyên" khỏi "logic ứng dụng" là ý tưởng lặp lại 10 năm sau ở quy mô lớn hơn: Kubernetes (Google, 2014, dựa trên Borg). Nhờ YARN, Spark dần thay MapReduce làm engine xử lý chính mà không cần xây lại cụm.</div>
+</div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/6</div>
+<div class="part-num">03</div><h2>Pig &amp; Hive</h2><ul class="part-list"><li>Pig (Yahoo Research, ~2006): PigLatin — thủ tục, giữa SQL và MapReduce thuần</li><li>Hive (Facebook, Sen Sarma &amp; Thusoo, phát hành 10/2010): HiveQL — khai báo như SQL</li><li>Cùng giải 1 vấn đề (viết MapReduce tay quá cực), 2 triết lý ngôn ngữ khác nhau</li></ul></div><div class="mdeck-slide"><h2>Từ 6 người dùng tới 20-30% cả công ty</h2>
+<p>Facebook 2006: dữ liệu vào Hadoop tăng từ vài chục GB/ngày lên ~15 TB/ngày trong vài năm. Khi 15PB nằm
+trong warehouse, chỉ <b>6 người</b> dùng được (phải biết viết MapReduce Java). Tới khi Thusoo rời Facebook
+(2011): <b>20-30% toàn công ty</b> dùng hạ tầng phân tích mỗi tháng — nhờ HiveQL.</p>
+<table><tr><th></th><th>Pig (PigLatin)</th><th>Hive (HiveQL)</th></tr><tr><td>Phong cách</td><td>Thủ tục (dataflow)</td><td>Khai báo (giống SQL)</td></tr><tr><td>Thế mạnh</td><td>Join/transform nhiều bước</td><td>Truy vấn tổng hợp, báo cáo</td></tr></table>
+<div class="callout info"><div class="lbl">🌍 Di sản lớn nhất của Hive không phải HiveQL</div>Hive Metastore (catalog schema) trở thành chuẩn de-facto mà Presto/Trino/Spark SQL ngày nay đều tương thích — hạ tầng "âm thầm" sống lâu hơn ngôn ngữ truy vấn.</div>
+</div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/6</div>
+<div class="part-num">04</div><h2>HBase &amp; Sqoop</h2><ul class="part-list"><li>HBase (Powerset, phát hành 28/3/2008): mô phỏng Bigtable (Google, 2006) cho NLP search</li><li>Facebook Messages (11/2010): ca sử dụng nổi tiếng nhất — nhưng đã migrate sang MyRocks (2018)</li><li>Sqoop (Aaron Kimball, Cloudera, 5/2009): cầu nối RDBMS↔HDFS — bị retired vào Apache Attic 6/2021</li></ul></div><div class="mdeck-slide"><h2>Không công nghệ nào tồn tại mãi — và điều đó không sao cả</h2>
+<p>HBase lấy cảm hứng trực tiếp từ paper <b>Bigtable</b> (Google, 2006); Powerset xây bản mã nguồn mở này cho
+bài toán tìm kiếm ngôn ngữ tự nhiên. Facebook chọn HBase cho hệ thống Messages (11/2010) — minh chứng công
+khai lớn nhất ở quy mô hàng trăm triệu người dùng ở thời điểm đó.</p>
+<div class="callout warn"><div class="lbl">Bài học trung thực</div>Facebook migrate Messages sang MyRocks năm 2018. Sqoop — cầu nối RDBMS↔Hadoop của Cloudera (2009) — bị retired vào Apache Attic tháng 6/2021 khi CDC streaming (Debezium+Kafka) thay vai trò ETL batch của nó.</div>
+<div class="callout good"><div class="lbl">Thiết kế row key quan trọng thế nào</div>Dùng timestamp làm tiền tố row key → "hotspotting" (mọi row mới dồn vào 1 region) — đây là lỗi thiết kế schema HBase phổ biến nhất.</div>
+</div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 5/6</div>
+<div class="part-num">05</div><h2>Apache Kafka</h2><ul class="part-list"><li>LinkedIn 2010-2011: Jay Kreps, Neha Narkhede, Jun Rao — Kreps viết phần lớn Kafka kỳ nghỉ Giáng sinh</li><li>Kafka = log phân tán (giữ lại message), KHÔNG phải message queue truyền thống (xoá sau khi đọc)</li><li>Confluent (2014, 500.000 USD từ LinkedIn) → IPO 2021, doanh thu &gt;300 triệu USD/năm</li></ul></div><div class="mdeck-slide"><h2>Từ bài toán activity-stream nội bộ, tới triết lý kiến trúc dữ liệu toàn ngành</h2>
+<p>LinkedIn cần chuyển dữ liệu sự kiện (click, view, log) từ hàng trăm nguồn tới hàng trăm hệ thống tiêu thụ,
+tin cậy và mở rộng được — công cụ pub-sub cũ không đáp ứng. Kafka ra đời như 1 <b>log bất biến</b>, không phải
+hàng đợi thông thường.</p>
+<div class="callout info"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>Khai sinh triết lý "event sourcing"/"log-centric architecture": log là nguồn sự thật duy nhất, mọi hệ thống khác là "view" xây lại từ đó. Nền tảng hạ tầng dữ liệu tại Uber, Netflix, Airbnb ngày nay.</div>
+<div class="callout good"><div class="lbl">🔗 Liên hệ lập lịch đã học</div>Bài toán gán/tái cân bằng partition cho consumer (RoundRobin/Range/Sticky) đã có demo tương tác đầy đủ ở Lập lịch 08-09 — Kafka không chỉ là lý thuyết, mà là hệ thống chạy thật ở quy mô triệu sự kiện/giây.</div>
+</div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 6/6</div>
+<div class="part-num">06</div><h2>Oozie, ZooKeeper &amp; Tổng kết</h2><ul class="part-list"><li>Oozie (Yahoo!, 2008): điều phối workflow DAG của nhiều job Hadoop phụ thuộc nhau</li><li>ZooKeeper (Yahoo Research, ~2007): mô phỏng Chubby (Google) — ZAB (biến thể Paxos)</li><li>Tổng kết: 1 dòng thời gian — hệ sinh thái KHÔNG do 1 công ty thiết kế từ đầu</li></ul></div><div class="mdeck-slide"><h2>ZooKeeper: "xương sống vô hình" của hệ phân tán</h2>
+<p>ZooKeeper mô phỏng theo dịch vụ lock <b>Chubby</b> của Google (paper Mike Burrows), dùng <b>ZAB</b> (biến
+thể Paxos) để đạt đồng thuận phân tán. 4 chức năng cốt lõi: quản lý thành viên nhóm, bầu cử leader, quản lý
+cấu hình động, giám sát trạng thái hệ thống.</p>
+<div class="callout warn"><div class="lbl">Vì sao "vô hình"</div>HBase (bầu leader region server), Kafka bản cũ trước KRaft, Solr (SolrCloud), Mesos đều phụ thuộc ZooKeeper — người dùng cuối không bao giờ thấy nó trực tiếp, nhưng khi nó lỗi, mọi hệ thống phía trên ngừng đúng.</div>
+</div><div class="mdeck-slide"><h2>Dòng thời gian: hệ sinh thái Hadoop là lịch sử của NHIỀU công ty</h2><table><tr><th>Năm</th><th>Công nghệ</th><th>Nơi ra đời</th><th>Bài toán nội bộ ban đầu</th></tr><tr><td>2003-2004</td><td>GFS, MapReduce (paper)</td><td>Google</td><td>Lưu trữ &amp; xử lý chỉ mục web quy mô Internet</td></tr><tr><td>2006</td><td>Hadoop (tách từ Nutch)</td><td>Yahoo!</td><td>Công cụ tìm kiếm mở không scale được</td></tr><tr><td>2006-2008</td><td>Pig</td><td>Yahoo Research</td><td>MapReduce quá cấp thấp cho nghiên cứu ad hoc</td></tr><tr><td>2007</td><td>ZooKeeper</td><td>Yahoo Research</td><td>Cần coordination phân tán kiểu Chubby</td></tr><tr><td>2008</td><td>HBase</td><td>Powerset</td><td>Tìm kiếm NLP cần CSDL kiểu Bigtable</td></tr><tr><td>2008</td><td>Oozie</td><td>Yahoo!</td><td>Điều phối nhiều job Hadoop phụ thuộc nhau</td></tr><tr><td>2009</td><td>Sqoop</td><td>Cloudera</td><td>Cầu nối RDBMS cũ ↔ Hadoop mới</td></tr><tr><td>2010-2011</td><td>Hive</td><td>Facebook</td><td>Data warehouse chỉ 6 người dùng được vì quá khó</td></tr><tr><td>2010-2011</td><td>Kafka</td><td>LinkedIn</td><td>Activity-stream bùng nổ, pub-sub cũ không chịu được</td></tr><tr><td>2012</td><td>YARN</td><td>Yahoo!/Hortonworks</td><td>JobTracker nghẽn, cần tách resource management</td></tr></table></div><div class="mdeck-slide"><h2>Bài học lớn nhất của cả Chương 2</h2>
+<div class="callout good"><div class="lbl">Không ai "thiết kế" cả hệ sinh thái này từ đầu</div>Mỗi công nghệ ra đời ở MỘT công ty khác nhau (Google, Yahoo, Powerset, Cloudera, Facebook, LinkedIn), để giải quyết MỘT bài toán nội bộ cụ thể — rồi được mã nguồn mở hoá và ghép lại qua Apache Software Foundation thành "hệ sinh thái".</div>
+<p>Đây là lý do học Chương 2 bằng cách nhớ "10 công nghệ" sẽ rất khó — nhưng học bằng cách hiểu <b>mỗi công
+nghệ là lời giải cho đúng 1 bài toán cụ thể của đúng 1 công ty</b> thì mọi thứ khớp vào nhau tự nhiên.</p>
+<p style="color:var(--muted)">Chi tiết đầy đủ (ví dụ từng bước, demo tương tác chạy thật, quiz 11-12 câu/module,
+và nguồn trích dẫn cho MỌI fact lịch sử) nằm ở 6 module <code>hd-01..hd-06</code> trên trang chủ.</p>
+</div><div class="mdeck-slide"><div class="kicker">Hết phần tự học sâu</div>
+<h2>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h2>
+<p style="color:var(--muted)">Quay lại 6 module đầy đủ trên trang chủ để làm ví dụ, chạy demo, và làm quiz tự kiểm tra.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn &amp; 6 module chi tiết</div>
+Nội dung kỹ thuật cốt lõi: <i>IT4931_lecture_notes.pdf</i> (Chương 2, tr.23–36) và <i>materials/hangout/2024/2_hadoop_ecosystem_vn.pdf</i>.
+Lịch sử/động lực/ảnh hưởng: xác nhận qua web search (xem từng module để có URL nguồn cụ thể).
+&nbsp;·&nbsp; <a href="modules/hd-01-hadoop-hdfs/index.html">Hadoop 01</a> ·
+<a href="modules/hd-02-mapreduce-yarn/index.html">02</a> ·
+<a href="modules/hd-03-pig-hive/index.html">03</a> ·
+<a href="modules/hd-04-hbase-sqoop/index.html">04</a> ·
+<a href="modules/hd-05-kafka/index.html">05</a> ·
+<a href="modules/hd-06-oozie-zookeeper/index.html">06</a>
+&nbsp;·&nbsp; <a href="group-1-slides.html">Slide thuyết trình gốc của Nhóm 1 (Chương 2, không sửa)</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../_shared/theme.js"></script>
+<script src="../_shared/info.js"></script>
+<script src="../_shared/deck.js"></script>
+<script src="../_shared/glossary.js"></script>
+</body></html>
