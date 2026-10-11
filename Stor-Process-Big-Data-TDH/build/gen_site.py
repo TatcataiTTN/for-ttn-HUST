@@ -182,6 +182,12 @@ SIM_FOR = {
     "ll-08-kafka-roundrobin-range": "kafka_assign",
     "ll-09-kafka-sticky-rebalance": "kafka_rebalance",
     "ll-10-tong-ket-lap-lich": "algo_picker",
+    "hd-01-hadoop-hdfs": "hd01_hdfs",
+    "hd-02-mapreduce-yarn": "hd02_mapreduce_yarn",
+    "hd-03-pig-hive": "hd03_pig_hive",
+    "hd-04-hbase-sqoop": "hd04_hbase_sqoop",
+    "hd-05-kafka": "hd05_kafka_offset",
+    "hd-06-oozie-zookeeper": "hd06_oozie_zk",
 }
 
 def buoi_label(mod):
