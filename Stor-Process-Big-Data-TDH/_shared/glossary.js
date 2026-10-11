@@ -51,7 +51,34 @@ var G = [
   {id:'sqoop', page:'vi/group-1-slides.html', term:'Apache Sqoop', short:'Nhập/xuất dữ liệu hàng loạt giữa Hadoop và RDBMS, dùng MapReduce chỉ gồm Map task.'},
   {id:'kafka', page:'vi/group-1-slides.html', term:'Apache Kafka', short:'Nền tảng publish-subscribe phân tán, chia topic thành partition để song song hoá.'},
   {id:'oozie', page:'vi/group-1-slides.html', term:'Apache Oozie', short:'Lập lịch workflow dạng đồ thị có hướng không chu trình (DAG) cho chuỗi job Hadoop.'},
-  {id:'zookeeper', page:'vi/group-1-slides.html', term:'Apache ZooKeeper', short:'Dịch vụ điều phối phân tán: quản lý cấu hình, đặt tên, đồng bộ hoá, bầu leader — dùng thuật toán ZAB.'}
+  {id:'zookeeper', page:'vi/group-1-slides.html', term:'Apache ZooKeeper', short:'Dịch vụ điều phối phân tán: quản lý cấu hình, đặt tên, đồng bộ hoá, bầu leader — dùng thuật toán ZAB.'},
+
+  // ---- Hadoop deep-dive: lịch sử, động lực, ảnh hưởng (6 module tự học sâu hd-01..hd-06) ----
+  {id:'hd-nutch', page:'vi/modules/hd-01-hadoop-hdfs/index.html', term:'Apache Nutch', short:'Công cụ tìm kiếm mở (2002, Cutting & Cafarella) không scale được — tiền thân trực tiếp của Hadoop.'},
+  {id:'hd-gfs-mr-paper', page:'vi/modules/hd-01-hadoop-hdfs/index.html', term:'GFS & MapReduce (paper Google)', short:'2 bài báo Google (2003, 2004) truyền cảm hứng trực tiếp cho kiến trúc HDFS + MapReduce của Hadoop.'},
+  {id:'hd-hadoop-name', page:'vi/modules/hd-01-hadoop-hdfs/index.html', term:'Vì sao tên "Hadoop"', short:'Tên con voi nhồi bông của con trai Doug Cutting — không phải viết tắt kỹ thuật.'},
+  {id:'hd-fsimage', page:'vi/modules/hd-01-hadoop-hdfs/index.html', term:'fsimage / edit log', short:'fsimage là ảnh chụp namespace; edit log là nhật ký thay đổi — NameNode phát lại log khi khởi động.'},
+  {id:'hd-secondary-nn', page:'vi/modules/hd-01-hadoop-hdfs/index.html', term:'Secondary NameNode vs Standby NameNode', short:'Secondary NN chỉ gộp log định kỳ, KHÔNG phải cơ chế failover — Standby NN (HA, Hadoop 2.0) mới thay thế được NameNode chính.'},
+  {id:'hd-blocksize', page:'vi/modules/hd-01-hadoop-hdfs/index.html', term:'Block size HDFS (64MB/128MB)', short:'Block lớn giảm số entry metadata trên NameNode — đánh đổi: HDFS kém hiệu quả với rất nhiều tệp nhỏ.'},
+  {id:'hd-jobtracker', page:'vi/modules/hd-02-mapreduce-yarn/index.html', term:'JobTracker (Hadoop 1.0)', short:'Vừa quản lý tài nguyên vừa theo dõi mọi job — điểm nghẽn & SPOF, giới hạn cụm ~4.000 node.'},
+  {id:'hd-combiner', page:'vi/modules/hd-02-mapreduce-yarn/index.html', term:'Combiner (MapReduce)', short:'"Mini-Reducer" gộp trước tại Mapper, giảm lưu lượng shuffle — chỉ đúng khi hàm reduce kết hợp/giao hoán.'},
+  {id:'hd-yarn-arch', page:'vi/modules/hd-02-mapreduce-yarn/index.html', term:'ResourceManager / NodeManager / ApplicationMaster', short:'3 vai trò YARN tách biệt (Hadoop 2.0, 2012) thay cho 1 JobTracker duy nhất — mỗi job có ApplicationMaster riêng.'},
+  {id:'hd-yarn-k8s', page:'vi/modules/hd-02-mapreduce-yarn/index.html', term:'YARN → Kubernetes', short:'Ý tưởng tách resource management khỏi logic ứng dụng của YARN lặp lại ở quy mô lớn hơn với Kubernetes (2014).'},
+  {id:'hd-piglatin', page:'vi/modules/hd-03-pig-hive/index.html', term:'PigLatin', short:'Ngôn ngữ thủ tục (procedural dataflow) của Apache Pig — nằm giữa SQL khai báo và MapReduce cấp thấp.'},
+  {id:'hd-hiveql', page:'vi/modules/hd-03-pig-hive/index.html', term:'HiveQL', short:'Ngôn ngữ khai báo giống SQL của Hive (Facebook, phát hành 10/2010) — dịch thành job MapReduce.'},
+  {id:'hd-hive-metastore', page:'vi/modules/hd-03-pig-hive/index.html', term:'Hive Metastore', short:'Catalog lưu schema bảng — di sản bền lâu nhất của Hive, được Presto/Trino/Spark SQL ngày nay tương thích.'},
+  {id:'hd-bigtable', page:'vi/modules/hd-04-hbase-sqoop/index.html', term:'Google Bigtable (paper)', short:'Paper 2006 của Google — HBase là bản mã nguồn mở theo mô hình này, do Powerset xây (phát hành 28/3/2008).'},
+  {id:'hd-hotspotting', page:'vi/modules/hd-04-hbase-sqoop/index.html', term:'Hotspotting (thiết kế row key HBase)', short:'Dùng timestamp làm tiền tố row key khiến mọi row mới dồn vào 1 region — lỗi thiết kế schema HBase phổ biến nhất.'},
+  {id:'hd-sqoop-attic', page:'vi/modules/hd-04-hbase-sqoop/index.html', term:'Sqoop & Apache Attic', short:'Sqoop (Cloudera, 2009) bị retired vào Apache Attic tháng 6/2021 khi CDC streaming thay vai trò ETL batch của nó.'},
+  {id:'hd-kafka-linkedin', page:'vi/modules/hd-05-kafka/index.html', term:'Kafka @ LinkedIn', short:'Jay Kreps, Neha Narkhede, Jun Rao phát triển Kafka tại LinkedIn (2010), mã nguồn mở hoá đầu 2011.'},
+  {id:'hd-offset-lag', page:'vi/modules/hd-05-kafka/index.html', term:'Offset & Lag (Kafka)', short:'Offset là vị trí đọc của 1 consumer group trong 1 partition; lag = log-end-offset − offset đã commit.'},
+  {id:'hd-log-centric', page:'vi/modules/hd-05-kafka/index.html', term:'Event sourcing / log-centric architecture', short:'Triết lý Kafka khai sinh: log bất biến là nguồn sự thật duy nhất, mọi hệ thống khác là "view" xây lại từ đó.'},
+  {id:'hd-confluent', page:'vi/modules/hd-05-kafka/index.html', term:'Confluent', short:'Công ty do 3 người tạo Kafka thành lập năm 2014 (500.000 USD từ LinkedIn), IPO năm 2021.'},
+  {id:'hd-oozie-dag', page:'vi/modules/hd-06-oozie-zookeeper/index.html', term:'Oozie workflow (DAG)', short:'Oozie (Yahoo!, 2008) điều phối chuỗi job Hadoop phụ thuộc nhau theo đồ thị có hướng không chu trình.'},
+  {id:'hd-chubby', page:'vi/modules/hd-06-oozie-zookeeper/index.html', term:'Google Chubby', short:'Dịch vụ lock phân tán nội bộ của Google (paper Mike Burrows) — ZooKeeper mô phỏng theo kiến trúc này.'},
+  {id:'hd-zab', page:'vi/modules/hd-06-oozie-zookeeper/index.html', term:'ZAB (ZooKeeper Atomic Broadcast)', short:'Biến thể của Paxos dùng để đạt đồng thuận phân tán trong ZooKeeper.'},
+  {id:'hd-znode-election', page:'vi/modules/hd-06-oozie-zookeeper/index.html', term:'Bầu leader bằng znode tuần tự', short:'Mỗi ứng viên tạo 1 znode tuần tự (ephemeral); znode có số thứ tự (zxid) nhỏ nhất đang tồn tại là leader.'},
+  {id:'hd-timeline', page:'vi/hadoop-deep-dive-slides.html', term:'Dòng thời gian hệ sinh thái Hadoop', short:'2003-04 (Google) → 2006-2008 (Hadoop/Pig/ZooKeeper/HBase/Oozie) → 2009-2012 (Sqoop/Kafka/YARN) — nhiều công ty, không phải 1 bản thiết kế.'}
 ];
 
 function norm(s){
