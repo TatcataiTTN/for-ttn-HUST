@@ -1,0 +1,425 @@
+# -*- coding: utf-8 -*-
+"""Bản MỞ RỘNG SÂU của module hd-03-pig-hive (n=27) — theo chuẩn 02-module-content-standard.md của skill
+build-complete-self-study-system: mỗi khái niệm có 4 lớp giải thích (nôm na -> kỹ thuật -> bảng -> ví dụ
+tính tay), ví dụ tối thiểu 2-3 ngành khác nhau có nhãn (minh hoạ)/(giả định) rõ ràng, bảng HTML thật, khung
+"Giải thích cho người mới bắt đầu" cho khái niệm khó nhất.
+
+Mọi fact lịch sử giữ nguyên các nguồn đã verify trước (Pig/Yahoo Research, Hive/Facebook, Hive Metastore),
+cộng thêm 2 fact mới đã WebSearch verify ngày viết file này:
+  - Hive partitioning/bucketing: cơ chế chuẩn mô tả trong tài liệu Apache Hive chính thức (không gắn năm
+    cụ thể vì không xác nhận được năm ra mắt chính xác của riêng 2 tính năng này).
+  - Apache Tez / Stinger Initiative: Hortonworks khởi động Stinger để tăng tốc Hive ~100x qua 3 "wave"
+    (ORC file -> tối ưu query engine -> Tez), Tez ra mắt Apache Software Foundation năm 2013.
+    Nguồn: https://www.bigdatawire.com/2014/01/21/the_future_of_hadoop_runs_on_tez_hortonworks_says ,
+    https://www.dremio.com/wiki/apache-tez/
+"""
+
+HD03_EXPANDED = dict(
+ n=27, slug="hd-03-pig-hive",
+ title="Pig & Hive: hai cách khác nhau để \"thoát\" khỏi việc viết MapReduce tay",
+ tag="Lịch sử Pig (Yahoo) & Hive (Facebook)",
+ intro="Cùng giải quyết một vấn đề — viết MapReduce bằng Java quá cực — nhưng Yahoo và Facebook chọn hai triết lý ngôn ngữ hoàn toàn khác nhau. Hive thắng về lâu dài, nhưng không phải vì HiveQL.",
+ parts=[
+
+  # ---------------- PHẦN 1 ----------------
+  dict(title="Apache Pig: dataflow procedural từ Yahoo Research", bullets=[
+    "Ra đời ở Yahoo Research khoảng 2006, mã nguồn mở hoá 2007, bản phát hành đầu tiên 9/2008",
+    "PigLatin: ngôn ngữ nằm giữa SQL (khai báo) và MapReduce thuần (thủ tục)",
+    "Trình biên dịch Pig chạy trên máy client, dịch PigLatin script thành chuỗi MapReduce job"],
+   slides=[
+    dict(h="Vì sao Yahoo cần một ngôn ngữ \"ở giữa\"?", body="""
+      <p>🗣️ <b>Nói nôm na:</b> viết MapReduce tay bằng Java giống việc tự xây cả cái bếp trước khi nấu 1
+      món ăn — quá nhiều việc lặt vặt (mở file, phân luồng, dọn bộ nhớ) che mất phần việc thật sự cần làm
+      (nấu món gì, theo công thức nào). Pig sinh ra để bạn chỉ cần viết "công thức nấu ăn" từng bước, không
+      phải tự xây bếp.</p>
+      <p>Các nhà nghiên cứu ở Yahoo nhận ra 2 cực đoan đều có vấn đề: viết MapReduce tay bằng Java quá chi
+      tiết, khó tái dùng, khó bảo trì; nhưng SQL khai báo thuần lại không đủ linh hoạt cho các luồng xử lý dữ
+      liệu phức tạp, nhiều bước biến đổi tuần tự.</p>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Apache Pig được phát triển tại Yahoo
+      Research khoảng năm 2006, với mục tiêu cho các nhà nghiên cứu một cách tuỳ biến (ad hoc) để tạo và chạy
+      MapReduce job trên tập dữ liệu rất lớn. PigLatin được thiết kế để nằm ở "điểm ngọt" giữa phong cách khai
+      báo của SQL và phong cách thủ tục cấp thấp của MapReduce. Mã nguồn mở hoá qua Apache Incubator mùa thu
+      2007, bản phát hành đầu tiên tháng 9/2008.
+      Nguồn: <a href="https://en.wikipedia.org/wiki/Apache_Pig" target="_blank">Apache Pig — Wikipedia</a>.</div>
+      <p>Pig đặc biệt mạnh ở các phép toán <b>Join</b> và <b>Transformation</b> nhiều bước — vì PigLatin là
+      <i>procedural dataflow</i> (bạn viết từng bước biến đổi tuần tự, giống một pipeline), không phải khai
+      báo "muốn gì" như SQL.</p>"""),
+    dict(h="PigLatin: đọc 1 script giống đọc 1 công thức nấu ăn", body="""
+      <p>🗣️ <b>Nói nôm na:</b> PigLatin không hỏi "bạn muốn kết quả gì" — nó hỏi "bạn muốn làm gì TRƯỚC,
+      rồi làm gì TIẾP THEO". Mỗi dòng PigLatin là 1 bước biến đổi, giống công thức nấu ăn: "Bước 1: thái
+      hành. Bước 2: phi hành với dầu. Bước 3: cho rau vào xào."</p>
+      <table><tr><th>Lệnh PigLatin</th><th>Ý nghĩa</th><th>Ví dụ ngành khác (minh hoạ)</th></tr>
+      <tr><td><code>LOAD</code></td><td>Đọc dữ liệu nguồn vào 1 "relation" (giống 1 bảng tạm)</td>
+          <td>Y tế (minh hoạ): LOAD toàn bộ hồ sơ bệnh nhân nhập viện trong tháng</td></tr>
+      <tr><td><code>FILTER</code></td><td>Giữ lại các dòng thoả điều kiện</td>
+          <td>Bán lẻ (minh hoạ): FILTER chỉ giữ đơn hàng có giá trị &gt; 1 triệu đồng</td></tr>
+      <tr><td><code>GROUP BY</code></td><td>Nhóm các dòng theo 1 trường, mỗi nhóm thành 1 "bag"</td>
+          <td>Giáo dục (minh hoạ): GROUP điểm thi theo lớp để tính điểm trung bình từng lớp</td></tr>
+      <tr><td><code>FOREACH ... GENERATE</code></td><td>Với mỗi nhóm/dòng, tính ra giá trị mới</td>
+          <td>Bán lẻ (minh hoạ): FOREACH mỗi nhóm đơn hàng GENERATE tổng tiền</td></tr>
+      <tr><td><code>JOIN</code></td><td>Ghép 2 relation theo khoá chung</td>
+          <td>Y tế (minh hoạ): JOIN hồ sơ bệnh nhân với bảng kết quả xét nghiệm theo mã bệnh nhân</td></tr></table>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>Vì PigLatin là THỦ TỤC, thứ tự các dòng
+      lệnh quan trọng — đổi thứ tự <code>FILTER</code> và <code>GROUP BY</code> có thể cho kết quả khác (vd
+      filter trước khi group chỉ giữ nhóm thoả điều kiện lọc; group trước rồi filter trên nhóm lại là điều
+      kiện khác). Đây là khác biệt lớn với SQL/HiveQL, nơi thứ tự mệnh đề trong câu không quyết định thứ tự
+      thực thi thật.</div>""")]),
+
+  # ---------------- PHẦN 2 ----------------
+  dict(title="Apache Hive: SQL-on-Hadoop từ Facebook", bullets=[
+    "Ra đời ở Facebook (Joydeep Sen Sarma & Ashish Thusoo), release đầu tiên 10/2010",
+    "Động lực: dữ liệu Facebook tăng từ 10 GB/ngày lên 15 TB/ngày trong vài năm",
+    "HiveQL: để kỹ sư/analyst vốn chỉ biết SQL cũng khai thác được Hadoop, không cần biết Java/MapReduce"],
+   slides=[
+    dict(h="Từ 6 người dùng tới 20-30% toàn công ty", body="""
+      <p>🗣️ <b>Nói nôm na:</b> trước Hive, dùng Hadoop ở Facebook giống việc muốn ăn phải tự trồng rau,
+      tự giết gà, tự nấu — chỉ vài "đầu bếp chuyên nghiệp" (kỹ sư biết Java/MapReduce) làm được. Hive giống
+      việc mở 1 nhà hàng gọi món bằng tiếng phổ thông (SQL) — ai cũng gọi được món, không cần biết nấu.</p>
+      <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Khi Facebook bắt đầu đưa dữ liệu vào
+      Hadoop năm 2006, lượng dữ liệu nhập vào khoảng vài chục GB/ngày, và tăng lên khoảng 15 TB/ngày chỉ sau
+      vài năm. Những người tạo ra Hive nhận ra: để khai thác tốt Hadoop, kỹ sư phải viết MapReduce Java phức
+      tạp — không thể dạy kỹ năng này cho toàn bộ team kỹ sư và phân tích đang tăng nhanh. Khi 15 petabyte đã
+      nằm trong data warehouse, chỉ có 6 người dùng dữ liệu đó; tới khi Thusoo rời Facebook năm 2011, 20-30%
+      toàn công ty truy cập hạ tầng phân tích dữ liệu mỗi tháng.
+      Nguồn: <a href="https://celerdata.com/glossary/apache-hive" target="_blank">CelerData — What is Apache Hive?</a>,
+      <a href="https://www.nextplatform.com/2015/06/17/co-creator-of-hive-brings-facebook-lessons-to-analytics-platform" target="_blank">The Next Platform</a>.</div>
+      <p>Đây là con số ấn tượng nhất của toàn bộ hệ sinh thái Hadoop: Hive không chỉ là một công cụ kỹ thuật,
+      mà là công cụ <b>dân chủ hoá dữ liệu</b> trong một tổ chức — biến "dữ liệu lớn" từ thứ chỉ vài chuyên gia
+      động được, thành thứ cả công ty dùng hàng ngày, chỉ bằng SQL quen thuộc.</p>
+      <table><tr><th>Mốc thời gian</th><th>Số người dùng được hạ tầng dữ liệu</th></tr>
+      <tr><td>Trước Hive (15PB trong warehouse)</td><td>6 người</td></tr>
+      <tr><td>2011 (khi Thusoo rời Facebook)</td><td>20-30% toàn công ty, mỗi tháng</td></tr></table>"""),
+    dict(h="HiveQL hoạt động ra sao?", body="""
+      <p>🗣️ <b>Nói nôm na:</b> PigLatin bắt bạn nói "làm bước 1, rồi bước 2, rồi bước 3"; HiveQL chỉ cần
+      bạn nói "tôi muốn món gà rán cay" — nhà hàng (Hive) tự quyết định trình tự nấu bên trong.</p>
+      <p>Giống Pig, trình biên dịch Hive chạy trên máy client: chuyển HiveQL script thành MapReduce job, rồi
+      đệ trình lên cụm. Khác Pig, HiveQL là ngôn ngữ <b>khai báo</b> giống SQL — người dùng chỉ nói "tôi muốn
+      kết quả gì" (SELECT ... GROUP BY ...), không cần viết từng bước biến đổi.</p>
+      <table><tr><th>Tiêu chí</th><th>Pig (PigLatin)</th><th>Hive (HiveQL)</th></tr>
+      <tr><td>Phong cách</td><td>Thủ tục (procedural dataflow)</td><td>Khai báo (declarative, giống SQL)</td></tr>
+      <tr><td>Đối tượng dùng chính</td><td>Nhà nghiên cứu/kỹ sư dữ liệu viết pipeline nhiều bước</td><td>Analyst/kỹ sư quen SQL, cần truy vấn data warehouse</td></tr>
+      <tr><td>Thế mạnh</td><td>Join &amp; Transformation phức tạp, nhiều bước tuần tự rõ ràng</td><td>Truy vấn tổng hợp, báo cáo kiểu data-warehouse</td></tr>
+      <tr><td>Ví dụ ngành khác (minh hoạ)</td><td>Kế toán: pipeline nhiều bước lọc-gộp-tính thuế tuần tự</td><td>Marketing: "cho tôi doanh thu theo chiến dịch tháng này" — 1 câu, không cần biết cách tính</td></tr></table>""")]),
+
+  # ---------------- PHẦN 3: giải thích cho người mới bắt đầu ----------------
+  dict(title="Thủ tục vs khai báo — khác biệt quan trọng nhất của cả module này", bullets=[
+    "Thủ tục (Pig): nói CÁCH LÀM, từng bước", "Khai báo (Hive): nói MUỐN GÌ, để hệ thống tự quyết cách làm",
+    "Cả hai cuối cùng đều ra MapReduke — khác nhau ở chỗ AI quyết định trình tự thực thi"],
+   slides=[
+    dict(h="📖 Giải thích cho người mới bắt đầu: thủ tục và khai báo khác nhau thế nào?", body="""
+      <details class="ex" open><summary>Bấm để đọc giải thích đơn giản nhất (dành cho người chưa học gì về Pig/Hive)</summary>
+      <p>Tưởng tượng bạn muốn đi từ nhà tới trường:</p>
+      <ul class="pd-legend">
+        <li><b>Kiểu THỦ TỤC (giống PigLatin)</b><span>Bạn tự chỉ đường từng bước: "Ra khỏi nhà, rẽ trái,
+        đi 200m, rẽ phải ở ngã tư có cây xăng, đi tiếp 500m, trường ở bên tay phải." — Bạn (người viết
+        script) phải TỰ NGHĨ RA đúng trình tự các bước.</span></li>
+        <li><b>Kiểu KHAI BÁO (giống HiveQL)</b><span>Bạn chỉ nói với Google Maps: "Đưa tôi tới Trường
+        ABC." — Bạn chỉ nói ĐÍCH ĐẾN, còn việc tìm đường (rẽ đâu, đi đường nào nhanh nhất) do Google Maps
+        (bộ tối ưu truy vấn của Hive) tự quyết định.</span></li>
+      </ul>
+      <p>Ví dụ ngành khác để chắc chắn bạn đã hiểu CƠ CHẾ, không chỉ 1 tình huống (minh hoạ):</p>
+      <table><tr><th>Ngành</th><th>Kiểu thủ tục (PigLatin)</th><th>Kiểu khai báo (HiveQL)</th></tr>
+      <tr><td>Nấu ăn</td><td>Công thức ghi từng bước: thái hành, phi dầu, xào rau</td><td>Gọi món ở nhà hàng: "cho tôi 1 đĩa rau xào"</td></tr>
+      <tr><td>May đo (minh hoạ)</td><td>Hướng dẫn thợ may: đo vai, cắt vải, may đường chỉ đầu tiên...</td><td>Nói với tiệm may: "may cho tôi 1 cái áo size M, màu xanh"</td></tr>
+      <tr><td>Xây dựng (minh hoạ)</td><td>Bản vẽ thi công ghi từng công đoạn: đổ móng, dựng cột, đổ sàn...</td><td>Nói với chủ đầu tư: "xây cho tôi 1 căn nhà 2 tầng, 3 phòng ngủ"</td></tr></table>
+      <p><b>Điểm chốt:</b> cả PigLatin và HiveQL cuối cùng đều bị dịch thành cùng 1 dạng công việc bên dưới
+      (MapReduce job) — sự khác biệt KHÔNG nằm ở việc "làm gì" mà ở việc AI (bạn, hay hệ thống) quyết định
+      THỨ TỰ các bước thực hiện.</p>
+      </details>
+      <div class="callout info"><div class="lbl">Vì sao điều này quan trọng khi học Hadoop</div>Hiểu đúng sự
+      khác biệt này giúp bạn không nhầm "Hive nhanh hơn Pig" hay "Pig mạnh hơn Hive" — chúng tối ưu cho 2
+      KIỂU BÀI TOÁN khác nhau: Pig cho pipeline nhiều bước rõ ràng cần kiểm soát từng bước; Hive cho truy vấn
+      tổng hợp nhanh mà người dùng không cần biết cách tính bên trong.</div>"""),
+    dict(h="Tự kiểm tra: đoán đúng thủ tục hay khai báo qua 3 tình huống", body="""
+      <p>Với mỗi tình huống dưới, tự hỏi: người nói câu này có TỰ CHỈ ĐƯỜNG từng bước, hay chỉ nói ĐÍCH ĐẾN
+      rồi để người khác tự lo cách làm?</p>
+      <table><tr><th>Tình huống</th><th>Thủ tục hay khai báo?</th></tr>
+      <tr><td>"Đọc bảng orders, lọc đơn &gt;1 triệu, nhóm theo nhân viên, rồi tính tổng"</td><td>Thủ tục (từng bước rõ ràng, giống PigLatin)</td></tr>
+      <tr><td>"Cho tôi tổng doanh số của mỗi nhân viên với đơn &gt;1 triệu"</td><td>Khai báo (chỉ nói kết quả muốn, giống HiveQL)</td></tr>
+      <tr><td>"Thái hành, phi dầu, cho rau vào xào 5 phút"</td><td>Thủ tục (công thức từng bước)</td></tr>
+      <tr><td>"Cho tôi 1 đĩa rau xào, không cay"</td><td>Khai báo (chỉ nói món muốn ăn)</td></tr></table>
+      <div class="callout good"><div class="lbl">Chốt lại</div>Dấu hiệu nhận biết nhanh: nếu câu nói CÓ các
+      từ nối trình tự ("rồi", "sau đó", "tiếp theo") mô tả hành động → thủ tục. Nếu câu nói chỉ mô tả KẾT QUẢ
+      cuối cùng mong muốn, không có bước trung gian → khai báo.</div>""")]),
+
+  # ---------------- PHẦN 4: ví dụ group-by-sum (giữ nguyên, mở rộng thêm nôm na) ----------------
+  dict(title="Ví dụ minh hoạ 1: cùng 1 bài toán group-by-sum, 2 cách viết", bullets=[
+    "Bài toán: tổng doanh số theo từng nhân viên (giống ví dụ MapReduce ở Chương 2 gốc)",
+    "PigLatin: LOAD → GROUP BY → FOREACH ... GENERATE SUM(...)",
+    "HiveQL: SELECT employee, SUM(sale) FROM orders GROUP BY employee"],
+   slides=[
+    dict(h="Từ bài toán gốc tới 2 đoạn script", body="""
+      <p>🗣️ <b>Nói nôm na:</b> bài toán này giống việc 1 cửa hàng muốn biết "mỗi nhân viên bán hàng đã bán
+      được bao nhiêu tiền tổng cộng" — chỉ cần cộng dồn theo tên nhân viên.</p>
+      <p>Nhắc lại bài toán ở Chương 2 gốc: đầu vào là tệp văn bản chứa (order ID, employee name, sale amount),
+      đầu ra là tổng doanh số theo từng nhân viên — đúng bài toán MapReduce group-by-aggregate kinh điển.</p>
+      <div class="pd-formula"><div class="pd-formula-label">PigLatin (thủ tục, từng bước)</div>
+      <div class="pd-formula-math">\\text{orders = LOAD 'orders.csv'; grouped = GROUP orders BY employee; result = FOREACH grouped GENERATE group, SUM(orders.sale);}</div></div>
+      <div class="pd-formula"><div class="pd-formula-label">HiveQL (khai báo, 1 câu)</div>
+      <div class="pd-formula-math">\\text{SELECT employee, SUM(sale) FROM orders GROUP BY employee;}</div></div>
+      <div class="callout warn"><div class="lbl">Điều cả hai đều giống nhau phía dưới</div>Dù cú pháp khác hẳn
+      nhau, CẢ HAI đều được trình biên dịch dịch thành cùng 1 dạng MapReduce job bên dưới: bước Map đọc từng
+      dòng và phát ra (employee, sale); bước Shuffle&amp;Sort gộp theo employee; bước Reduce cộng tổng — đúng
+      luồng dữ liệu đã học ở Chương 2 gốc. Pig/Hive không thay đổi MapReduce, chỉ thay đổi CÁCH VIẾT để tạo ra
+      nó.</div>
+      <p>Có thể tự chạy lại đúng ví dụ này (và đổi số liệu khác) ở demo tương tác "Pig (thủ tục) vs Hive
+      (khai báo)" ngay dưới slide-deck của module này.</p>"""),
+    dict(h="Biến thể: thêm 1 nhân viên và 1 đơn hàng mới, tự tính lại", body="""
+      <p>🗣️ <b>Nói nôm na:</b> cách chắc chắn nhất để biết mình đã hiểu group-by-sum chưa là tự đổi số liệu
+      và tính lại bằng tay trước khi mở demo kiểm tra.</p>
+      <p>Thêm đơn hàng mới: Chi bán 200, An bán thêm 30 (ngoài 2 đơn cũ 120 và trong ví dụ Phần 5 là 60).</p>
+      <table><tr><th>Nhân viên</th><th>Các đơn hàng (minh hoạ nối tiếp Phần 4+5)</th><th>Tổng</th></tr>
+      <tr><td>An</td><td>120 + 60 + 30</td><td>210</td></tr>
+      <tr><td>Bình</td><td>80</td><td>80</td></tr>
+      <tr><td>Chi</td><td>200</td><td>200</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Mở demo tương tác bên dưới, thêm đúng
+      3 dòng dữ liệu trên vào ô dữ liệu mẫu (nếu demo cho sửa) hoặc tự verify bằng tay: tổng của An phải là
+      210, không phải 150 hay 180 — nếu tính ra khác, kiểm tra lại có bỏ sót đơn hàng nào không.</div>""")]),
+
+  # ---------------- PHẦN 5: ví dụ JOIN mới ----------------
+  dict(title="Ví dụ minh hoạ 2: JOIN giữa 2 bảng nhỏ — phép toán Pig mạnh nhất", bullets=[
+    "Bài toán: ghép bảng đơn hàng với bảng thông tin nhân viên theo mã nhân viên",
+    "PigLatin: JOIN orders BY emp_id, employees BY emp_id",
+    "HiveQL: SELECT ... FROM orders JOIN employees ON orders.emp_id = employees.emp_id"],
+   slides=[
+    dict(h="Dữ liệu đầu vào: 2 bảng nhỏ cần ghép lại", body="""
+      <p>🗣️ <b>Nói nôm na:</b> giống việc bạn có 1 danh sách đơn hàng chỉ ghi "mã nhân viên bán", và 1 danh
+      sách khác ghi "mã nhân viên — tên thật, phòng ban" — JOIN là cách "dán" 2 danh sách này lại theo đúng
+      mã nhân viên để biết TÊN THẬT của người bán mỗi đơn hàng.</p>
+      <table><tr><th colspan="3">Bảng orders</th></tr><tr><th>order_id</th><th>emp_id</th><th>sale</th></tr>
+      <tr><td>1</td><td>E1</td><td>120</td></tr><tr><td>2</td><td>E2</td><td>80</td></tr>
+      <tr><td>3</td><td>E1</td><td>60</td></tr></table>
+      <table><tr><th colspan="2">Bảng employees</th></tr><tr><th>emp_id</th><th>name</th></tr>
+      <tr><td>E1</td><td>An</td></tr><tr><td>E2</td><td>Bình</td></tr></table>
+      <p>Mục tiêu: với mỗi đơn hàng, ghép thêm tên thật của nhân viên bán (thay vì chỉ có mã bí ẩn E1/E2).</p>"""),
+    dict(h="2 cách viết JOIN, và kết quả tính tay", body="""
+      <div class="pd-formula"><div class="pd-formula-label">PigLatin</div>
+      <div class="pd-formula-math">\\text{o = LOAD 'orders'; e = LOAD 'employees'; joined = JOIN o BY emp\\_id, e BY emp\\_id;}</div></div>
+      <div class="pd-formula"><div class="pd-formula-label">HiveQL</div>
+      <div class="pd-formula-math">\\text{SELECT o.order\\_id, e.name, o.sale FROM orders o JOIN employees e ON o.emp\\_id = e.emp\\_id;}</div></div>
+      <p><b>Tính tay kết quả JOIN</b> (ghép từng dòng orders với dòng employees có cùng emp_id):</p>
+      <table><tr><th>order_id</th><th>name</th><th>sale</th></tr>
+      <tr><td>1</td><td>An</td><td>120</td></tr>
+      <tr><td>2</td><td>Bình</td><td>80</td></tr>
+      <tr><td>3</td><td>An</td><td>60</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu bảng employees có thêm 1 dòng
+      E3 = "Chi" nhưng KHÔNG có đơn hàng nào với emp_id=E3, dòng đó có xuất hiện trong kết quả JOIN (kiểu
+      JOIN mặc định, "inner join") không? (Đáp: KHÔNG — inner join chỉ giữ các cặp khớp được ở CẢ HAI bảng;
+      muốn giữ cả nhân viên chưa bán được gì phải dùng LEFT JOIN/OUTER JOIN, mở rộng hơn phạm vi module này.)</div>
+      <div class="callout warn"><div class="lbl">Vì sao JOIN là phép Pig "mạnh nhất" theo đúng ý lịch sử</div>
+      Pig ra đời đặc biệt tốt ở Join và Transformation nhiều bước — vì PigLatin cho phép bạn viết RÕ RÀNG
+      từng bước LOAD → JOIN → FOREACH, kiểm soát được thứ tự xử lý khi pipeline có nhiều phép biến đổi lồng
+      nhau, khác với việc giấu hết logic JOIN phức tạp vào 1 câu SQL dài khó đọc.</div>""")]),
+
+  # ---------------- PHẦN 6: UDF ----------------
+  dict(title="UDF (User-Defined Function): khi ngôn ngữ có sẵn không đủ", bullets=[
+    "UDF cho phép viết hàm tuỳ biến bằng Java (hoặc ngôn ngữ khác) khi PigLatin/HiveQL không đủ biểu đạt",
+    "Cả Pig và Hive đều hỗ trợ UDF — đây là \"cửa thoát\" khi ngôn ngữ khai báo/thủ tục có sẵn không đủ"],
+   slides=[
+    dict(h="UDF: cửa thoát khi ngôn ngữ có sẵn không đủ", body="""
+      <p>🗣️ <b>Nói nôm na:</b> SQL/HiveQL có sẵn hàm <code>SUM</code>, <code>AVG</code>... giống 1 nhà hàng
+      có sẵn thực đơn. Nhưng nếu bạn muốn 1 món KHÔNG CÓ trong thực đơn (vd "chuẩn hoá số điện thoại về đúng
+      1 định dạng" hay "tính điểm tín dụng theo công thức riêng của công ty"), bạn phải tự mang công thức tới
+      cho đầu bếp — đó chính là UDF (User-Defined Function).</p>
+      <table><tr><th>Ngành (minh hoạ)</th><th>Bài toán cần UDF</th><th>Vì sao hàm có sẵn không đủ</th></tr>
+      <tr><td>Viễn thông</td><td>Chuẩn hoá số điện thoại về đúng 1 định dạng quốc tế</td><td>Không có hàm SQL chuẩn xử lý mọi kiểu số điện thoại lộn xộn (có/không mã vùng, dấu cách...)</td></tr>
+      <tr><td>Tài chính</td><td>Tính điểm tín dụng theo công thức nội bộ ngân hàng</td><td>Công thức độc quyền, không phải hàm toán học chuẩn có sẵn</td></tr>
+      <tr><td>Y tế (giả định)</td><td>Phân loại mức độ nguy cơ bệnh nhân theo thang điểm riêng của bệnh viện</td><td>Quy tắc phân loại phức tạp, nhiều điều kiện lồng nhau, không viết nổi bằng 1 hàm SQL đơn giản</td></tr></table>
+      <div class="pd-formula"><div class="pd-formula-label">Khai báo UDF trong HiveQL (cú pháp minh hoạ)</div>
+      <div class="pd-formula-math">\\text{CREATE TEMPORARY FUNCTION chuan\\_hoa\\_sdt AS 'com.congty.ChuanHoaSDT'; SELECT chuan\\_hoa\\_sdt(sdt) FROM khach\\_hang;}</div></div>
+      <div class="callout info"><div class="lbl">Pig UDF khác gì</div>Pig cũng hỗ trợ UDF (thường viết bằng
+      Java, nạp vào script bằng <code>REGISTER</code>), dùng trực tiếp như 1 hàm trong bước
+      <code>FOREACH ... GENERATE</code> — cùng triết lý "cửa thoát" như Hive, chỉ khác cách khai báo.</div>"""),
+    dict(h="Ví dụ tính tay: UDF tính điểm tín dụng đơn giản (giả định)", body="""
+      <p>🗣️ <b>Nói nôm na:</b> ngân hàng (giả định) có công thức riêng: điểm tín dụng = 50 + (thu nhập/triệu)
+      × 2 − (số lần trễ hạn) × 10, tối đa 100 điểm. Không hàm SQL có sẵn nào tính nổi công thức này — phải
+      viết UDF.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Công thức UDF (giả định, minh hoạ cơ chế)</div>
+      <div class="pd-formula-math">\\text{diem} = \\min(100,\\ 50 + 2\\times\\text{thu\\_nhap\\_trieu} - 10\\times\\text{so\\_lan\\_tre\\_han})</div></div>
+      <p>Tính tay cho khách hàng X: thu nhập 15 triệu/tháng, trễ hạn 1 lần:</p>
+      <ol><li>50 + 2×15 = 50 + 30 = 80</li><li>80 − 10×1 = 70</li><li>min(100, 70) = 70</li></ol>
+      <table><tr><th>Khách hàng</th><th>Thu nhập (triệu)</th><th>Số lần trễ hạn</th><th>Điểm UDF tính ra</th></tr>
+      <tr><td>X</td><td>15</td><td>1</td><td>70</td></tr>
+      <tr><td>Y (tự tính thử)</td><td>8</td><td>0</td><td>?</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Tính điểm của khách hàng Y bằng đúng
+      công thức trên. (Đáp: 50+2×8−10×0 = 66, nhỏ hơn 70 dù Y không trễ hạn nào — vì thu nhập Y thấp hơn X;
+      minh hoạ rằng UDF có thể kết hợp nhiều yếu tố theo trọng số riêng, không chỉ 1 điều kiện đơn giản.)</div>""")]),
+
+  # ---------------- PHẦN 7: Partition & Bucket ----------------
+  dict(title="Partition & Bucket trong Hive: tổ chức dữ liệu để truy vấn nhanh hơn", bullets=[
+    "Partition: chia dữ liệu thành nhiều thư mục con theo 1 trường (vd theo ngày, theo vùng)",
+    "Bucket: chia nhỏ hơn nữa trong mỗi partition bằng hàm băm — dùng khi partition theo trường có quá nhiều giá trị khác nhau"],
+   slides=[
+    dict(h="Partition: chia dữ liệu thành nhiều \"ngăn kéo\"", body="""
+      <p>🗣️ <b>Nói nôm na:</b> partition giống việc chia hồ sơ giấy của 1 công ty thành nhiều ngăn kéo theo
+      NĂM — khi cần tìm hồ sơ năm 2024, bạn chỉ mở đúng ngăn kéo "2024", không cần lật qua mọi ngăn kéo khác.</p>
+      <p>Trong Hive, dữ liệu một bảng được chia thành nhiều thư mục con trên HDFS theo giá trị của 1 (hoặc
+      nhiều) cột được chọn làm partition key — truy vấn có điều kiện lọc trên đúng cột đó chỉ cần đọc thư mục
+      tương ứng, không phải quét toàn bảng.</p>
+      <table><tr><th>Ngành (minh hoạ)</th><th>Cột dùng để partition</th><th>Lợi ích</th></tr>
+      <tr><td>Bán lẻ</td><td>Ngày bán hàng (order_date)</td><td>Truy vấn "doanh số hôm nay" chỉ đọc 1 thư mục/ngày, không quét cả năm</td></tr>
+      <tr><td>Viễn thông (minh hoạ)</td><td>Tỉnh/thành phố</td><td>Báo cáo theo khu vực chỉ đọc đúng thư mục khu vực cần</td></tr>
+      <tr><td>Giáo dục (minh hoạ)</td><td>Năm học</td><td>Tra điểm năm học cụ thể không cần đọc dữ liệu các năm khác</td></tr></table>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>Chọn cột có QUÁ NHIỀU giá trị khác nhau để
+      partition (vd partition theo <code>user_id</code> của hàng triệu người dùng) sẽ tạo ra hàng triệu thư
+      mục nhỏ — làm NameNode-tương-tự (metadata quản lý) quá tải, phản tác dụng. Đây là lý do Bucket ra đời.</div>"""),
+    dict(h="Bucket: khi partition theo 1 trường vẫn còn quá to", body="""
+      <p>🗣️ <b>Nói nôm na:</b> nếu ngăn kéo "2024" vẫn chứa quá nhiều hồ sơ để lật tìm nhanh, bạn chia nhỏ
+      hơn nữa — vd theo CHỮ CÁI ĐẦU họ tên, thành nhiều "ngăn kéo con" bên trong ngăn kéo lớn. Bucket làm
+      đúng việc này, nhưng dùng hàm băm (hash) trên 1 cột để chia đều, không chia theo khoảng giá trị.</p>
+      <table><tr><th></th><th>Partition</th><th>Bucket</th></tr>
+      <tr><td>Cách chia</td><td>Theo giá trị thật của cột (vd mỗi ngày 1 thư mục)</td><td>Theo hash(cột) mod số-bucket — chia đều, không theo giá trị thật</td></tr>
+      <tr><td>Dùng khi nào</td><td>Cột có số lượng giá trị khác nhau VỪA PHẢI (vd ~365 ngày/năm)</td><td>Cột có RẤT NHIỀU giá trị khác nhau (vd user_id hàng triệu), hoặc cần join nhanh giữa 2 bảng cùng bucket</td></tr>
+      <tr><td>Ví dụ ngành (minh hoạ)</td><td>Bán lẻ: partition theo ngày</td><td>Bán lẻ: bucket theo hash(customer_id) để join nhanh với bảng khách hàng cũng bucket theo customer_id</td></tr></table>
+      <div class="callout good"><div class="lbl">Kết hợp cả hai</div>Thực tế thường dùng CẢ HAI: partition
+      theo ngày (ít giá trị, lọc thô nhanh) rồi bucket theo customer_id TRONG MỖI partition (nhiều giá trị,
+      chia đều để join/truy vấn nhanh hơn nữa) — đúng tinh thần "chia để trị" 2 tầng.</div>""")]),
+
+  # ---------------- PHẦN 8: Tez / Stinger ----------------
+  dict(title="Từ MapReduce sang Tez: khi Hive tự thay \"động cơ\" bên dưới", bullets=[
+    "Stinger Initiative (Hortonworks): mục tiêu tăng tốc Hive ~100 lần qua 3 \"wave\"",
+    "Wave 1: định dạng file ORC — Wave 2: tối ưu query engine — Wave 3: Apache Tez (2013)",
+    "Tez: DAG linh hoạt hơn MapReduce, chạy trên YARN"],
+   slides=[
+    dict(h="Vì sao Hive cần \"thay động cơ\" sau khi đã thành công?", body="""
+      <p>🗣️ <b>Nói nôm na:</b> Hive ban đầu giống 1 chiếc xe chạy máy dầu cũ (MapReduce) — chở được hàng
+      nặng (xử lý batch khối lượng lớn) nhưng chạy chậm, không hợp đi lại hàng ngày (truy vấn tương tác cần
+      phản hồi nhanh). Stinger Initiative là dự án "thay động cơ" cho chiếc xe đó, giữ nguyên "khung xe"
+      (HiveQL, bảng, Hive Metastore) mà người dùng đã quen.</p>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Hortonworks khởi động <b>Stinger
+      Initiative</b> với mục tiêu tăng tốc Hive khoảng 100 lần, chia làm 3 "wave": wave 1 đưa vào định dạng
+      file cột <b>ORC</b>, wave 2 tối ưu query engine, wave 3 đưa Hive chạy trên <b>Apache Tez</b> thay cho
+      MapReduce. Tez ra mắt Apache Software Foundation năm 2013, thiết kế để gỡ Hive khỏi các hạn chế của
+      MapReduce, chạy trên YARN, biểu diễn công việc dưới dạng DAG linh hoạt hơn mô hình Map→Reduce cứng nhắc.
+      Nguồn: <a href="https://www.bigdatawire.com/2014/01/21/the_future_of_hadoop_runs_on_tez_hortonworks_says" target="_blank">BigDATAwire — The future of Hadoop runs on Tez</a>,
+      <a href="https://www.dremio.com/wiki/apache-tez" target="_blank">Dremio — Apache Tez</a>.</div>
+      <p>🔗 <b>Liên hệ trực tiếp:</b> DAG của Tez là ý tưởng tương tự DAG đã học ở
+      <a href="../ll-03-dag-mapreduce/index.html">Lập lịch 03</a> và workflow Oozie ở
+      <a href="../hd-06-oozie-zookeeper/index.html">Hadoop 06</a> — nhưng ở đây DAG biểu diễn các bước XỬ LÝ
+      bên trong 1 job (vd 2 phép JOIN liên tiếp không cần quay lại HDFS giữa 2 bước như MapReduce buộc phải
+      làm), không phải DAG giữa các job hoàn chỉnh.</p>
+      <div class="callout warn"><div class="lbl">Bài học kiến trúc</div>Đây là ví dụ rõ ràng cho nguyên lý
+      đã thấy ở phần Hive Metastore: lớp "động cơ thực thi" (MapReduce → Tez → sau này cả Spark) thay đổi
+      liên tục, nhưng lớp "giao diện người dùng" (HiveQL) và lớp "metadata" (Metastore) giữ ổn định — tách
+      biệt 2 lớp này là lý do Hive "sống" được qua nhiều thế hệ công nghệ xử lý khác nhau.</div>"""),
+    dict(h="ORC: định dạng file cột — wave 1 của Stinger Initiative", body="""
+      <p>🗣️ <b>Nói nôm na:</b> file văn bản thường (CSV) lưu dữ liệu theo DÒNG — giống 1 cuốn sổ ghi mỗi
+      khách hàng 1 dòng đủ mọi thông tin. ORC (Optimized Row Columnar) lưu theo CỘT — giống việc có 1 sổ
+      riêng cho "tên", 1 sổ riêng cho "tuổi", 1 sổ riêng cho "địa chỉ". Khi chỉ cần tính trung bình TUỔI,
+      bạn chỉ cần mở đúng 1 sổ "tuổi", không cần lật qua mọi thông tin khác của từng khách hàng.</p>
+      <table><tr><th></th><th>Lưu theo dòng (CSV, text file)</th><th>Lưu theo cột (ORC)</th></tr>
+      <tr><td>Khi cần đọc 1-2 cột trong bảng rộng (nhiều cột)</td><td>Phải đọc hết cả dòng dù chỉ cần 1-2 cột</td><td>Chỉ đọc đúng cột cần, bỏ qua các cột khác hoàn toàn</td></tr>
+      <tr><td>Nén dữ liệu</td><td>Nén kém hơn (dữ liệu khác kiểu trộn lẫn trong 1 dòng)</td><td>Nén tốt hơn (cùng 1 cột thường có giá trị giống nhau/gần nhau)</td></tr></table>
+      <div class="callout info"><div class="lbl">Vì sao đây là wave ĐẦU TIÊN, không phải cuối</div>Đổi định
+      dạng lưu trữ (ORC) mang lại lợi ích ngay lập tức mà KHÔNG cần đổi engine xử lý (vẫn chạy MapReduce) —
+      đây là lý do Stinger Initiative làm bước này trước, trước khi đổi sang Tez (wave 3) vốn phức tạp hơn
+      nhiều.</div>""")]),
+
+  # ---------------- PHẦN 9: Ảnh hưởng tới thế giới (giữ nguyên, mở rộng) ----------------
+  dict(title="Ảnh hưởng tới thế giới: di sản lớn nhất của Hive không phải HiveQL", bullets=[
+    "Hive Metastore trở thành chuẩn de-facto lưu schema bảng cho cả hệ sinh thái sau này",
+    "Presto, Spark SQL, Trino ngày nay vẫn tương thích/đọc được Hive Metastore"],
+   slides=[
+    dict(h="Hive Metastore: di sản bền lâu hơn cả HiveQL", body="""
+      <p>🗣️ <b>Nói nôm na:</b> Hive Metastore giống <b>mục lục trung tâm của 1 hệ thống thư viện lớn</b> —
+      dù mỗi phòng đọc (Presto, Spark SQL, Trino, Impala) có cách tra cứu/hiển thị riêng, TẤT CẢ đều tra cùng
+      1 mục lục trung tâm để biết "sách nào ở kệ nào". Mục lục đó không đổi dù phòng đọc có đổi.</p>
+      <p>HiveQL ngày nay phần lớn bị thay thế bởi Spark SQL hoặc Presto/Trino khi cần hiệu năng truy vấn tương
+      tác cao hơn (Hive thế hệ đầu chạy trên MapReduce nên có độ trễ cao, tối ưu cho batch chứ không phải truy
+      vấn nhanh). Nhưng có một phần của Hive hầu như công cụ nào sau này cũng phải tương thích:</p>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div><b>Hive Metastore</b> — thành
+      phần lưu schema của mọi bảng (tên cột, kiểu dữ liệu, vị trí file trên HDFS/S3, định dạng...) — trở thành
+      chuẩn de-facto mà cả Presto, Trino, Spark SQL, Impala ngày nay đều đọc và tương thích được. Khi một công
+      ty nói "data warehouse trên Hadoop/S3 của chúng tôi dùng Hive Metastore", điều đó có nghĩa MỌI công cụ
+      xử lý dữ liệu hiện đại (dù không dùng HiveQL để truy vấn) vẫn có thể "nhìn thấy" và đọc đúng các bảng đó.</div>
+      <table><tr><th>Ngành/bối cảnh (minh hoạ)</th><th>Vì sao "mục lục chung" quan trọng</th></tr>
+      <tr><td>Ngân hàng đa chi nhánh</td><td>Mỗi chi nhánh dùng công cụ báo cáo khác nhau, nhưng tất cả đọc đúng 1 bộ bảng dữ liệu khách hàng, không mỗi nơi tự định nghĩa lại schema</td></tr>
+      <tr><td>Tập đoàn đa quốc gia (minh hoạ)</td><td>Team ở các nước khác nhau dùng Spark SQL hoặc Presto tuỳ sở thích, nhưng vẫn truy vấn đúng 1 bảng "doanh_thu_toan_cau" không bị lệch định nghĩa cột</td></tr></table>
+      <p>Đây là một bài học kiến trúc quan trọng: thành phần sống lâu nhất của một hệ thống không nhất thiết là
+      phần "hào nhoáng" nhất (ngôn ngữ truy vấn), mà thường là phần hạ tầng âm thầm bên dưới (schema catalog)
+      mà mọi công cụ khác phụ thuộc vào.</p>"""),
+    dict(h="Tổng kết cả module: 3 tầng của Pig/Hive, từ 2006 tới nay", body="""
+      <table><tr><th>Tầng</th><th>Thời kỳ Pig/Hive ra đời (2006-2010)</th><th>Ngày nay</th></tr>
+      <tr><td>Ngôn ngữ truy vấn</td><td>PigLatin (thủ tục) / HiveQL (khai báo)</td><td>HiveQL vẫn dùng, nhưng thường qua Spark SQL/Presto/Trino</td></tr>
+      <tr><td>Engine thực thi</td><td>MapReduce</td><td>Tez / Spark (nhanh hơn nhiều, vẫn đọc cùng dữ liệu)</td></tr>
+      <tr><td>Metadata/catalog</td><td>Hive Metastore</td><td>Hive Metastore (hoặc tương thích chuẩn này) — hầu như KHÔNG đổi</td></tr></table>
+      <div class="callout good"><div class="lbl">Thông điệp cốt lõi của cả module hd-03</div>Pig và Hive không
+      chỉ là "2 ngôn ngữ cũ của Hadoop" — chúng dạy 1 bài học kiến trúc universal: tầng nào thay đổi NHANH
+      (ngôn ngữ, engine) và tầng nào cần ổn định LÂU (metadata/schema) phải được THIẾT KẾ TÁCH BIỆT từ đầu,
+      nếu không muốn cả hệ thống phải viết lại mỗi khi công nghệ xử lý mới xuất hiện.</div>""")]),
+ ],
+ quiz=[
+  dict(q="Apache Pig ra đời ở đâu, với mục tiêu gì?", opts=[
+     "Facebook, để thay thế SQL hoàn toàn", "Yahoo Research, cho nhà nghiên cứu cách tuỳ biến tạo/chạy MapReduce job trên dữ liệu lớn",
+     "Google, để thay thế GFS", "LinkedIn, để xử lý activity stream"],
+   correct=1, explain="Pig ra đời ở Yahoo Research khoảng 2006, giải quyết vấn đề MapReduce thuần quá cấp thấp/cứng nhắc."),
+  dict(q="PigLatin được thiết kế nằm ở đâu trên phổ 'khai báo (SQL) - thủ tục (MapReduce)'?", opts=[
+     "Hoàn toàn khai báo như SQL", "Hoàn toàn thủ tục như MapReduce thuần", "Ở điểm giữa — có cấu trúc dataflow thủ tục nhưng mức trừu tượng cao hơn MapReduce Java", "Không liên quan tới cả hai"],
+   correct=2, explain="PigLatin là procedural dataflow, trung gian giữa SQL khai báo và MapReduce thủ tục cấp thấp."),
+  dict(q="Trong PigLatin, vì sao đổi thứ tự FILTER và GROUP BY có thể cho kết quả khác nhau?", opts=[
+     "Vì PigLatin không hỗ trợ GROUP BY", "Vì PigLatin là ngôn ngữ thủ tục — thứ tự các dòng lệnh quyết định trình tự thực thi thật",
+     "Vì FILTER chỉ dùng được sau JOIN", "Không có khác biệt gì, 2 thứ tự luôn cho kết quả giống nhau"],
+   correct=1, explain="PigLatin là thủ tục: filter trước-rồi-group khác với group trước-rồi-filter-trên-nhóm."),
+  dict(q="Apache Hive do ai đồng sáng tạo tại Facebook?", opts=[
+     "Doug Cutting & Mike Cafarella", "Joydeep Sen Sarma & Ashish Thusoo", "Jay Kreps & Neha Narkhede", "Jeff Dean & Sanjay Ghemawat"],
+   correct=1, explain="Hammerbacher có vai trò giới thiệu/hạ tầng Hadoop ở Facebook, nhưng Sen Sarma và Thusoo là người đồng sáng tạo chính Hive."),
+  dict(q="Động lực chính khiến Facebook xây Hive là gì?", opts=[
+     "Muốn thay thế hoàn toàn MapReduce bằng công nghệ mới", "Dữ liệu tăng vọt (10s GB/ngày → 15 TB/ngày) mà chỉ kỹ sư Java mới khai thác được Hadoop, không scale ra toàn công ty được",
+     "Google yêu cầu tương thích chuẩn", "Giảm chi phí phần cứng"],
+   correct=1, explain="Cần một cách để kỹ sư/analyst quen SQL cũng khai thác được Hadoop mà không cần viết MapReduce Java."),
+  dict(q="Theo nguồn lịch sử, tỉ lệ nhân sự Facebook dùng hạ tầng phân tích dữ liệu mỗi tháng đã thay đổi ra sao?", opts=[
+     "Giữ nguyên ở mức 6 người", "Từ 6 người dùng (khi 15PB dữ liệu) tăng lên 20-30% toàn công ty (tới năm 2011)",
+     "Giảm dần theo thời gian", "Tăng lên 100% ngay lập tức"],
+   correct=1, explain="Đây là minh chứng cho hiệu quả 'dân chủ hoá dữ liệu' mà Hive mang lại."),
+  dict(q="Bản phát hành đầu tiên của Apache Hive là khi nào?", opts=["2006", "2008", "10/2010", "2015"],
+   correct=2, explain="Tháng 10/2010 là bản phát hành đầu tiên của Hive, theo nguồn lịch sử đã trích."),
+  dict(q="Sự khác biệt cốt lõi giữa PigLatin và HiveQL là gì?", opts=[
+     "Không có khác biệt, cùng 1 ngôn ngữ", "PigLatin thủ tục (viết từng bước biến đổi), HiveQL khai báo (nói muốn kết quả gì, giống SQL)",
+     "PigLatin chỉ chạy trên Spark", "HiveQL không hỗ trợ GROUP BY"],
+   correct=1, explain="Đây là sự khác biệt triết lý ngôn ngữ cốt lõi giữa 2 công cụ."),
+  dict(q="Trong ví dụ JOIN giữa bảng orders và employees, nếu dùng inner join mặc định, nhân viên E3 (chưa có đơn hàng nào) có xuất hiện trong kết quả không?", opts=[
+     "Có, luôn xuất hiện với giá trị NULL", "Không — inner join chỉ giữ các cặp khớp được ở cả hai bảng", "Có, nhưng chỉ xuất hiện 1 lần", "Tuỳ vào PigLatin hay HiveQL"],
+   correct=1, explain="Inner join (mặc định) chỉ giữ dòng khớp được ở CẢ HAI bảng; muốn giữ E3 phải dùng LEFT/OUTER JOIN."),
+  dict(q="Cả script PigLatin và HiveQL cho bài toán tổng doanh số theo nhân viên, sau khi biên dịch, đều chuyển thành gì bên dưới?", opts=[
+     "Truy vấn SQL trực tiếp trên RDBMS", "Một hoặc nhiều MapReduce job (Map đọc dòng, Shuffle&Sort gộp theo employee, Reduce cộng tổng)",
+     "Mã máy biên dịch trực tiếp", "Không cần biên dịch, chạy trực tiếp trên NameNode"],
+   correct=1, explain="Cả hai chỉ là 2 cách VIẾT khác nhau để sinh ra cùng luồng MapReduce Map→Shuffle&Sort→Reduce."),
+  dict(q="UDF (User-Defined Function) được dùng khi nào?", opts=[
+     "Khi muốn thay thế hoàn toàn HiveQL bằng Java", "Khi hàm có sẵn trong PigLatin/HiveQL không đủ biểu đạt logic nghiệp vụ cần (vd công thức tính điểm tín dụng riêng)",
+     "Chỉ dùng được trong Pig, không dùng được trong Hive", "Khi dữ liệu quá nhỏ để dùng MapReduce"],
+   correct=1, explain="UDF là 'cửa thoát' khi ngôn ngữ khai báo/thủ tục có sẵn không đủ, cho cả Pig và Hive."),
+  dict(q="Partition trong Hive chia dữ liệu theo cơ chế nào?", opts=[
+     "Theo hash(cột) mod số-phần, chia đều bất kể giá trị thật", "Theo giá trị thật của 1 cột được chọn, mỗi giá trị 1 thư mục con trên HDFS",
+     "Theo thứ tự ghi dữ liệu vào bảng", "Không có cơ chế chia nào, Hive luôn quét toàn bảng"],
+   correct=1, explain="Partition dùng giá trị thật của cột (vd mỗi ngày 1 thư mục) để lọc nhanh khi truy vấn có điều kiện trên đúng cột đó."),
+  dict(q="Vì sao partition theo 1 cột có hàng triệu giá trị khác nhau (vd user_id) là lựa chọn tồi?", opts=[
+     "Vì Hive không hỗ trợ cột dạng số", "Vì tạo ra hàng triệu thư mục nhỏ, làm phần quản lý metadata quá tải — nên dùng Bucket thay vì Partition trong trường hợp này",
+     "Vì partition chỉ dùng được với cột kiểu ngày tháng", "Vì sẽ làm mất dữ liệu"],
+   correct=1, explain="Đây đúng là động lực ra đời của Bucket: chia nhỏ bằng hash để tránh bùng nổ số thư mục partition."),
+  dict(q="Bucket khác Partition ở điểm cốt lõi nào?", opts=[
+     "Bucket chỉ dùng được trong Pig", "Bucket chia dữ liệu bằng hash(cột) mod số-bucket (chia đều), không theo giá trị thật như Partition",
+     "Bucket và Partition là cùng 1 cơ chế, chỉ đổi tên", "Bucket không thể kết hợp với Partition"],
+   correct=1, explain="Thực tế thường kết hợp cả hai: partition thô theo ngày, rồi bucket theo hash trong mỗi partition."),
+  dict(q="Stinger Initiative (Hortonworks) có mục tiêu gì, và gồm mấy 'wave'?", opts=[
+     "Thay thế hoàn toàn HiveQL bằng ngôn ngữ mới, 1 wave duy nhất", "Tăng tốc Hive khoảng 100 lần, qua 3 wave: ORC file, tối ưu query engine, Tez",
+     "Xây 1 hệ quản trị CSDL hoàn toàn mới không liên quan Hive", "Giảm chi phí lưu trữ HDFS, không liên quan tốc độ truy vấn"],
+   correct=1, explain="3 wave: định dạng file ORC, tối ưu query engine, rồi đưa Hive chạy trên Apache Tez."),
+  dict(q="Apache Tez khác MapReduce ở điểm cốt lõi nào, giúp Hive nhanh hơn?", opts=[
+     "Tez không cần chạy trên YARN", "Tez biểu diễn công việc dưới dạng DAG linh hoạt hơn, tránh phải quay lại HDFS giữa các bước như MapReduce buộc phải làm",
+     "Tez chỉ hỗ trợ truy vấn 1 bảng duy nhất", "Tez thay thế hoàn toàn HDFS"],
+   correct=1, explain="DAG của Tez cho phép nối nhiều bước xử lý (vd 2 JOIN liên tiếp) mà không cần ghi/đọc lại HDFS giữa mỗi bước Map/Reduce."),
+  dict(q="Thành phần nào của Hive có ảnh hưởng lâu dài nhất, được cả Presto/Trino/Spark SQL tương thích ngày nay?", opts=[
+     "Cú pháp HiveQL", "Hive Metastore (catalog lưu schema bảng)", "Giao diện web Hive", "Thuật toán tối ưu truy vấn Hive"],
+   correct=1, explain="Hive Metastore trở thành chuẩn de-facto lưu schema mà hầu hết công cụ xử lý dữ liệu hiện đại đều tương thích, dù không dùng HiveQL."),
+  dict(q="Vì sao Hive thế hệ đầu (chạy trên MapReduce) không phù hợp cho truy vấn tương tác nhanh?", opts=[
+     "Vì HiveQL không hỗ trợ SELECT", "Vì MapReduce tối ưu cho xử lý batch, có độ trễ cao, không phù hợp truy vấn cần phản hồi nhanh",
+     "Vì Hive không đọc được HDFS", "Vì Hive chỉ chạy trên 1 node"],
+   correct=1, explain="Đây là lý do Stinger Initiative/Tez, và sau đó Presto/Trino/Spark SQL ra đời để giải quyết nhu cầu truy vấn nhanh hơn."),
+  dict(q="Pig mã nguồn mở hoá và có bản phát hành đầu tiên vào khi nào?", opts=[
+     "Mở nguồn 2007, phát hành đầu tiên 9/2008", "Mở nguồn 2010, phát hành đầu tiên 2011", "Mở nguồn 2004, phát hành đầu tiên 2005", "Chưa từng mã nguồn mở"],
+   correct=0, explain="Mùa thu 2007 mở nguồn qua Apache Incubator, bản phát hành chính thức đầu tiên tháng 9/2008."),
+  dict(q="Theo bài học kiến trúc rút ra từ cả Hive Metastore và việc chuyển MapReduce→Tez, điều gì giúp Hive 'sống' qua nhiều thế hệ công nghệ xử lý khác nhau?", opts=[
+     "Vì HiveQL không bao giờ thay đổi cú pháp", "Vì tách biệt lớp 'động cơ thực thi' (có thể thay đổi: MapReduce→Tez→Spark) khỏi lớp 'giao diện/metadata' (ổn định: HiveQL, Metastore)",
+     "Vì Hive chỉ chạy trên phần cứng của Facebook", "Vì Hive không phụ thuộc vào Hadoop"],
+   correct=1, explain="Đây là bài học kiến trúc tổng kết của cả module: tách lớp thực thi khỏi lớp giao diện/metadata giúp hệ thống bền vững qua nhiều thế hệ công nghệ."),
+ ])
