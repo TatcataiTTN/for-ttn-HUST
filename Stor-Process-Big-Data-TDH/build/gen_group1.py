@@ -32,6 +32,84 @@ def formula(label, math):
 def callout(kind, label, text):
     return f'<div class="callout {kind}"><div class="lbl">{label}</div>{text}</div>'
 
+def tech_timeline_svg():
+    """Timeline nhiều lane tự vẽ bằng SVG gốc: lane ngang theo nhánh công nghệ, mốc tròn theo năm,
+    đường nét đứt = ảnh hưởng trực tiếp giữa các lane. Trục cắt ở 2013, mốc 2022 (KRaft) đặt sau dấu ngắt."""
+    y0, y1 = 2002, 2013
+    ml, step = 150, 64
+    def X(year): return ml + (year - y0) * step
+    W = X(y1) + 150
+    H = 440
+    lanes = [
+        {"label": "Nghiên cứu<br/>nền tảng (Google)", "y": 72, "color": "#2b5ce6"},
+        {"label": "Lõi Hadoop", "y": 168, "color": "#0f9d58"},
+        {"label": "Công cụ<br/>hệ sinh thái", "y": 264, "color": "#d98e00"},
+        {"label": "Streaming", "y": 360, "color": "#c2255c"},
+    ]
+    # (lane, năm, tên, mô tả, key, dx, hướng nhãn 'u'/'d', căn 'c'/'l'/'r')
+    nodes = [
+        (0, 2003, "GFS", "SOSP 2003", True, 0, "u", "c"),
+        (0, 2004, "MapReduce", "OSDI 2004", True, 0, "u", "c"),
+        (0, 2006, "Bigtable", "OSDI 2006", True, -8, "u", "r"),
+        (0, 2006, "Chubby", "OSDI 2006", False, 8, "u", "l"),
+        (1, 2006, "Hadoop", "Tách từ Nutch<br/>(Cutting, Yahoo!)", True, 0, "d", "c"),
+        (1, 2012, "YARN", "Hadoop 2.0: tách<br/>quản lý tài nguyên", True, 0, "d", "c"),
+        (2, 2007, "ZooKeeper", "Yahoo Research", False, 0, "d", "c"),
+        (2, 2008.25, "HBase", "28/3/2008<br/>(Powerset)", True, 0, "u", "c"),
+        (2, 2008.75, "Pig", "9/2008 (Yahoo)", False, 0, "d", "c"),
+        (2, 2010.8, "Hive", "10/2010 (Facebook)", True, 0, "u", "c"),
+        (2, 2012.3, "Oozie", "Top-level 2012", False, 0, "d", "c"),
+        (3, 2011.1, "Kafka", "Mã nguồn mở (LinkedIn)", True, 0, "d", "c"),
+        (3, 2013.2, "KRaft", "2022: Kafka bỏ<br/>ZooKeeper", False, 0, "d", "c"),
+    ]
+    cross = [(2003, 0, 2006, 1), (2004, 0, 2006, 1), (2006, 0, 2008.25, 2), (2006, 0, 2007, 2)]
+
+    svg = [f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="Timeline phát triển hệ sinh thái Hadoop">']
+    yr = y0
+    while yr < y1:
+        x = X(yr)
+        svg.append(f'<line x1="{x}" y1="36" x2="{x}" y2="402" stroke="var(--border)" stroke-width="1"/>')
+        svg.append(f'<text x="{x}" y="424" font-size="13" fill="var(--muted)" text-anchor="middle">{yr}</text>')
+        yr += 1
+    xb = X(2013.2)
+    svg.append(f'<text x="{xb}" y="424" font-size="13" fill="var(--muted)" text-anchor="middle">⋯ 2022</text>')
+    for yf, lf, yt, lt in cross:
+        svg.append(f'<line x1="{X(yf)}" y1="{lanes[lf]["y"]}" x2="{X(yt)}" y2="{lanes[lt]["y"]}" '
+                   f'stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="4,4" opacity=".75"/>')
+    for ln in lanes:
+        svg.append(f'<line x1="{ml-20}" y1="{ln["y"]}" x2="{xb+30}" y2="{ln["y"]}" stroke="{ln["color"]}" stroke-width="2.5" opacity=".5"/>')
+        svg.append(f'<foreignObject x="0" y="{ln["y"]-24}" width="{ml-30}" height="48">'
+                   f'<div xmlns="http://www.w3.org/1999/xhtml" style="font:700 14px sans-serif;color:{ln["color"]};'
+                   f'text-align:right;line-height:1.25;height:48px;display:flex;align-items:center;justify-content:flex-end">'
+                   f'<span>{ln["label"]}</span></div></foreignObject>')
+    for lane_i, year, name, sub, key, dx, side, al in nodes:
+        ln = lanes[lane_i]; x = X(year) + dx; y = ln["y"]
+        svg.append(f'<circle cx="{x}" cy="{y}" r="{8 if key else 6}" fill="{ln["color"]}" stroke="var(--panel)" stroke-width="2"/>')
+        bw = 150
+        bx = {"c": x - bw/2, "l": x - 6, "r": x - bw + 6}[al]
+        ta = {"c": "center", "l": "left", "r": "right"}[al]
+        if side == "u":
+            by, just = y - 12 - 52, "flex-end"
+        else:
+            by, just = y + 12, "flex-start"
+        svg.append(f'<foreignObject x="{bx}" y="{by}" width="{bw}" height="52">'
+                   f'<div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;'
+                   f'justify-content:{just};text-align:{ta};font-family:sans-serif">'
+                   f'<div style="font-weight:{"800" if key else "700"};font-size:{"15" if key else "13.5"}px;color:var(--text);line-height:1.15">{name}</div>'
+                   f'<div style="font-size:11.5px;color:var(--muted);line-height:1.2">{sub}</div></div></foreignObject>')
+    svg.append('</svg>')
+    return "".join(svg)
+
+def figslide(title, img, src, rows, side=True, img_w="56%"):
+    """Slide hình gốc từ bài báo nền tảng (crop nguyên trạng, ghi nguồn) + bảng đối chiếu sang thuật ngữ Hadoop."""
+    im = (f'<figure style="margin:0"><img src="../assets/images/papers/{img}" alt="{title}" '
+          f'style="width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff">'
+          f'<figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">{src}</figcaption></figure>')
+    tb = tbl(["Trong bài báo gốc", "Trong hệ sinh thái Hadoop"], rows, dense=True)
+    if side:
+        return slide(title, f'<div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 {img_w}">{im}</div><div style="flex:1">{tb}</div></div>')
+    return slide(title, f'<div style="max-width:{img_w};margin:0 auto 12px">{im}</div>{tb}')
+
 def tblock(header, items):
     """Khối kết quả dạng bảng-số có thanh tiêu đề màu, mô phỏng đúng kiểu block thuật toán/định lý
     trong slide Beamer của thầy Tạ Duy Hoàng (thanh màu + danh sách đánh số bên trong khung viền)."""
@@ -113,6 +191,13 @@ SLIDES.append(slide("Kiến trúc master/slave: NameNode &amp; DataNode", f"""
 <li><b>DataNode</b><span>lưu trữ block dữ liệu thật, xử lý yêu cầu đọc/ghi từ client.</span></li></ul>
 """))
 
+SLIDES.append(figslide("Hình gốc: kiến trúc GFS, nguồn cảm hứng của HDFS", "gfs_fig1.png",
+    "Nguồn: Ghemawat, Gobioff, Leung. <i>The Google File System</i>, SOSP 2003, Figure 1.",
+    [["GFS master (namespace, ánh xạ file → chunk, trong RAM)", "NameNode"],
+     ["GFS chunkserver (lưu chunk trên Linux file system)", "DataNode"],
+     ["Chunk 64 MB, nhân bản trên nhiều chunkserver", "Block 64/128 MB, nhân bản 3 lần"],
+     ["Client hỏi master vị trí, rồi đọc/ghi <b>trực tiếp</b> chunkserver (mũi tên dày = dữ liệu không đi qua master)", "Client hỏi NameNode, truyền dữ liệu thẳng với DataNode"]]))
+
 SLIDES.append(slide("Block là gì?", f"""
 <p>Mỗi tệp trong HDFS được <b>chia thành nhiều block</b> (khối dữ liệu) thay vì lưu nguyên khối như hệ file thông thường.</p>
 {formula('Kích thước block mặc định', '64\\text{ MB hoặc }128\\text{ MB}')}
@@ -159,6 +244,13 @@ SLIDES.append(slide("Mô hình lập trình MapReduce", f"""
       ['Reduce (giảm thiểu)','Viết hàm Reduce','Thu gộp kết quả trung gian, xử lý lỗi tự động']])}
 {callout('good','Điểm mạnh','Lập trình viên chỉ cần viết 2 hàm: phần song song hoá, phân phối, chịu lỗi đều do framework tự động đảm nhiệm.')}
 """))
+
+SLIDES.append(figslide("Hình gốc: luồng thực thi MapReduce của Google", "mr_fig1.png",
+    "Nguồn: Dean, Ghemawat. <i>MapReduce: Simplified Data Processing on Large Clusters</i>, OSDI 2004, Figure 1.",
+    [["User Program fork ra Master và các worker", "Client submit job; Master ↔ JobTracker (Hadoop 1.x) / ApplicationMaster (YARN)"],
+     ["Input chia thành split, mỗi split cho 1 map worker", "InputSplit, 1 map task xử lý 1 split gần dữ liệu (data locality)"],
+     ["Map ghi file trung gian lên <b>đĩa cục bộ</b>; reduce worker (5) remote read", "Giai đoạn shuffle: reduce kéo dữ liệu từ đĩa node chạy map"],
+     ["Reduce worker ghi output file", "Kết quả ghi xuống HDFS"]], side=True, img_w="58%"))
 
 SLIDES.append(slide("Vai trò MapReduce: Hadoop 1.x → 2.x", tbl(
     ["Phiên bản", "Vai trò MapReduce"],
@@ -272,6 +364,12 @@ SLIDES.append(slide("HBase khác RDBMS ở đâu?", f"""
 <p><b>Ví dụ thực tế:</b> Facebook Messaging từng dùng HBase lưu tin nhắn cho hàng trăm triệu người dùng, khai thác khả năng mở rộng linh hoạt.</p>
 """))
 
+SLIDES.append(figslide("Hình gốc: mô hình dữ liệu Bigtable, nền của HBase", "bigtable_fig1.png",
+    "Nguồn: Chang et al. <i>Bigtable: A Distributed Storage System for Structured Data</i>, OSDI 2006, Figure 1 (ví dụ bảng lưu trang web, row key là URL đảo ngược).",
+    [["Row key \"com.cnn.www\" (URL đảo ngược để các trang cùng domain nằm gần nhau, giữ thứ tự từ điển)", "Row key của HBase, sắp xếp theo thứ tự byte; thiết kế row key quyết định locality và hotspotting"],
+     ["Column family <code>contents:</code> và <code>anchor:</code>", "Column family; cột viết dạng <code>family:qualifier</code>"],
+     ["Mỗi ô có nhiều phiên bản gắn nhãn thời gian (t3, t5, t6)", "Cell có nhiều version theo timestamp"]], side=False, img_w="78%"))
+
 SLIDES.append(slide("Khi nào dùng HDFS+Hive, khi nào dùng HBase?", tbl(
     ["Nhu cầu", "Chọn"],
     [["Phân tích tổng hợp trên tập dữ liệu lớn (batch)", "HDFS + MapReduce/Hive"],
@@ -324,6 +422,12 @@ SLIDES.append(slide("Ví dụ minh hoạ: Kafka trong pipeline thu thập log", 
 {callout('good', 'Điểm mấu chốt', 'Producer (máy chủ web) và consumer (Spark/Hadoop) không kết nối trực tiếp: Kafka đứng giữa như một hàng đợi bền vững, chịu lỗi.')}
 """))
 
+SLIDES.append(figslide("Hình gốc: log của Kafka, thiết kế quanh offset", "kafka_fig2.png",
+    "Nguồn: Kreps, Narkhede, Rao. <i>Kafka: a Distributed Messaging System for Log Processing</i>, NetDB 2011, Figure 2.",
+    [["Mỗi partition là 1 log chia thành nhiều segment file", "Partition của topic; segment file trên đĩa broker"],
+     ["Message được đánh địa chỉ bằng <b>offset</b> logic trong log, không có message id riêng", "Offset: consumer tự nhớ vị trí đã đọc, broker không giữ trạng thái này (stateless broker)"],
+     ["Chỉ ghi nối vào cuối (append), đọc tuần tự, xóa theo thời gian lưu giữ (điển hình 7 ngày)", "Retention theo thời gian; consumer có thể tua lại offset cũ để đọc lại"]], side=True, img_w="40%"))
+
 SLIDES.append(slide("Apache Oozie: lập lịch workflow", f"""
 <p>Hệ thống quản lý &amp; lập lịch luồng công việc (workflow scheduler) cho Hadoop: định nghĩa chuỗi job
 (MapReduce → Hive → shell script...) và quản lý thực thi tuần tự/song song.</p>
@@ -348,6 +452,12 @@ tất cả server ZooKeeper (chạy thành cụm nhỏ) duy trì <b>cùng một 
 <p>Nhờ đó, các node trong hệ phân tán không cần liên lạc peer-to-peer phức tạp: chỉ cần dựa vào ZooKeeper như một "trọng tài chung" tin cậy.</p>
 """))
 
+SLIDES.append(figslide("Hình gốc: cấu trúc Chubby, nguồn cảm hứng của ZooKeeper", "chubby_fig1.png",
+    "Nguồn: Burrows. <i>The Chubby lock service for loosely-coupled distributed systems</i>, OSDI 2006, Figure 1.",
+    [["1 Chubby cell gồm 5 server (replica), chọn ra 1 master bằng giao thức đồng thuận", "1 ZooKeeper ensemble (thường 3 hoặc 5 server), bầu 1 leader"],
+     ["Cần đa số replica còn sống (3/5) thì cell mới hoạt động", "Quorum: đa số server phải sống, nếu không dịch vụ dừng"],
+     ["Client application liên lạc qua chubby library bằng RPC", "Client dùng thư viện ZooKeeper; znode, watch, ephemeral node thay cho khóa/tệp nhỏ của Chubby"]], side=True, img_w="44%"))
+
 SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Thành phần", "ZooKeeper dùng để"], [
     ["HDFS High Availability", "Giám sát NameNode &amp; kích hoạt failover"],
     ["YARN", "Lưu thông tin ResourceManager chủ"],
@@ -371,6 +481,11 @@ SLIDES.append(slide("Toàn cảnh hệ sinh thái Hadoop", tbl(
      ["Điều phối tài nguyên", "YARN", "Quản lý tài nguyên đa ứng dụng"],
      ["Tích hợp RDBMS", "Sqoop", "Import/export với CSDL quan hệ"]], dense=True
 )))
+
+SLIDES.append(slide("Lộ trình phát triển: từ 2 bài báo Google tới hệ sinh thái", f"""
+<p style="font-size:.92rem">4 nhánh song song, đường nét đứt = ảnh hưởng trực tiếp (vd: GFS → thiết kế HDFS trong Hadoop).</p>
+{tech_timeline_svg()}
+"""))
 
 SLIDES.append(slide("Tổng kết chương 2", f"""
 <p>Hai nền tảng chính <b>HDFS</b> (lưu trữ tin cậy, mở rộng trên phần cứng rẻ) và <b>MapReduce</b> (lập trình
@@ -410,49 +525,52 @@ SLIDES.append(divider(8, 8, "Bonus: Ứng dụng liên ngành", [
     "Tài liệu tham khảo mở rộng (8 bài báo gốc)"]))
 
 SLIDES.append(slide("Bài toán: tìm điểm chia cây quyết định", f"""
-<p>Khi huấn luyện <b>cây quyết định</b> (decision tree) trên 1 thuộc tính số, thuật toán cần tìm
-<b>ngưỡng chia tốt nhất</b> (split point): ví dụ "tuổi &lt; 30?": để tách dữ liệu sao cho 2 nhóm con
-"thuần" nhất có thể.</p>
-{callout('info', 'Vì sao liên quan đến môn học', 'Để tìm ngưỡng chia tốt, thuật toán cần biết <b>phân vị</b> (quantile) của dữ liệu: đúng bài toán <i>quantile sketch</i> (q-digest, MRL, KLL) đã học trong môn Lưu trữ &amp; xử lý dữ liệu lớn.')}
-<p style="color:var(--muted);font-size:.85rem">3 slide tiếp theo tóm tắt đúng phần tóm tắt (abstract) và phần mở đầu (introduction) của 3 bài báo thầy Tạ Duy Hoàng là đồng tác giả: nhóm không đi sâu chứng minh toán học bên trong, chỉ trình bày đúng bài toán và kết quả chính đã công bố.</p>
+<p>Khi dựng <b>cây quyết định</b> từ trên xuống (CART, ID3), ở mỗi nút phải chọn <b>ngưỡng chia</b> $j$ trên 1 thuộc tính
+($x_i \\le j$ hay $x_i &gt; j$) sao cho sai số sau chia nhỏ nhất: MSE (hồi quy), tỉ lệ phân loại sai hoặc Gini (phân loại).</p>
+{tbl(['Ý của bài báo','Hệ quả'],
+     [['Chọn ngưỡng chia tối ưu = dựng cây sâu 1 (<i>decision stump</i>), cũng là weak learner của AdaBoost','Lặp lại thuật toán này để dựng cây sâu hơn'],
+      ['Mỗi lần tính sai số tại $j$ chỉ cần <b>số phần tử (và nhãn) nằm trong 1 khoảng</b> của $[1,N]$','Bài toán quy về đếm theo khoảng trên dữ liệu rất lớn'],
+      ['Nhiều thuộc tính: chạy riêng từng thuộc tính rồi chọn tốt nhất','Bộ nhớ nhân thêm hệ số $d$ (số thuộc tính)']])}
+{callout('info', 'Liên hệ với môn học', 'Đếm theo khoảng cùng họ bài toán rank/quantile mà streaming đã học (q-digest, MRL, KLL). Lưu ý: chính các bài báo dùng <b>reservoir sampling</b> và <b>Count-Min sketch</b> (phân rã dyadic) chứ không dùng quantile sketch.')}
 """))
 
 SLIDES.append(slide("Kết nối 1: vì sao cần streaming?", f"""
-<p>Với tập dữ liệu khổng lồ (hàng tỷ bản ghi), <b>không thể lưu toàn bộ dữ liệu trong bộ nhớ</b> để tính
-chính xác điểm chia: đây chính là động lực streaming đã học (buổi 12: q-digest/MRL/KLL).</p>
-{tbl(['Khái niệm đã học','Vai trò khi tìm điểm chia cây quyết định'],
-     [['Quantile sketch (q-digest/MRL/KLL)','Ước lượng phân vị của thuộc tính mà không lưu hết dữ liệu'],
-      ['Sai số $\\pm\\varepsilon n$ có kiểm soát','Đánh đổi bộ nhớ nhỏ lấy điểm chia "đủ tốt", không cần tuyệt đối chính xác'],
-      ['Tính hợp nhất (mergeability)','Gộp sketch từ nhiều luồng con/nhiều máy thành 1 sketch tổng']])}
+<p>Theo bài báo: dữ liệu thường <b>quá lớn để nạp vào bộ nhớ chính của 1 máy</b>, nên được đọc dạng luồng từ đĩa hoặc qua mạng,
+dùng bộ nhớ dưới tuyến tính, lý tưởng là <b>1 lượt duyệt</b> (cho phép vài lượt).</p>
+{tbl(['Công cụ','Dùng để làm gì trong bài toán chọn ngưỡng chia'],
+     [['Reservoir sampling / lấy mẫu','Ước lượng số phần tử và nhãn trong 1 khoảng $R\\subseteq[1,N]$ khi luồng chỉ có thêm phần tử'],
+      ['Count-Min sketch + phân rã dyadic','Ước lượng số đếm theo khoảng, còn xử lý được luồng có xoá; thêm hệ số $\\log N$ về bộ nhớ'],
+      ['Sai số cộng $\\varepsilon$ so với tối ưu','Đánh đổi bộ nhớ nhỏ (cỡ $\\tilde O(1/\\varepsilon)$ hoặc $\\tilde O(1/\\varepsilon^2)$) lấy ngưỡng "đủ tốt"']])}
 """))
 
 SLIDES.append(slide("Kết nối 2: vì sao cần tính toán song song lớn?", f"""
-<p>Dữ liệu huấn luyện thực tế thường <b>phân tán trên nhiều máy</b> trong cụm Hadoop/Spark: đúng kiến trúc
-HDFS + MapReduce + YARN đã trình bày ở Phần 2–3.</p>
-{callout('good', 'Mô hình MPC (Massively Parallel Computation)', 'Mô hình lý thuyết mô tả đúng cách MapReduce/Spark hoạt động: dữ liệu chia cho nhiều máy, mỗi máy bộ nhớ giới hạn, tính toán qua <b>vài vòng truyền thông</b> (round) giữa các máy: khớp với giai đoạn Map → Shuffle → Reduce đã học.')}
-<p>Bài toán đặt ra: tìm điểm chia cây quyết định bằng <b>càng ít vòng giao tiếp giữa các máy càng tốt</b>: giống hệt mục tiêu tối ưu khi chạy job trên YARN/MapReduce.</p>
+<p>Mô hình <b>MPC</b> (Massively Parallel Computation) trong bài báo là phép trừu tượng hoá của MapReduce, Hadoop và Spark:</p>
+{tbl(['Thành phần MPC','Ý nghĩa','Ứng với Hadoop'],
+     [['$m$ quan sát chia cho $m^{1-\\beta}$ máy','Dữ liệu phân tán, không máy nào giữ hết','Block của HDFS rải trên DataNode'],
+      ['Mỗi máy chỉ có bộ nhớ $\\tilde O(m^{\\beta})$','Bộ nhớ mỗi máy dưới tuyến tính','Bộ nhớ mỗi container/task'],
+      ['Mỗi vòng: mọi máy gửi/nhận thông điệp rồi tính cục bộ','Đồng bộ theo vòng','Map → Shuffle → Reduce'],
+      ['Độ phức tạp = <b>số vòng</b>','Ít vòng = ít lần shuffle tốn kém','Số job MapReduce nối tiếp']])}
+{callout('good', 'Kết quả của bài báo trong MPC', 'Hồi quy và phân loại: bộ nhớ mỗi máy $\\tilde O(\\sqrt m)$, chỉ $O(1)$ vòng, sai số $\\le \\mathrm{OPT}+1/\\sqrt m$ (bài 2, Figure 3).')}
 """))
 
 SLIDES.append(slide("Hai thế giới gặp nhau", tbl(
-    ["", "Streaming (buổi 12)", "Massively Parallel / Hadoop (Chương 2)"],
-    [["Ràng buộc chính", "Bộ nhớ nhỏ, 1 lượt duyệt dữ liệu", "Mỗi máy bộ nhớ nhỏ, vài vòng giao tiếp"],
-     ["Công cụ", "q-digest, MRL, KLL", "HDFS + MapReduce + YARN"],
-     ["Mục tiêu chung", "Ước lượng thống kê (ở đây: điểm chia cây quyết định) đủ chính xác, chi phí tối thiểu", ""]]
-) + callout('warn', 'Thách thức nghiên cứu', 'Làm sao thiết kế 1 thuật toán vừa tiết kiệm bộ nhớ theo luồng (streaming), vừa tiết kiệm số vòng giao tiếp khi chạy phân tán (MPC): đây chính xác là chủ đề 2 bài báo được trích dẫn ở slide sau.')))
+    ["", "Streaming (nửa đầu môn học)", "Massively Parallel / Hadoop (Chương 2)"],
+    [["Ràng buộc chính", "Bộ nhớ nhỏ, 1 hoặc vài lượt duyệt dữ liệu", "Mỗi máy bộ nhớ nhỏ, độ phức tạp tính bằng số vòng giao tiếp"],
+     ["Công cụ trong bài báo", "Reservoir sampling, Count-Min sketch (dyadic)", "Thuật toán MPC: $O(1)$ vòng, đúng mô hình của MapReduce/Hadoop/Spark"],
+     ["Mục tiêu chung", "Chọn ngưỡng chia cây quyết định sai số $\\le \\mathrm{OPT}+\\varepsilon$, tốn ít bộ nhớ nhất", "Cùng bài toán, tốn ít vòng giao tiếp nhất"]]
+) + callout('warn', 'Điểm khác với công trình nền tảng', 'Domingos-Hulten (KDD 2000) giả định luồng vô hạn, dữ liệu i.i.d. và chỉ xét phân loại. Các bài của thầy không cần giả định đó, có cả hồi quy, và có đảm bảo chứng minh được.')))
 
 SLIDES.append(slide("Bài báo 1: Finding Decision Tree Splits in Streaming and MPC (arXiv 2024)", f"""
-<p><i>Finding Decision Tree Splits in Streaming and Massively Parallel Models</i>: Huy Phạm, <b>Tạ Duy Hoàng</b>,
-Hoa T. Vu · arXiv:2403.19867v1, 28/03/2024.</p>
+<figure style="margin:6px 0 12px"><img src="../assets/images/papers/ta1_title.png" alt="Tên bài báo và tác giả" style="max-width:620px;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Trang đầu bài báo, arXiv:2403.19867v1 [cs.DS], 28/03/2024.</figcaption></figure>
 {tblock('Bài toán &amp; kết quả chính', [
     'Đầu vào: 1 luồng quan sát <i>x</i><sub>i</sub> ∈ [N] cùng nhãn <i>y</i><sub>i</sub> ∈ [0, M] (hồi quy) hoặc {-1, +1} (phân loại).',
     'Mục tiêu: tìm ngưỡng chia j tối ưu, cực tiểu sai số bình phương trung bình (hồi quy) hoặc tỉ lệ phân loại sai (phân loại).',
-    'Kết quả: nhiều thuật toán streaming dùng bộ nhớ dưới tuyến tính (sublinear) và số lượt duyệt dữ liệu nhỏ, mở rộng được sang mô hình <b>Massively Parallel Computation (MPC)</b> — đúng mô hình lý thuyết đứng sau MapReduce.',
+    'Kết quả: nhiều thuật toán streaming dùng bộ nhớ dưới tuyến tính (sublinear) và số lượt duyệt dữ liệu nhỏ, mở rộng được sang mô hình <b>Massively Parallel Computation (MPC)</b> — bài báo gọi đây là phép trừu tượng hoá của MapReduce, Hadoop và Spark.',
     'Bổ sung cho công trình nền tảng của Domingos &amp; Hulten (KDD 2000) về học cây quyết định trên luồng dữ liệu.'])}
 """))
 
 SLIDES.append(slide("Bài báo 2: Constructing Decision Trees from Data Streams (ISIT 2025)", f"""
-<p><i>Constructing Decision Trees from Data Streams</i>: Huy Phạm, <b>Tạ Duy Hoàng</b>, Hoa T. Vu ·
-arXiv:2403.19867v4 (cùng mã arXiv, bản sửa đổi sâu, đổi tên bài), 16/04/2025, công bố tại ISIT 2025.</p>
+<figure style="margin:6px 0 12px"><img src="../assets/images/papers/ta2_title.png" alt="Tên bài báo và tác giả" style="max-width:560px;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Trang đầu bài báo, arXiv:2403.19867v4 [cs.DS], 16/04/2025, công bố tại ISIT 2025 (cùng mã arXiv với bài 1, bản sửa đổi sâu, đổi tên).</figcaption></figure>
 {tblock('Khác biệt so với bài báo 1', [
     'Bỏ giả định dữ liệu <i>i.i.d.</i> (độc lập, cùng phân phối) mà bài báo 1 vẫn dùng.',
     'Thêm tiêu chí Gini impurity cho bài toán phân loại, bên cạnh sai số bình phương trung bình và tỉ lệ phân loại sai.',
@@ -461,8 +579,7 @@ arXiv:2403.19867v4 (cùng mã arXiv, bản sửa đổi sâu, đổi tên bài),
 """))
 
 SLIDES.append(slide("Bài báo 3: Nearly Optimal Bounds for Decision Tree Splits (ESA 2026)", f"""
-<p><i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams</i>: <b>Tạ Duy Hoàng</b>
-(ĐH Bách Khoa Hà Nội), Hoa T. Vu (San Diego State University) · arXiv:2604.20394v2, công bố tại ESA 2026.</p>
+<figure style="margin:6px 0 12px"><img src="../assets/images/papers/ta3_title.png" alt="Tên bài báo và tác giả" style="max-width:560px;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Trang đầu bài báo, arXiv:2604.20394v2 [cs.DS], 07/07/2026, công bố tại ESA 2026.</figcaption></figure>
 {tblock('Cận trên &amp; cận dưới gần tối ưu', [
     'Hồi quy (nhãn trong {0,…,M}): thuật toán 1 lượt duyệt, bộ nhớ Õ(M²/ε), sai số cộng ε so với điểm chia tối ưu — cải tiến thuật toán 2 lượt duyệt của Phạm &amp; cộng sự (ISIT 2025, chính là bài báo 2).',
     'Cận dưới khớp: chứng minh Ω(M²/ε) bộ nhớ là cần thiết, suy ra bằng reduction từ bài toán Index.',
