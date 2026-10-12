@@ -304,3 +304,78 @@ QUIZ_PH = [
 HD03 = dict(inserts=[(4, PART_PIGHIVE_PAPER), (9, PART_PIGHIVE_MAP)], quiz=QUIZ_PH,
             logo_heads={"Động lực của Yahoo khi tạo ngôn ngữ \"ở giữa\"": ["pig.gif", "yahoo.svg"],
                         "Từ 6 người dùng tới 20-30% toàn công ty": ["apachehive.svg", "meta.svg"]})
+
+
+# =====================================================================================================
+# Bổ sung đợt 2: thêm hình/bảng gốc phần đo đạc của hai bài báo, kèm cách đọc từng hình
+# =====================================================================================================
+_SRC_G = "Nguồn: Ghemawat, Gobioff, Leung, <i>The Google File System</i>, SOSP 2003, "
+_SRC_M = "Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, "
+
+PART_GFS["slides"] += [
+  dict(h="Hình gốc: thông lượng đọc, ghi và nối bản ghi khi tăng số client", body=fig("gfs_fig3.png", _SRC_G + "Figure 3.", 250) + """
+   <p>🗣️ <b>Nói nôm na:</b> đường phía trên là &quot;ống nước to tối đa&quot; mà dây mạng cho phép, đường phía dưới là lượng nước thật sự chảy được. Hai đường càng gần nhau thì hệ thống càng ít lãng phí.</p>
+   <p><b>Cách đọc hình:</b> trục ngang là số client $N$ chạy cùng lúc (1 đến 16), trục dọc là tổng tốc độ (MB/s) của cả nhóm. Cụm thử nghiệm: 1 master, 2 bản sao master, 16 chunkserver, 16 client; mỗi máy nối mạng 100 Mbps, hai switch nối nhau bằng 1 Gbps.</p>
+   <table><tr><th>Hình</th><th>Giới hạn lý thuyết</th><th>Đo được</th><th>Giải thích trong bài</th></tr>
+   <tr><td><b>(a) Đọc</b></td><td>125 MB/s (đường 1 Gbps giữa hai switch); 12,5 MB/s mỗi client</td><td>1 client: 10 MB/s (80%); 16 client: 94 MB/s (75%)</td><td>Càng nhiều người đọc, càng dễ có nhiều người cùng đọc một chunkserver</td></tr>
+   <tr><td><b>(b) Ghi</b></td><td>67 MB/s, vì mỗi byte phải ghi vào 3 trong 16 chunkserver</td><td>1 client: 6,3 MB/s; 16 client: 35 MB/s (khoảng một nửa)</td><td>Tầng mạng chưa hợp với cách đẩy dữ liệu theo chuỗi; ghi đụng 3 bản sao nên dễ va chạm hơn đọc</td></tr>
+   <tr><td><b>(c) Nối bản ghi</b></td><td>Băng thông của các chunkserver giữ chunk cuối của tệp</td><td>6,0 MB/s (1 client) giảm còn 4,8 MB/s (16 client)</td><td>Mọi client nối vào <i>cùng một tệp</i> nên không tăng theo số client</td></tr></table>
+   <p><b>Tự kiểm tra con số 67 MB/s:</b> 16 chunkserver, mỗi máy nhận tối đa 12,5 MB/s, tổng 200 MB/s; mỗi byte ghi 3 lần nên dữ liệu thật tối đa $200/3\\approx 67$ MB/s.</p>
+   <div class="callout info"><div class="lbl">Điều rút ra</div>Đọc gần chạm trần, ghi chỉ được nửa trần: GFS (và HDFS sau này) được tối ưu cho <b>đọc nhiều, ghi ít</b>, và bài báo thẳng thắn ghi nhận ghi chậm hơn mong muốn.</div>"""),
+  dict(h="Bảng gốc: hai cụm GFS thật và lượng metadata master phải giữ", body=two(fig("gfs_table2.png", _SRC_G + "Table 2.", 230), """
+   <p style="margin-top:0"><b>Cách đọc bảng:</b> cụm A phục vụ nghiên cứu (hơn 100 kỹ sư, mỗi việc chạy vài giờ); cụm B chạy sản xuất liên tục.</p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><b>Used disk space</b> tính cả 3 bản sao: 55 TB và 155 TB ứng với 18 TB và 52 TB dữ liệu thật.</li>
+   <li><b>Dead files</b>: tệp đã xoá nhưng chưa thu hồi chỗ (dọn rác trễ).</li>
+   <li><b>Metadata at master</b>: chỉ 48 MB và 60 MB.</li></ul>""", "46%") + """
+   <table><tr><th>Phép tính từ bảng</th><th>Cụm A</th><th>Cụm B</th><th>Ý nghĩa</th></tr>
+   <tr><td>Dữ liệu thật = đã dùng / 3</td><td>55 / 3 ≈ 18 TB</td><td>155 / 3 ≈ 52 TB</td><td>Khớp con số bài báo nêu</td></tr>
+   <tr><td>Metadata master trên mỗi chunk</td><td>48 MB / 992.000 ≈ 48 byte</td><td>60 MB / 1.550.000 ≈ 39 byte</td><td>Dưới 64 byte mỗi chunk, đúng như thiết kế</td></tr>
+   <tr><td>Dung lượng mỗi chunkserver</td><td>72 TB / 342 ≈ 210 GB</td><td>180 TB / 227 ≈ 790 GB</td><td>Máy thường, vài ổ đĩa mỗi máy</td></tr></table>
+   <p>Bài báo nêu thêm: metadata ở chunkserver (13 GB, 21 GB) chủ yếu là <b>checksum cho từng khối 64 KB</b>; mỗi máy chỉ có 50 đến 100 MB metadata nên khởi động lại đọc xong trong vài giây, riêng master &quot;khập khiễng&quot; thêm 30 đến 60 giây cho tới khi hỏi xong vị trí chunk từ mọi chunkserver.</p>
+   <div class="callout good"><div class="lbl">Liên hệ HDFS</div>NameNode cũng không lưu vị trí block xuống đĩa mà hỏi lại DataNode qua <i>block report</i> khi khởi động: đúng cơ chế 30 đến 60 giây này.</div>"""),
+  dict(h="Bảng gốc: tải thật của master và thời gian phục hồi khi mất chunkserver", body="""
+   <div style="display:flex;gap:18px;align-items:flex-start;justify-content:center">""" + fig("gfs_table3.png", _SRC_G + "Table 3.", 215) + fig("gfs_table6.png", _SRC_G + "Table 6.", 150) + """</div>
+   <p><b>Cách đọc Table 3:</b> ba nhóm dòng là tốc độ đọc, tốc độ ghi và số thao tác gửi tới master, mỗi nhóm đo trong phút vừa qua, giờ vừa qua và từ lúc khởi động lại. Đọc lớn hơn ghi nhiều lần (583 so với 1 MB/s ở cụm A). Master chỉ nhận <b>200 đến 500 thao tác mỗi giây</b>, nên một master duy nhất không phải nút cổ chai.</p>
+   <p><b>Cách đọc Table 6:</b> khoảng <b>64 đến 66%</b> yêu cầu tới master là <i>FindLocation</i> (hỏi chunk nằm ở đâu), tức master chủ yếu làm việc &quot;chỉ đường&quot;, không chạm vào dữ liệu.</p>
+   <table><tr><th>Thí nghiệm phục hồi (cụm B)</th><th>Số liệu bài báo</th><th>Tự kiểm tra</th></tr>
+   <tr><td>Giết 1 chunkserver: 15.000 chunk, 600 GB</td><td>Phục hồi xong trong 23,2 phút, tốc độ 440 MB/s, tối đa 91 lần sao chép đồng thời</td><td>600 GB / (23,2 × 60 s) ≈ 0,43 GB/s ≈ 440 MB/s; 91 ≈ 40% của 227 máy</td></tr>
+   <tr><td>Giết 2 chunkserver cùng lúc (mỗi máy 16.000 chunk, 660 GB)</td><td>266 chunk chỉ còn 1 bản sao được ưu tiên, đạt lại ít nhất 2 bản trong 2 phút</td><td>Đây là quy tắc &quot;chunk mất nhiều bản hơn được làm trước&quot; ở slide trước</td></tr></table>
+   <div class="callout warn"><div class="lbl">Vì sao giới hạn 91 lần sao chép</div>Phục hồi nhanh nhất chưa chắc tốt nhất: bài báo cố ý giới hạn (mỗi lần sao chép tối đa 6,25 MB/s) để ứng dụng đang chạy không bị nghẽn mạng. HDFS cũng có tham số giới hạn băng thông tái nhân bản với cùng lý do.</div>"""),
+]
+
+PART_MR["slides"] += [
+  dict(h="Mã gốc trong bài báo: đếm từ chỉ với hai hàm map và reduce", body=two(fig("mr_code.png", _SRC_M + "mục 2.1.", 300), """
+   <p style="margin-top:0">🗣️ <b>Nói nôm na:</b> <code>map</code> là người đọc từng trang và hô &quot;có một chữ <i>mèo</i>!&quot;; <code>reduce</code> là người ngồi cộng tất cả tiếng hô của cùng một chữ.</p>
+   <p><b>Đọc từng dòng:</b></p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><code>map(key, value)</code>: key là tên tài liệu, value là nội dung. Với mỗi từ <code>w</code>, phát ra cặp trung gian <code>(w, "1")</code>.</li>
+   <li>Thư viện tự <b>gom</b> mọi giá trị cùng khoá lại (shuffle), người viết không phải làm.</li>
+   <li><code>reduce(key, values)</code>: key là một từ, values là danh sách các &quot;1&quot;; cộng lại rồi phát ra tổng.</li></ul>""", "42%") + """
+   <table><tr><th>Ví dụ (minh hoạ)</th><th>Kết quả</th></tr>
+   <tr><td>Hai tài liệu: d1 = &quot;mèo đen mèo&quot;, d2 = &quot;chó đen&quot;</td><td></td></tr>
+   <tr><td>Sau map</td><td>(mèo,1) (đen,1) (mèo,1) | (chó,1) (đen,1)</td></tr>
+   <tr><td>Sau gom theo khoá</td><td>mèo → [1,1]; đen → [1,1]; chó → [1]</td></tr>
+   <tr><td>Sau reduce</td><td>mèo 2; đen 2; chó 1</td></tr></table>
+   <p>Kiểu dữ liệu bài báo nêu: map nhận $(k_1,v_1)$ trả về danh sách $(k_2,v_2)$; reduce nhận $(k_2,\\text{list}(v_2))$ trả về danh sách $v_2$. Mọi thứ khó (chia việc, chịu lỗi, truyền dữ liệu) nằm trong thư viện.</p>"""),
+  dict(h="Hình gốc: chương trình grep quét 1 TB trong khoảng 150 giây", body=two(fig("mr_fig2.png", _SRC_M + "Figure 2.", 250), """
+   <p style="margin-top:0"><b>Cách đọc hình:</b> trục ngang là thời gian (giây), trục dọc là tốc độ quét dữ liệu vào (MB/s) của cả cụm.</p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><b>Đoạn dốc lên (0 đến 60 s):</b> master giao việc dần, càng lúc càng nhiều máy tham gia.</li>
+   <li><b>Đỉnh hơn 30.000 MB/s (30 GB/s):</b> khi đủ 1.764 worker.</li>
+   <li><b>Rơi về 0 ở khoảng 80 s:</b> các map task xong.</li></ul>""", "40%") + """
+   <table><tr><th>Thông số trong bài</th><th>Giá trị</th><th>Tự kiểm tra</th></tr>
+   <tr><td>Dữ liệu</td><td>$10^{10}$ bản ghi, mỗi bản ghi 100 byte</td><td>$10^{10}\\times100=10^{12}$ byte = 1 TB</td></tr>
+   <tr><td>Chia việc</td><td>$M=15\\,000$ mảnh khoảng 64 MB, $R=1$</td><td>$10^{12}/15\\,000\\approx 67$ MB mỗi mảnh</td></tr>
+   <tr><td>Kết quả</td><td>Mẫu tìm thấy trong 92.337 bản ghi</td><td>Chỉ khoảng 0,0009% dữ liệu, nên gần như không có shuffle</td></tr>
+   <tr><td>Thời gian</td><td>Khoảng 150 giây, trong đó khoảng 1 phút khởi động</td><td>Mỗi worker ở đỉnh: 30.000 / 1.764 ≈ 17 MB/s</td></tr></table>
+   <div class="callout info"><div class="lbl">Một phút khởi động đến từ đâu</div>Bài báo nêu: thời gian chép chương trình tới mọi worker và hỏi GFS để mở 1.000 tệp đầu vào, lấy thông tin vị trí cho tối ưu <i>locality</i>. Với job ngắn, chi phí cố định này chiếm phần lớn: đây cũng là lý do MapReduce không hợp truy vấn tương tác.</div>"""),
+  dict(h="Hình gốc: ba lần chạy sort, bình thường, tắt backup task và giết 200 worker", body=fig("mr_fig3.png", _SRC_M + "Figure 3.", 300) + """
+   <p><b>Cách đọc hình:</b> ba cột là ba lần chạy cùng một bài sắp xếp 1 TB ($M=15\\,000$, $R=4\\,000$, khoảng 1.700 máy). Ba hàng từ trên xuống là tốc độ <b>đọc vào</b> (map), tốc độ <b>shuffle</b> qua mạng và tốc độ <b>ghi ra</b> (reduce). Vạch dọc &quot;Done&quot; là lúc job xong.</p>
+   <table><tr><th>Cột</th><th>Nhìn thấy gì</th><th>Thời gian</th></tr>
+   <tr><td><b>(a) Bình thường</b></td><td>Đọc vào đạt đỉnh khoảng 13 GB/s, xong trước giây 200. Shuffle có <b>hai bướu</b>: bướu đầu cho khoảng 1.700 reduce task đầu tiên (mỗi máy một task), bướu sau cho phần còn lại; xong ở khoảng giây 600. Ghi ra 2 đến 4 GB/s, xong khoảng giây 850</td><td>891 giây</td></tr>
+   <tr><td><b>(b) Tắt backup task</b></td><td>Giống (a) nhưng có <b>cái đuôi rất dài</b> gần như không ghi gì: sau 960 giây chỉ còn 5 reduce task, mà phải chờ thêm 300 giây</td><td>1.283 giây (+44%)</td></tr>
+   <tr><td><b>(c) Giết 200 trong 1.746 worker</b></td><td>Tốc độ đọc vào có đoạn <b>âm</b>: phần việc map đã xong trên các worker bị giết &quot;biến mất&quot; và phải làm lại; làm lại khá nhanh</td><td>933 giây (+5%)</td></tr></table>
+   <p><b>Vì sao đọc vào nhanh hơn shuffle, shuffle nhanh hơn ghi ra?</b> Bài báo giải thích: đọc vào phần lớn lấy từ đĩa cục bộ (locality) nên không qua mạng; ghi ra chậm nhất vì phải ghi <b>hai bản sao</b> của kết quả vào GFS.</p>
+   <div class="callout good"><div class="lbl">Tự kiểm tra</div>$1283/891\\approx1{,}44$ và $933/891\\approx1{,}05$: đúng hai con số 44% và 5% ở slide chịu lỗi. Mất 11% số worker mà chỉ chậm 5%, còn 5 task chậm trong 4.000 task làm chậm 44%: <b>máy chậm nguy hiểm hơn máy chết</b>.</div>"""),
+]

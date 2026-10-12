@@ -175,7 +175,37 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
    <tr><td>Giới hạn thực tế</td><td>Master phải đưa ra $O(M+R)$ quyết định lập lịch và giữ $O(M\times R)$ trạng thái trong bộ nhớ</td></tr></table>
    <p><b>Tính:</b> $M\times R = 200\,000 \times 5\,000 = 10^9$ cặp (map task, reduce task) mà master phải theo dõi: đó là lý do không thể chọn $M$ và $R$ lớn vô hạn.</p>
    <p><b>Data locality:</b> dữ liệu đầu vào nằm trên đĩa của chính các máy trong cụm, do GFS chia khối 64 MB và giữ thường 3 bản sao. Master xếp map task lên máy đang giữ một bản sao,
-   hoặc máy gần nó, để phần lớn dữ liệu đọc ở đĩa cục bộ thay vì qua mạng. Đây cũng là lý do Hadoop đặt tính toán gần dữ liệu thay vì kéo dữ liệu về chỗ tính.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/5</div>
+   hoặc máy gần nó, để phần lớn dữ liệu đọc ở đĩa cục bộ thay vì qua mạng. Đây cũng là lý do Hadoop đặt tính toán gần dữ liệu thay vì kéo dữ liệu về chỗ tính.</p></div><div class="mdeck-slide"><h2>Mã gốc trong bài báo: đếm từ chỉ với hai hàm map và reduce</h2><div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 42%"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_code.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, mục 2.1." style="max-height:300px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, mục 2.1.</figcaption></figure></div><div style="flex:1">
+   <p style="margin-top:0">🗣️ <b>Nói nôm na:</b> <code>map</code> là người đọc từng trang và hô &quot;có một chữ <i>mèo</i>!&quot;; <code>reduce</code> là người ngồi cộng tất cả tiếng hô của cùng một chữ.</p>
+   <p><b>Đọc từng dòng:</b></p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><code>map(key, value)</code>: key là tên tài liệu, value là nội dung. Với mỗi từ <code>w</code>, phát ra cặp trung gian <code>(w, "1")</code>.</li>
+   <li>Thư viện tự <b>gom</b> mọi giá trị cùng khoá lại (shuffle), người viết không phải làm.</li>
+   <li><code>reduce(key, values)</code>: key là một từ, values là danh sách các &quot;1&quot;; cộng lại rồi phát ra tổng.</li></ul></div></div>
+   <table><tr><th>Ví dụ (minh hoạ)</th><th>Kết quả</th></tr>
+   <tr><td>Hai tài liệu: d1 = &quot;mèo đen mèo&quot;, d2 = &quot;chó đen&quot;</td><td></td></tr>
+   <tr><td>Sau map</td><td>(mèo,1) (đen,1) (mèo,1) | (chó,1) (đen,1)</td></tr>
+   <tr><td>Sau gom theo khoá</td><td>mèo → [1,1]; đen → [1,1]; chó → [1]</td></tr>
+   <tr><td>Sau reduce</td><td>mèo 2; đen 2; chó 1</td></tr></table>
+   <p>Kiểu dữ liệu bài báo nêu: map nhận $(k_1,v_1)$ trả về danh sách $(k_2,v_2)$; reduce nhận $(k_2,\text{list}(v_2))$ trả về danh sách $v_2$. Mọi thứ khó (chia việc, chịu lỗi, truyền dữ liệu) nằm trong thư viện.</p></div><div class="mdeck-slide"><h2>Hình gốc: chương trình grep quét 1 TB trong khoảng 150 giây</h2><div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 40%"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_fig2.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 2." style="max-height:250px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 2.</figcaption></figure></div><div style="flex:1">
+   <p style="margin-top:0"><b>Cách đọc hình:</b> trục ngang là thời gian (giây), trục dọc là tốc độ quét dữ liệu vào (MB/s) của cả cụm.</p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><b>Đoạn dốc lên (0 đến 60 s):</b> master giao việc dần, càng lúc càng nhiều máy tham gia.</li>
+   <li><b>Đỉnh hơn 30.000 MB/s (30 GB/s):</b> khi đủ 1.764 worker.</li>
+   <li><b>Rơi về 0 ở khoảng 80 s:</b> các map task xong.</li></ul></div></div>
+   <table><tr><th>Thông số trong bài</th><th>Giá trị</th><th>Tự kiểm tra</th></tr>
+   <tr><td>Dữ liệu</td><td>$10^{10}$ bản ghi, mỗi bản ghi 100 byte</td><td>$10^{10}\times100=10^{12}$ byte = 1 TB</td></tr>
+   <tr><td>Chia việc</td><td>$M=15\,000$ mảnh khoảng 64 MB, $R=1$</td><td>$10^{12}/15\,000\approx 67$ MB mỗi mảnh</td></tr>
+   <tr><td>Kết quả</td><td>Mẫu tìm thấy trong 92.337 bản ghi</td><td>Chỉ khoảng 0,0009% dữ liệu, nên gần như không có shuffle</td></tr>
+   <tr><td>Thời gian</td><td>Khoảng 150 giây, trong đó khoảng 1 phút khởi động</td><td>Mỗi worker ở đỉnh: 30.000 / 1.764 ≈ 17 MB/s</td></tr></table>
+   <div class="callout info"><div class="lbl">Một phút khởi động đến từ đâu</div>Bài báo nêu: thời gian chép chương trình tới mọi worker và hỏi GFS để mở 1.000 tệp đầu vào, lấy thông tin vị trí cho tối ưu <i>locality</i>. Với job ngắn, chi phí cố định này chiếm phần lớn: đây cũng là lý do MapReduce không hợp truy vấn tương tác.</div></div><div class="mdeck-slide"><h2>Hình gốc: ba lần chạy sort, bình thường, tắt backup task và giết 200 worker</h2><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_fig3.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 3." style="max-height:300px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 3.</figcaption></figure>
+   <p><b>Cách đọc hình:</b> ba cột là ba lần chạy cùng một bài sắp xếp 1 TB ($M=15\,000$, $R=4\,000$, khoảng 1.700 máy). Ba hàng từ trên xuống là tốc độ <b>đọc vào</b> (map), tốc độ <b>shuffle</b> qua mạng và tốc độ <b>ghi ra</b> (reduce). Vạch dọc &quot;Done&quot; là lúc job xong.</p>
+   <table><tr><th>Cột</th><th>Nhìn thấy gì</th><th>Thời gian</th></tr>
+   <tr><td><b>(a) Bình thường</b></td><td>Đọc vào đạt đỉnh khoảng 13 GB/s, xong trước giây 200. Shuffle có <b>hai bướu</b>: bướu đầu cho khoảng 1.700 reduce task đầu tiên (mỗi máy một task), bướu sau cho phần còn lại; xong ở khoảng giây 600. Ghi ra 2 đến 4 GB/s, xong khoảng giây 850</td><td>891 giây</td></tr>
+   <tr><td><b>(b) Tắt backup task</b></td><td>Giống (a) nhưng có <b>cái đuôi rất dài</b> gần như không ghi gì: sau 960 giây chỉ còn 5 reduce task, mà phải chờ thêm 300 giây</td><td>1.283 giây (+44%)</td></tr>
+   <tr><td><b>(c) Giết 200 trong 1.746 worker</b></td><td>Tốc độ đọc vào có đoạn <b>âm</b>: phần việc map đã xong trên các worker bị giết &quot;biến mất&quot; và phải làm lại; làm lại khá nhanh</td><td>933 giây (+5%)</td></tr></table>
+   <p><b>Vì sao đọc vào nhanh hơn shuffle, shuffle nhanh hơn ghi ra?</b> Bài báo giải thích: đọc vào phần lớn lấy từ đĩa cục bộ (locality) nên không qua mạng; ghi ra chậm nhất vì phải ghi <b>hai bản sao</b> của kết quả vào GFS.</p>
+   <div class="callout good"><div class="lbl">Tự kiểm tra</div>$1283/891\approx1{,}44$ và $933/891\approx1{,}05$: đúng hai con số 44% và 5% ở slide chịu lỗi. Mất 11% số worker mà chỉ chậm 5%, còn 5 task chậm trong 4.000 task làm chậm 44%: <b>máy chậm nguy hiểm hơn máy chết</b>.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/5</div>
 <div class="part-num">03</div><h2>Giới hạn của Hadoop 1.0: JobTracker là điểm nghẽn</h2>
 <ul class="part-list"><li>1 JobTracker duy nhất quản lý TOÀN BỘ job + giám sát TaskTracker trên mọi node</li>
 <li>Giới hạn thực tế: cụm tối đa ~4.000 node, ~40.000 task đồng thời</li>
