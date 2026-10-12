@@ -12,7 +12,8 @@
 
 .mdeck-slide{display:none;position:absolute;inset:0;width:1280px;height:720px;box-sizing:border-box;
   padding:56px 68px;overflow:auto}
-.mdeck-slide.active{display:flex;flex-direction:column;justify-content:center;animation:fadein .18s ease}
+.mdeck-slide.active{display:flex;flex-direction:column;justify-content:center;
+  justify-content:safe center;animation:fadein .18s ease}
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 .mdeck-slide h2{margin:0 0 20px;font-size:2.15rem;line-height:1.25}
