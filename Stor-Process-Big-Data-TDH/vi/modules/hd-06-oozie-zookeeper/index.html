@@ -48,10 +48,10 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="hero"><div class="kicker">Hadoop 06 / 6</div>
 <h1>Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán</h1></div>
 <div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 06 · Lịch sử Oozie · ZooKeeper (Chubby/ZAB) · Tổng kết chương</div><h2>Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán</h2><p>ZooKeeper là công nghệ ít ai 'nhìn thấy' trực tiếp nhưng gần như MỌI hệ thống phân tán lớn (HBase, Kafka cũ, Solr, Mesos) đều phụ thuộc vào nó để tồn tại. Oozie là lớp điều phối để các job Hadoop không phải chạy rời rạc, thủ công.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/9</div>
-<div class="part-num">01</div><h2>Vì sao một cụm Hadoop cần một "người điều phối" riêng?</h2>
+<div class="part-num">01</div><h2>Nhu cầu về một "người điều phối" riêng trong cụm Hadoop</h2>
 <ul class="part-list"><li>Pipeline xử lý dữ liệu thực tế hiếm khi chỉ có 1 job — thường là chuỗi nhiều bước phụ thuộc nhau</li>
 <li>Chạy thủ công bằng cron job: dễ vỡ khi 1 bước lỗi hoặc chạy chậm hơn dự kiến</li>
-<li>Oozie ra đời ở Yahoo! năm 2008 để giải quyết đúng bài toán này</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: Oozie là gì?</h2>
+<li>Oozie ra đời ở Yahoo! năm 2008 để giải quyết đúng bài toán này</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: Oozie</h2>
       <p><b>Nói nôm na:</b> Oozie giống một "quản đốc dây chuyền sản xuất" — nó không tự làm việc gì cả,
       chỉ đứng ra ra lệnh: "bước 2 chỉ được bắt đầu khi bước 1 báo cáo xong, nếu bước 1 lỗi thì dừng cả
       dây chuyền lại, không để sản phẩm lỗi trôi xuống bước sau."</p>
@@ -78,7 +78,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">02</div><h2>DAG là "ngôn ngữ" Oozie dùng để mô tả thứ tự phụ thuộc</h2>
 <ul class="part-list"><li>Workflow Oozie là đồ thị có hướng không chu trình (DAG) của các "action"</li>
 <li>Oozie hỗ trợ nhiều loại action: MapReduce, Pig/Hive script, Java/Shell, SSH, email</li>
-<li>DAG ở đây mô tả thứ tự giữa các JOB hoàn chỉnh, khác DAG ở Lập lịch 03 (giữa các TASK nhỏ)</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: DAG của Oozie khác gì DAG đã học?</h2>
+<li>DAG ở đây mô tả thứ tự giữa các JOB hoàn chỉnh, khác DAG ở Lập lịch 03 (giữa các TASK nhỏ)</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: DAG của Oozie so với DAG đã học</h2>
       <p><b>Nói nôm na:</b> nếu DAG ở Lập lịch 03 là "bản vẽ chi tiết từng con vít phải siết trước/sau" bên
       trong 1 cái máy, thì DAG của Oozie là "bản vẽ tổng thể cả nhà máy": công đoạn A (cả 1 cái máy chạy
       xong) → công đoạn B (cả 1 cái máy khác chạy xong) → ... Oozie không quan tâm bên trong mỗi công đoạn
@@ -108,7 +108,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">03</div><h2>Khi 2 bước KHÔNG phụ thuộc nhau — fork và join</h2>
 <ul class="part-list"><li>Không phải mọi bước đều phải chạy tuần tự — một số bước có thể chạy song song</li>
 <li>Oozie hỗ trợ "fork" (tách thành nhiều nhánh song song) và "join" (chờ tất cả nhánh xong mới tiếp tục)</li>
-<li>Ví dụ: vừa tính báo cáo doanh số VÙA tính báo cáo tồn kho cùng lúc, rồi mới gộp lại gửi email tổng hợp</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: fork/join là gì?</h2>
+<li>Ví dụ: vừa tính báo cáo doanh số VÙA tính báo cáo tồn kho cùng lúc, rồi mới gộp lại gửi email tổng hợp</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: fork và join</h2>
       <p><b>Nói nôm na:</b> giống việc 2 đầu bếp trong cùng 1 nhà hàng cùng làm 2 món khác nhau cho 1 bàn
       (món khai vị và món chính) CÙNG LÚC, không ai phải chờ ai — nhưng người phục vụ chỉ mang cả 2 món ra
       bàn khi CẢ HAI đều đã xong (đây là "join"). Nếu bắt 2 đầu bếp làm lần lượt (nấu khai vị xong mới nấu
@@ -137,7 +137,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">04</div><h2>ZooKeeper: lấy cảm hứng từ Chubby của Google</h2>
 <ul class="part-list"><li>Ra đời ở Yahoo Research khoảng 2007, mở nguồn trên SourceForge cùng năm</li>
 <li>Mô phỏng theo Chubby (Google, paper Mike Burrows) — dịch vụ lock phân tán nội bộ của Google</li>
-<li>Vì sao các hệ thống phân tán cần 1 dịch vụ coordination RIÊNG, không tự cài đặt bên trong từng hệ thống</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: vì sao cần ZooKeeper?</h2>
+<li>Vì sao các hệ thống phân tán cần 1 dịch vụ coordination RIÊNG, không tự cài đặt bên trong từng hệ thống</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: lý do cần ZooKeeper</h2>
       <p><b>Nói nôm na:</b> tưởng tượng 10 công ty con của 1 tập đoàn, mỗi công ty tự thuê 1 nhân viên lễ
       tân riêng để "biết ai đang có mặt trong toà nhà, ai là trưởng phòng hiện tại". Rất tốn kém và dễ sai
       lệch giữa các công ty. Giải pháp: thuê 1 nhân viên lễ tân CHUNG cho cả toà nhà, mọi công ty con hỏi
@@ -196,7 +196,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">06</div><h2>ZAB: làm sao nhiều node "đồng ý" với nhau mà không cần 1 trọng tài tuyệt đối tin cậy</h2>
 <ul class="part-list"><li>ZAB (ZooKeeper Atomic Broadcast) là biến thể của thuật toán Paxos</li>
 <li>Nguyên tắc cốt lõi: mọi thay đổi phải được leader đề xuất VÀ đa số (majority) follower xác nhận</li>
-<li>Vì sao cần "đa số" mà không phải "tất cả" — bài toán chịu lỗi khi 1 vài node chết/mất kết nối</li></ul></div><div class="mdeck-slide"><h2>📖 Giải thích cho người mới bắt đầu: vì sao cần "đồng thuận" (consensus)?</h2>
+<li>Vì sao cần "đa số" mà không phải "tất cả" — bài toán chịu lỗi khi 1 vài node chết/mất kết nối</li></ul></div><div class="mdeck-slide"><h2>📖 Giải thích cho người mới bắt đầu: nhu cầu "đồng thuận" (consensus)</h2>
       <details class="explain"><summary>📖 Bấm để xem giải thích đơn giản nhất về đồng thuận phân tán</summary>
       <p>Nếu chỉ có 1 máy duy nhất lưu trạng thái hệ thống, không có vấn đề gì — máy đó nói gì cũng là "sự
       thật". Nhưng ZooKeeper chạy trên NHIỀU máy (để chịu lỗi): nếu để từng máy tự quyết định trạng thái

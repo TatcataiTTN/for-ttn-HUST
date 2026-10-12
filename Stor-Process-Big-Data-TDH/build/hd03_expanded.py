@@ -27,7 +27,7 @@ HD03_EXPANDED = dict(
     "PigLatin: ngôn ngữ nằm giữa SQL (khai báo) và MapReduce thuần (thủ tục)",
     "Trình biên dịch Pig chạy trên máy client, dịch PigLatin script thành chuỗi MapReduce job"],
    slides=[
-    dict(h="Vì sao Yahoo cần một ngôn ngữ \"ở giữa\"?", body="""
+    dict(h="Động lực của Yahoo khi tạo ngôn ngữ \"ở giữa\"", body="""
       <p>🗣️ <b>Nói nôm na:</b> viết MapReduce tay bằng Java giống việc tự xây cả cái bếp trước khi nấu 1
       món ăn — quá nhiều việc lặt vặt (mở file, phân luồng, dọn bộ nhớ) che mất phần việc thật sự cần làm
       (nấu món gì, theo công thức nào). Pig sinh ra để bạn chỉ cần viết "công thức nấu ăn" từng bước, không
@@ -89,7 +89,7 @@ HD03_EXPANDED = dict(
       <table><tr><th>Mốc thời gian</th><th>Số người dùng được hạ tầng dữ liệu</th></tr>
       <tr><td>Trước Hive (15PB trong warehouse)</td><td>6 người</td></tr>
       <tr><td>2011 (khi Thusoo rời Facebook)</td><td>20-30% toàn công ty, mỗi tháng</td></tr></table>"""),
-    dict(h="HiveQL hoạt động ra sao?", body="""
+    dict(h="Cơ chế hoạt động của HiveQL", body="""
       <p>🗣️ <b>Nói nôm na:</b> PigLatin bắt bạn nói "làm bước 1, rồi bước 2, rồi bước 3"; HiveQL chỉ cần
       bạn nói "tôi muốn món gà rán cay" — nhà hàng (Hive) tự quyết định trình tự nấu bên trong.</p>
       <p>Giống Pig, trình biên dịch Hive chạy trên máy client: chuyển HiveQL script thành MapReduce job, rồi
@@ -106,7 +106,7 @@ HD03_EXPANDED = dict(
     "Thủ tục (Pig): nói CÁCH LÀM, từng bước", "Khai báo (Hive): nói MUỐN GÌ, để hệ thống tự quyết cách làm",
     "Cả hai cuối cùng đều ra MapReduke — khác nhau ở chỗ AI quyết định trình tự thực thi"],
    slides=[
-    dict(h="📖 Giải thích cho người mới bắt đầu: thủ tục và khai báo khác nhau thế nào?", body="""
+    dict(h="📖 Giải thích cho người mới bắt đầu: ngôn ngữ thủ tục và ngôn ngữ khai báo", body="""
       <details class="ex" open><summary>Bấm để đọc giải thích đơn giản nhất (dành cho người chưa học gì về Pig/Hive)</summary>
       <p>Tưởng tượng bạn muốn đi từ nhà tới trường:</p>
       <ul class="pd-legend">
@@ -281,7 +281,7 @@ HD03_EXPANDED = dict(
     "Wave 1: định dạng file ORC — Wave 2: tối ưu query engine — Wave 3: Apache Tez (2013)",
     "Tez: DAG linh hoạt hơn MapReduce, chạy trên YARN"],
    slides=[
-    dict(h="Vì sao Hive cần \"thay động cơ\" sau khi đã thành công?", body="""
+    dict(h="Lý do Hive \"thay động cơ\" sau khi đã thành công", body="""
       <p>🗣️ <b>Nói nôm na:</b> Hive ban đầu giống 1 chiếc xe chạy máy dầu cũ (MapReduce) — chở được hàng
       nặng (xử lý batch khối lượng lớn) nhưng chạy chậm, không hợp đi lại hàng ngày (truy vấn tương tác cần
       phản hồi nhanh). Stinger Initiative là dự án "thay động cơ" cho chiếc xe đó, giữ nguyên "khung xe"

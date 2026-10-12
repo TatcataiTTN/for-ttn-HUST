@@ -40,7 +40,7 @@ HD01_EXPANDED = dict(
       <tr><td>10/2003</td><td>Google công bố paper GFS — mô hình lưu trữ phân tán cho dữ liệu khổng lồ</td></tr>
       <tr><td>2004</td><td>Google công bố paper MapReduce — mô hình xử lý song song đơn giản hoá</td></tr>
       <tr><td>01/2006</td><td>Phần lưu trữ + xử lý của Nutch tách ra thành dự án con Hadoop, Cutting gia nhập Yahoo!</td></tr></table>"""),
-    dict(h="Vì sao tên là \"Hadoop\"?", body="""
+    dict(h="Nguồn gốc cái tên \"Hadoop\"", body="""
       <p>🗣️ <b>Nói nôm na:</b> không có ý nghĩa kỹ thuật gì cả — giống việc một công ty đặt tên sản phẩm
       theo tên con mèo của người sáng lập, miễn là cái tên dễ nhớ và chưa ai dùng.</p>
       <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Doug Cutting (khi đó làm ở Yahoo!) đặt
@@ -72,7 +72,7 @@ HD01_EXPANDED = dict(
     "DataNode (slave) giữ dữ liệu thật, xử lý I/O trực tiếp",
     "Ví dụ đa ngành: thư viện trung tâm, bệnh viện tuyến trên, tổng đài điều phối"],
    slides=[
-    dict(h="NameNode & DataNode: ai làm gì?", body="""
+    dict(h="Vai trò của NameNode và DataNode", body="""
       <p>🗣️ <b>Nói nôm na:</b> NameNode giống như quyển SỔ MỤC LỤC của thư viện — ghi "cuốn sách X nằm ở
       kệ nào, phòng nào" nhưng không giữ cuốn sách thật; DataNode giống các KỆ SÁCH thật, nơi nội dung sách
       nằm vật lý.</p>
@@ -91,7 +91,7 @@ HD01_EXPANDED = dict(
       cả cụm mất khả năng định vị dữ liệu, dù dữ liệu vật lý trên DataNode vẫn còn nguyên. Hadoop 2.0 sau này
       giải quyết bằng Standby NameNode (High Availability) — khác với Secondary NameNode (chỉ gộp log, không
       phải bản dự phòng nóng, xem Phần 6).</div>"""),
-    dict(h="📖 Giải thích cho người mới bắt đầu: vì sao phải tách 2 vai trò này ra?", body="""
+    dict(h="📖 Giải thích cho người mới bắt đầu: lý do tách hai vai trò", body="""
       <details>
       <summary><b>Bấm để xem giải thích cực đơn giản</b></summary>
       <p>Hãy tưởng tượng bạn quản lý một kho hàng khổng lồ với 10 triệu món đồ. Nếu bạn để MỘT người vừa
@@ -120,7 +120,7 @@ HD01_EXPANDED = dict(
     "Vì sao không dùng block nhỏ như hệ file thường (4KB)",
     "Small-files problem: khi HDFS gặp quá nhiều tệp nhỏ"],
    slides=[
-    dict(h="Block là gì, và vì sao lại lớn tới vậy?", body="""
+    dict(h="Block và lý do kích thước lớn", body="""
       <p>🗣️ <b>Nói nôm na:</b> giống việc chia 1 cuộn vải khổng lồ thành các súc vải 50 mét, thay vì cắt
       thành hàng triệu miếng vải 10cm — quản lý vài trăm súc vải dễ hơn hẳn quản lý hàng triệu miếng nhỏ,
       dù tổng khối lượng vải là như nhau.</p>
@@ -156,7 +156,7 @@ HD01_EXPANDED = dict(
     "Ví dụ đa ngành: dự phòng dữ liệu ngân hàng, hồ sơ y tế đa viện, kho hàng đa khu vực",
     "Tính xác suất mất dữ liệu khi nhiều bản sao cùng hỏng"],
    slides=[
-    dict(h="Replication (nhân bản) hoạt động ra sao?", body="""
+    dict(h="Cơ chế nhân bản (replication)", body="""
       <p>🗣️ <b>Nói nôm na:</b> giống việc một gia đình quan trọng luôn in 3 bản giấy khai sinh và gửi lưu ở
       3 nơi khác nhau (nhà, cơ quan, người thân) — mất 1 bản ở 1 nơi không sao, vẫn còn 2 bản ở nơi khác.</p>
       <p>Mỗi block được <b>replicate</b> (nhân bản) thành nhiều bản sao, phân phối trên các DataNode <b>khác
@@ -205,7 +205,7 @@ HD01_EXPANDED = dict(
     "Mất heartbeat → NameNode coi node đã chết → ra lệnh tái nhân bản",
     "Toàn bộ quá trình không cần ứng dụng/người quản trị can thiệp"],
    slides=[
-    dict(h="Heartbeat: làm sao NameNode biết DataNode nào còn sống?", body="""
+    dict(h="Heartbeat: cách NameNode phát hiện DataNode còn sống", body="""
       <p>🗣️ <b>Nói nôm na:</b> giống hệ thống giám sát y tế từ xa cho người cao tuổi — thiết bị đeo tay gửi
       tín hiệu "tôi vẫn ổn" mỗi vài phút; nếu trung tâm giám sát không nhận được tín hiệu trong 1 khoảng thời
       gian, họ coi đó là dấu hiệu bất thường và cử người tới kiểm tra.</p>
@@ -261,7 +261,7 @@ HD01_EXPANDED = dict(
     "Tối ưu cho đọc tuần tự khối lượng lớn, không phải truy cập ngẫu nhiên nhanh",
     "Ví dụ đa ngành: hồ sơ y tế chỉ thêm trang mới, sổ kế toán không tẩy xoá"],
    slides=[
-    dict(h="HDFS được tối ưu cho điều gì?", body="""
+    dict(h="Mục tiêu thiết kế của HDFS", body="""
       <p>🗣️ <b>Nói nôm na:</b> giống quyển SỔ NHẬT KÝ chỉ được viết thêm trang mới ở cuối, không được xé
       hay viết chèn vào giữa các trang cũ — mọi thứ đã viết ra là cố định, chỉ có thể nối thêm.</p>
       <p>HDFS tối ưu cho các tệp <b>kích thước lớn</b> (hàng trăm MB đến TB), mô hình truy cập

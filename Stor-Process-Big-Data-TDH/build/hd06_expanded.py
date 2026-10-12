@@ -13,12 +13,12 @@ HD06_EXPANDED = dict(n=30, slug="hd-06-oozie-zookeeper",
  parts=[
 
   # ---------------- PHẦN 1: Vì sao cần điều phối workflow ----------------
-  dict(title="Vì sao một cụm Hadoop cần một \"người điều phối\" riêng?", bullets=[
+  dict(title="Nhu cầu về một \"người điều phối\" riêng trong cụm Hadoop", bullets=[
     "Pipeline xử lý dữ liệu thực tế hiếm khi chỉ có 1 job — thường là chuỗi nhiều bước phụ thuộc nhau",
     "Chạy thủ công bằng cron job: dễ vỡ khi 1 bước lỗi hoặc chạy chậm hơn dự kiến",
     "Oozie ra đời ở Yahoo! năm 2008 để giải quyết đúng bài toán này"],
    slides=[
-    dict(h="🗣️ Nói nôm na: Oozie là gì?", body="""
+    dict(h="🗣️ Nói nôm na: Oozie", body="""
       <p><b>Nói nôm na:</b> Oozie giống một "quản đốc dây chuyền sản xuất" — nó không tự làm việc gì cả,
       chỉ đứng ra ra lệnh: "bước 2 chỉ được bắt đầu khi bước 1 báo cáo xong, nếu bước 1 lỗi thì dừng cả
       dây chuyền lại, không để sản phẩm lỗi trôi xuống bước sau."</p>
@@ -55,7 +55,7 @@ HD06_EXPANDED = dict(n=30, slug="hd-06-oozie-zookeeper",
     "Oozie hỗ trợ nhiều loại action: MapReduce, Pig/Hive script, Java/Shell, SSH, email",
     "DAG ở đây mô tả thứ tự giữa các JOB hoàn chỉnh, khác DAG ở Lập lịch 03 (giữa các TASK nhỏ)"],
    slides=[
-    dict(h="🗣️ Nói nôm na: DAG của Oozie khác gì DAG đã học?", body="""
+    dict(h="🗣️ Nói nôm na: DAG của Oozie so với DAG đã học", body="""
       <p><b>Nói nôm na:</b> nếu DAG ở Lập lịch 03 là "bản vẽ chi tiết từng con vít phải siết trước/sau" bên
       trong 1 cái máy, thì DAG của Oozie là "bản vẽ tổng thể cả nhà máy": công đoạn A (cả 1 cái máy chạy
       xong) → công đoạn B (cả 1 cái máy khác chạy xong) → ... Oozie không quan tâm bên trong mỗi công đoạn
@@ -90,7 +90,7 @@ HD06_EXPANDED = dict(n=30, slug="hd-06-oozie-zookeeper",
     "Oozie hỗ trợ \"fork\" (tách thành nhiều nhánh song song) và \"join\" (chờ tất cả nhánh xong mới tiếp tục)",
     "Ví dụ: vừa tính báo cáo doanh số VÙA tính báo cáo tồn kho cùng lúc, rồi mới gộp lại gửi email tổng hợp"],
    slides=[
-    dict(h="🗣️ Nói nôm na: fork/join là gì?", body="""
+    dict(h="🗣️ Nói nôm na: fork và join", body="""
       <p><b>Nói nôm na:</b> giống việc 2 đầu bếp trong cùng 1 nhà hàng cùng làm 2 món khác nhau cho 1 bàn
       (món khai vị và món chính) CÙNG LÚC, không ai phải chờ ai — nhưng người phục vụ chỉ mang cả 2 món ra
       bàn khi CẢ HAI đều đã xong (đây là "join"). Nếu bắt 2 đầu bếp làm lần lượt (nấu khai vị xong mới nấu
@@ -124,7 +124,7 @@ HD06_EXPANDED = dict(n=30, slug="hd-06-oozie-zookeeper",
     "Mô phỏng theo Chubby (Google, paper Mike Burrows) — dịch vụ lock phân tán nội bộ của Google",
     "Vì sao các hệ thống phân tán cần 1 dịch vụ coordination RIÊNG, không tự cài đặt bên trong từng hệ thống"],
    slides=[
-    dict(h="🗣️ Nói nôm na: vì sao cần ZooKeeper?", body="""
+    dict(h="🗣️ Nói nôm na: lý do cần ZooKeeper", body="""
       <p><b>Nói nôm na:</b> tưởng tượng 10 công ty con của 1 tập đoàn, mỗi công ty tự thuê 1 nhân viên lễ
       tân riêng để "biết ai đang có mặt trong toà nhà, ai là trưởng phòng hiện tại". Rất tốn kém và dễ sai
       lệch giữa các công ty. Giải pháp: thuê 1 nhân viên lễ tân CHUNG cho cả toà nhà, mọi công ty con hỏi
@@ -193,7 +193,7 @@ HD06_EXPANDED = dict(n=30, slug="hd-06-oozie-zookeeper",
     "Nguyên tắc cốt lõi: mọi thay đổi phải được leader đề xuất VÀ đa số (majority) follower xác nhận",
     "Vì sao cần \"đa số\" mà không phải \"tất cả\" — bài toán chịu lỗi khi 1 vài node chết/mất kết nối"],
    slides=[
-    dict(h="📖 Giải thích cho người mới bắt đầu: vì sao cần \"đồng thuận\" (consensus)?", body="""
+    dict(h="📖 Giải thích cho người mới bắt đầu: nhu cầu \"đồng thuận\" (consensus)", body="""
       <details class="explain"><summary>📖 Bấm để xem giải thích đơn giản nhất về đồng thuận phân tán</summary>
       <p>Nếu chỉ có 1 máy duy nhất lưu trạng thái hệ thống, không có vấn đề gì — máy đó nói gì cũng là "sự
       thật". Nhưng ZooKeeper chạy trên NHIỀU máy (để chịu lỗi): nếu để từng máy tự quyết định trạng thái

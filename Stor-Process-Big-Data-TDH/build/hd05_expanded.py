@@ -25,7 +25,7 @@ HD05_EXPANDED = dict(
     "Vấn đề: dữ liệu activity-stream (click, view, log) tăng bùng nổ, công cụ pub-sub cũ không đáp ứng được",
     "Kreps viết phần lớn Kafka trong kỳ nghỉ Giáng sinh; mã nguồn mở hoá đầu năm 2011"],
    slides=[
-    dict(h="Vì sao các công cụ cũ không đủ dùng?", body="""
+    dict(h="Hạn chế của các công cụ trước Kafka", body="""
       <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Apache Kafka được phát triển năm 2010
       bởi Jay Kreps, Neha Narkhede và Jun Rao khi họ làm việc tại LinkedIn, và trở thành nền tảng mã nguồn mở
       vào đầu năm 2011. Jay Kreps — kiến trúc sư chính cho hạ tầng dữ liệu tại LinkedIn — đã viết phần lớn
@@ -70,7 +70,7 @@ HD05_EXPANDED = dict(
     "Broker lưu trữ, ZooKeeper điều phối cluster metadata (ở các bản Kafka trước KRaft)",
     "Consumer đọc theo Offset — Kafka giữ log, không xoá message sau khi đọc như queue truyền thống"],
    slides=[
-    dict(h="Vì sao gọi Kafka là 'log phân tán' chứ không phải 'message queue'?", body="""
+    dict(h="Kafka là 'log phân tán', không phải 'message queue'", body="""
       <p>Khác biệt cốt lõi: một message queue truyền thống (RabbitMQ kiểu cũ) XOÁ message sau khi được 1
       consumer đọc xong. Kafka thì giữ nguyên message trong 1 khoảng thời gian cấu hình được (retention), và
       CHO PHÉP nhiều consumer group độc lập đọc lại cùng dữ liệu đó, mỗi group tự theo dõi vị trí đọc riêng
@@ -127,7 +127,7 @@ HD05_EXPANDED = dict(
       <tr><td>Bán lẻ</td><td>Luồng "đơn hàng mới"</td><td>Chia theo khu vực kho để xử lý song song</td></tr>
       <tr><td>Viễn thông</td><td>Luồng "cuộc gọi hoàn tất"</td><td>Chia theo vùng trạm phát sóng</td></tr>
       <tr><td>Game online</td><td>Luồng "hành động người chơi"</td><td>Chia theo server phòng chơi</td></tr></table>"""),
-    dict(h="Broker: ai thực sự giữ dữ liệu?", body="""
+    dict(h="Broker: nơi thực sự giữ dữ liệu", body="""
       <p>🗣️ <b>Nói nôm na:</b> nếu Topic là tên tờ báo và Partition là các nhà in, thì Broker chính là toà
       nhà vật lý chứa máy in đó — nơi dữ liệu thật sự nằm trên đĩa.</p>
       <p>Một Kafka cluster gồm nhiều Broker (mỗi broker là 1 tiến trình Kafka chạy trên 1 máy/server). Mỗi
@@ -139,7 +139,7 @@ HD05_EXPANDED = dict(
       quan hệ, có thể tạm hình dung: Topic giống 1 bảng (table) được "sharding" (chia mảnh) — mỗi Partition là
       1 mảnh, và Broker là máy chủ vật lý giữ mảnh đó, tương tự cách 1 CSDL phân tán chia bảng lớn ra nhiều
       node để tăng khả năng chịu tải.</div>"""),
-    dict(h="Offset: vì sao phải gắn với MỘT consumer group cụ thể?", body="""
+    dict(h="Offset gắn với một consumer group cụ thể", body="""
       <details><summary>📖 Giải thích cho người mới bắt đầu</summary>
       <p>Nhiều người mới học Kafka nhầm rằng offset là "vị trí đọc chung" của cả hệ thống — SAI. Offset luôn
       là bộ 3: (topic, partition, consumer group). Lý do: Kafka được thiết kế để NHIỀU hệ thống tiêu thụ độc
@@ -159,7 +159,7 @@ HD05_EXPANDED = dict(
     "Consumer Group: nhiều consumer hợp tác đọc 1 topic, chia nhau các partition",
     "Lag = log-end-offset trừ offset đã commit — PHẢI tính riêng cho từng consumer group"],
    slides=[
-    dict(h="Producer và Consumer Group: ai ghi, ai đọc?", body="""
+    dict(h="Producer và Consumer Group: bên ghi và bên đọc", body="""
       <p>🗣️ <b>Nói nôm na:</b> Producer giống người đăng tin lên bảng tin chung; Consumer Group giống 1 "ca
       làm việc" gồm nhiều người cùng chia nhau đọc bảng tin đó cho nhanh — trong ca đó, mỗi tin chỉ 1 người
       đọc (để không ai làm trùng việc của người khác), nhưng CA KHÁC (group khác) vẫn đọc lại đầy đủ từ đầu
@@ -228,7 +228,7 @@ HD05_EXPANDED = dict(
     "Mọi đọc/ghi đi qua leader; follower chỉ đồng bộ theo, sẵn sàng thay thế khi cần",
     "Khi broker giữ leader chết, 1 follower được bầu làm leader mới — không mất dữ liệu nếu đủ bản sao"],
    slides=[
-    dict(h="Vì sao 1 bản sao duy nhất là không đủ an toàn?", body="""
+    dict(h="Rủi ro của việc chỉ có một bản sao", body="""
       <p>🗣️ <b>Nói nôm na:</b> replication factor trong Kafka giống 1 hãng hàng không luôn có ít nhất 2 phi
       công được huấn luyện lái cùng 1 tuyến bay — nếu phi công chính (leader) ốm bất ngờ, phi công phụ
       (follower) đã sẵn sàng thay ngay, chuyến bay không bị huỷ.</p>
@@ -240,7 +240,7 @@ HD05_EXPANDED = dict(
       <tr><td>Hàng không</td><td>Phi công chính đang lái</td><td>Phi công phụ đã huấn luyện, sẵn sàng thay</td></tr>
       <tr><td>Bệnh viện</td><td>Bác sĩ trực chính ca đó</td><td>Bác sĩ dự phòng được gọi khi bác sĩ chính vắng</td></tr>
       <tr><td>Ngân hàng</td><td>Chi nhánh trung tâm xử lý giao dịch gốc</td><td>Chi nhánh sao lưu đồng bộ dữ liệu liên tục</td></tr></table>"""),
-    dict(h="Ví dụ B — mô phỏng mất broker giữ leader, ai lên thay?", body="""
+    dict(h="Ví dụ B: mô phỏng mất broker giữ leader và cơ chế thay thế", body="""
       <p>Giả sử 1 Partition có replication factor = 3, trải trên 3 broker khác nhau:</p>
       <table><tr><th>Broker</th><th>Vai trò ban đầu</th></tr>
       <tr><td>Broker 1</td><td><b>Leader</b> — phục vụ mọi đọc/ghi</td></tr>
@@ -337,7 +337,7 @@ HD05_EXPANDED = dict(
     "Mô hình: mã nguồn mở Kafka + dịch vụ/tiện ích thương mại xung quanh",
     "Confluent IPO năm 2021, doanh thu hàng năm vượt 300 triệu USD tại thời điểm nộp hồ sơ"],
    slides=[
-    dict(h="Vì sao 3 kỹ sư LinkedIn lập công ty riêng?", body="""
+    dict(h="Lý do 3 kỹ sư LinkedIn lập công ty riêng", body="""
       <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Dù vẫn hài lòng làm việc tại LinkedIn,
       cả ba liên tục nhận được yêu cầu hỗ trợ và đề xuất xây thêm tiện ích cho Kafka từ các công ty khác đang
       dùng nó. Họ nhận ra có cơ hội kinh doanh thực sự trong việc tạo và thương mại hoá công cụ xung quanh

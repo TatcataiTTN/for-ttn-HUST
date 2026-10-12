@@ -70,7 +70,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       <tr><td>2002</td><td>Nutch ra đời — công cụ tìm kiếm mở, chạy được nhưng không mở rộng được khi dữ liệu lớn</td></tr>
       <tr><td>10/2003</td><td>Google công bố paper GFS — mô hình lưu trữ phân tán cho dữ liệu khổng lồ</td></tr>
       <tr><td>2004</td><td>Google công bố paper MapReduce — mô hình xử lý song song đơn giản hoá</td></tr>
-      <tr><td>01/2006</td><td>Phần lưu trữ + xử lý của Nutch tách ra thành dự án con Hadoop, Cutting gia nhập Yahoo!</td></tr></table></div><div class="mdeck-slide"><h2>Vì sao tên là "Hadoop"?</h2>
+      <tr><td>01/2006</td><td>Phần lưu trữ + xử lý của Nutch tách ra thành dự án con Hadoop, Cutting gia nhập Yahoo!</td></tr></table></div><div class="mdeck-slide"><h2>Nguồn gốc cái tên "Hadoop"</h2>
       <p>🗣️ <b>Nói nôm na:</b> không có ý nghĩa kỹ thuật gì cả — giống việc một công ty đặt tên sản phẩm
       theo tên con mèo của người sáng lập, miễn là cái tên dễ nhớ và chưa ai dùng.</p>
       <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Doug Cutting (khi đó làm ở Yahoo!) đặt
@@ -97,7 +97,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">02</div><h2>Kiến trúc Master/Slave: NameNode & DataNode</h2>
 <ul class="part-list"><li>NameNode (master) chỉ giữ metadata — không giữ dữ liệu thật</li>
 <li>DataNode (slave) giữ dữ liệu thật, xử lý I/O trực tiếp</li>
-<li>Ví dụ đa ngành: thư viện trung tâm, bệnh viện tuyến trên, tổng đài điều phối</li></ul></div><div class="mdeck-slide"><h2>NameNode & DataNode: ai làm gì?</h2>
+<li>Ví dụ đa ngành: thư viện trung tâm, bệnh viện tuyến trên, tổng đài điều phối</li></ul></div><div class="mdeck-slide"><h2>Vai trò của NameNode và DataNode</h2>
       <p>🗣️ <b>Nói nôm na:</b> NameNode giống như quyển SỔ MỤC LỤC của thư viện — ghi "cuốn sách X nằm ở
       kệ nào, phòng nào" nhưng không giữ cuốn sách thật; DataNode giống các KỆ SÁCH thật, nơi nội dung sách
       nằm vật lý.</p>
@@ -115,7 +115,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       metadata chỉ nằm ở 1 NameNode, nên bản Hadoop 1.0 có 1 <b>Single Point of Failure</b>: NameNode hỏng là
       cả cụm mất khả năng định vị dữ liệu, dù dữ liệu vật lý trên DataNode vẫn còn nguyên. Hadoop 2.0 sau này
       giải quyết bằng Standby NameNode (High Availability) — khác với Secondary NameNode (chỉ gộp log, không
-      phải bản dự phòng nóng, xem Phần 6).</div></div><div class="mdeck-slide"><h2>📖 Giải thích cho người mới bắt đầu: vì sao phải tách 2 vai trò này ra?</h2>
+      phải bản dự phòng nóng, xem Phần 6).</div></div><div class="mdeck-slide"><h2>📖 Giải thích cho người mới bắt đầu: lý do tách hai vai trò</h2>
       <details>
       <summary><b>Bấm để xem giải thích cực đơn giản</b></summary>
       <p>Hãy tưởng tượng bạn quản lý một kho hàng khổng lồ với 10 triệu món đồ. Nếu bạn để MỘT người vừa
@@ -139,7 +139,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">03</div><h2>Block: chia tệp lớn thành khối quản lý được</h2>
 <ul class="part-list"><li>Tệp chia thành block lớn (64MB → 128MB)</li>
 <li>Vì sao không dùng block nhỏ như hệ file thường (4KB)</li>
-<li>Small-files problem: khi HDFS gặp quá nhiều tệp nhỏ</li></ul></div><div class="mdeck-slide"><h2>Block là gì, và vì sao lại lớn tới vậy?</h2>
+<li>Small-files problem: khi HDFS gặp quá nhiều tệp nhỏ</li></ul></div><div class="mdeck-slide"><h2>Block và lý do kích thước lớn</h2>
       <p>🗣️ <b>Nói nôm na:</b> giống việc chia 1 cuộn vải khổng lồ thành các súc vải 50 mét, thay vì cắt
       thành hàng triệu miếng vải 10cm — quản lý vài trăm súc vải dễ hơn hẳn quản lý hàng triệu miếng nhỏ,
       dù tổng khối lượng vải là như nhau.</p>
@@ -170,7 +170,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">04</div><h2>Replication: nhân bản để chịu lỗi</h2>
 <ul class="part-list"><li>Mỗi block nhân bản 3 lần trên các DataNode khác nhau</li>
 <li>Ví dụ đa ngành: dự phòng dữ liệu ngân hàng, hồ sơ y tế đa viện, kho hàng đa khu vực</li>
-<li>Tính xác suất mất dữ liệu khi nhiều bản sao cùng hỏng</li></ul></div><div class="mdeck-slide"><h2>Replication (nhân bản) hoạt động ra sao?</h2>
+<li>Tính xác suất mất dữ liệu khi nhiều bản sao cùng hỏng</li></ul></div><div class="mdeck-slide"><h2>Cơ chế nhân bản (replication)</h2>
       <p>🗣️ <b>Nói nôm na:</b> giống việc một gia đình quan trọng luôn in 3 bản giấy khai sinh và gửi lưu ở
       3 nơi khác nhau (nhà, cơ quan, người thân) — mất 1 bản ở 1 nơi không sao, vẫn còn 2 bản ở nơi khác.</p>
       <p>Mỗi block được <b>replicate</b> (nhân bản) thành nhiều bản sao, phân phối trên các DataNode <b>khác
@@ -213,7 +213,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">05</div><h2>Cơ chế chịu lỗi tự động: heartbeat & tái nhân bản</h2>
 <ul class="part-list"><li>DataNode gửi heartbeat định kỳ cho NameNode</li>
 <li>Mất heartbeat → NameNode coi node đã chết → ra lệnh tái nhân bản</li>
-<li>Toàn bộ quá trình không cần ứng dụng/người quản trị can thiệp</li></ul></div><div class="mdeck-slide"><h2>Heartbeat: làm sao NameNode biết DataNode nào còn sống?</h2>
+<li>Toàn bộ quá trình không cần ứng dụng/người quản trị can thiệp</li></ul></div><div class="mdeck-slide"><h2>Heartbeat: cách NameNode phát hiện DataNode còn sống</h2>
       <p>🗣️ <b>Nói nôm na:</b> giống hệ thống giám sát y tế từ xa cho người cao tuổi — thiết bị đeo tay gửi
       tín hiệu "tôi vẫn ổn" mỗi vài phút; nếu trung tâm giám sát không nhận được tín hiệu trong 1 khoảng thời
       gian, họ coi đó là dấu hiệu bất thường và cử người tới kiểm tra.</p>
@@ -260,7 +260,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">07</div><h2>Write-once, read-many: HDFS khác hệ file thường ở đâu</h2>
 <ul class="part-list"><li>HDFS chỉ hỗ trợ ghi thêm vào cuối tệp (append), không sửa giữa tệp</li>
 <li>Tối ưu cho đọc tuần tự khối lượng lớn, không phải truy cập ngẫu nhiên nhanh</li>
-<li>Ví dụ đa ngành: hồ sơ y tế chỉ thêm trang mới, sổ kế toán không tẩy xoá</li></ul></div><div class="mdeck-slide"><h2>HDFS được tối ưu cho điều gì?</h2>
+<li>Ví dụ đa ngành: hồ sơ y tế chỉ thêm trang mới, sổ kế toán không tẩy xoá</li></ul></div><div class="mdeck-slide"><h2>Mục tiêu thiết kế của HDFS</h2>
       <p>🗣️ <b>Nói nôm na:</b> giống quyển SỔ NHẬT KÝ chỉ được viết thêm trang mới ở cuối, không được xé
       hay viết chèn vào giữa các trang cũ — mọi thứ đã viết ra là cố định, chỉ có thể nối thêm.</p>
       <p>HDFS tối ưu cho các tệp <b>kích thước lớn</b> (hàng trăm MB đến TB), mô hình truy cập

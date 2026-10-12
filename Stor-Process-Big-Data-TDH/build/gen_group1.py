@@ -173,11 +173,11 @@ SLIDES.append(slide("Nội dung &amp; mục tiêu trình bày",
     "Mục tiêu học tập"))
 
 # ===================== PHẦN 1 =====================
-SLIDES.append(divider(1, 8, "Vì sao cần Hadoop?", [
+SLIDES.append(divider(1, 8, "Lý do ra đời của Hadoop", [
     "Bài toán: dữ liệu vượt quá khả năng 1 máy", "Apache Hadoop: nền tảng mã nguồn mở, kiến trúc scale-out",
     "Nguồn gốc: Google File System &amp; MapReduce", "4 thành phần cốt lõi"]))
 
-SLIDES.append(slide("Apache Hadoop là gì?", f"""
+SLIDES.append(slide("Tổng quan Apache Hadoop", f"""
 <p>Nền tảng mã nguồn mở được thiết kế để <b>lưu trữ và xử lý khối lượng dữ liệu lớn trên cụm máy tính</b>: cung cấp khả năng lưu trữ <i>scalable</i> (mở rộng được) và <i>reliable</i> (tin cậy), hỗ trợ xử lý song song
 trên phần cứng thông dụng (commodity hardware).</p>
 {callout('good','Kiến trúc scale-out', 'Mở rộng bằng cách <b>thêm máy</b> thay vì nâng cấp 1 máy duy nhất: cho phép mở rộng cụm lên hàng chục nghìn node.')}
@@ -213,7 +213,7 @@ SLIDES.append(divider(2, 8, "HDFS: lưu trữ phân tán", [
     "Mô hình write-once, read-many", "Kiến trúc master/slave: NameNode &amp; DataNode",
     "Block &amp; Replication (nhân bản)", "Hạn chế của HDFS"]))
 
-SLIDES.append(slide("HDFS được tối ưu cho điều gì?", f"""
+SLIDES.append(slide("Mục tiêu thiết kế của HDFS", f"""
 <p>HDFS tối ưu cho các tệp <b>kích thước lớn</b> (hàng trăm MB đến TB), mô hình truy cập
 <b>write-once, read-many</b> (ghi một lần, đọc nhiều lần).</p>
 {callout('warn','Đánh đổi có chủ đích', 'Thiết kế để đạt <b>thông lượng cao</b> thay vì <b>độ trễ thấp</b>: phù hợp xử lý batch hơn truy vấn tương tác thời gian thực.')}
@@ -240,13 +240,13 @@ SLIDES.append(figslide("Hình gốc: luồng ghi của GFS, gốc của pipeline
      ["Bước 4-7: <b>điều khiển</b> đi qua primary, primary đánh số thứ tự rồi báo các secondary, tất cả trả lời lại", "Gói xác nhận (ack) chạy ngược pipeline về client"],
      ["Tách luồng dữ liệu khỏi luồng điều khiển để dùng mạng hiệu quả", "Cùng nguyên tắc: NameNode chỉ điều khiển, dữ liệu đi thẳng giữa client và DataNode"]], side=True, img_w="40%"))
 
-SLIDES.append(slide("Block là gì?", f"""
+SLIDES.append(slide("Khái niệm block trong HDFS", f"""
 <p>Mỗi tệp trong HDFS được <b>chia thành nhiều block</b> (khối dữ liệu) thay vì lưu nguyên khối như hệ file thông thường.</p>
 {formula('Kích thước block mặc định', '64\\text{ MB hoặc }128\\text{ MB}')}
 {callout('info', 'Vì sao chia block', 'Block lớn giúp giảm chi phí quản lý metadata (ít block hơn so với chia nhỏ như hệ file truyền thống 4KB) và phù hợp mô hình đọc/ghi tuần tự khối lượng lớn mà HDFS hướng tới.')}
 """))
 
-SLIDES.append(slide("Replication (nhân bản) hoạt động ra sao?", f"""
+SLIDES.append(slide("Cơ chế nhân bản (replication)", f"""
 <p>Mỗi block được <b>replicate</b> (nhân bản) thành nhiều bản sao, phân phối trên các DataNode <b>khác nhau</b> trong cụm.</p>
 {formula('Hệ số nhân bản mặc định', '3\\text{ bản sao trên 3 DataNode khác nhau}')}
 {callout('good','Vì sao nhân bản giúp chịu lỗi', 'Khi 1 DataNode hỏng, hệ thống vẫn còn bản sao trên node khác: NameNode tự động điều phối sao chép lại để duy trì đủ số bản sao mặc định.')}
@@ -263,7 +263,7 @@ SLIDES.append(slide("Ví dụ minh hoạ: dung lượng vật lý thực cần",
 {callout('warn', 'Đánh đổi', 'Nhân bản 3 lần giúp chịu lỗi tốt nhưng tốn gấp 3 lần dung lượng lưu trữ thật: đây là chi phí đổi lấy độ tin cậy của HDFS.')}
 """))
 
-SLIDES.append(slide("NameNode có phải điểm yếu duy nhất?", f"""
+SLIDES.append(slide("NameNode và rủi ro điểm lỗi duy nhất", f"""
 <p>NameNode là thành phần <b>trung tâm duy nhất</b> giữ toàn bộ metadata: nếu NameNode gặp sự cố mà không có cơ chế dự phòng, cả hệ thống có nguy cơ mất khả năng xác định dữ liệu nằm ở đâu (dù dữ liệu thật vẫn còn nguyên trên DataNode).</p>
 {callout('good', 'Cơ chế giảm thiểu rủi ro', '<i>Secondary NameNode</i> định kỳ sao lưu &amp; hợp nhất edit log của NameNode, hỗ trợ <b>phục hồi nhanh metadata</b> khi NameNode gặp sự cố: không phải bản sao chạy song song, mà là điểm khôi phục.')}
 """))
@@ -318,7 +318,7 @@ SLIDES.append(slide("MapReduce tích hợp với cả hệ sinh thái", f"""
 {callout('good', 'Ý nghĩa', 'Đây là lý do MapReduce được gọi là "engine chung": người dùng Hive/Pig/Sqoop không cần biết MapReduce chạy bên dưới, nhưng mọi tác vụ của họ cuối cùng đều quy về job MapReduce.')}
 """))
 
-SLIDES.append(slide("Vì sao cần tách riêng YARN?", f"""
+SLIDES.append(slide("Lý do tách YARN khỏi MapReduce", f"""
 <p>Trong Hadoop 1.x, <b>MapReduce vừa xử lý dữ liệu vừa quản lý tài nguyên &amp; lập lịch</b> trên cụm: dẫn đến hạn chế về hiệu năng và tính linh hoạt.</p>
 {callout('good','Giải pháp Hadoop 2.x','YARN (Yet Another Resource Negotiator) tách biệt <b>quản lý tài nguyên</b> khỏi <b>xử lý dữ liệu</b>, biến Hadoop thành nền tảng tổng quát hơn: nhiều mô hình (MapReduce, Spark, Flink, Tez...) cùng chạy trên 1 cụm.')}
 """))
@@ -362,7 +362,7 @@ tự động dịch thành job MapReduce (hoặc Tez, Spark) để thực thi.</
 {callout('warn','Độ trễ','Tính bằng phút (do khởi tạo job MapReduce/Tez): phù hợp batch hơn truy vấn tương tác tức thì.')}
 """))
 
-SLIDES.append(slide("Hive hoạt động như thế nào?", f"""
+SLIDES.append(slide("Cơ chế hoạt động của Hive", f"""
 <ol style="line-height:2.1">
 <li>Người dùng viết câu lệnh <b>HiveQL</b> (SELECT, JOIN, GROUP BY...)</li>
 <li>Hive <b>tự động dịch</b> câu lệnh thành job MapReduce (hoặc Tez, Spark) tương ứng</li>
@@ -405,7 +405,7 @@ hỗ trợ truy cập ngẫu nhiên độ trễ thấp.</p>
       ['Đọc/ghi thời gian thực','Hàng trăm nghìn INSERT/giây nhờ LSM-tree + commit log']])}
 """))
 
-SLIDES.append(slide("HBase khác RDBMS ở đâu?", f"""
+SLIDES.append(slide("Điểm khác biệt giữa HBase và RDBMS", f"""
 {callout('warn', 'Không phải RDBMS', 'HBase <b>không hỗ trợ SQL hay join phức tạp</b>: truy vấn qua API lập trình (Java/REST/Thrift) hoặc scan/get/put theo khoá. Không có transaction ACID đa bảng.')}
 <p>Phù hợp cho: truy cập ngẫu nhiên theo khoá, khối lượng lớn (vd tra cứu/cập nhật theo userID): hơn là phân tích ad-hoc.</p>
 <p><b>Ví dụ thực tế:</b> Facebook Messaging từng dùng HBase lưu tin nhắn cho hàng trăm triệu người dùng, khai thác khả năng mở rộng linh hoạt.</p>
@@ -429,7 +429,7 @@ SLIDES.append(figslide("Hình gốc: tablet được lưu thế nào, gốc củ
      ["Memtable đầy thì ghi thành <b>SSTable</b> bất biến trên GFS (minor compaction)", "MemStore flush thành HFile trên HDFS"],
      ["Đọc: gộp memtable với các SSTable đã sắp xếp; định kỳ gộp lại (merging / major compaction)", "Đọc gộp MemStore và HFile; compaction định kỳ"]], side=True, img_w="48%"))
 
-SLIDES.append(slide("Khi nào dùng HDFS+Hive, khi nào dùng HBase?", tbl(
+SLIDES.append(slide("Tiêu chí chọn giữa HDFS + Hive và HBase", tbl(
     ["Nhu cầu", "Chọn"],
     [["Phân tích tổng hợp trên tập dữ liệu lớn (batch)", "HDFS + MapReduce/Hive"],
      ["Đọc/ghi ngẫu nhiên theo khoá, độ trễ thấp, gần thời gian thực", "HBase"],
@@ -511,7 +511,7 @@ SLIDES.append(slide("Apache ZooKeeper: dịch vụ điều phối", tbl(
      ["Bầu chọn leader", "Đảm bảo đúng 1 node làm leader tại 1 thời điểm (ephemeral znode)"]]
 )))
 
-SLIDES.append(slide("Vì sao ZooKeeper đáng tin cậy?", f"""
+SLIDES.append(slide("Cơ sở tin cậy của ZooKeeper", f"""
 <p>ZooKeeper dùng thuật toán <b>ZAB</b> (ZooKeeper Atomic Broadcast: thuộc họ thuật toán Paxos) để đảm bảo
 tất cả server ZooKeeper (chạy thành cụm nhỏ) duy trì <b>cùng một trạng thái</b>.</p>
 {callout('good', 'Tính nhất quán tuần tự', 'Các thay đổi áp dụng theo mô hình nhất quán tuần tự; client có thể đăng ký <b>watch</b> để được thông báo ngay khi dữ liệu thay đổi hoặc node mới xuất hiện/biến mất.')}
@@ -530,7 +530,7 @@ SLIDES.append(figslide("Hình gốc: Chubby xử lý mất master ra sao, ý tư
      ["Master chết: client hết lease, vào <b>grace period</b>, chặn lời gọi API chứ chưa huỷ session", "Client mất kết nối nhưng chưa hết timeout: chờ kết nối lại tới server khác"],
      ["Master mới được bầu trong vài giây, client nối lại và tiếp tục", "Leader mới được bầu (ZAB), session còn hạn thì giữ nguyên znode tạm"]], side=False, img_w="82%"))
 
-SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Thành phần", "ZooKeeper dùng để"], [
+SLIDES.append(slide("Vị trí của ZooKeeper trong hệ sinh thái Hadoop", tbl(["Thành phần", "ZooKeeper dùng để"], [
     ["HDFS High Availability", "Giám sát NameNode &amp; kích hoạt failover"],
     ["YARN", "Lưu thông tin ResourceManager chủ"],
     ["HBase", "Theo dõi RegionServer &amp; điều phối Master"],
@@ -624,7 +624,7 @@ SLIDES.append(imgs_slide("Hình gốc: ví dụ chọn ngưỡng chia, optimal s
     ("ta3_fig1.png", "Figure 1 (arXiv:2604.20394v2): $\\mu(j^\\star)$ và $\\gamma(j^\\star)$ là giá trị dự đoán của 2 phía ngưỡng $j^\\star$.", 30)],
     maxh=240, body_after=callout('info', 'Cách đọc', 'Chọn $j$ nghĩa là cắt trục $x$ làm 2 đoạn $[1,j]$ và $[j+1,N]$ rồi mỗi đoạn dự đoán bằng 1 giá trị (trung bình hoặc nhãn đa số). Sai số của mọi $j$ chỉ phụ thuộc số đếm trong 2 đoạn.')))
 
-SLIDES.append(slide("Kết nối 1: vì sao cần streaming?", f"""
+SLIDES.append(slide("Kết nối 1: động lực của streaming", f"""
 <p>Theo bài báo: dữ liệu thường <b>quá lớn để nạp vào bộ nhớ chính của 1 máy</b>, nên được đọc dạng luồng từ đĩa hoặc qua mạng,
 dùng bộ nhớ dưới tuyến tính, lý tưởng là <b>1 lượt duyệt</b> (cho phép vài lượt).</p>
 {tbl(['Công cụ','Dùng để làm gì trong bài toán chọn ngưỡng chia'],
@@ -633,7 +633,7 @@ dùng bộ nhớ dưới tuyến tính, lý tưởng là <b>1 lượt duyệt</b
       ['Sai số cộng $\\varepsilon$ so với tối ưu','Đánh đổi bộ nhớ nhỏ (cỡ $\\tilde O(1/\\varepsilon)$ hoặc $\\tilde O(1/\\varepsilon^2)$) lấy ngưỡng "đủ tốt"']])}
 """))
 
-SLIDES.append(slide("Kết nối 2: vì sao cần tính toán song song lớn?", f"""
+SLIDES.append(slide("Kết nối 2: động lực của tính toán song song lớn", f"""
 <p>Mô hình <b>MPC</b> (Massively Parallel Computation) trong bài báo là phép trừu tượng hoá của MapReduce, Hadoop và Spark:</p>
 {tbl(['Thành phần MPC','Ý nghĩa','Ứng với Hadoop'],
      [['$m$ quan sát chia cho $m^{1-\\beta}$ máy','Dữ liệu phân tán, không máy nào giữ hết','Block của HDFS rải trên DataNode'],
@@ -722,24 +722,24 @@ SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">Cảm ơn đã th
 
 # ---- gắn logo công nghệ vào góc phải các slide tương ứng ----
 LOGO_FOR = [("Nguồn gốc: 2 bài báo", "google.svg"), ("Bốn thành phần cốt lõi", "apachehadoop.svg"), ("Scale-out so với", "apachehadoop.svg"),
-            ("HDFS được tối ưu", "apachehadoop.svg"), ("Kiến trúc master/slave", "apachehadoop.svg"), ("Block là gì", "apachehadoop.svg"),
-            ("Replication", "apachehadoop.svg"), ("NameNode có phải", "apachehadoop.svg"), ("Hạn chế của HDFS", "apachehadoop.svg"),
+            ("Mục tiêu thiết kế của HDFS", "apachehadoop.svg"), ("Kiến trúc master/slave", "apachehadoop.svg"), ("Khái niệm block", "apachehadoop.svg"),
+            ("Cơ chế nhân bản", "apachehadoop.svg"), ("NameNode và rủi ro", "apachehadoop.svg"), ("Hạn chế của HDFS", "apachehadoop.svg"),
             ("Mô hình lập trình MapReduce", "apachehadoop.svg"), ("Vai trò MapReduce", "apachehadoop.svg"), ("MapReduce tích hợp", "apachehadoop.svg"),
-            ("Vì sao cần tách riêng YARN", "apachehadoop.svg"), ("Quy trình 1 ứng dụng", "apachehadoop.svg"), ("Lợi ích YARN", "apachehadoop.svg"),
-            ("Khi nào dùng HDFS", "apachehbase.svg"), ("Toàn cảnh hệ sinh thái", "apachehadoop.svg"), ("Tổng kết chương 2", "apachehadoop.svg"),
+            ("Lý do tách YARN", "apachehadoop.svg"), ("Quy trình 1 ứng dụng", "apachehadoop.svg"), ("Lợi ích YARN", "apachehadoop.svg"),
+            ("Tiêu chí chọn giữa HDFS", "apachehbase.svg"), ("Toàn cảnh hệ sinh thái", "apachehadoop.svg"), ("Tổng kết chương 2", "apachehadoop.svg"),
             ("Lộ trình phát triển", "apachehadoop.svg"), ("Ví dụ minh hoạ: dung lượng", "apachehadoop.svg"),
             ("Hình gốc: cách Bigtable", "apachehbase.svg"), ("Hình gốc: tablet được lưu", "apachehbase.svg"),
             ("Hình gốc: luồng ghi của GFS", "apachehadoop.svg"), ("Hình gốc: MapReduce lan nhanh", "google.svg"),
             ("Hình gốc: Chubby xử lý", "zookeeper.svg"), ("Hình gốc: Kafka tại LinkedIn", "apachekafka.svg"),
             ("Tài liệu tham khảo mở rộng", "google.svg"),
-            ("Apache Hadoop là gì", "apachehadoop.svg"), ("Kiến trúc YARN", "apachehadoop.svg"), ("Hình gốc: kiến trúc GFS", "apachehadoop.svg"),
+            ("Tổng quan Apache Hadoop", "apachehadoop.svg"), ("Kiến trúc YARN", "apachehadoop.svg"), ("Hình gốc: kiến trúc GFS", "apachehadoop.svg"),
             ("Hình gốc: luồng thực thi MapReduce", "apachehadoop.svg"),
-            ("Apache Hive", "apachehive.svg"), ("Hive hoạt động", "apachehive.svg"), ("Apache Pig", "pig.gif"),
-            ("Apache HBase", "apachehbase.svg"), ("HBase khác RDBMS", "apachehbase.svg"), ("Hình gốc: mô hình dữ liệu Bigtable", "apachehbase.svg"),
+            ("Apache Hive", "apachehive.svg"), ("Cơ chế hoạt động của Hive", "apachehive.svg"), ("Apache Pig", "pig.gif"),
+            ("Apache HBase", "apachehbase.svg"), ("Điểm khác biệt giữa HBase", "apachehbase.svg"), ("Hình gốc: mô hình dữ liệu Bigtable", "apachehbase.svg"),
             ("Apache Sqoop", "sqoop.png"), ("Quy trình Sqoop", "sqoop.png"),
             ("Apache Kafka", "apachekafka.svg"), ("Ví dụ minh hoạ: Kafka", "apachekafka.svg"), ("Hình gốc: log của Kafka", "apachekafka.svg"),
-            ("Apache Oozie", "oozie.png"), ("Apache ZooKeeper", "zookeeper.svg"), ("Vì sao ZooKeeper", "zookeeper.svg"),
-            ("ZooKeeper được dùng", "zookeeper.svg"), ("Hình gốc: cấu trúc Chubby", "zookeeper.svg")]
+            ("Apache Oozie", "oozie.png"), ("Apache ZooKeeper", "zookeeper.svg"), ("Cơ sở tin cậy của ZooKeeper", "zookeeper.svg"),
+            ("Vị trí của ZooKeeper", "zookeeper.svg"), ("Hình gốc: cấu trúc Chubby", "zookeeper.svg")]
 for _i, _s in enumerate(SLIDES):
     _m = re.search(r"<h2>(.*?)</h2>", _s)
     if not _m or 'part-divider' in _s[:80]:

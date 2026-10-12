@@ -73,7 +73,7 @@ HD02_EXPANDED = dict(n=26, slug="hd-02-mapreduce-yarn",
       (8,0; 6,0) = 7,0 — sai ở đâu? (Đáp: trung bình đúng phải tính lại theo TỔNG điểm/TỔNG số bài =
       (10×8,0 + 2×6,0)/(10+2) = 92/12 ≈ 7,67, không phải trung bình đơn giản của 2 trung bình con có trọng
       số khác nhau.)</div>"""),
-    dict(h="Ví dụ tính toán: Combiner giảm lưu lượng shuffle bao nhiêu %?", body="""
+    dict(h="Ví dụ tính toán: mức giảm lưu lượng shuffle nhờ Combiner", body="""
       <p>Giả sử 1 văn bản có 9.000 từ, chia cho 3 Mapper (mỗi Mapper xử lý 3.000 từ), và trong 3.000 từ đó
       có trung bình 500 từ khác nhau (nhiều từ lặp lại nhiều lần).</p>
       <ol><li><b>Không có Combiner:</b> mỗi Mapper gửi đúng 3.000 cặp (word, 1) qua mạng → tổng 3 Mapper gửi

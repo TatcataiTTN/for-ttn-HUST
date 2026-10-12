@@ -37,7 +37,7 @@ SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">IT4931: Lưu tr�
 slide thuyết trình bài tập lớn của Nhóm 1 (group-1-slides.html)</p>
 <p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Môn Lưu trữ &amp; xử lý dữ liệu lớn &nbsp;·&nbsp; __SLIDE_COUNT__ slide</p></div>""")
 
-SLIDES.append(slide("Vì sao có bản deck này?", f"""
+SLIDES.append(slide("Mục đích của bản deck này", f"""
 <p>Nhóm đã đọc <i>group-1-slides.html</i> (55 slide bám đúng Chương 2 giáo trình, tr.23–36) và nhận xét
 <i>"nửa sau đúng không hiểu gì"</i>. Bản deck này KHÔNG lặp lại Chương 2 — nó trả lời 3 câu hỏi mà Chương 2
 không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>

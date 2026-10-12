@@ -19,7 +19,7 @@ HD04_EXPANDED = dict(
     "Khái niệm cốt lõi: row key, column family, qualifier, timestamp (cell versioned)",
     "🗣️ Nói nôm na: giống 1 tủ hồ sơ có nhiều ngăn kéo (family), mỗi ngăn chứa nhiều loại giấy tờ (qualifier), và mỗi giấy tờ có thể có NHIỀU phiên bản theo thời gian"],
    slides=[
-    dict(h="Vì sao gọi là 'cột mở rộng' (wide-column), không phải 'bảng' thông thường?", body="""
+    dict(h="Mô hình 'cột mở rộng' (wide-column) khác bảng thông thường", body="""
       <p><b>🗣️ Nói nôm na:</b> RDBMS giống 1 bảng Excel cố định: mọi dòng phải có ĐỦ các cột đã khai báo
       trước, dù trống cũng phải để ô trống. Bigtable/HBase giống 1 tủ hồ sơ linh hoạt: mỗi "dòng" (row) có
       thể có số cột hoàn toàn khác dòng khác, và các cột được gom nhóm thành "ngăn kéo" gọi là
@@ -146,7 +146,7 @@ HD04_EXPANDED = dict(
     "Là minh chứng HBase có thể vận hành ở quy mô hàng trăm triệu người dùng",
     "Nhưng: Facebook sau đó đã chuyển Messages sang MyRocks (2018) — công nghệ không tồn tại mãi"],
    slides=[
-    dict(h="Vì sao Facebook chọn HBase cho Messages?", body="""
+    dict(h="Lý do Facebook chọn HBase cho Messages", body="""
       <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Để xây hệ thống tin nhắn mới, Facebook
       đã dựng nhiều prototype và thử nghiệm trên nhiều nền tảng lưu trữ phân tán khác nhau — HBase (mô phỏng
       theo Bigtable của Google) là nền tảng thắng cuộc, và Facebook triển khai hệ thống Messages dựa trên
@@ -230,7 +230,7 @@ HD04_EXPANDED = dict(
     "Giải quyết bài toán rất thực tế: doanh nghiệp có hàng chục năm dữ liệu trong RDBMS, không thể bỏ qua khi chuyển sang Hadoop",
     "Trở thành Apache top-level project tháng 4/2012 — nhưng bị \"nghỉ hưu\" (Apache Attic) tháng 6/2021"],
    slides=[
-    dict(h="Sqoop giải quyết bài toán gì, và hoạt động ra sao?", body="""
+    dict(h="Bài toán và cơ chế hoạt động của Sqoop", body="""
       <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Sqoop do Aaron Kimball cùng nhóm phát
       triển tại Cloudera xây dựng, bắt đầu như một contrib module của Hadoop từ tháng 5/2009 (patch đầu tiên:
       HADOOP-5815). Tháng 4/2010 tách khỏi Hadoop contrib, do Cloudera duy trì trên GitHub; ngày 23/7/2011
@@ -322,7 +322,7 @@ HD04_EXPANDED = dict(
     "Bảng quyết định nhanh: đặc điểm bài toán → công nghệ phù hợp",
     "Sqoop không phải đối thủ của HBase — nó là cầu nối giữa 2 thế giới hoàn toàn khác mô hình dữ liệu"],
    slides=[
-    dict(h="Bảng quyết định: HBase hay RDBMS?", body="""
+    dict(h="Bảng quyết định: HBase so với RDBMS", body="""
       <table><tr><th>Đặc điểm bài toán</th><th>Chọn</th><th>Vì sao</th></tr>
       <tr><td>Cần JOIN nhiều bảng, giao dịch ACID phức tạp (vd chuyển tiền ngân hàng)</td><td>RDBMS</td>
       <td>HBase không hỗ trợ JOIN hiệu quả, ACID chỉ đảm bảo ở mức 1 dòng</td></tr>

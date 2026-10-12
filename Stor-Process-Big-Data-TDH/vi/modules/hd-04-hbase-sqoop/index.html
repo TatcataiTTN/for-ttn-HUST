@@ -51,7 +51,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">01</div><h2>Mô hình dữ liệu Bigtable: bảng không giống Excel, không giống RDBMS</h2>
 <ul class="part-list"><li>Bigtable (Google, 2006): CSDL cột mở rộng phân tán, không phải bảng hàng×cột cố định như RDBMS</li>
 <li>Khái niệm cốt lõi: row key, column family, qualifier, timestamp (cell versioned)</li>
-<li>🗣️ Nói nôm na: giống 1 tủ hồ sơ có nhiều ngăn kéo (family), mỗi ngăn chứa nhiều loại giấy tờ (qualifier), và mỗi giấy tờ có thể có NHIỀU phiên bản theo thời gian</li></ul></div><div class="mdeck-slide"><h2>Vì sao gọi là 'cột mở rộng' (wide-column), không phải 'bảng' thông thường?</h2>
+<li>🗣️ Nói nôm na: giống 1 tủ hồ sơ có nhiều ngăn kéo (family), mỗi ngăn chứa nhiều loại giấy tờ (qualifier), và mỗi giấy tờ có thể có NHIỀU phiên bản theo thời gian</li></ul></div><div class="mdeck-slide"><h2>Mô hình 'cột mở rộng' (wide-column) khác bảng thông thường</h2>
       <p><b>🗣️ Nói nôm na:</b> RDBMS giống 1 bảng Excel cố định: mọi dòng phải có ĐỦ các cột đã khai báo
       trước, dù trống cũng phải để ô trống. Bigtable/HBase giống 1 tủ hồ sơ linh hoạt: mỗi "dòng" (row) có
       thể có số cột hoàn toàn khác dòng khác, và các cột được gom nhóm thành "ngăn kéo" gọi là
@@ -159,7 +159,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">04</div><h2>Facebook Messages 2010: ca sử dụng nổi tiếng nhất của HBase</h2>
 <ul class="part-list"><li>Facebook chọn HBase cho hệ thống Messages mới (triển khai tháng 11/2010)</li>
 <li>Là minh chứng HBase có thể vận hành ở quy mô hàng trăm triệu người dùng</li>
-<li>Nhưng: Facebook sau đó đã chuyển Messages sang MyRocks (2018) — công nghệ không tồn tại mãi</li></ul></div><div class="mdeck-slide"><h2>Vì sao Facebook chọn HBase cho Messages?</h2>
+<li>Nhưng: Facebook sau đó đã chuyển Messages sang MyRocks (2018) — công nghệ không tồn tại mãi</li></ul></div><div class="mdeck-slide"><h2>Lý do Facebook chọn HBase cho Messages</h2>
       <div class="callout good"><div class="lbl">📚 Nguồn lịch sử</div>Để xây hệ thống tin nhắn mới, Facebook
       đã dựng nhiều prototype và thử nghiệm trên nhiều nền tảng lưu trữ phân tán khác nhau — HBase (mô phỏng
       theo Bigtable của Google) là nền tảng thắng cuộc, và Facebook triển khai hệ thống Messages dựa trên
@@ -234,7 +234,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="part-num">06</div><h2>Apache Sqoop: cầu nối RDBMS cũ ↔ Hadoop mới</h2>
 <ul class="part-list"><li>Aaron Kimball (Cloudera) phát triển, nộp patch đầu tiên tháng 5/2009</li>
 <li>Giải quyết bài toán rất thực tế: doanh nghiệp có hàng chục năm dữ liệu trong RDBMS, không thể bỏ qua khi chuyển sang Hadoop</li>
-<li>Trở thành Apache top-level project tháng 4/2012 — nhưng bị "nghỉ hưu" (Apache Attic) tháng 6/2021</li></ul></div><div class="mdeck-slide"><h2>Sqoop giải quyết bài toán gì, và hoạt động ra sao?</h2>
+<li>Trở thành Apache top-level project tháng 4/2012 — nhưng bị "nghỉ hưu" (Apache Attic) tháng 6/2021</li></ul></div><div class="mdeck-slide"><h2>Bài toán và cơ chế hoạt động của Sqoop</h2>
       <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Sqoop do Aaron Kimball cùng nhóm phát
       triển tại Cloudera xây dựng, bắt đầu như một contrib module của Hadoop từ tháng 5/2009 (patch đầu tiên:
       HADOOP-5815). Tháng 4/2010 tách khỏi Hadoop contrib, do Cloudera duy trì trên GitHub; ngày 23/7/2011
@@ -315,7 +315,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       <code>--split-by</code>, không mặc định tin chia đều theo khoảng số sẽ cho tải đều.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 8/8</div>
 <div class="part-num">08</div><h2>Tổng hợp: khi nào dùng HBase, khi nào vẫn cần RDBMS, Sqoop đứng ở đâu</h2>
 <ul class="part-list"><li>Bảng quyết định nhanh: đặc điểm bài toán → công nghệ phù hợp</li>
-<li>Sqoop không phải đối thủ của HBase — nó là cầu nối giữa 2 thế giới hoàn toàn khác mô hình dữ liệu</li></ul></div><div class="mdeck-slide"><h2>Bảng quyết định: HBase hay RDBMS?</h2>
+<li>Sqoop không phải đối thủ của HBase — nó là cầu nối giữa 2 thế giới hoàn toàn khác mô hình dữ liệu</li></ul></div><div class="mdeck-slide"><h2>Bảng quyết định: HBase so với RDBMS</h2>
       <table><tr><th>Đặc điểm bài toán</th><th>Chọn</th><th>Vì sao</th></tr>
       <tr><td>Cần JOIN nhiều bảng, giao dịch ACID phức tạp (vd chuyển tiền ngân hàng)</td><td>RDBMS</td>
       <td>HBase không hỗ trợ JOIN hiệu quả, ACID chỉ đảm bảo ở mức 1 dòng</td></tr>
