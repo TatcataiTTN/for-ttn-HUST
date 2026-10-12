@@ -32,6 +32,12 @@ def formula(label, math):
 def callout(kind, label, text):
     return f'<div class="callout {kind}"><div class="lbl">{label}</div>{text}</div>'
 
+def tblock(header, items):
+    """Khối kết quả dạng bảng-số có thanh tiêu đề màu, mô phỏng đúng kiểu block thuật toán/định lý
+    trong slide Beamer của thầy Tạ Duy Hoàng (thanh màu + danh sách đánh số bên trong khung viền)."""
+    lis = "".join(f"<li>{x}</li>" for x in items)
+    return f'<div class="tblock"><div class="tblock-h">{header}</div><ol>{lis}</ol></div>'
+
 SLIDES = []
 
 # ---------- Title ----------
@@ -388,16 +394,6 @@ SLIDES.append(slide("Thuật ngữ quan trọng (tra cứu nhanh)", tbl(
      ["Znode", "Đơn vị dữ liệu trong cây thư mục phân tán của ZooKeeper"]], dense=True
 )))
 
-SLIDES.append(slide("Câu hỏi thảo luận nhanh", f"""
-<ol style="line-height:2">
-<li>Vì sao HDFS chọn đánh đổi độ trễ thấp để lấy thông lượng cao? Đánh đổi này hợp lý trong tình huống nào?</li>
-<li>So với MapReduce chạy trực tiếp trên Hadoop 1.x, vai trò của MapReduce thay đổi ra sao sau khi có YARN?</li>
-<li>Hive và Pig cùng dịch sang job MapReduce: vậy điểm khác biệt cốt lõi giữa 2 công cụ nằm ở đâu?</li>
-<li>Vì sao HBase không hỗ trợ SQL/join phức tạp lại vẫn được coi là một thành phần quan trọng của hệ sinh thái?</li>
-</ol>
-<p style="color:var(--muted);font-size:.88rem">Dùng để thảo luận tại lớp: không có đáp số cố định, trả lời dựa trên nội dung Chương 2.</p>
-"""))
-
 SLIDES.append(slide("Tài liệu tham khảo", f"""
 <p><b>Nguồn duy nhất của toàn bộ nội dung trình bày:</b></p>
 {tbl(['Mục','Chi tiết'],
@@ -410,14 +406,14 @@ SLIDES.append(slide("Tài liệu tham khảo", f"""
 # ===================== PHẦN 8 (BONUS): Ứng dụng liên ngành =====================
 SLIDES.append(divider(8, 8, "Bonus: Ứng dụng liên ngành", [
     "Bài toán: tìm điểm chia cây quyết định", "Vì sao cần kỹ thuật streaming (sketch)",
-    "Vì sao cần mô hình tính toán song song lớn (MPC)", "Nghiên cứu liên quan của giảng viên môn học"]))
+    "Vì sao cần mô hình tính toán song song lớn (MPC)", "3 bài báo của giảng viên môn học"]))
 
 SLIDES.append(slide("Bài toán: tìm điểm chia cây quyết định", f"""
 <p>Khi huấn luyện <b>cây quyết định</b> (decision tree) trên 1 thuộc tính số, thuật toán cần tìm
 <b>ngưỡng chia tốt nhất</b> (split point): ví dụ "tuổi &lt; 30?": để tách dữ liệu sao cho 2 nhóm con
 "thuần" nhất có thể.</p>
 {callout('info', 'Vì sao liên quan đến môn học', 'Để tìm ngưỡng chia tốt, thuật toán cần biết <b>phân vị</b> (quantile) của dữ liệu: đúng bài toán <i>quantile sketch</i> (q-digest, MRL, KLL) đã học trong môn Lưu trữ &amp; xử lý dữ liệu lớn.')}
-<p style="color:var(--muted);font-size:.85rem">Phần bonus này liên hệ khái niệm, không phải tóm tắt chi tiết kết quả kỹ thuật trong các bài báo trích dẫn: nhóm chưa đọc toàn văn các bài báo, chỉ liên hệ qua tiêu đề/tóm tắt công khai.</p>
+<p style="color:var(--muted);font-size:.85rem">3 slide tiếp theo tóm tắt đúng phần tóm tắt (abstract) và phần mở đầu (introduction) của 3 bài báo thầy Tạ Duy Hoàng là đồng tác giả: nhóm không đi sâu chứng minh toán học bên trong, chỉ trình bày đúng bài toán và kết quả chính đã công bố.</p>
 """))
 
 SLIDES.append(slide("Kết nối 1: vì sao cần streaming?", f"""
@@ -443,13 +439,37 @@ SLIDES.append(slide("Hai thế giới gặp nhau", tbl(
      ["Mục tiêu chung", "Ước lượng thống kê (ở đây: điểm chia cây quyết định) đủ chính xác, chi phí tối thiểu", ""]]
 ) + callout('warn', 'Thách thức nghiên cứu', 'Làm sao thiết kế 1 thuật toán vừa tiết kiệm bộ nhớ theo luồng (streaming), vừa tiết kiệm số vòng giao tiếp khi chạy phân tán (MPC): đây chính xác là chủ đề 2 bài báo được trích dẫn ở slide sau.')))
 
-SLIDES.append(slide("Nghiên cứu liên quan của giảng viên môn học", f"""
-<p>Thầy <b>Tạ Duy Hoàng</b>: giảng viên môn học: có hướng nghiên cứu trực tiếp về chủ đề này:</p>
-{tbl(['Công trình','Đồng tác giả · Nơi công bố'],
-     [['<i>Finding Decision Tree Splits in Streaming and Massively Parallel Models</i>', 'với Huy Pham, Hoa T. Vu · 2025 (submitted)'],
-      ['<i>Constructing Decision Trees from Data Streams</i>', 'với Huy Pham, Hoa T. Vu · ISIT 2025'],
-      ['<i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams</i>', 'với Hoa T. Vu · ESA 2026']])}
-{callout('info', 'Nguồn', 'Trích từ trang Publications công khai của giảng viên (sites.google.com/view/taduyhoang/publications): nhóm chỉ liên hệ ở mức tiêu đề/chủ đề, chưa đọc toàn văn bài báo nên không trình bày chi tiết kết quả/thuật toán cụ thể bên trong.')}
+SLIDES.append(slide("Bài báo 1: Finding Decision Tree Splits in Streaming and MPC (arXiv 2024)", f"""
+<p><i>Finding Decision Tree Splits in Streaming and Massively Parallel Models</i>: Huy Phạm, <b>Tạ Duy Hoàng</b>,
+Hoa T. Vu · arXiv:2403.19867v1, 28/03/2024.</p>
+{tblock('Bài toán &amp; kết quả chính', [
+    'Đầu vào: 1 luồng quan sát <i>x</i><sub>i</sub> ∈ [N] cùng nhãn <i>y</i><sub>i</sub> ∈ [0, M] (hồi quy) hoặc {-1, +1} (phân loại).',
+    'Mục tiêu: tìm ngưỡng chia j tối ưu, cực tiểu sai số bình phương trung bình (hồi quy) hoặc tỉ lệ phân loại sai (phân loại).',
+    'Kết quả: nhiều thuật toán streaming dùng bộ nhớ dưới tuyến tính (sublinear) và số lượt duyệt dữ liệu nhỏ, mở rộng được sang mô hình <b>Massively Parallel Computation (MPC)</b> — đúng mô hình lý thuyết đứng sau MapReduce.',
+    'Bổ sung cho công trình nền tảng của Domingos &amp; Hulten (KDD 2000) về học cây quyết định trên luồng dữ liệu.'])}
+{callout('info', 'Nguồn', 'arXiv:2403.19867v1 [cs.DS], đọc trực tiếp phần Abstract và Introduction (mục 1).')}
+"""))
+
+SLIDES.append(slide("Bài báo 2: Constructing Decision Trees from Data Streams (ISIT 2025)", f"""
+<p><i>Constructing Decision Trees from Data Streams</i>: Huy Phạm, <b>Tạ Duy Hoàng</b>, Hoa T. Vu ·
+arXiv:2403.19867v4 (cùng mã arXiv, bản sửa đổi sâu, đổi tên bài), 16/04/2025, công bố tại ISIT 2025.</p>
+{tblock('Khác biệt so với bài báo 1', [
+    'Bỏ giả định dữ liệu <i>i.i.d.</i> (độc lập, cùng phân phối) mà bài báo 1 vẫn dùng.',
+    'Thêm tiêu chí Gini impurity cho bài toán phân loại, bên cạnh sai số bình phương trung bình và tỉ lệ phân loại sai.',
+    'Mục tiêu mở rộng: không chỉ tìm 1 điểm chia mà <b>dựng cả cây quyết định</b> trực tiếp từ luồng dữ liệu.',
+    'Mở rộng thuật toán sang đúng mô hình <b>MapReduce</b> (thay vì MPC tổng quát ở bài báo 1).'])}
+{callout('info', 'Nguồn', 'arXiv:2403.19867v4 [cs.DS], đọc trực tiếp phần Abstract và Introduction (mục 1); bổ sung cho Domingos-Hulten (KDD 2000) và Hulten-Spencer-Domingos (KDD 2001).')}
+"""))
+
+SLIDES.append(slide("Bài báo 3: Nearly Optimal Bounds for Decision Tree Splits (ESA 2026)", f"""
+<p><i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams</i>: <b>Tạ Duy Hoàng</b>
+(ĐH Bách Khoa Hà Nội), Hoa T. Vu (San Diego State University) · arXiv:2604.20394v2, công bố tại ESA 2026.</p>
+{tblock('Cận trên &amp; cận dưới gần tối ưu', [
+    'Hồi quy (nhãn trong {0,…,M}): thuật toán 1 lượt duyệt, bộ nhớ Õ(M²/ε), sai số cộng ε so với điểm chia tối ưu — cải tiến thuật toán 2 lượt duyệt của Phạm &amp; cộng sự (ISIT 2025, chính là bài báo 2).',
+    'Cận dưới khớp: chứng minh Ω(M²/ε) bộ nhớ là cần thiết, suy ra bằng reduction từ bài toán Index.',
+    'Phân loại: thuật toán 1 lượt duyệt, bộ nhớ Õ(1/ε) cho điểm chia Gini tối ưu — cải tiến thuật toán Õ(1/ε²) trước đó; cận dưới khớp Ω(1/ε) (Gini) và Ω(1/ε) (tỉ lệ phân loại sai).',
+    'Kỹ thuật: khai thác tính Lipschitz của hàm mất mát, kết hợp reservoir sampling với Count–Min sketch hỗ trợ truy vấn khoảng (range query).'])}
+{callout('info', 'Nguồn', 'arXiv:2604.20394v2 [cs.DS], đọc trực tiếp phần Abstract và Introduction (mục 1).')}
 """))
 
 SLIDES.append(slide("Thông điệp của phần bonus", f"""
@@ -482,6 +502,10 @@ HUST_THEME = """<style>
 :root[data-theme="dark"]{--accent:#ff5a68;--accent2:#ffb3b8}
 .hust-logo-row{display:flex;align-items:center;gap:16px;margin-bottom:8px}
 .hust-logo-row img{height:56px;width:auto}
+.tblock{border:1px solid var(--accent);border-radius:10px;overflow:hidden;margin:10px 0;background:var(--panel)}
+.tblock .tblock-h{background:var(--accent);color:#fff;font-weight:800;padding:7px 16px;font-size:.98rem}
+.tblock ol{margin:0;padding:10px 16px 10px 34px}
+.tblock li{margin:5px 0;line-height:1.45}
 </style>"""
 body = f"""<div class="hero"><div class="hust-logo-row"><img src="{rel_root}assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
 <div class="kicker">Bài tập lớn · Nhóm 1</div>
