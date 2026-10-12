@@ -730,7 +730,7 @@ HUST_THEME = """<style>
 body = f"""<div class="hero"><div class="hust-logo-row"><img src="{rel_root}assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
 <div class="kicker">Bài tập lớn · Nhóm 1</div>
 <h1>Hệ sinh thái Hadoop: Chương 2</h1>
-<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm {", ".join(MEMBERS)}.</p></div>
+<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm {", ".join(MEMBERS)}. <a href="group-1-slides-QA.html">Trả lời câu hỏi ôn tập Chương 2 →</a></p></div>
 {DECK}
 <div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn</div>
 Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung. <i>Lưu trữ và Xử lý Dữ liệu Lớn</i>, Chương 2: Hệ sinh thái Hadoop, tr.23–36. Trường CNTT&amp;TT, ĐH Bách Khoa Hà Nội, 2024.

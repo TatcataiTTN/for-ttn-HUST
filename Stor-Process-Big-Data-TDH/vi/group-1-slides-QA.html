@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Nhóm 1: Trả lời câu hỏi ôn tập Chương 2</title>
+<link rel="stylesheet" href="../_shared/common.css">
+<link rel="stylesheet" href="../_shared/deck.css">
+<link rel="stylesheet" href="../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+<style>
+:root{--accent:#ce1628;--accent2:#8a0f1f}
+:root[data-theme="dark"]{--accent:#ff5a68;--accent2:#ffb3b8}
+.hust-logo-row{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.hust-logo-row img{height:56px;width:auto}
+.tech-logo{position:absolute;top:24px;right:40px;height:56px;max-width:170px;width:auto;object-fit:contain;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px 8px}
+
+/* ---- Theme slide HUST (nền Beamer HUST: băng navy + đường đỏ, logo chân trang) ---- */
+.mdeck-slide{--text:#1b2433;--muted:#566074;--panel:#fff;--border:#d5dae6;--code:#eef2fa;--hred:#ce1628;--hnavy:#003366;
+  color:var(--text);background-color:#fff;background-size:100% 100%;background-repeat:no-repeat;padding:104px 60px 66px}
+.mdeck-slide.th0{background-image:url(../assets/images/hust-theme/content-full.png)}
+.mdeck-slide.th1{background-image:url(../assets/images/hust-theme/content-hust-full.png)}
+.mdeck-slide.th2{background-image:url(../assets/images/hust-theme/content-logo.png)}
+.mdeck-slide.th3{background-image:url(../assets/images/hust-theme/content-hust.png)}
+.mdeck-slide.th0 h2,.mdeck-slide.th1 h2,.mdeck-slide.th2 h2,.mdeck-slide.th3 h2{position:absolute;left:60px;right:96px;top:0;height:68px;
+  margin:0;display:flex;align-items:center;color:#fff;font-size:1.42rem;line-height:1.15}
+.mdeck-slide.has-logo h2{right:230px;padding-right:0}
+.mdeck-slide .hust-emblem{position:absolute;top:6px;right:20px;height:56px;width:auto}
+.mdeck-slide.part-divider{background-image:url(../assets/images/hust-theme/section.png);padding:0 80px}
+.mdeck-slide.part-divider h2{position:static;color:#fff}
+.mdeck-slide.cover{background-image:url(../assets/images/hust-theme/title.png);padding:150px 560px 70px 70px;align-items:flex-start}
+.mdeck-slide.cover h2{font-size:2.3rem}
+.mdeck-slide.endcard{background-image:url(../assets/images/hust-theme/end-empty.png);padding:150px 60px 70px 540px;align-items:flex-start}
+.mdeck-slide b,.mdeck-slide strong{color:var(--hred)}
+.mdeck-slide.part-divider b,.mdeck-slide.part-divider strong{color:#fff}
+.mdeck-slide p,.mdeck-slide li{font-size:1.04rem;line-height:1.42}
+.mdeck-slide table{font-size:.92rem}
+.mdeck-slide table.dense{font-size:.8rem}
+.mdeck-slide td .katex,.mdeck-slide th .katex{white-space:nowrap}
+.mdeck-slide td,.mdeck-slide th{vertical-align:middle}
+.mdeck-slide h3{font-size:1.12rem}
+.tblock{border-color:var(--hnavy)}.tblock .tblock-h{background:var(--hnavy)}
+.tech-logo{top:6px;right:90px;height:56px}
+
+.tblock{border:1px solid var(--accent);border-radius:10px;overflow:hidden;margin:10px 0;background:var(--panel)}
+.tblock .tblock-h{background:var(--accent);color:#fff;font-weight:800;padding:7px 16px;font-size:.98rem}
+.tblock ol{margin:0;padding:10px 16px 10px 34px}
+.tblock li{margin:5px 0;line-height:1.45}
+</style><style>
+.qa-pre{margin:6px 0;padding:8px 12px;background:var(--code);border:1px solid var(--border);border-radius:8px;
+  font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace;white-space:pre;overflow:hidden;color:#1b2433}
+.qa-cols{display:flex;gap:16px;align-items:flex-start}.qa-cols>*{flex:1;min-width:0}
+.qa-cap{font-size:.8rem;color:var(--muted);margin:2px 0 0}
+.qa-q{font-size:.92rem;color:var(--muted);margin:0 0 8px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="index.html">Trang chủ</a>
+    <a href="modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="hust-logo-row"><img src="../assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
+<div class="kicker">Bài tập lớn · Nhóm 1</div>
+<h1>Hệ sinh thái Hadoop: Trả lời câu hỏi ôn tập</h1>
+<p>Đáp án 10 câu ôn tập cuối Chương 2, môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b>. Slide thuyết trình chính: <a href="group-1-slides.html">group-1-slides.html</a>.</p></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide cover"><div class="kicker">IT4931: Lưu trữ &amp; xử lý dữ liệu lớn · Bài tập lớn</div>
+<h2>Hệ sinh thái Hadoop: Trả lời câu hỏi ôn tập</h2>
+<p style="font-size:1.05rem;color:var(--muted)">10 câu cuối Chương 2 (giáo trình tr.37–38)</p>
+<p><b>Nhóm 1</b> · Trương Tuấn Nghĩa (20251196M) · Nguyễn Vũ Việt Hoàng (20252091M) · Nguyễn Thế Hoàng (20251228M)</p>
+<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; 22 slide</p></div><div class="mdeck-slide th0"><h2>Mười câu hỏi và hướng trả lời</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST"><table class="dense"><tr><th>Câu</th><th>Nội dung</th><th>Ý chính của đáp án</th></tr><tr><td>1</td><td>Kiến trúc tổng thể Hadoop</td><td>HDFS lưu trữ, MapReduce xử lý, YARN quản lý tài nguyên</td></tr><tr><td>2</td><td>HDFS so với hệ tập tin UNIX</td><td>Block lớn, ghi một lần đọc nhiều lần, metadata tách riêng</td></tr><tr><td>3</td><td>Chia block, nhân bản, NameNode và DataNode</td><td>Block 128 MB, 3 bản sao, NameNode tự sao chép lại</td></tr><tr><td>4</td><td>Đặc điểm nổi bật của MapReduce</td><td>Đơn giản, data locality, chịu lỗi tự động</td></tr><tr><td>5</td><td>Hive và Pig</td><td>SQL-like cho phân tích, data flow cho ETL</td></tr><tr><td>6</td><td>Quy trình thực thi MapReduce</td><td>Split, Map, Shuffle và Sort, Reduce</td></tr><tr><td>7</td><td>Tổng doanh số theo customer_id</td><td>Map (customer_id, amount), Reduce cộng</td></tr><tr><td>8</td><td>Dữ liệu lệch (skew)</td><td>Một khoá dồn vào một reducer; combiner, salting, skew join</td></tr><tr><td>9</td><td>Pipeline phân tích log</td><td>Kafka, HDFS, Hive, Oozie, Spark hoặc Flink</td></tr><tr><td>10</td><td>Số dư cuối của mỗi account_id</td><td>Deposit cộng, withdrawal trừ, rồi cộng theo khoá</td></tr></table></div><div class="mdeck-slide th1"><h2>Câu 1: Kiến trúc tổng thể của Hadoop</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<p class="qa-q">Trình bày kiến trúc tổng thể của Hadoop; vai trò của HDFS, MapReduce và YARN.</p>
+<table><tr><th>Thành phần</th><th>Vai trò</th></tr><tr><td>HDFS</td><td>Lưu tệp lớn tin cậy trên cụm: chia block, nhân bản 3 lần</td></tr><tr><td>MapReduce</td><td>Mô hình lập trình xử lý batch song song, người dùng chỉ viết Map và Reduce</td></tr><tr><td>YARN</td><td>Quản lý tài nguyên và lập lịch, cho nhiều ứng dụng chạy chung một cụm</td></tr><tr><td>Hadoop Common</td><td>Thư viện và tiện ích dùng chung</td></tr></table>
+<div class="callout good"><div class="lbl">Kiến trúc scale-out</div>Mở rộng bằng cách thêm máy phổ thông, coi hỏng hóc là bình thường: tự nhân bản dữ liệu, tự chuyển tác vụ sang node khác. <b>Hadoop 1.x:</b> MapReduce vừa xử lý vừa quản lý tài nguyên. <b>Hadoop 2.x:</b> YARN tách phần quản lý tài nguyên, MapReduce chỉ còn là một framework cạnh Spark, Flink, Tez.</div>
+</div><div class="mdeck-slide th2"><h2>Câu 2: HDFS so với hệ tập tin UNIX</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table class="dense"><tr><th>Tiêu chí</th><th>UNIX file system</th><th>HDFS</th></tr><tr><td>Phạm vi</td><td>Một máy</td><td>Cụm hàng nghìn node</td></tr><tr><td>Đơn vị lưu</td><td>Block cỡ 4 KB</td><td>Block 64 MB hoặc 128 MB</td></tr><tr><td>Mô hình truy cập</td><td>Đọc ghi ngẫu nhiên, sửa tại chỗ (POSIX)</td><td>Ghi một lần, đọc nhiều lần; chỉ append ở cuối tệp</td></tr><tr><td>Mục tiêu</td><td>Độ trễ thấp, đa dụng</td><td>Thông lượng cao cho tệp trăm MB đến TB</td></tr><tr><td>Quản lý dữ liệu</td><td>Metadata và dữ liệu cùng một máy</td><td>NameNode giữ metadata trong RAM, DataNode giữ block</td></tr><tr><td>Chịu lỗi</td><td>Dựa vào phần cứng (RAID, sao lưu)</td><td>Phần mềm: mỗi block nhân bản 3 DataNode</td></tr><tr><td>Tệp nhỏ</td><td>Không vấn đề</td><td>Kém hiệu quả vì metadata nằm hết trong RAM NameNode</td></tr></table>
+<div class="callout info"><div class="lbl">Đánh đổi</div>HDFS hy sinh một số tính năng POSIX để đổi lấy khả năng mở rộng và chịu lỗi ở quy mô petabyte.</div>
+</div><div class="mdeck-slide th3"><h2>Câu 3: Chia block và nhân bản trong HDFS</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="tblock"><div class="tblock-h">Quy trình</div><ol><li>Tệp được chia thành các <b>block</b>, mặc định 64 MB hoặc 128 MB.</li><li>Mỗi block nhân bản mặc định <b>3 bản</b> trên 3 DataNode khác nhau.</li><li>Ví dụ tệp 1 GB, block 128 MB: <b>8 block</b>, <b>24 bản sao</b>, cần khoảng 3 GB dung lượng thật.</li><li>Một DataNode hỏng: dữ liệu không mất vì còn bản ở node khác; NameNode tự điều phối sao chép lại cho đủ 3 bản.</li></ol></div>
+<div class="callout good"><div class="lbl">Tính sẵn sàng và chịu lỗi</div>Chịu lỗi nằm ở tầng phần mềm (nhân bản), không cần phần cứng đắt tiền và không cần quản trị viên can thiệp.</div>
+</div><div class="mdeck-slide th3"><h2>Câu 3: Vai trò của NameNode và DataNode</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table><tr><th></th><th>NameNode (master)</th><th>DataNode (slave)</th></tr><tr><td>Lưu gì</td><td>Metadata: cấu trúc thư mục, tên tệp, ánh xạ tệp sang block và vị trí</td><td>Các block dữ liệu thật</td></tr><tr><td>Việc chính</td><td>Điều phối truy cập của client, phát hiện thiếu bản sao và ra lệnh sao chép lại</td><td>Xử lý trực tiếp yêu cầu đọc ghi của client, báo tình trạng về NameNode</td></tr><tr><td>Khi đọc tệp</td><td>Trả về vị trí các block</td><td>Gửi dữ liệu thẳng cho client</td></tr></table>
+<div class="callout warn"><div class="lbl">Điểm lỗi duy nhất</div>NameNode giữ toàn bộ metadata. Secondary NameNode định kỳ sao lưu và hợp nhất edit log để phục hồi nhanh metadata; đây là điểm khôi phục, không phải bản sao chạy song song thay thế ngay.</div>
+</div><div class="mdeck-slide th0"><h2>Câu 4: Đặc điểm nổi bật của MapReduce</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table class="dense"><tr><th>Đặc điểm</th><th>Ý nghĩa trong môi trường phân tán</th></tr><tr><td>Đơn giản</td><td>Lập trình viên chỉ viết hai hàm Map và Reduce</td></tr><tr><td>Tự động hoá phần khó</td><td>Framework tự chia việc, phân phối tác vụ, thu gộp kết quả trung gian, xử lý lỗi</td></tr><tr><td>Data locality</td><td>Đặt tác vụ gần nơi dữ liệu nằm, ít kéo dữ liệu qua mạng</td></tr><tr><td>Minimal data exchange</td><td>Hạn chế trao đổi dữ liệu giữa các node</td></tr><tr><td>Chịu lỗi tự động</td><td>Tác vụ của node hỏng được chạy lại ở node khác</td></tr><tr><td>Mở rộng cao</td><td>Hàng nghìn node, hàng petabyte, xử lý theo lô</td></tr><tr><td>Tích hợp hệ sinh thái</td><td>Hive, Pig, Sqoop đều dịch hoặc chạy thành job MapReduce</td></tr></table>
+<div class="callout warn"><div class="lbl">Hạn chế</div>Độ trễ cao với tác vụ lặp và tương tác, nên có Spark và Flink; MapReduce vẫn phù hợp batch truyền thống.</div>
+</div><div class="mdeck-slide th1"><h2>Câu 5: Vai trò của Hive và Pig</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table class="dense"><tr><th>Tiêu chí</th><th><img src="../assets/images/logos/apachehive.svg" alt="" style="height:26px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)"> Hive</th><th><img src="../assets/images/logos/pig.gif" alt="" style="height:28px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)"> Pig</th></tr><tr><td>Nguồn gốc</td><td>Facebook</td><td>Yahoo!</td></tr><tr><td>Ngôn ngữ</td><td>HiveQL, gần SQL (SELECT, JOIN, GROUP BY)</td><td>Pig Latin, kịch bản mô tả luồng dữ liệu</td></tr><tr><td>Mô hình</td><td>Bảng, schema-on-read trên HDFS</td><td>Chuỗi bước: đọc, lọc, biến đổi, gộp nhóm, join, sắp xếp</td></tr><tr><td>Người dùng</td><td>Nhà phân tích quen SQL</td><td>Kỹ sư dữ liệu làm ETL phức tạp</td></tr><tr><td>Thực thi</td><td>Dịch thành MapReduce, Tez hoặc Spark</td><td>Dịch thành chuỗi job MapReduce</td></tr><tr><td>Độ trễ</td><td>Cỡ phút (batch)</td><td>Cỡ phút (batch)</td></tr></table>
+</div><div class="mdeck-slide th1"><h2>Câu 5: Khi nào chọn Hive thay vì Pig</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="tblock"><div class="tblock-h">Chọn Hive khi</div><ol><li>Người dùng quen SQL và không muốn học lập trình.</li><li>Dữ liệu dạng bảng, mục tiêu là báo cáo, tổng hợp, phân tích kinh doanh hoặc tích hợp công cụ BI.</li><li>Chấp nhận độ trễ batch cỡ phút.</li></ol></div>
+<div class="tblock"><div class="tblock-h">Chọn Pig khi</div><ol><li>Cần nhiều bước biến đổi hoặc join phức tạp, viết thành một script tuần tự dễ bảo trì.</li><li>Cần chèn logic riêng bằng UDF (Java, Python).</li></ol></div>
+<div class="callout info"><div class="lbl">Điểm chung</div>Cả hai đều nhằm đơn giản hoá việc dùng Hadoop và cuối cùng quy về job MapReduce chạy trên cụm.</div>
+</div><div class="mdeck-slide th2"><h2>Câu 6: Các bước thực thi một chương trình MapReduce</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table class="dense"><tr><th>Bước</th><th>Việc xảy ra</th></tr><tr><td>1. Input split</td><td>Dữ liệu trên HDFS chia thành split, mỗi split giao một map task, ưu tiên chạy ở node giữ block</td></tr><tr><td>2. Map</td><td>Đọc từng bản ghi, sinh cặp (key, value) trung gian, ghi ra đĩa cục bộ; Combiner có thể gộp cục bộ trước</td></tr><tr><td>3. Shuffle</td><td>Chia cặp trung gian theo key cho các reducer (hash(key) mod R), reducer kéo phần của mình qua mạng; bước tốn kém nhất</td></tr><tr><td>4. Sort</td><td>Mỗi reducer sắp theo key, gom thành (key, [value, ...])</td></tr><tr><td>5. Reduce</td><td>Gọi hàm reduce cho từng key, ghi output lên HDFS, mỗi reducer một file</td></tr></table>
+<div class="callout info"><div class="lbl">Chịu lỗi</div>Tác vụ lỗi hoặc node hỏng được framework tự chạy lại.</div>
+</div><div class="mdeck-slide th2"><h2>Câu 6: Ví dụ đếm từ (WordCount) với 2 split</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table><tr><th>Giai đoạn</th><th>Nội dung</th></tr><tr><td>Split 1</td><td><code>hadoop hdfs hadoop</code></td></tr><tr><td>Split 2</td><td><code>hdfs yarn hadoop</code></td></tr><tr><td>Map</td><td>Map 1: (hadoop,1) (hdfs,1) (hadoop,1) &nbsp;|&nbsp; Map 2: (hdfs,1) (yarn,1) (hadoop,1)</td></tr><tr><td>Shuffle và Sort (2 reducer)</td><td>R1: hadoop → [1,1,1] &nbsp;|&nbsp; R2: hdfs → [1,1], yarn → [1]</td></tr><tr><td>Reduce</td><td>(hadoop,3) (hdfs,2) (yarn,1)</td></tr></table>
+<div class="callout good"><div class="lbl">Với Combiner</div>Dùng chính hàm cộng làm Combiner: Map 1 gửi (hadoop,2) (hdfs,1) thay vì 3 cặp, giảm lưu lượng shuffle.</div>
+</div><div class="mdeck-slide th3"><h2>Câu 7: Tổng doanh số theo customer_id, ý tưởng</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<pre class="qa-pre">map(dòng):
+    bỏ qua header
+    emit(customer_id, amount)
+
+reduce(customer_id, danh_sách_amount):
+    emit(customer_id, sum(danh_sách_amount))</pre>
+<div class="callout good"><div class="lbl">Combiner</div>Phép cộng có tính kết hợp nên dùng chính reducer làm Combiner để giảm dữ liệu shuffle.</div>
+<table class="dense"><tr><th>Đầu vào mẫu</th><th>Sau Map</th><th>Kết quả Reduce</th></tr><tr><td>1001,C001,Keyboard,Electronics,25.0<br/>1002,C002,Book,Education,10.5<br/>1003,C001,Mouse,Electronics,15.0</td><td>(C001, 25.0)<br/>(C002, 10.5)<br/>(C001, 15.0)</td><td><b>C001 40.0</b><br/><b>C002 10.5</b></td></tr></table>
+</div><div class="mdeck-slide th3"><h2>Câu 7: Mã Python (Hadoop Streaming) và kết quả</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="qa-cols"><div><b>sales_mapper.py</b><pre class="qa-pre">#!/usr/bin/env python3
+import sys
+for line in sys.stdin:
+    f = line.strip().split(",")
+    if len(f) != 5 or f[0] == "order_id":
+        continue
+    print(f"{f[1]}\t{float(f[4])}")</pre></div><div><b>sum_reducer.py</b><pre class="qa-pre">#!/usr/bin/env python3
+import sys
+cur, total = None, 0.0
+for line in sys.stdin:
+    k, v = line.rstrip("\n").split("\t")
+    if k != cur:
+        if cur is not None:
+            print(f"{cur}\t{total}")
+        cur, total = k, 0.0
+    total += float(v)
+if cur is not None:
+    print(f"{cur}\t{total}")</pre></div></div>
+<pre class="qa-pre">python3 sales_mapper.py &lt; sales.csv | sort | python3 sum_reducer.py
+C001    40.0
+C002    10.5</pre>
+<p class="qa-cap">Chạy thử cục bộ, <code>sort</code> mô phỏng shuffle. Trên cụm: <code>hadoop jar hadoop-streaming.jar -mapper sales_mapper.py -combiner sum_reducer.py -reducer sum_reducer.py</code></p>
+</div><div class="mdeck-slide th0"><h2>Câu 8: Nguyên nhân MapReduce kém hiệu quả khi dữ liệu lệch</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="tblock"><div class="tblock-h">Cơ chế gây lệch</div><ol><li>Reducer được chọn theo <code>hash(key) mod R</code>: mọi bản ghi của một khoá đi về cùng một reducer.</li><li>Một khoá chiếm phần lớn bản ghi (khách VIP, giá trị null, ngày khuyến mãi) làm reducer đó quá tải.</li><li>Reducer này chạy lâu hơn nhiều (straggler), cả job phải chờ; các reducer khác ngồi không nên thêm máy cũng không nhanh hơn.</li><li>Reducer quá tải có thể tràn bộ nhớ hoặc đĩa; join có khoá nóng gặp lỗi tương tự.</li></ol></div>
+</div><div class="mdeck-slide th0"><h2>Câu 8: Kỹ thuật cải thiện hiệu suất</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table class="dense"><tr><th>Kỹ thuật</th><th>Cách làm</th><th>Điều kiện</th></tr><tr><td>Combiner, in-mapper combining</td><td>Gộp cục bộ phía map, mỗi map gửi 1 cặp cho mỗi khoá</td><td>Phép toán có tính kết hợp (tổng, đếm, max)</td></tr><tr><td>Salting</td><td>Giai đoạn 1: khoá thành key#k (k ngẫu nhiên trong K) để chia khoá nóng cho K reducer. Giai đoạn 2: bỏ hậu tố, gộp tiếp</td><td>Tính từng phần rồi gộp được</td></tr><tr><td>Partitioner tuỳ chỉnh</td><td>Lấy mẫu để chia khoảng khoá đều hoặc gán khoá nóng cho nhiều reducer</td><td>Biết hoặc ước lượng được phân phối</td></tr><tr><td>Skew join</td><td>Xử lý riêng khoá nóng; bảng nhỏ đưa vào bộ nhớ mọi mapper (map-side join); Pig skewed join, Hive skew join</td><td>Một bảng đủ nhỏ, hoặc biết khoá nóng</td></tr><tr><td>Tách khoá đặc biệt</td><td>Xử lý riêng null, giá trị mặc định</td><td>Biết khoá gây lệch</td></tr><tr><td>Tăng số reducer</td><td>Giảm tải mỗi reducer</td><td>Chỉ giúp khi lệch nhẹ</td></tr></table>
+</div><div class="mdeck-slide th0"><h2>Câu 8: Minh hoạ salting, K = 4</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="qa-cols"><div><pre class="qa-pre"># salt1_mapper.py (giai đoạn 1)
+import sys, random
+K = 4
+for line in sys.stdin:
+    f = line.strip().split(",")
+    if len(f) != 5 or f[0] == "order_id":
+        continue
+    print(f"{f[1]}#{random.randrange(K)}\t{float(f[4])}")</pre></div><div><pre class="qa-pre"># salt2_mapper.py (giai đoạn 2)
+import sys
+for line in sys.stdin:
+    k, v = line.rstrip("\n").split("\t")
+    print(f"{k.split('#')[0]}\t{v}")</pre></div></div>
+<table class="dense"><tr><th>Tập 2000 đơn, khoá C001 có 1800 đơn</th><th>Bản ghi mỗi reducer cho C001</th></tr><tr><td>Không salting</td><td>1800 trên 1 reducer</td></tr><tr><td>Salting K = 4</td><td>463, 433, 462, 442 (đo được); tổng cuối vẫn <b>C001 1800.0</b></td></tr></table>
+</div><div class="mdeck-slide th1"><h2>Câu 9: Kiến trúc pipeline phân tích log truy cập</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<p class="qa-q">Website thương mại điện tử lưu lượng lớn: thu thập log real-time, lưu lâu dài, phân tích hành vi người dùng.</p>
+<svg viewBox="0 0 1100 330" width="100%" role="img" aria-label="Pipeline phân tích log truy cập"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#566074"/></marker></defs><foreignObject x="8" y="118" width="130" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:130px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:2px solid #003366;border-radius:10px;padding:4px 6px;font:600 13px sans-serif;color:#1b2433;line-height:1.2">Web server<br/>log click, xem, mua</div></foreignObject><foreignObject x="188" y="118" width="130" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:130px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fbeaec;border:2px solid #ce1628;border-radius:10px;padding:4px 6px;font:700 13px sans-serif;color:#1b2433;line-height:1.2">Kafka<br/>topic access_logs</div></foreignObject><foreignObject x="380" y="28" width="170" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:170px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#eef2fa;border:2px solid #003366;border-radius:10px;padding:4px 6px;font:600 13px sans-serif;color:#1b2433;line-height:1.2">Flink / Spark Streaming</div></foreignObject><foreignObject x="380" y="208" width="170" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:170px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#eef2fa;border:2px solid #003366;border-radius:10px;padding:4px 6px;font:600 13px sans-serif;color:#1b2433;line-height:1.2">Sink ghi HDFS<br/>(Spark, Kafka Connect)</div></foreignObject><foreignObject x="600" y="28" width="190" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:190px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:2px solid #003366;border-radius:10px;padding:4px 6px;font:600 13px sans-serif;color:#1b2433;line-height:1.2">Chỉ số thời gian thực<br/>HBase (tra theo userID)</div></foreignObject><foreignObject x="600" y="208" width="170" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:170px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fbeaec;border:2px solid #ce1628;border-radius:10px;padding:4px 6px;font:700 13px sans-serif;color:#1b2433;line-height:1.2">HDFS<br/>Parquet dt/hour</div></foreignObject><foreignObject x="820" y="208" width="120" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:120px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#eef2fa;border:2px solid #003366;border-radius:10px;padding:4px 6px;font:600 13px sans-serif;color:#1b2433;line-height:1.2">Hive<br/>bảng external</div></foreignObject><foreignObject x="970" y="208" width="122" height="70"><div xmlns="http://www.w3.org/1999/xhtml" style="box-sizing:border-box;width:122px;height:70px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:2px solid #003366;border-radius:10px;padding:4px 6px;font:600 13px sans-serif;color:#1b2433;line-height:1.2">Sqoop<br/>RDBMS, BI</div></foreignObject><line x1="138" y1="153" x2="186" y2="153" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><line x1="318" y1="140" x2="378" y2="70" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><line x1="318" y1="166" x2="378" y2="236" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><line x1="550" y1="63" x2="598" y2="63" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><line x1="550" y1="243" x2="598" y2="243" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><line x1="770" y1="243" x2="818" y2="243" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><line x1="940" y1="243" x2="968" y2="243" stroke="#566074" stroke-width="2" marker-end="url(#ar)"/><rect x="590" y="292" width="502" height="34" rx="8" fill="#003366"/><foreignObject x="590" y="292" width="502" height="34"><div xmlns="http://www.w3.org/1999/xhtml" style="height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font:700 13px sans-serif">Oozie Coordinator: gộp file, thêm partition, HiveQL, Sqoop, báo lỗi</div></foreignObject></svg>
+<p class="qa-cap">YARN chạy Spark, Flink, Hive. ZooKeeper phục vụ điều phối (HBase, HDFS HA, Kafka bản cũ).</p>
+</div><div class="mdeck-slide th1"><h2>Câu 9: Đáp ứng ba yêu cầu của đề</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<table class="dense"><tr><th>Yêu cầu</th><th>Thành phần</th><th>Cách làm</th></tr><tr><td>Thu thập log real-time</td><td><img src="../assets/images/logos/apachekafka.svg" alt="" style="height:26px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)"> Kafka</td><td>Web server là producer, gửi vào topic access_logs; nhiều partition (khoá theo user_id hoặc session_id), nhân bản 3, giữ cấu hình được (ví dụ 7 ngày) để đọc lại</td></tr><tr><td>Lưu trữ log lâu dài</td><td><img src="../assets/images/logos/apachehadoop.svg" alt="" style="height:26px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)"> HDFS</td><td>Spark, Flink hoặc Kafka Connect ghi Parquet hoặc ORC, phân vùng dt/hour, nhân bản 3</td></tr><tr><td>Phân tích hành vi người dùng</td><td><img src="../assets/images/logos/apachehive.svg" alt="" style="height:26px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)"> Hive, Spark, Flink</td><td>Hive batch trên bảng external theo phân vùng; Flink hoặc Spark Streaming tính chỉ số theo cửa sổ thời gian</td></tr><tr><td>Điều phối định kỳ</td><td><img src="../assets/images/logos/oozie.png" alt="" style="height:22px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)"> Oozie</td><td>Coordinator mỗi giờ hoặc ngày: gộp file nhỏ, thêm partition, chạy HiveQL, Sqoop xuất kết quả, gửi thông báo</td></tr></table>
+<div class="callout info"><div class="lbl">Lưu ý thiết kế</div>Gom log thành tệp lớn (vài trăm MB) vì HDFS kém với tệp nhỏ; dùng định dạng cột để Hive đọc ít dữ liệu; Kafka là bộ đệm nên consumer chậm hoặc gián đoạn không làm mất log; cần tra theo userID độ trễ thấp thì ghi thêm vào HBase.</div>
+</div><div class="mdeck-slide th1"><h2>Câu 9: Ví dụ HiveQL cho phân tích hành vi</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="qa-cols"><div><pre class="qa-pre">CREATE EXTERNAL TABLE access_logs (
+  user_id STRING, session_id STRING, url STRING,
+  action STRING, ts TIMESTAMP)
+PARTITIONED BY (dt STRING, hour STRING)
+STORED AS PARQUET LOCATION '/data/access_logs';
+
+-- Top 10 sản phẩm được xem nhiều nhất trong ngày
+SELECT url, COUNT(*) AS views
+FROM access_logs WHERE dt = '2023-01-01' AND action = 'view'
+GROUP BY url ORDER BY views DESC LIMIT 10;</pre></div><div><pre class="qa-pre">-- Tỉ lệ chuyển đổi theo ngày
+SELECT dt,
+  COUNT(DISTINCT CASE WHEN action='purchase'
+        THEN session_id END) /
+  COUNT(DISTINCT CASE WHEN action='view'
+        THEN session_id END) AS conversion
+FROM access_logs GROUP BY dt;</pre><p class="qa-cap">Bảng external trỏ vào thư mục log, truy vấn chỉ đọc phân vùng cần dùng.</p></div></div>
+</div><div class="mdeck-slide th2"><h2>Câu 10: Số dư cuối của mỗi account_id, ý tưởng</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<pre class="qa-pre">map(dòng):
+    bỏ qua header
+    nếu type == "deposit":     emit(account_id, +amount)
+    nếu type == "withdrawal":  emit(account_id, -amount)
+
+reduce(account_id, danh_sách_giá_trị):
+    emit(account_id, sum(danh_sách_giá_trị))</pre>
+<div class="callout good"><div class="lbl">Thứ tự không quan trọng</div>Phép cộng giao hoán và kết hợp nên số dư cuối không phụ thuộc thứ tự giao dịch: không cần cột timestamp, và có thể dùng reducer làm Combiner.</div>
+</div><div class="mdeck-slide th2"><h2>Câu 10: Mã Python và kết quả</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
+<div class="qa-cols"><div><b>bal_mapper.py</b><pre class="qa-pre">#!/usr/bin/env python3
+import sys
+for line in sys.stdin:
+    f = line.strip().split(",")
+    if len(f) != 5 or f[0] == "transaction_id":
+        continue
+    amount = float(f[3])
+    if f[2] == "deposit":
+        print(f"{f[1]}\t{amount}")
+    elif f[2] == "withdrawal":
+        print(f"{f[1]}\t{-amount}")</pre></div><div><b>Kết quả với 3 dòng mẫu</b><pre class="qa-pre">python3 bal_mapper.py &lt; transactions.csv \
+  | sort | python3 sum_reducer.py
+A101    400.0
+A102    1000.0</pre><p class="qa-cap">A101 = 500 − 100 = 400; A102 = 1000. Reducer dùng lại sum_reducer.py ở Câu 7. Giao dịch type khác bị bỏ qua.</p></div></div>
+</div><div class="mdeck-slide endcard"><div class="kicker">Cảm ơn đã theo dõi</div>
+<h2>Nhóm 1: Hệ sinh thái Hadoop</h2>
+<p>Trương Tuấn Nghĩa (20251196M) · Nguyễn Vũ Việt Hoàng (20252091M) · Nguyễn Thế Hoàng (20251228M)</p>
+<p style="color:var(--muted)">Môn Lưu trữ &amp; xử lý dữ liệu lớn, giảng viên Tạ Duy Hoàng</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn</div>
+Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung. <i>Lưu trữ và Xử lý Dữ liệu Lớn</i>, Chương 2: Hệ sinh thái Hadoop, tr.23–38. Trường CNTT&amp;TT, ĐH Bách Khoa Hà Nội, 2024.
+&nbsp;·&nbsp; <a href="../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Xem giáo trình gốc (PDF)</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../_shared/theme.js"></script>
+<script src="../_shared/info.js"></script>
+<script src="../_shared/deck.js"></script>
+<script src="../_shared/glossary.js"></script>
+</body></html>
