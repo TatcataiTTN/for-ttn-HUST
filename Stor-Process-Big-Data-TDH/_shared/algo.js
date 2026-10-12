@@ -608,6 +608,31 @@ ALG.oozieDagRun = function(nodes, failAt){
   return log;
 };
 
+
+/* ---- hd-07: chọn ngưỡng chia trên dữ liệu (x, y), tính theo ba "moment" n, s, q của từng đoạn ---- */
+ALG.splitScan = function(points, kind){
+  // points: [{x,y}], kind: 'mse' | 'mis' | 'gini'; trả về mọi ngưỡng j (giữa các giá trị x đã sắp) và L(j)
+  var P = points.slice().sort(function(a,b){return a.x-b.x});
+  var m = P.length, xs = [];
+  P.forEach(function(p){ if (xs.indexOf(p.x) < 0) xs.push(p.x); });
+  function mom(arr){ var n=arr.length,s=0,q=0,pos=0; arr.forEach(function(p){ s+=p.y; q+=p.y*p.y; if(p.y>0) pos++; }); return {n:n,s:s,q:q,pos:pos,neg:n-pos}; }
+  function sse(a){ return a.n ? a.q - a.s*a.s/a.n : 0; }
+  function gini(a){ if(!a.n) return 0; var p=a.pos/a.n; return 1-p*p-(1-p)*(1-p); }
+  var rows = [];
+  for (var t = 0; t <= xs.length; t++){
+    var j = t === 0 ? (xs.length ? xs[0]-1 : 0) : xs[t-1];
+    var left = P.filter(function(p){return p.x<=j}), right = P.filter(function(p){return p.x>j});
+    var L = mom(left), R = mom(right), loss;
+    if (kind === 'mis') loss = (Math.min(L.pos,L.neg) + Math.min(R.pos,R.neg)) / m;
+    else if (kind === 'gini') loss = (L.n*gini(L) + R.n*gini(R)) / m;
+    else loss = (sse(L)+sse(R)) / m;
+    rows.push({j:j, left:L, right:R, sseL:sse(L), sseR:sse(R), loss:loss});
+  }
+  var best = rows[0];
+  rows.forEach(function(r){ if (r.loss < best.loss - 1e-12) best = r; });
+  return {rows:rows, best:best, m:m};
+};
+
 global.ALG = ALG;
 if (typeof module !== 'undefined' && module.exports) module.exports = ALG;
 })(typeof window !== 'undefined' ? window : globalThis);

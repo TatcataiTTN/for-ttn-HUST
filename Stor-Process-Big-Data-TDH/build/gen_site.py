@@ -188,6 +188,7 @@ SIM_FOR = {
     "hd-04-hbase-sqoop": "hd04_hbase_sqoop",
     "hd-05-kafka": "hd05_kafka_offset",
     "hd-06-oozie-zookeeper": "hd06_oozie_zk",
+    "hd-07-bai-bao-thay": "hd07_split",
 }
 
 def buoi_label(mod):
@@ -241,7 +242,16 @@ def build_module_page(mod, prev_mod, next_mod):
                    f'📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> '
                    f'— module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, '
                    f'ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). '
-                   f'Xem bản trình bày gốc của Nhóm 1: <a href="{rel_root}vi/group-1-slides.html">group-1-slides.html</a>.</p>')
+                   f'Xem bản trình bày gốc của Nhóm 1: <a href="{rel_root}vi/group-1-slides.html">group-1-slides.html</a>.</p>'
+                   f'<p>📄 Bài báo gốc (PDF) được đọc trực tiếp trong các module: '
+                   f'<a href="{rel_root}data/source/papers/GFS_Ghemawat2003.pdf" target="_blank">GFS 2003</a> · '
+                   f'<a href="{rel_root}data/source/papers/MapReduce_Dean2004.pdf" target="_blank">MapReduce 2004</a> · '
+                   f'<a href="{rel_root}data/source/papers/Bigtable_Chang2006.pdf" target="_blank">Bigtable 2006</a> · '
+                   f'<a href="{rel_root}data/source/papers/Chubby_Burrows2006.pdf" target="_blank">Chubby 2006</a> · '
+                   f'<a href="{rel_root}data/source/papers/Kafka_Kreps2011.pdf" target="_blank">Kafka 2011</a> · '
+                   f'3 bài của thầy: <a href="{rel_root}data/source/papers/Pham_Ta_Vu_2024_arXiv2403.19867v1.pdf" target="_blank">v1 (2024)</a>, '
+                   f'<a href="{rel_root}data/source/papers/Pham_Ta_Vu_2025_arXiv2403.19867v4.pdf" target="_blank">v4 (ISIT 2025)</a>, '
+                   f'<a href="{rel_root}data/source/papers/Ta_Vu_2026_arXiv2604.20394v2.pdf" target="_blank">ESA 2026</a>.</p>')
     else:
         ex_html = "\n".join([
             render_exlist("📗 Bài tập nền tảng — Phần 1 (toán/xác suất, tổng quát hoá + kiểm chứng code)", EX["phan1"].get(str(n), [])),
@@ -267,7 +277,7 @@ def build_module_page(mod, prev_mod, next_mod):
             if next_mod else '<span></span>')
     nav += '</div>'
 
-    track_total = "10" if is_sched else ("6" if is_hadoop else "14")
+    track_total = "10" if is_sched else (str(len(HADOOP_MODULES)) if is_hadoop else "14")
     body = f"""<div class="hero"><div class="kicker">{buoi_label(mod)} / {track_total}</div>
 <h1>{mod["title"]}</h1></div>
 {deck}
@@ -345,11 +355,11 @@ def build_index():
 <div class="go">Mở / tải PDF →</div></a>"""
     group1_card = """<a class="mod-card" href="group-1-slides.html" style="border-color:var(--accent2)">
 <span class="kicker">Bài tập lớn · Nhóm 1</span><h3>Hệ sinh thái Hadoop (Chương 2)</h3>
-<span class="tag">48 slide · Trương Tuấn Nghĩa, Nguyễn Vũ Việt Hoàng, Nguyễn Thế Hoàng</span>
+<span class="tag">73 slide · Trương Tuấn Nghĩa, Nguyễn Vũ Việt Hoàng, Nguyễn Thế Hoàng</span>
 <div class="go">Mở slide thuyết trình →</div></a>"""
     hadoop_deck_card = """<a class="mod-card" href="hadoop-deep-dive-slides.html" style="border-color:var(--warn)">
 <span class="kicker">Tự học sâu · Chương 2</span><h3>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng (deck tổng hợp)</h3>
-<span class="tag">18 slide · tóm lược cả 6 module hd-01..hd-06 · không sửa slide Nhóm 1</span>
+<span class="tag">18 slide · tóm lược cả 7 module hd-01..hd-07 · không sửa slide Nhóm 1</span>
 <div class="go">Mở deck tổng hợp →</div></a>"""
     body = f"""<div class="hero">
 <div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
@@ -379,10 +389,11 @@ công bằng tài nguyên (progressive filling, DRF), và phân công/tái cân 
 trực tiếp Spark/YARN/MapReduce/Kafka, có nguồn trích trang cụ thể.</p>
 <div class="grid">{''.join(sched_cards)}</div>
 <h2>🐘 Hệ sinh thái Hadoop — Tự học sâu (Chương 2, dành cho nhóm bài tập lớn)</h2>
-<p>6 module tự học sâu, tách biệt khỏi slide thuyết trình gốc của Nhóm 1: không lặp lại Chương 2, mà đi sâu
+<p>7 module tự học sâu, tách biệt khỏi slide thuyết trình gốc của Nhóm 1: không lặp lại Chương 2, mà đi sâu
 vào <b>lịch sử ra đời thật</b>, <b>động lực nghiệp vụ</b> và <b>ảnh hưởng tới thế giới</b> của từng công nghệ
 (Hadoop/HDFS, MapReduce/YARN, Pig/Hive, HBase/Sqoop, Kafka, Oozie/ZooKeeper) — mỗi fact lịch sử đều trích
-nguồn kiểm chứng được.</p>
+nguồn kiểm chứng được, và các module có <b>đọc trực tiếp bài báo gốc</b> (GFS, MapReduce, Bigtable, Chubby, Kafka). Module thứ 7 dành cho
+<b>3 bài báo của thầy Tạ Duy Hoàng</b> (Phần 8 bonus của bài trình bày).</p>
 <div class="grid">{''.join(hadoop_cards)}</div>
 <h2>Tài liệu bổ sung</h2>
 <div class="grid">{notes_card}{slide_pdf_card}{slide_card}{sched_pdf_card}</div>

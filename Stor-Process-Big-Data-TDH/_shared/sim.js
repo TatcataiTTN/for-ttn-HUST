@@ -635,6 +635,47 @@ W.hd06_oozie_zk = function(root){
   $(root,'#go').onclick=run; $(root,'#go2').onclick=runOozie; run();
 };
 
+W.hd07_split = function(root){
+  frame(root,'Chọn ngưỡng chia cây quyết định: tính L(j) cho mọi ngưỡng và so với tập ứng viên lấy mẫu',
+    '<div class="row"><label>Tiêu chí: <select id="kind"><option value="mse" selected>Hồi quy: sai số bình phương trung bình</option>'+
+    '<option value="mis">Phân loại: tỉ lệ phân loại sai (nhãn ±1)</option><option value="gini">Phân loại: Gini (nhãn ±1)</option></select></label></div>'+
+    '<div class="row"><label>Dữ liệu (mỗi dòng <code>x,y</code>): </label><br>'+
+    '<textarea id="data" rows="8" style="width:100%;max-width:340px;font-family:monospace">1,6\n2,8\n3,7\n4,7\n5,2\n6,3\n7,2\n8,1</textarea></div>'+
+    '<div class="row"><label>Chỉ xét ngưỡng ứng viên (cách nhau bởi dấu phẩy, bỏ trống = xét tất cả): <input id="cand" value="" style="width:180px"></label></div>'+
+    '<button class="btn" id="go">Tính</button><div class="out"></div>');
+  function parse(){
+    return $(root,'#data').value.split(/\n+/).map(function(l){return nums(l)}).filter(function(a){return a.length>=2&&isFinite(a[0])&&isFinite(a[1])})
+      .map(function(a){return {x:a[0],y:a[1]}});
+  }
+  function run(){
+    var kind = $(root,'#kind').value, pts = parse();
+    if (pts.length < 2){ $(root,'.out').innerHTML = '<p class="no">Cần ít nhất 2 dòng x,y hợp lệ.</p>'; return; }
+    var r = A.splitScan(pts, kind), candTxt = $(root,'#cand').value.trim();
+    var cand = candTxt ? nums(candTxt) : null;
+    var rows = r.rows.filter(function(x){return x.left.n>0 && x.right.n>0});
+    var shown = cand ? rows.filter(function(x){return cand.indexOf(x.j)>=0}) : rows;
+    var opt = rows.reduce(function(b,x){return x.loss<b.loss?x:b}, rows[0]);
+    var bestC = shown.length ? shown.reduce(function(b,x){return x.loss<b.loss?x:b}, shown[0]) : null;
+    var head = kind==='mse' ? ['j','Trái (n, s, q)','SSE trái','Phải (n, s, q)','SSE phải','L(j)'] : ['j','Trái (n, +1, −1)','Phải (n, +1, −1)','L(j)'];
+    var body = shown.map(function(x){
+      var best = bestC && x.j===bestC.j;
+      var cells = kind==='mse'
+        ? [x.j, '('+x.left.n+', '+fnum(x.left.s)+', '+fnum(x.left.q)+')', fnum(x.sseL), '('+x.right.n+', '+fnum(x.right.s)+', '+fnum(x.right.q)+')', fnum(x.sseR), fnum(x.loss)]
+        : [x.j, '('+x.left.n+', '+x.left.pos+', '+x.left.neg+')', '('+x.right.n+', '+x.right.pos+', '+x.right.neg+')', fnum(x.loss)];
+      return best ? {cls:'ok', cells:cells} : cells;
+    });
+    var msg = '<p>Ngưỡng tối ưu trên <b>mọi</b> ngưỡng: <b>j = '+opt.j+'</b>, OPT = <b>'+fnum(opt.loss)+'</b>.</p>';
+    if (cand){
+      msg += bestC
+        ? '<p>Trong tập ứng viên <b>{'+cand.join(', ')+'}</b>: tốt nhất là j = <b>'+bestC.j+'</b> với L = <b>'+fnum(bestC.loss)+'</b>, '+
+          'chênh so với OPT là <b>'+fnum(bestC.loss-opt.loss)+'</b>'+(bestC.loss-opt.loss<1e-12?' (đúng bằng OPT).':' (sai số cộng so với tối ưu).')+'</p>'
+        : '<p class="no">Không ứng viên nào hợp lệ (ngưỡng phải là giá trị x có thật và để cả hai phía đều có điểm).</p>';
+    }
+    $(root,'.out').innerHTML = msg + tbl(head, body);
+  }
+  $(root,'#go').onclick = run; run();
+};
+
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.sim[data-sim]').forEach(function(root){
     var f = W[root.getAttribute('data-sim')];

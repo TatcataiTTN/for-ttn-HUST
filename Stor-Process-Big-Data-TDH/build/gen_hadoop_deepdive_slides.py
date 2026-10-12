@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Sinh 1 file slide TỔNG HỢP riêng cho bộ tự học sâu "Hệ sinh thái Hadoop" (6 module hd-01..hd-06),
+"""Sinh 1 file slide TỔNG HỢP riêng cho bộ tự học sâu "Hệ sinh thái Hadoop" (7 module hd-01..hd-07),
 hoàn toàn TÁCH BIỆT khỏi group-1-slides.html gốc (không sửa file đó, không dùng chung script gen_group1.py).
 Mục đích: 1 deck duy nhất để nhóm trình bày/ôn lại nhanh lịch sử - động lực - ảnh hưởng của cả Chương 2,
 kèm 1 dòng thời gian tổng hợp ở cuối. Nội dung tóm lược lại đúng các fact đã trích nguồn trong
 hadoop_deepdive_content.py — không thêm fact mới ở đây."""
 import pathlib, sys
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
+from timeline_svg import tech_timeline_svg
 from gen_site import HEAD_THEME_SCRIPT, KATEX, topbar, footer
 
 ROOT = pathlib.Path(__file__).parent.parent
@@ -38,7 +39,7 @@ slide thuyết trình bài tập lớn của Nhóm 1 (group-1-slides.html)</p>
 <p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Môn Lưu trữ &amp; xử lý dữ liệu lớn &nbsp;·&nbsp; __SLIDE_COUNT__ slide</p></div>""")
 
 SLIDES.append(slide("Mục đích của bản deck này", f"""
-<p>Nhóm đã đọc <i>group-1-slides.html</i> (55 slide bám đúng Chương 2 giáo trình, tr.23–36) và nhận xét
+<p>Nhóm đã đọc <i>group-1-slides.html</i> (73 slide, nội dung chính bám Chương 2 giáo trình tr.23–36) và nhận xét
 <i>"nửa sau đúng không hiểu gì"</i>. Bản deck này KHÔNG lặp lại Chương 2 — nó trả lời 3 câu hỏi mà Chương 2
 không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>
 {tbl(["Phần","Công nghệ","Trọng tâm"],
@@ -47,12 +48,13 @@ không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì độn
       ["3","Pig &amp; Hive","Yahoo Research vs Facebook — 2 triết lý ngôn ngữ khác nhau"],
       ["4","HBase &amp; Sqoop","Bigtable → Powerset → Facebook Messages; cầu nối RDBMS↔Hadoop"],
       ["5","Kafka","LinkedIn 2010-2011 → log-centric architecture → Confluent"],
-      ["6","Oozie &amp; ZooKeeper","Điều phối workflow; Chubby → ZAB → 'xương sống vô hình'"]])}
-{callout('info','Mỗi module đầy đủ (lịch sử, ví dụ, demo tương tác, 11-12 câu quiz) nằm ở', 'site: mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ. Deck này chỉ tóm lược để trình bày/ôn nhanh.')}
+      ["6","Oozie &amp; ZooKeeper","Điều phối workflow; Chubby → ZAB → 'xương sống vô hình'"],
+      ["7","Ba bài báo của thầy","Chọn ngưỡng chia cây quyết định trên luồng (streaming) và trên cụm song song (MPC)"]])}
+{callout('info','Mỗi module đầy đủ (lịch sử, ví dụ, demo tương tác, 20+ câu quiz) nằm ở', 'site: mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ. Deck này chỉ tóm lược để trình bày/ôn nhanh.')}
 """))
 
 # ===================== PHẦN 1: Hadoop & HDFS =====================
-SLIDES.append(divider(1, 6, "Hadoop &amp; HDFS", [
+SLIDES.append(divider(1, 7, "Hadoop &amp; HDFS", [
     "Nutch (2002) không scale được → đọc 2 paper Google", "2006: Cutting vào Yahoo, Hadoop tách từ Nutch",
     "Tên: con voi nhồi bông của con trai Doug Cutting", "Kiến trúc Master/Slave: NameNode/DataNode, block, replication"]))
 
@@ -71,7 +73,7 @@ SLIDES.append(slide("HDFS: 2 quyết định thiết kế quyết định tất 
 ) + callout('info','🌍 Ảnh hưởng tới thế giới','2008: Hadoop thành top-level Apache project → Cloudera (2008), Hortonworks (2011) → đặt nền tảng cho data lake/lakehouse (S3+EMR, Delta Lake, Iceberg) ngày nay.')))
 
 # ===================== PHẦN 2: MapReduce & YARN =====================
-SLIDES.append(divider(2, 6, "MapReduce &amp; YARN", [
+SLIDES.append(divider(2, 7, "MapReduce &amp; YARN", [
     "MapReduce (Dean &amp; Ghemawat, Google 2004): Map→Shuffle&amp;Sort→Reduce",
     "Hadoop 1.0: JobTracker vừa quản lý tài nguyên vừa theo dõi job → nghẽn, SPOF",
     "YARN (Hadoop 2.0, 2012): tách ResourceManager / NodeManager / ApplicationMaster"]))
@@ -84,7 +86,7 @@ MapReduce job. Giới hạn thực tế: ~4.000 node, ~40.000 task đồng thờ
 """))
 
 # ===================== PHẦN 3: Pig & Hive =====================
-SLIDES.append(divider(3, 6, "Pig &amp; Hive", [
+SLIDES.append(divider(3, 7, "Pig &amp; Hive", [
     "Pig (Yahoo Research, ~2006): PigLatin — thủ tục, giữa SQL và MapReduce thuần",
     "Hive (Facebook, Sen Sarma &amp; Thusoo, phát hành 10/2010): HiveQL — khai báo như SQL",
     "Cùng giải 1 vấn đề (viết MapReduce tay quá cực), 2 triết lý ngôn ngữ khác nhau"]))
@@ -98,7 +100,7 @@ trong warehouse, chỉ <b>6 người</b> dùng được (phải biết viết Ma
 """))
 
 # ===================== PHẦN 4: HBase & Sqoop =====================
-SLIDES.append(divider(4, 6, "HBase &amp; Sqoop", [
+SLIDES.append(divider(4, 7, "HBase &amp; Sqoop", [
     "HBase (Powerset, phát hành 28/3/2008): mô phỏng Bigtable (Google, 2006) cho NLP search",
     "Facebook Messages (11/2010): ca sử dụng nổi tiếng nhất — nhưng đã migrate sang MyRocks (2018)",
     "Sqoop (Aaron Kimball, Cloudera, 5/2009): cầu nối RDBMS↔HDFS — bị retired vào Apache Attic 6/2021"]))
@@ -112,7 +114,7 @@ khai lớn nhất ở quy mô hàng trăm triệu người dùng ở thời đi�
 """))
 
 # ===================== PHẦN 5: Kafka =====================
-SLIDES.append(divider(5, 6, "Apache Kafka", [
+SLIDES.append(divider(5, 7, "Apache Kafka", [
     "LinkedIn 2010-2011: Jay Kreps, Neha Narkhede, Jun Rao — Kreps viết phần lớn Kafka kỳ nghỉ Giáng sinh",
     "Kafka = log phân tán (giữ lại message), KHÔNG phải message queue truyền thống (xoá sau khi đọc)",
     "Confluent (2014, 500.000 USD từ LinkedIn) → IPO 2021, doanh thu &gt;300 triệu USD/năm"]))
@@ -126,7 +128,7 @@ hàng đợi thông thường.</p>
 """))
 
 # ===================== PHẦN 6: Oozie & ZooKeeper + Tổng kết =====================
-SLIDES.append(divider(6, 6, "Oozie, ZooKeeper &amp; Tổng kết", [
+SLIDES.append(divider(6, 7, "Oozie, ZooKeeper &amp; Tổng kết", [
     "Oozie (Yahoo!, 2008): điều phối workflow DAG của nhiều job Hadoop phụ thuộc nhau",
     "ZooKeeper (Yahoo Research, ~2007): mô phỏng Chubby (Google) — ZAB (biến thể Paxos)",
     "Tổng kết: 1 dòng thời gian — hệ sinh thái KHÔNG do 1 công ty thiết kế từ đầu"]))
@@ -152,17 +154,43 @@ SLIDES.append(slide("Dòng thời gian: hệ sinh thái Hadoop là lịch sử c
      ["2012", "YARN", "Yahoo!/Hortonworks", "JobTracker nghẽn, cần tách resource management"]]
 )))
 
+SLIDES.append(slide("Lộ trình nhiều nhánh: ý tưởng chảy từ bài báo Google sang từng công nghệ", f"""
+<p style="font-size:.92rem;margin:0 0 4px">Nét đứt xám = ý tưởng từ bài báo Google; nét liền = phụ thuộc lúc chạy (công cụ chạy trên Hadoop, HBase và Kafka dùng ZooKeeper, Kafka nạp dữ liệu vào HDFS).</p>
+{tech_timeline_svg()}
+"""))
+
 SLIDES.append(slide("Bài học lớn nhất của cả Chương 2", f"""
 {callout('good', 'Không ai "thiết kế" cả hệ sinh thái này từ đầu', 'Mỗi công nghệ ra đời ở MỘT công ty khác nhau (Google, Yahoo, Powerset, Cloudera, Facebook, LinkedIn), để giải quyết MỘT bài toán nội bộ cụ thể — rồi được mã nguồn mở hoá và ghép lại qua Apache Software Foundation thành "hệ sinh thái".')}
 <p>Đây là lý do học Chương 2 bằng cách nhớ "10 công nghệ" sẽ rất khó — nhưng học bằng cách hiểu <b>mỗi công
 nghệ là lời giải cho đúng 1 bài toán cụ thể của đúng 1 công ty</b> thì mọi thứ khớp vào nhau tự nhiên.</p>
-<p style="color:var(--muted)">Chi tiết đầy đủ (ví dụ từng bước, demo tương tác chạy thật, quiz 11-12 câu/module,
-và nguồn trích dẫn cho MỌI fact lịch sử) nằm ở 6 module <code>hd-01..hd-06</code> trên trang chủ.</p>
+<p style="color:var(--muted)">Chi tiết đầy đủ (ví dụ từng bước, demo tương tác chạy thật, quiz 25+ câu/module,
+và nguồn trích dẫn cho MỌI fact lịch sử) nằm ở 7 module <code>hd-01..hd-07</code> trên trang chủ.</p>
 """))
+
+# ===================== PHẦN 7: Ba bài báo của thầy =====================
+SLIDES.append(divider(7, 7, "Ba bài báo của thầy: streaming × MPC", [
+    "Chọn ngưỡng chia cây quyết định = một phép đếm theo khoảng",
+    "Streaming trả giá bằng bộ nhớ và số lượt duyệt; MPC trả giá bằng số vòng",
+    "Bài 3 (ESA 2026): 1 lượt và cận dưới khớp bằng quy dẫn từ bài toán Index"]))
+
+SLIDES.append(slide("Ba bài báo nối tiếp: từ thuật toán chính xác tới cận khớp", tbl(
+    ["Mốc", "Bài", "Đóng góp chính"],
+    [["03/2024", "arXiv:2403.19867v1: Finding Decision Tree Splits in Streaming and Massively Parallel Models", "1 lượt chính xác Õ(D); 2 lượt cộng ε Õ(1/ε); O(log N) lượt cho (1+ε); MPC O(1) vòng"],
+     ["04/2025 (ISIT)", "arXiv:2403.19867v4: Constructing Decision Trees from Data Streams", "Thêm Gini; đánh đổi lượt-bộ nhớ qua β: O(1/β) lượt, Õ(N^β/ε²); MPC theo β"],
+     ["07/2026 (ESA)", "arXiv:2604.20394v2: Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams", "1 lượt cho hồi quy và Gini; Õ(M²/ε) khớp Ω(M²/ε); Gini quy về hồi quy (L_Gini = 2·L_MSE)"]]
+) + callout('info', 'Điểm chung', 'Cả ba bài không giả định i.i.d. hay luồng vô hạn (khác Domingos-Hulten 2000) và chỉ tìm 1 điểm chia (cây sâu 1); muốn cây sâu hơn thì áp dụng lặp lại.')))
+
+SLIDES.append(slide("Streaming và MPC trả giá cho cùng một phép đếm theo khoảng", tbl(
+    ["", "Streaming", "MPC (MapReduce, Hadoop, Spark)"],
+    [["Thứ khan hiếm", "Bộ nhớ của 1 máy", "Bộ nhớ của mỗi máy, m^(1−β) máy"],
+     ["Chi phí được đếm", "Số lượt duyệt", "Số vòng giao tiếp (≈ số job có shuffle)"],
+     ["Đánh đổi theo β", "O(1/β) lượt, bộ nhớ Õ(N^β/ε²)", "O(1/β) vòng, mỗi máy Õ(m^β/ε²)"],
+     ["Công cụ", "Reservoir sampling, Count-Min + dyadic", "Lấy mẫu cục bộ, máy trung tâm chọn ứng viên, tổng cục bộ rồi cộng"]]
+) + callout('warn', 'Mức chắc chắn', 'Đối chiếu từng bước MPC với giai đoạn MapReduce (combiner, reducer, shuffle) là cách nhóm hiểu, không phải câu chữ của bài báo; xem module hd-07.')))
 
 SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">Hết phần tự học sâu</div>
 <h2>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h2>
-<p style="color:var(--muted)">Quay lại 6 module đầy đủ trên trang chủ để làm ví dụ, chạy demo, và làm quiz tự kiểm tra.</p></div>""")
+<p style="color:var(--muted)">Quay lại 7 module đầy đủ trên trang chủ để làm ví dụ, chạy demo, và làm quiz tự kiểm tra.</p></div>""")
 
 SLIDES[0] = SLIDES[0].replace("__SLIDE_COUNT__", str(len(SLIDES)))
 
@@ -178,9 +206,9 @@ rel_root = "../"
 body = f"""<div class="hero"><div class="kicker">Tự học sâu · Chương 2</div>
 <h1>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h1>
 <p>Bản deck tổng hợp riêng cho nhóm tự học, tách biệt hoàn toàn khỏi slide thuyết trình bài tập lớn của Nhóm 1.
-Mọi fact lịch sử trong deck này đã được trích nguồn đầy đủ trong 6 module chi tiết tương ứng (xem link cuối trang).</p></div>
+Mọi fact lịch sử trong deck này đã được trích nguồn đầy đủ trong 7 module chi tiết tương ứng (xem link cuối trang).</p></div>
 {DECK}
-<div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn &amp; 6 module chi tiết</div>
+<div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn &amp; 7 module chi tiết</div>
 Nội dung kỹ thuật cốt lõi: <i>IT4931_lecture_notes.pdf</i> (Chương 2, tr.23–36) và <i>materials/hangout/2024/2_hadoop_ecosystem_vn.pdf</i>.
 Lịch sử/động lực/ảnh hưởng: xác nhận qua web search (xem từng module để có URL nguồn cụ thể).
 &nbsp;·&nbsp; <a href="modules/hd-01-hadoop-hdfs/index.html">Hadoop 01</a> ·
@@ -188,7 +216,8 @@ Lịch sử/động lực/ảnh hưởng: xác nhận qua web search (xem từng
 <a href="modules/hd-03-pig-hive/index.html">03</a> ·
 <a href="modules/hd-04-hbase-sqoop/index.html">04</a> ·
 <a href="modules/hd-05-kafka/index.html">05</a> ·
-<a href="modules/hd-06-oozie-zookeeper/index.html">06</a>
+<a href="modules/hd-06-oozie-zookeeper/index.html">06</a> ·
+<a href="modules/hd-07-bai-bao-thay/index.html">07</a>
 &nbsp;·&nbsp; <a href="group-1-slides.html">Slide thuyết trình gốc của Nhóm 1 (Chương 2, không sửa)</a></div>
 """
 
