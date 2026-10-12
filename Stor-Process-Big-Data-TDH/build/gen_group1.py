@@ -589,20 +589,22 @@ SLIDES.append(slide("Hình gốc: bảng kết quả streaming và MPC dùng chu
 <figure style="margin:0;width:62%"><img src="../assets/images/papers/ta_fig3_mpc.png" alt="" style="width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.76rem;color:var(--muted);margin-top:4px">Figure 3 (cùng bài): MPC, cột Space per machine và No. of rounds.</figcaption></figure></div>"""))
 
 SLIDES.append(slide("Streaming và MPC trả giá cho cùng một phép đếm theo khoảng", f"""
-<p style="margin:0 0 8px">Mọi ngưỡng $j$ chỉ cần các số đếm $f_R$ (kèm nhãn) trên khoảng $R\\subseteq[1,N]$. Hai mô hình khác nhau ở thứ phải <b>trả giá</b>:</p>
+<p style="margin:0 0 10px">Mọi ngưỡng $j$ chỉ cần các số đếm $f_R$ (kèm nhãn) trên khoảng $R\\subseteq[1,N]$. Hai mô hình khác nhau ở thứ phải <b>trả giá</b>:</p>
 {tbl(['', 'Streaming', 'MPC (MapReduce, Hadoop, Spark)'],
-     [['Tài nguyên khan hiếm', 'Bộ nhớ của 1 máy', 'Bộ nhớ $\\\\tilde O(m^{{\\\\beta}})$ của <i>mỗi</i> máy, $m^{{1-\\\\beta}}$ máy'],
+     [['Tài nguyên khan hiếm', 'Bộ nhớ của 1 máy', 'Bộ nhớ $\\tilde O(m^{{\\beta}})$ của <i>mỗi</i> máy, trên $m^{{1-\\beta}}$ máy'],
       ['Chi phí được đếm', 'Số lượt duyệt (pass)', 'Số vòng giao tiếp (round)'],
-      ['Ví dụ trong bài', '1 lượt, $\\\\tilde O(M^2/\\\\varepsilon)$ (bài 3)', '$O(1)$ vòng, $\\\\tilde O(\\\\sqrt m)$/máy; hoặc $O(1/\\\\beta)$ vòng, $\\\\tilde O(m^{{\\\\beta}}/\\\\varepsilon^2)$/máy (bài 2)']], dense=True)}
-{callout('info', 'Đánh đổi nằm ngay trong công thức', 'Chọn $\\\\beta$ nhỏ để mỗi máy dùng ít bộ nhớ thì số vòng $O(1/\\\\beta)$ tăng. "Vòng" đắt vì (Figure 1, bài MapReduce) map ghi file trung gian lên <b>đĩa cục bộ</b> rồi reduce đọc từ xa: mỗi vòng thêm là 1 lần shuffle qua mạng.')}
+      ['Kết quả khi giữ hằng số lượt/vòng', '1 lượt, $\\tilde O(M^2/\\varepsilon)$ bộ nhớ (bài 3, hồi quy)', '$O(1)$ vòng, $\\tilde O(\\sqrt{{m}})$ bộ nhớ mỗi máy (bài 2)'],
+      ['Giảm bộ nhớ bằng tham số $\\beta$', '$O(1/\\beta)$ lượt, $\\tilde O(N^{{\\beta}}/\\varepsilon^2)$ bộ nhớ (bài 2)', '$O(1/\\beta)$ vòng, $\\tilde O(m^{{\\beta}}/\\varepsilon^2)$ bộ nhớ mỗi máy (bài 2)']])}
+{callout('info', 'Đánh đổi nằm ngay trong công thức', 'Chọn $\\beta$ nhỏ để dùng ít bộ nhớ thì số lượt hoặc số vòng $O(1/\\beta)$ tăng. Trên Hadoop, "vòng" đắt vì map ghi file trung gian lên <b>đĩa cục bộ</b> rồi reduce đọc từ xa (Figure 1, bài MapReduce): mỗi vòng thêm là 1 lần shuffle qua mạng.')}
 """))
 
 SLIDES.append(slide("Streaming đã có cận dưới khớp, MPC thì các bài đã đọc chưa có", f"""
-{tbl(['Điểm nối', 'Căn cứ', 'Mức chắc chắn'],
-     [['Sắp xếp theo $x$ trong $O(1)$ vòng là bước đầu của thuật toán MPC', 'Bài 1, mục 4; bài MapReduce có ví dụ <i>Distributed Sort</i>', 'Nêu trong bài'],
-      ['MPC là phép trừu tượng hoá MapReduce, Hadoop, Spark', 'Bài 2, mục 1', 'Nêu trong bài'],
-      ['Count-Min cộng được từng ô: mỗi mapper dựng sketch riêng, reducer cộng lại (như <i>combiner</i>)', 'Tính chất đã biết của Count-Min', 'Suy luận của nhóm']], dense=True)}
-{callout('good', 'Đã chứng minh (streaming, bài 3)', 'Hồi quy: 1 lượt cần $\\\\Omega(M^2/\\\\varepsilon)$ bộ nhớ, thuật toán $\\\\tilde O(M^2/\\\\varepsilon)$ đạt đúng mức đó. Phân loại: $\\\\Omega(1/\\\\varepsilon)$ khớp $\\\\tilde O(1/\\\\varepsilon)$. <b>Còn mở:</b> bài 3 không nhắc MPC, bảng MPC của bài 2 chỉ có cận trên.')}
+{tbl(['Điểm nối giữa streaming và MapReduce', 'Căn cứ'],
+     [['Sắp xếp theo $x$ trong $O(1)$ vòng là bước đầu của thuật toán MPC', 'Bài 1, mục 4; bài MapReduce có ví dụ <i>Distributed Sort</i>'],
+      ['MPC là phép trừu tượng hoá MapReduce, Hadoop, Spark', 'Bài 2, mục 1'],
+      ['Count-Min cộng được từng ô: mỗi mapper dựng sketch riêng, reducer cộng lại, giống <i>combiner</i>', 'Tính chất của Count-Min, nhóm đối chiếu với combiner của MapReduce']])}
+{callout('good', 'Đã chứng minh (streaming, bài 3)', 'Hồi quy: 1 lượt cần $\\Omega(M^2/\\varepsilon)$ bộ nhớ, thuật toán $\\tilde O(M^2/\\varepsilon)$ đạt đúng mức đó. Phân loại: cận dưới $\\Omega(1/\\varepsilon)$ khớp thuật toán $\\tilde O(1/\\varepsilon)$.')}
+{callout('warn', 'Còn mở', 'Bài 3 không nhắc MPC, còn bảng MPC của bài 2 chỉ có cận trên. Chưa rõ thuật toán 1 lượt có chuyển sang MPC với ít vòng hơn hay không.')}
 """))
 
 REFS = [
@@ -714,6 +716,8 @@ HUST_THEME = """<style>
 .mdeck-slide p,.mdeck-slide li{font-size:1.04rem;line-height:1.42}
 .mdeck-slide table{font-size:.92rem}
 .mdeck-slide table.dense{font-size:.8rem}
+.mdeck-slide td .katex,.mdeck-slide th .katex{white-space:nowrap}
+.mdeck-slide td,.mdeck-slide th{vertical-align:middle}
 .mdeck-slide h3{font-size:1.12rem}
 .tblock{border-color:var(--hnavy)}.tblock .tblock-h{background:var(--hnavy)}
 .tech-logo{top:6px;right:90px;height:56px}
