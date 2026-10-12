@@ -406,7 +406,8 @@ SLIDES.append(slide("Tài liệu tham khảo", f"""
 # ===================== PHẦN 8 (BONUS): Ứng dụng liên ngành =====================
 SLIDES.append(divider(8, 8, "Bonus: Ứng dụng liên ngành", [
     "Bài toán: tìm điểm chia cây quyết định", "Vì sao cần kỹ thuật streaming (sketch)",
-    "Vì sao cần mô hình tính toán song song lớn (MPC)", "3 bài báo của giảng viên môn học"]))
+    "Vì sao cần mô hình tính toán song song lớn (MPC)", "3 bài báo của giảng viên môn học",
+    "Tài liệu tham khảo mở rộng (8 bài báo gốc)"]))
 
 SLIDES.append(slide("Bài toán: tìm điểm chia cây quyết định", f"""
 <p>Khi huấn luyện <b>cây quyết định</b> (decision tree) trên 1 thuộc tính số, thuật toán cần tìm
@@ -447,7 +448,6 @@ Hoa T. Vu · arXiv:2403.19867v1, 28/03/2024.</p>
     'Mục tiêu: tìm ngưỡng chia j tối ưu, cực tiểu sai số bình phương trung bình (hồi quy) hoặc tỉ lệ phân loại sai (phân loại).',
     'Kết quả: nhiều thuật toán streaming dùng bộ nhớ dưới tuyến tính (sublinear) và số lượt duyệt dữ liệu nhỏ, mở rộng được sang mô hình <b>Massively Parallel Computation (MPC)</b> — đúng mô hình lý thuyết đứng sau MapReduce.',
     'Bổ sung cho công trình nền tảng của Domingos &amp; Hulten (KDD 2000) về học cây quyết định trên luồng dữ liệu.'])}
-{callout('info', 'Nguồn', 'arXiv:2403.19867v1 [cs.DS], đọc trực tiếp phần Abstract và Introduction (mục 1).')}
 """))
 
 SLIDES.append(slide("Bài báo 2: Constructing Decision Trees from Data Streams (ISIT 2025)", f"""
@@ -458,7 +458,6 @@ arXiv:2403.19867v4 (cùng mã arXiv, bản sửa đổi sâu, đổi tên bài),
     'Thêm tiêu chí Gini impurity cho bài toán phân loại, bên cạnh sai số bình phương trung bình và tỉ lệ phân loại sai.',
     'Mục tiêu mở rộng: không chỉ tìm 1 điểm chia mà <b>dựng cả cây quyết định</b> trực tiếp từ luồng dữ liệu.',
     'Mở rộng thuật toán sang đúng mô hình <b>MapReduce</b> (thay vì MPC tổng quát ở bài báo 1).'])}
-{callout('info', 'Nguồn', 'arXiv:2403.19867v4 [cs.DS], đọc trực tiếp phần Abstract và Introduction (mục 1); bổ sung cho Domingos-Hulten (KDD 2000) và Hulten-Spencer-Domingos (KDD 2001).')}
 """))
 
 SLIDES.append(slide("Bài báo 3: Nearly Optimal Bounds for Decision Tree Splits (ESA 2026)", f"""
@@ -469,7 +468,23 @@ SLIDES.append(slide("Bài báo 3: Nearly Optimal Bounds for Decision Tree Splits
     'Cận dưới khớp: chứng minh Ω(M²/ε) bộ nhớ là cần thiết, suy ra bằng reduction từ bài toán Index.',
     'Phân loại: thuật toán 1 lượt duyệt, bộ nhớ Õ(1/ε) cho điểm chia Gini tối ưu — cải tiến thuật toán Õ(1/ε²) trước đó; cận dưới khớp Ω(1/ε) (Gini) và Ω(1/ε) (tỉ lệ phân loại sai).',
     'Kỹ thuật: khai thác tính Lipschitz của hàm mất mát, kết hợp reservoir sampling với Count–Min sketch hỗ trợ truy vấn khoảng (range query).'])}
-{callout('info', 'Nguồn', 'arXiv:2604.20394v2 [cs.DS], đọc trực tiếp phần Abstract và Introduction (mục 1).')}
+"""))
+
+REFS = [
+    ["[1]", "S. Ghemawat, H. Gobioff, S.-T. Leung. <i>The Google File System.</i> SOSP 2003.", "HDFS (Phần 1–2)"],
+    ["[2]", "J. Dean, S. Ghemawat. <i>MapReduce: Simplified Data Processing on Large Clusters.</i> OSDI 2004.", "MapReduce (Phần 1, 3)"],
+    ["[3]", "F. Chang et al. <i>Bigtable: A Distributed Storage System for Structured Data.</i> OSDI 2006.", "HBase (Phần 5)"],
+    ["[4]", "M. Burrows. <i>The Chubby lock service for loosely-coupled distributed systems.</i> OSDI 2006.", "ZooKeeper / ZAB (Phần 6)"],
+    ["[5]", "J. Kreps, N. Narkhede, J. Rao. <i>Kafka: a Distributed Messaging System for Log Processing.</i> NetDB 2011.", "Kafka (Phần 6)"],
+    ["[6]", "H. Phạm, H. Ta, H. T. Vu. <i>Finding Decision Tree Splits in Streaming and Massively Parallel Models.</i> arXiv:2403.19867v1, 2024.", "Bonus (Phần 8)"],
+    ["[7]", "H. Phạm, H. Ta, H. T. Vu. <i>Constructing Decision Trees from Data Streams.</i> ISIT 2025 (arXiv:2403.19867v4).", "Bonus (Phần 8)"],
+    ["[8]", "H. Ta, H. T. Vu. <i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams.</i> ESA 2026 (arXiv:2604.20394v2).", "Bonus (Phần 8)"],
+]
+SLIDES.append(slide("Tài liệu tham khảo mở rộng (ngoài giáo trình)", f"""
+<p>Ngoài giáo trình chính (Chương 2, tr.23–36, xem Slide 47), nội dung liên hệ tới <b>8 bài báo gốc</b>
+sau: 5 bài nền tảng của từng công nghệ Apache, 3 bài nghiên cứu của giảng viên môn học dùng ở phần bonus.</p>
+{tbl(["#", "Trích dẫn", "Dùng ở"], REFS, dense=True)}
+<p style="color:var(--muted);font-size:.82rem">Bản PDF cả 8 bài báo: nhóm đã tải về, đọc trực tiếp phần Abstract và Introduction (mục 1) của từng bài, không trích dẫn gián tiếp qua nguồn thứ cấp.</p>
 """))
 
 SLIDES.append(slide("Thông điệp của phần bonus", f"""
