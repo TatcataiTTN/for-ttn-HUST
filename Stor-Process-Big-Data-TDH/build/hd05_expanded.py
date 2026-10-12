@@ -9,7 +9,7 @@
 # Facts lịch sử mới dùng trong bản mở rộng (KRaft/KIP-500), đã verify bằng WebSearch:
 #   - KIP-500 (loại bỏ phụ thuộc ZooKeeper) + KIP-595 (giao thức Raft cho metadata quorum)
 #   - Kafka 2.8.0: early access KRaft; Kafka 3.3.1: KRaft production-ready;
-#     Kafka 4.0 (cuối 2024): gỡ bỏ hoàn toàn hỗ trợ ZooKeeper, KRaft là chế độ duy nhất.
+#     Kafka 4.0 (tháng 3/2025): gỡ bỏ hoàn toàn hỗ trợ ZooKeeper, KRaft là chế độ duy nhất.
 #   Nguồn: https://www.conduktor.io/glossary/understanding-kraft-mode-in-kafka ,
 #          https://www.confluent.io/blog/removing-zookeeper-dependency-in-kafka/
 
@@ -266,7 +266,7 @@ HD05_EXPANDED = dict(
   dict(title="ZooKeeper trong Kafka cũ, và vì sao Kafka mới dần bỏ ZooKeeper (KRaft)", bullets=[
     "Kafka trước đây dùng ZooKeeper bên ngoài để lưu cluster metadata, bầu leader cho partition, theo dõi broker sống/chết",
     "KIP-500 (bỏ phụ thuộc ZooKeeper) + KIP-595 (giao thức Raft nội bộ) là nền tảng của KRaft",
-    "Kafka 2.8.0: KRaft early access; Kafka 3.3.1: production-ready; Kafka 4.0 (cuối 2024): gỡ hoàn toàn ZooKeeper"],
+    "Kafka 2.8.0: KRaft early access; Kafka 3.3.1: production-ready; Kafka 4.0 (tháng 3/2025): gỡ hoàn toàn ZooKeeper"],
    slides=[
     dict(h="Vai trò ZooKeeper trong Kafka 'kiểu cũ'", body="""
       <p>🗣️ <b>Nói nôm na:</b> ở Kafka bản cũ, ZooKeeper giống 1 "tổng đài điều phối" bên ngoài nhà máy —
@@ -288,9 +288,10 @@ HD05_EXPANDED = dict(
       hệ thống coordination bên ngoài (ZooKeeper), Kafka tự dùng lại chính mô hình log phân tán + đồng thuận
       Raft để 1 nhóm "controller" nội bộ tự lưu và đồng bộ metadata — không cần phần mềm thứ 3.
       Mốc thời gian: Kafka 2.8.0 có KRaft ở dạng early-access; Kafka 3.3.1 công bố KRaft production-ready;
-      Kafka 4.0 (phát hành cuối năm 2024) gỡ bỏ hoàn toàn hỗ trợ ZooKeeper — KRaft trở thành chế độ DUY NHẤT.
+      Kafka 4.0 (phát hành tháng 3/2025) gỡ bỏ hoàn toàn hỗ trợ ZooKeeper — KRaft trở thành chế độ DUY NHẤT.
       Nguồn: <a href="https://www.conduktor.io/glossary/understanding-kraft-mode-in-kafka" target="_blank">Conduktor — Understanding KRaft Mode in Kafka</a>,
-      <a href="https://www.confluent.io/blog/removing-zookeeper-dependency-in-kafka/" target="_blank">Confluent — Removing ZooKeeper Dependency in Kafka</a>.</div>
+      <a href="https://www.confluent.io/blog/removing-zookeeper-dependency-in-kafka/" target="_blank">Confluent — Removing ZooKeeper Dependency in Kafka</a>,
+      <a href="https://kafka.apache.org/40/getting-started/upgrade/" target="_blank">Apache Kafka 4.0 — Upgrade notes (chỉ hỗ trợ chế độ KRaft)</a>.</div>
       <table><tr><th>Khía cạnh</th><th>Kafka cũ (dùng ZooKeeper)</th><th>Kafka mới (KRaft)</th></tr>
       <tr><td>Nơi lưu cluster metadata</td><td>Cụm ZooKeeper riêng, bên ngoài Kafka</td><td>Log metadata nội bộ, do cụm controller Kafka tự quản lý</td></tr>
       <tr><td>Giao thức đồng thuận</td><td>ZAB (biến thể Paxos, của ZooKeeper)</td><td>Raft (KIP-595), tích hợp trực tiếp vào Kafka</td></tr>
@@ -437,8 +438,8 @@ HD05_EXPANDED = dict(
      "Thêm 1 lớp message queue truyền thống song song với log phân tán", "Chỉ áp dụng cho Kafka chạy trên Windows"],
    correct=1, explain="KRaft gỡ ZooKeeper khỏi vai trò coordination, dùng chính Kafka (giao thức Raft) để tự quản lý metadata; trải nghiệm producer/consumer không đổi."),
   dict(q="Theo mốc thời gian đã verify, phiên bản Kafka nào gỡ bỏ HOÀN TOÀN hỗ trợ ZooKeeper?", opts=[
-     "Kafka 2.8.0", "Kafka 3.3.1", "Kafka 4.0 (cuối năm 2024)", "Kafka 1.0"],
-   correct=2, explain="Kafka 2.8.0 có KRaft ở dạng early-access, Kafka 3.3.1 công bố production-ready, còn Kafka 4.0 (cuối 2024) mới gỡ bỏ hoàn toàn ZooKeeper."),
+     "Kafka 2.8.0", "Kafka 3.3.1", "Kafka 4.0 (tháng 3/2025)", "Kafka 1.0"],
+   correct=2, explain="Kafka 2.8.0 có KRaft ở dạng early-access, Kafka 3.3.1 công bố production-ready, còn Kafka 4.0 (tháng 3/2025) mới gỡ bỏ hoàn toàn ZooKeeper."),
   dict(q="Mức cam kết giao hàng (delivery semantics) nào của Kafka có thể làm MẤT message nhưng KHÔNG BAO GIỜ gửi/đọc trùng?", opts=[
      "Exactly-once", "At-least-once", "At-most-once", "Không mức nào có đặc điểm này"],
    correct=2, explain="At-most-once commit offset trước khi xử lý xong — nếu lỗi giữa đường, message coi như đã đọc và không đọc lại, có thể mất nhưng không trùng."),

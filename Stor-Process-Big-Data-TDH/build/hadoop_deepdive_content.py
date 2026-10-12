@@ -21,6 +21,12 @@ from hd07_expanded import HD07_EXPANDED
 from hd_add_a import HD01, HD02, HD03
 from hd_add_b import HD04, HD05, HD06
 from hd_add_common import logos
+from hd_quiz_fix_a import QFIX_A
+from hd_quiz_fix_b import QFIX_B
+from hd_quiz_fix_c import QFIX_C
+
+QFIX = {**QFIX_A, **QFIX_B, **QFIX_C}
+_QFIX_USED = set()
 
 ADDITIONS = {
     "hd-01-hadoop-hdfs": HD01, "hd-02-mapreduce-yarn": HD02, "hd-03-pig-hive": HD03,
@@ -35,6 +41,17 @@ def _wrap_formula(m):
     if inner.startswith("$"):
         return m.group(0)
     return f'{m.group(1)}$${inner}$${m.group(3)}'
+
+
+def _apply_quiz_fix(mod):
+    """Viết lại đáp án nhiễu của các câu có đáp án đúng dài hơn hẳn (xem hd_quiz_fix_a.py, hd_quiz_fix_b.py)."""
+    for q in mod["quiz"]:
+        fix = QFIX.get(q["q"])
+        if fix:
+            right = fix[0] or q["opts"][q["correct"]]
+            q["opts"], q["correct"] = [right] + list(fix[1]), 0
+            _QFIX_USED.add(q["q"])
+    return mod
 
 
 def _balance_quiz(mod):
@@ -72,8 +89,12 @@ def _build(mod):
     for p in mod["parts"]:
         for s in p["slides"]:
             s["body"] = _FORMULA.sub(_wrap_formula, s["body"])
-    return _balance_quiz(mod)
+    return _balance_quiz(_apply_quiz_fix(mod))
 
 
 HADOOP_MODULES = [_build(m) for m in (HD01_EXPANDED, HD02_EXPANDED, HD03_EXPANDED, HD04_EXPANDED,
                                        HD05_EXPANDED, HD06_EXPANDED, HD07_EXPANDED)]
+
+_UNUSED = set(QFIX) - _QFIX_USED
+if _UNUSED:
+    raise SystemExit("hd_quiz_fix: các khoá không khớp câu hỏi nào: " + "; ".join(sorted(_UNUSED)))

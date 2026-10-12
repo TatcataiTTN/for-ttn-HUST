@@ -25,7 +25,7 @@ def tech_timeline_svg():
         "HD": (1, 2006, "Hadoop", "Tách từ Nutch<br/>(Cutting, Yahoo!)", True, 0, "d", "r", 0),
         "YARN": (1, 2012, "YARN", "Hadoop 2.0: tách<br/>quản lý tài nguyên", True, 0, "u", "c", 0),
         "KF": (2, 2011.1, "Kafka", "Mã nguồn mở (LinkedIn)", True, 0, "u", "l", 14),
-        "KR": (2, 2013.2, "KRaft", "2022: Kafka bỏ<br/>ZooKeeper", False, 0, "d", "c", 0),
+        "KR": (2, 2013.2, "KRaft", "3.3 (2022): production<br/>4.0 (3/2025): bỏ ZK", False, 0, "d", "c", 0),
         "ZK": (3, 2007, "ZooKeeper", "Yahoo Research", False, 0, "d", "c", 0),
         "HB": (3, 2008.25, "HBase", "28/3/2008<br/>(Powerset)", True, 0, "d", "c", 0),
         "PIG": (3, 2008.75, "Pig", "9/2008 (Yahoo)", False, 0, "u", "l", 8),
@@ -55,7 +55,7 @@ def tech_timeline_svg():
         svg.append(f'<text x="{x}" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">{yr}</text>')
         yr += 1
     xb = X(2013.2)
-    svg.append(f'<text x="{xb}" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">⋯ 2022</text>')
+    svg.append(f'<text x="{xb}" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">⋯ 2022-25</text>')
     for ln in lanes:
         svg.append(f'<line x1="{ml-20}" y1="{ln["y"]}" x2="{xb+30}" y2="{ln["y"]}" stroke="{ln["color"]}" stroke-width="2.5" opacity=".5"/>')
         svg.append(f'<foreignObject x="0" y="{ln["y"]-24}" width="{ml-30}" height="48">'
