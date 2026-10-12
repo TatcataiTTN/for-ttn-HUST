@@ -232,3 +232,127 @@ PARTS_B.append(dict(
    <div class="callout info"><div class="lbl">Thứ tự đọc gợi ý</div>Đọc phần Introduction và Figure 1 của bài 1; rồi Algorithm 1 đến 3 của bài 2 (Mục 2); rồi Table 1 và Theorem 1 của bài 3; cuối cùng Mục 4 của bài 2 (MPC) để nối với MapReduce.
    Ôn trước các module 04, 05 (Chernoff, Hoeffding và hợp xác suất), 11 (Count-Min) và 12 (cây dyadic, rank) sẽ giúp đọc nhanh hơn nhiều.</div>"""),
  ]))
+
+
+# =====================================================================================================
+# Bổ sung đợt 2: bảng kết quả, Algorithm 4, 5, 6 (bài 2) và Table 1, Count-Min, Figure 2, 3 (bài 3)
+# =====================================================================================================
+from hd07_a import _after, _V4
+
+_ESA = "Nguồn: Tạ, Vu, <i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams</i>, arXiv:2604.20394v2, "
+
+_after(PARTS_B[0], "Bài báo 2: Constructing", dict(h="Bảng gốc kết quả streaming của bài 2 và Theorem 1: cách đọc từng hàng", body="""
+   <div style="display:flex;gap:16px;align-items:flex-start;justify-content:center">""" + fig("ta_fig2_stream.png", _V4 + "Figure 2.", 200) + fig("ta_thm1.png", _V4 + "Theorem 1.", 200) + """</div>
+   <p><b>Ký hiệu trong bảng:</b> R = hồi quy; C.1 = phân loại theo tỉ lệ phân loại sai; C.2 = phân loại theo Gini; CC.1 = phân loại với thuộc tính không có thứ tự. Ba cột còn lại là bộ nhớ, số lượt duyệt và mức đảm bảo.</p>
+   <table><tr><th>Hàng</th><th>Đọc thành lời</th><th>Thuật toán trong bài</th></tr>
+   <tr><td>R, $\\tilde O(D)$, 1 lượt, $L=\\mathrm{OPT}$</td><td>Muốn đáp án <b>đúng tuyệt đối</b> thì bộ nhớ tỉ lệ số giá trị $x$ khác nhau</td><td>Algorithm 1</td></tr>
+   <tr><td>R với $M=O(1)$, $\\tilde O(1/\\varepsilon)$, 2 lượt</td><td>Chịu sai thêm $\\varepsilon$ thì bộ nhớ không còn phụ thuộc $N$ hay $m$</td><td>Algorithm 2</td></tr>
+   <tr><td>R &amp; C.1, $\\tilde O(1/\\varepsilon^2\\cdot N^{\\beta})$, $O(1/\\beta)$ lượt, $(1+\\varepsilon)\\mathrm{OPT}$</td><td>Sai số <b>nhân</b> tốt hơn khi OPT nhỏ, đổi lại cần nhiều lượt; $\\beta$ là núm vặn giữa lượt và bộ nhớ</td><td>Algorithm 3 và 6</td></tr>
+   <tr><td>C.2, $\\tilde O(1/\\varepsilon^2)$, 1 lượt</td><td>Gini tốn bộ nhớ gấp $1/\\varepsilon$ lần so với tỉ lệ phân loại sai</td><td>Algorithm 5</td></tr>
+   <tr><td>CC.1, $\\tilde O(N/\\varepsilon)$ và $\\Omega(N)$</td><td>Thuộc tính không thứ tự thì bộ nhớ tuyến tính theo $N$ là không tránh được</td><td>Mục 3.2 của bài</td></tr></table>
+   <div class="callout warn"><div class="lbl">Một chỗ cần đọc cẩn thận</div>Hàng thứ ba của bảng ghi &quot;R &amp; C.1, $\\tilde O(1/\\varepsilon)$, 1 lượt&quot;, trong khi Theorem 1 chỉ nêu thuật toán <b>2 lượt</b> cho hồi quy với sai số cộng, và bài 3 cũng ghi kết quả cũ của hồi quy là 2 lượt. Nhóm hiểu hàng này chắc chắn đúng cho C.1 (Algorithm 4); với hồi quy, kết quả 1 lượt chỉ có từ bài 3.</div>
+   <p style="font-size:.9rem"><b>Sai số cộng và sai số nhân (minh hoạ):</b> nếu $\\mathrm{OPT}=0{,}001$ và $\\varepsilon=0{,}1$ thì đảm bảo cộng cho phép $L\\le0{,}101$ (lỏng), còn đảm bảo nhân buộc $L\\le0{,}0011$ (chặt). Nếu $\\mathrm{OPT}=5$ thì ngược lại: cộng cho $5{,}1$, nhân cho $5{,}5$.</p>"""))
+
+_after(PARTS_B[0], "Phân loại bằng lấy mẫu", dict(h="Hình gốc Algorithm 4: ước lượng số đếm từ mẫu rồi chọn ngưỡng", body=two(fig("ta_alg4.png", _V4 + "Algorithm 4.", 250), """
+   <p style="margin-top:0">🗣️ <b>Nói nôm na:</b> giống thăm dò trước bầu cử. Hỏi 1 trong 100 người, thấy 30 người chọn A thì đoán cả vùng có khoảng 3.000 người chọn A: lấy số đếm trong mẫu <b>chia cho tỉ lệ lấy mẫu</b>.</p>
+   <p><b>Dòng 1:</b> giữ mỗi cặp với xác suất $p$.</p>
+   <p><b>Dòng 2 đến 4:</b> với mỗi nhãn $l$ và mỗi khoảng $r$, đếm số điểm mẫu $k_{l,r}$ rồi đặt $\\tilde f_{l,r}=k_{l,r}/p$.</p>
+   <p><b>Dòng 5:</b> thay các số đếm thật trong công thức $L(j)$ bằng số ước lượng, chọn $j$ nhỏ nhất trong các giá trị $x$ đã bốc.</p>""", "50%") + """
+   <table><tr><th>Ví dụ (minh hoạ): $m=1000$, $p=0{,}1$, thử $j=40$</th><th>Đếm trong mẫu $k$</th><th>Ước lượng $k/p$</th></tr>
+   <tr><td>Nhãn $+1$ bên trái</td><td>30</td><td>300</td></tr><tr><td>Nhãn $-1$ bên trái</td><td>8</td><td>80</td></tr>
+   <tr><td>Nhãn $+1$ bên phải</td><td>5</td><td>50</td></tr><tr><td>Nhãn $-1$ bên phải</td><td>57</td><td>570</td></tr></table>
+   <p>$\\tilde L(40)=\\frac{1}{1000}\\big(\\min\\{80,300\\}+\\min\\{50,570\\}\\big)=\\frac{130}{1000}=0{,}13$. Chỉ cần giữ 100 điểm mẫu thay vì 1000 điểm.</p>
+   <div class="callout info"><div class="lbl">Khác Algorithm 2 ở đâu</div>Hồi quy cần tổng nhãn và tổng bình phương nhãn, nhạy với vài điểm có nhãn rất lớn, nên Algorithm 2 phải đếm chính xác ở lượt hai. Phân loại chỉ cần <b>đếm số điểm</b>, mà đếm thì ước lượng tốt bằng mẫu, nên một lượt là đủ.</div>"""),
+  dict(h="Hình gốc Algorithm 6: cùng khung đoán và tìm nhị phân cho phân loại", body=two(fig("ta_alg6.png", _V4 + "Algorithm 6.", 420), """
+   <p style="margin-top:0">Algorithm 6 có <b>cùng bộ khung</b> với Algorithm 3. Đặt hai hình cạnh nhau sẽ thấy ba chỗ khác:</p>
+   <table><tr><th></th><th>Algorithm 3 (hồi quy)</th><th>Algorithm 6 (phân loại)</th></tr>
+   <tr><td>Đại lượng được đoán</td><td>Tổng lỗi bình phương hai phía, tối đa $mM^2$</td><td>Số điểm phân loại sai hai phía, tối đa $m$</td></tr>
+   <tr><td>Số lượt cho mỗi điểm thử</td><td>2 (tính trung bình, rồi tính lỗi)</td><td>1 (đếm bốn số $f$ là đủ)</td></tr>
+   <tr><td>Điều kiện so sánh</td><td>Hai lỗi bình phương</td><td>$f_u=\\min\\{f_{-1,[1,j]},f_{+1,[1,j]}\\}$ và $f_v$ tương tự cho phía phải</td></tr></table>
+   <p>Bốn nhánh if (dòng 8 đến 16) giống hệt: cả hai đạt thì ghi nhận, cả hai vượt thì đoán sai, một phía vượt thì bỏ nửa khoảng về phía đó.</p>""", "46%") + """
+   <div class="callout good"><div class="lbl">Điều đáng học về cách làm nghiên cứu</div>Hai bài toán khác nhau dùng chung một khuôn vì cả hai hàm lỗi cùng có tính <b>đơn điệu</b>: thêm điểm vào một phía thì lỗi phía đó không giảm. Tìm được tính chất chung rồi thì thuật toán gần như viết lại được bằng cách thay tên đại lượng. Kết quả (Lemma 10): $O(\\log N)$ lượt, bộ nhớ $\\tilde O(1/\\varepsilon^2)$, $L(j)\\le(1+\\varepsilon)\\mathrm{OPT}$.</div>"""))
+
+_after(PARTS_B[0], "Gini impurity", dict(h="Hình gốc Algorithm 5: hai mẫu độc lập để ước lượng một số hạng của Gini", body=two(fig("ta_alg5.png", _V4 + "Algorithm 5.", 300), """
+   <p style="margin-top:0"><b>Mục tiêu:</b> ước lượng $\\dfrac{f_{+1,[1,j]}^2}{m\\,f_{[1,j]}}$ cho mọi $j$. Tách thành tích hai tỉ lệ:</p>
+   <p>$\\dfrac{f_{+1,[1,j]}}{m}\\times\\dfrac{f_{+1,[1,j]}}{f_{[1,j]}}$</p>
+   <p>Thừa số đầu: xác suất một điểm bất kỳ <b>vừa nằm bên trái vừa mang nhãn $+1$</b>. Thừa số sau: trong các điểm bên trái, tỉ lệ mang nhãn $+1$.</p>""", "50%") + """
+   <table><tr><th>Dòng</th><th>Ý nghĩa</th></tr>
+   <tr><td>2</td><td>Lấy hai mẫu $S_1,S_2$ bằng reservoir sampling, mỗi mẫu cỡ $C/\\varepsilon^2\\cdot\\log N$</td></tr>
+   <tr><td>4 đến 6</td><td>$S_{2,j}$ là phần của $S_2$ nằm bên trái $j$. Nếu phần này quá ít điểm thì đặt ước lượng bằng 0 (khi đó số hạng thật cũng nhỏ hơn $\\varepsilon$)</td></tr>
+   <tr><td>8</td><td>$a_i=1$ nếu điểm thứ $i$ của $S_{2,j}$ có nhãn $+1$: ước lượng thừa số sau</td></tr>
+   <tr><td>9</td><td>$b_i=1$ nếu điểm thứ $i$ của $S_1$ có nhãn $+1$ và nằm bên trái: ước lượng thừa số đầu</td></tr>
+   <tr><td>10, 11</td><td>$c_i=a_ib_i$, ước lượng là trung bình của $T$ giá trị $c_i$</td></tr></table>
+   <p><b>Vì sao cần hai mẫu:</b> trong phần chứng minh Lemma 9, bài báo viết $\\mathbb E[c_i]=\\mathbb E[b_i]\\,\\mathbb E[a_i]$. Đẳng thức này chỉ đúng khi $a_i$ và $b_i$ <b>độc lập</b>, tức phải lấy từ hai mẫu khác nhau. Sau đó Hoeffding cho sai lệch không quá $\\varepsilon$ và hợp xác suất phủ mọi $j$.</p>
+   <p><b>Ví dụ (minh hoạ):</b> $m=1000$, bên trái có 400 điểm, trong đó 300 nhãn $+1$. Giá trị thật: $300^2/(1000\\cdot400)=0{,}225$. Thừa số đầu $=0{,}3$, thừa số sau $=0{,}75$, tích $=0{,}225$, khớp.</p>"""))
+
+# Điều nhóm từng ghi là "cần đọc Algorithm 5 để kiểm chứng" nay đã kiểm chứng
+for _s in PARTS_B[0]["slides"]:
+    if _s["h"].startswith("Gini impurity"):
+        _old = "Bài báo không nêu câu này trong phần tóm tắt, cần đọc Algorithm 5 để kiểm chứng."
+        assert _old in _s["body"]
+        _s["body"] = _s["body"].replace(_old, "Nhóm đã đối chiếu với Algorithm 5 và phần chứng minh Lemma 9 (slide sau): bài báo dùng đúng đẳng thức kỳ vọng của tích hai biến độc lập.")
+
+_after(PARTS_B[2], "Bài báo 3: Nearly Optimal", dict(h="Bảng gốc Table 1 của bài 3: cận trên và cận dưới đặt cạnh nhau", body=two(fig("ta3_table1.png", _ESA + "Table 1. [29] là bài 2.", 300), """
+   <p style="margin-top:0">🗣️ <b>Nói nôm na:</b> <b>cận trên</b> là &quot;tôi làm được với chừng này bộ nhớ&quot;. <b>Cận dưới</b> là &quot;không ai làm được với ít hơn chừng này&quot;. Khi hai con số gặp nhau thì bài toán coi như đã giải xong về mặt bộ nhớ.</p>
+   <p><b>Cách đọc:</b> nửa trên là thuật toán (Upper bounds), nửa dưới là giới hạn (Lower bounds). Cột Reference cho biết kết quả của bài nào: [29] là bài 2, &quot;This Paper&quot; là bài 3. Mọi dòng đều là sai số cộng $\\varepsilon$.</p>""", "46%") + """
+   <table><tr><th>Mục tiêu</th><th>Trước bài 3</th><th>Bài 3</th><th>Cận dưới (bài 3)</th><th>Kết luận</th></tr>
+   <tr><td>Hồi quy</td><td>2 lượt, $\\tilde O(M^2/\\varepsilon)$</td><td><b>1 lượt</b>, $\\tilde O(M^2/\\varepsilon)$</td><td>$\\Omega(M^2/\\varepsilon)$</td><td>Khớp</td></tr>
+   <tr><td>Phân loại sai</td><td>1 lượt, $\\tilde O(1/\\varepsilon)$</td><td>(giữ nguyên)</td><td>$\\Omega(1/\\varepsilon)$</td><td>Khớp: thuật toán của bài 2 đã tối ưu</td></tr>
+   <tr><td>Gini</td><td>1 lượt, $\\tilde O(1/\\varepsilon^2)$</td><td>1 lượt, <b>$\\tilde O(1/\\varepsilon)$</b></td><td>$\\Omega(1/\\varepsilon)$</td><td>Khớp</td></tr></table>
+   <p><b>Ví dụ số (minh hoạ), $\\varepsilon=0{,}01$, $M=1$:</b> Gini trước đây cần cỡ $1/\\varepsilon^2=10\\,000$ đơn vị bộ nhớ, nay cỡ $1/\\varepsilon=100$, giảm 100 lần; và cận dưới nói không thể xuống dưới cỡ 100.</p>
+   <div class="callout info"><div class="lbl">Vì sao $M^2$ xuất hiện</div>Nhãn nằm trong $[0,M]$ thì lỗi bình phương lớn cỡ $M^2$. Đổi đơn vị nhãn $y\\to y/M$ làm lỗi chia cho $M^2$, nên sai số $\\varepsilon$ trên nhãn gốc tương đương sai số $\\varepsilon/M^2$ trên nhãn đã chuẩn hoá. Bài báo dùng đúng phép co giãn này ở cả cận trên lẫn cận dưới.</div>"""))
+
+_after(PARTS_B[2], "Thuật toán một lượt", dict(h="Định lý gốc về Count-Min với truy vấn khoảng: công cụ nền của bài 3", body=two(fig("ta3_cm.png", _ESA + "Theorem 2 (theo Cormode và Muthukrishnan).", 250), """
+   <p style="margin-top:0">🗣️ <b>Nói nôm na:</b> một cuốn sổ nhỏ ghi nhanh. Hỏi &quot;tổng nhãn của các điểm có $x$ từ $l$ tới $r$ là bao nhiêu?&quot;, sổ trả lời con số <b>không bao giờ thấp hơn thật</b>, và cao hơn thật nhiều nhất $W/k$.</p>
+   <p><b>Đọc định lý:</b> $f_R$ là tổng nhãn trong khoảng $R$; $W$ là tổng nhãn của cả luồng; $k$ là kích cỡ sổ. Đảm bảo: $f_R\\le\\hat f_R\\le f_R+W/k$ cho <b>mọi khoảng cùng lúc</b>, bộ nhớ $\\tilde O(k)$, cập nhật $\\tilde O(1)$.</p>""", "50%") + """
+   <table><tr><th>Ví dụ (minh hoạ)</th><th>Tính</th></tr>
+   <tr><td>$W=1000$, $k=100$</td><td>Mỗi câu trả lời dư tối đa $1000/100=10$</td></tr>
+   <tr><td>Muốn dư tối đa 1</td><td>Cần $k=1000$: bộ nhớ tăng 10 lần</td></tr></table>
+   <p><b>Bài 3 dùng ba cuốn sổ</b> cho ba luồng: $(x_i,1)$ để đếm số điểm $n_R$; $(x_i,y_i)$ để cộng nhãn $s_R$; $(x_i,y_i^2)$ để cộng bình phương nhãn $q_R$. Bài báo đặt các tham số:</p>
+   <div class="pd-formula"><div class="pd-formula-math">\\tau=\\frac{\\varepsilon}{16M^2},\\qquad \\beta=\\frac{\\varepsilon}{32M^2},\\qquad K=\\Theta\\Big(\\frac{\\log N}{\\tau}\\Big)</div></div>
+   <p><b>Thay số (minh hoạ), $\\varepsilon=0{,}1$, $M=1$:</b> $\\tau=1/160$, $\\beta=1/320$, cỡ sổ $k=1/\\beta=320$, cỡ mẫu reservoir $K$ cỡ $160\\log N$. Cả hai đều cỡ $M^2/\\varepsilon$ nhân hệ số log, đúng bằng cận bộ nhớ của Theorem 1.</p>
+   <div class="callout warn"><div class="lbl">Vì sao mẫu số được cộng thêm $\\beta m$</div>Sổ chỉ <b>ước lượng dư</b>, không bao giờ thiếu. Trong $\\mathrm{SSE}=q-s^2/n$, một $\\hat n$ gần 0 có thể làm phép chia nhảy vọt; cộng $\\beta m$ vào mẫu số giữ cho phép chia ổn định với cái giá là một sai lệch nhỏ đã được tính trong $\\varepsilon$.</div>"""))
+
+_after(PARTS_B[2], "Cận dưới: quy dẫn", dict(h="Hình gốc Figure 2 của bài 3: dựng luồng cho cận dưới hồi quy", body=fig("ta3_fig2.png", _ESA + "Figure 2.", 270) + """
+   <p><b>Cách đọc hình</b> (trường hợp $n=4$, dãy bit của Alice $z=(0,1,1,0)$, Bob hỏi bit thứ $i=2$):</p>
+   <ul style="margin:0 0 8px;padding-left:20px;line-height:1.5">
+   <li><b>Ô xanh phía trên (Alice):</b> tại $x=2,4,6,8$ có $B$ điểm với nhãn lần lượt là $z_1,z_2,z_3,z_4=0,1,1,0$. Đây là cách Alice &quot;giấu&quot; dãy bit vào luồng.</li>
+   <li><b>Ô đỏ phía dưới (Bob):</b> $T$ điểm nhãn 0 tại $x=2i-1=3$ và $T$ điểm nhãn 1 tại $x=2i+1=5$. Hai khối &quot;mỏ neo&quot; này rất nặng và kẹp hai bên khối $x=4$.</li>
+   <li><b>Hai vạch đứt:</b> $j^-=3$ đẩy khối $x=4$ sang <b>phải</b>; $j^+=4$ giữ khối $x=4$ ở bên <b>trái</b>.</li></ul>
+   <p><b>Ý tưởng:</b> bên trái vạch gần như toàn nhãn 0, bên phải gần như toàn nhãn 1. Khối $x=4$ mang nhãn $z_2$ nên xếp cùng phía với mỏ neo giống nhãn thì lỗi nhỏ hơn. Vậy <b>thuật toán chọn $j^-$ khi $z_i=1$, chọn $j^+$ khi $z_i=0$</b>: nhìn đáp án là đọc được bit.</p>
+   <table><tr><th>Tham số trong bài</th><th>Với $n=4$</th><th>Nhóm tự tính (kiểm tra)</th></tr>
+   <tr><td>$B=n$, $T=100n^2$, $N=2n+1$, $m=201n^2$</td><td>$B=4$, $T=1600$, $N=9$, $m=3216$</td><td>$L(j^-)=3{,}99/3216\\approx0{,}00124$; $L(j^+)=7{,}98/3216\\approx0{,}00248$</td></tr>
+   <tr><td>Claim 14: mọi $j$ khác có $L\\ge50/201$</td><td>$\\approx0{,}249$</td><td>Vì hai mỏ neo rơi cùng một phía, mỗi mỏ neo lệch trung bình $1/2$</td></tr>
+   <tr><td>Claim 15: $L(j^\\pm)\\le1/201$</td><td>$\\approx0{,}00498$</td><td>Hai giá trị ở trên đều nhỏ hơn, khớp</td></tr>
+   <tr><td>Khoảng cách $|L(j^+)-L(j^-)|>1/(804n)$</td><td>$\\approx0{,}00031$</td><td>Thực tế $0{,}00124$, khớp; và $j^-$ tốt hơn vì $z_2=1$</td></tr></table>
+   <div class="callout good"><div class="lbl">Từ hình tới cận dưới</div>Đặt $n=\\lfloor1/(1000\\varepsilon')\\rfloor$ thì khoảng cách giữa hai ngưỡng lớn hơn $\\varepsilon'$, nên thuật toán sai số $\\varepsilon'$ buộc phải chọn đúng. Bộ nhớ sau khi đọc phần của Alice chính là tin nhắn gửi Bob, mà Index cần $\\Omega(n)$ bit, tức $\\Omega(1/\\varepsilon')=\\Omega(M^2/\\varepsilon)$.</div>"""),
+  dict(h="Hình gốc Figure 3 của bài 3: cùng khuôn mẫu cho phân loại", body=fig("ta3_fig3.png", _ESA + "Figure 3.", 240) + """
+   <p><b>Cách đọc hình:</b> giống Figure 2 nhưng nhãn là $\\pm1$. Bob đặt $T$ điểm nhãn $-1$ tại $x=2i-1$ và $T$ điểm nhãn $+1$ tại $x=2i+1$. Alice đặt khối $G$ gồm $B$ điểm tại $x=2i$ với nhãn $s_i=+1$ nếu $z_i=1$, ngược lại $-1$. Hai ngưỡng cạnh tranh vẫn là $j^-=2i-1$ và $j^+=2i$.</p>
+   <table><tr><th></th><th>Hồi quy (Figure 2)</th><th>Phân loại sai (Figure 3)</th></tr>
+   <tr><td>Tham số</td><td>$n=\\lfloor1/(1000\\varepsilon')\\rfloor$, $T=100n^2$, $m=201n^2$</td><td>$n=\\lfloor1/(100\\varepsilon)\\rfloor$, $T=4n^2$, $m=9n^2$</td></tr>
+   <tr><td>Ngưỡng khác $j^\\pm$</td><td>$L\\ge50/201$</td><td>$L\\ge4/9$ (Claim 17)</td></tr>
+   <tr><td>Cách tính khoảng cách</td><td>Bậc hai: dùng công thức SSE khi thêm một khối</td><td>Đếm trực tiếp đa số và thiểu số</td></tr>
+   <tr><td>Cận dưới</td><td>$\\Omega(M^2/\\varepsilon)$</td><td>$\\Omega(1/\\varepsilon)$ (Theorem 16)</td></tr></table>
+   <p><b>Nhóm tự tính với $n=4$, $z=(0,1,1,0)$, $i=2$:</b> $B=4$, $T=64$, $m=144$. Với $j^-=3$: bên trái toàn nhãn $-1$ (sai 0), bên phải có 72 nhãn $+1$ và 4 nhãn $-1$ (sai 4), nên $L=4/144$. Với $j^+=4$: bên trái có 68 nhãn $-1$ và 4 nhãn $+1$ (sai 4), bên phải sai 4, nên $L=8/144$. Ngưỡng $j^-$ tốt hơn, đúng với $z_2=1$; khoảng cách là $B/m=1/(9n)$.</p>
+   <div class="callout info"><div class="lbl">Một khuôn, ba kết quả</div>Bài báo nêu rõ các cận dưới cùng theo một khuôn: dựng luồng có hai ngưỡng liền kề cạnh tranh mà ngưỡng thắng tiết lộ bit ẩn. Chỗ khác nhau chỉ là phép tính khoảng cách cho từng hàm lỗi. Gini thì suy ra từ hồi quy nhờ $L_{\\mathrm{Gini}}=2L_{\\mathrm{MSE}}$.</div>"""))
+
+QUIZ_EXTRA = [
+ dict(q="Đếm lại trên Figure 1 (hình hồi quy) của bài báo, hai đường chấm ngang ứng với hai giá trị dự đoán nào ở hai phía ngưỡng j = 4?",
+  opts=["Trung bình 7 bên trái, 2 bên phải", "Trung vị 8 bên trái, 1 bên phải", "Giá trị lớn nhất 8 và nhỏ nhất 1", "Tổng 49 bên trái, 14 bên phải"],
+  correct=0, explain="Bên trái 7 điểm có tổng 49, trung bình 7; bên phải 7 điểm có tổng 14, trung bình 2. Trung bình là hằng số làm tổng bình phương sai lệch nhỏ nhất."),
+ dict(q="Algorithm 2 trên ví dụ 8 điểm (N = 8): nếu lượt một bốc được hai giá trị 4 và 7 thì tập ứng viên S là gì?",
+  opts=["{4, 7}", "{0, 4, 7, 8}", "{0, 3, 4, 6, 7, 8}", "{3, 4, 5, 6, 7, 8}"],
+  correct=2, explain="S gồm giá trị được bốc, giá trị đứng ngay trước nó, cùng 0 và N: {0, 3, 4, 6, 7, 8}. Trong đó L(4) = 0,5 nhỏ nhất."),
+ dict(q="Trong Algorithm 3, tại điểm thử j chỉ có lỗi phía trái vượt mức đoán. Thuật toán làm gì tiếp?",
+  opts=["Ghi nhận j là khả thi", "Bỏ cặp đoán hiện tại", "Đặt cận trái thành j + 1", "Đặt cận phải thành j − 1"],
+  correct=3, explain="Dời ngưỡng sang phải chỉ làm lỗi phía trái tăng thêm, nên mọi ngưỡng lớn hơn j cũng vượt: tìm tiếp bên trái, tức j_r = j − 1."),
+ dict(q="Theo định lý Count-Min với truy vấn khoảng, nếu tổng nhãn cả luồng W = 1000 và cỡ sketch k = 100 thì ước lượng của một khoảng lệch thế nào?",
+  opts=["Thấp hơn thật tối đa 10", "Cao hơn thật tối đa 10", "Lệch hai phía tối đa 100", "Luôn đúng tuyệt đối"],
+  correct=1, explain="Đảm bảo là f_R ≤ ước lượng ≤ f_R + W/k: không bao giờ thiếu, dư tối đa 1000/100 = 10."),
+ dict(q="Trong cách dựng cận dưới hồi quy (Figure 2 của bài 3) với n = 4, độ dài luồng m = 201n² bằng bao nhiêu, và thuật toán chọn ngưỡng nào khi bit được hỏi bằng 1?",
+  opts=["m = 804; chọn j+ = 2i", "m = 3216; chọn j+ = 2i", "m = 3216; chọn j− = 2i − 1", "m = 804; chọn j− = 2i − 1"],
+  correct=2, explain="m = 201 × 16 = 3216. Khi bit bằng 1, khối của Alice tại x = 2i cùng nhãn với mỏ neo bên phải, nên đẩy nó sang phải (j−) cho lỗi nhỏ hơn."),
+ dict(q="Vì sao Algorithm 5 (ước lượng số hạng của Gini) cần hai tập mẫu độc lập S1 và S2?",
+  opts=["Để tích hai chỉ báo có kỳ vọng bằng tích hai kỳ vọng", "Để giảm một nửa thời gian cập nhật", "Để một mẫu dùng cho hồi quy, một mẫu cho phân loại", "Để phòng khi một mẫu bị mất do lỗi máy"],
+  correct=0, explain="Số hạng f²/(m·f) tách thành tích hai tỉ lệ; lấy a_i từ S2 và b_i từ S1 độc lập thì E[a_i·b_i] = E[a_i]·E[b_i], rồi áp dụng Hoeffding."),
+]

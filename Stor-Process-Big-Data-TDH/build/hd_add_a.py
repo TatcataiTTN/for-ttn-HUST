@@ -313,7 +313,7 @@ _SRC_G = "Nguồn: Ghemawat, Gobioff, Leung, <i>The Google File System</i>, SOSP
 _SRC_M = "Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, "
 
 PART_GFS["slides"] += [
-  dict(h="Hình gốc: thông lượng đọc, ghi và nối bản ghi khi tăng số client", body=fig("gfs_fig3.png", _SRC_G + "Figure 3.", 250) + """
+  dict(h="Hình gốc: thông lượng đọc, ghi và nối bản ghi khi tăng số client", body=fig("gfs_fig3.png", _SRC_G + "Figure 3.", 300) + """
    <p>🗣️ <b>Nói nôm na:</b> đường phía trên là &quot;ống nước to tối đa&quot; mà dây mạng cho phép, đường phía dưới là lượng nước thật sự chảy được. Hai đường càng gần nhau thì hệ thống càng ít lãng phí.</p>
    <p><b>Cách đọc hình:</b> trục ngang là số client $N$ chạy cùng lúc (1 đến 16), trục dọc là tổng tốc độ (MB/s) của cả nhóm. Cụm thử nghiệm: 1 master, 2 bản sao master, 16 chunkserver, 16 client; mỗi máy nối mạng 100 Mbps, hai switch nối nhau bằng 1 Gbps.</p>
    <table><tr><th>Hình</th><th>Giới hạn lý thuyết</th><th>Đo được</th><th>Giải thích trong bài</th></tr>
@@ -370,7 +370,7 @@ PART_MR["slides"] += [
    <tr><td>Kết quả</td><td>Mẫu tìm thấy trong 92.337 bản ghi</td><td>Chỉ khoảng 0,0009% dữ liệu, nên gần như không có shuffle</td></tr>
    <tr><td>Thời gian</td><td>Khoảng 150 giây, trong đó khoảng 1 phút khởi động</td><td>Mỗi worker ở đỉnh: 30.000 / 1.764 ≈ 17 MB/s</td></tr></table>
    <div class="callout info"><div class="lbl">Một phút khởi động đến từ đâu</div>Bài báo nêu: thời gian chép chương trình tới mọi worker và hỏi GFS để mở 1.000 tệp đầu vào, lấy thông tin vị trí cho tối ưu <i>locality</i>. Với job ngắn, chi phí cố định này chiếm phần lớn: đây cũng là lý do MapReduce không hợp truy vấn tương tác.</div>"""),
-  dict(h="Hình gốc: ba lần chạy sort, bình thường, tắt backup task và giết 200 worker", body=fig("mr_fig3.png", _SRC_M + "Figure 3.", 300) + """
+  dict(h="Hình gốc: ba lần chạy sort, bình thường, tắt backup task và giết 200 worker", body=fig("mr_fig3.png", _SRC_M + "Figure 3.", 400) + """
    <p><b>Cách đọc hình:</b> ba cột là ba lần chạy cùng một bài sắp xếp 1 TB ($M=15\\,000$, $R=4\\,000$, khoảng 1.700 máy). Ba hàng từ trên xuống là tốc độ <b>đọc vào</b> (map), tốc độ <b>shuffle</b> qua mạng và tốc độ <b>ghi ra</b> (reduce). Vạch dọc &quot;Done&quot; là lúc job xong.</p>
    <table><tr><th>Cột</th><th>Nhìn thấy gì</th><th>Thời gian</th></tr>
    <tr><td><b>(a) Bình thường</b></td><td>Đọc vào đạt đỉnh khoảng 13 GB/s, xong trước giây 200. Shuffle có <b>hai bướu</b>: bướu đầu cho khoảng 1.700 reduce task đầu tiên (mỗi máy một task), bướu sau cho phần còn lại; xong ở khoảng giây 600. Ghi ra 2 đến 4 GB/s, xong khoảng giây 850</td><td>891 giây</td></tr>
@@ -378,4 +378,34 @@ PART_MR["slides"] += [
    <tr><td><b>(c) Giết 200 trong 1.746 worker</b></td><td>Tốc độ đọc vào có đoạn <b>âm</b>: phần việc map đã xong trên các worker bị giết &quot;biến mất&quot; và phải làm lại; làm lại khá nhanh</td><td>933 giây (+5%)</td></tr></table>
    <p><b>Vì sao đọc vào nhanh hơn shuffle, shuffle nhanh hơn ghi ra?</b> Bài báo giải thích: đọc vào phần lớn lấy từ đĩa cục bộ (locality) nên không qua mạng; ghi ra chậm nhất vì phải ghi <b>hai bản sao</b> của kết quả vào GFS.</p>
    <div class="callout good"><div class="lbl">Tự kiểm tra</div>$1283/891\\approx1{,}44$ và $933/891\\approx1{,}05$: đúng hai con số 44% và 5% ở slide chịu lỗi. Mất 11% số worker mà chỉ chậm 5%, còn 5 task chậm trong 4.000 task làm chậm 44%: <b>máy chậm nguy hiểm hơn máy chết</b>.</div>"""),
+]
+
+# ---- Cách đọc chi tiết cho hai hình kiến trúc đã có
+_GUIDE_GFS1 = """<p><b>Cách đọc hình, theo đúng thứ tự mũi tên:</b> (1) ứng dụng gọi thư viện <i>GFS client</i> với tên tệp và vị trí byte;
+   (2) client đổi vị trí byte thành <b>chỉ số chunk</b> rồi gửi (tên tệp, chỉ số chunk) cho master; (3) master trả về (<i>chunk handle</i>, vị trí các bản sao);
+   (4) client gửi (chunk handle, khoảng byte) tới <b>một chunkserver gần nhất</b>; (5) chunkserver trả dữ liệu thẳng cho client. Mũi tên mảnh là thông điệp điều khiển, mũi tên dày là dữ liệu.
+   Đường nối master với chunkserver ở dưới là chỉ thị và trạng thái (HeartBeat). <b>Ví dụ:</b> đọc tại byte thứ 200 MB thì chỉ số chunk là $\\lfloor 200/64\\rfloor = 3$, tức chunk thứ tư của tệp.</p>
+   """
+_GUIDE_MR1 = """<p><b>Cách đọc hình từ trái sang phải:</b> cột trái là tệp đầu vào đã chia thành các <i>split</i>; cột worker thứ nhất chạy <b>map</b>; ở giữa là tệp trung gian nằm trên <b>đĩa cục bộ</b> của máy map;
+   cột worker thứ hai chạy <b>reduce</b>; cột phải là tệp đầu ra, mỗi reduce task một tệp. Master ở trên cùng chỉ giao việc và ghi nhớ vị trí tệp trung gian, dữ liệu không đi qua master.</p>
+   """
+PART_GFS["slides"][1]["body"] = PART_GFS["slides"][1]["body"].replace("<p><b>Phép tính từng bước:</b>", _GUIDE_GFS1 + "<p><b>Phép tính từng bước:</b>", 1)
+PART_MR["slides"][0]["body"] = PART_MR["slides"][0]["body"].replace("<table><tr><th>Trong bài báo</th>", _GUIDE_MR1 + "<table><tr><th>Trong bài báo</th>", 1)
+assert "Cách đọc hình" in PART_GFS["slides"][1]["body"] and "Cách đọc hình" in PART_MR["slides"][0]["body"]
+
+QUIZ_GFS += [
+ dict(q="Trong Figure 3(b) của bài GFS, vì sao giới hạn ghi lý thuyết chỉ là 67 MB/s với 16 chunkserver, mỗi máy nhận tối đa 12,5 MB/s?",
+  opts=["Vì mỗi byte phải ghi vào 3 chunkserver: 200 / 3 ≈ 67", "Vì master chỉ xử lý được 67 yêu cầu mỗi giây", "Vì đường nối hai switch chỉ có 67 MB/s", "Vì mỗi chunk 64 MB cộng thêm 3 MB checksum"],
+  correct=0, explain="16 × 12,5 = 200 MB/s tổng băng thông nhận; mỗi byte ghi 3 bản sao nên dữ liệu thật tối đa 200/3 ≈ 67 MB/s."),
+ dict(q="Giết 1 chunkserver giữ 600 GB ở cụm B, GFS phục hồi xong trong 23,2 phút. Tốc độ nhân bản hiệu dụng cỡ nào?",
+  opts=["Khoảng 44 MB/s", "Khoảng 440 MB/s", "Khoảng 4,4 GB/s", "Khoảng 6,25 MB/s"],
+  correct=1, explain="600 GB / (23,2 × 60 s) ≈ 0,43 GB/s ≈ 440 MB/s, với tối đa 91 lần sao chép đồng thời, mỗi lần tối đa 6,25 MB/s."),
+]
+QUIZ_MR += [
+ dict(q="Ở Figure 2 của bài MapReduce (grep trên 1 TB), tốc độ quét đạt đỉnh hơn 30 GB/s với 1.764 worker. Mỗi worker quét khoảng bao nhiêu?",
+  opts=["Khoảng 1,7 MB/s", "Khoảng 17 MB/s", "Khoảng 170 MB/s", "Khoảng 1,7 GB/s"],
+  correct=1, explain="30.000 MB/s chia 1.764 worker ≈ 17 MB/s mỗi worker, cỡ tốc độ đọc tuần tự của một ổ đĩa IDE thời đó."),
+ dict(q="Trong Figure 3(c) của bài MapReduce, vì sao tốc độ đọc vào có đoạn mang giá trị âm?",
+  opts=["Vì đồng hồ các máy lệch nhau", "Vì reduce task ghi đè lên dữ liệu đầu vào", "Vì việc map đã xong trên các worker bị giết biến mất và phải làm lại", "Vì master xoá bớt tệp đầu vào để cân tải"],
+  correct=2, explain="Giết 200 trong 1.746 worker làm mất đầu ra map nằm trên đĩa cục bộ của chúng, nên tiến độ bị trừ lại; job vẫn xong sau 933 giây, chậm hơn 5%."),
 ]

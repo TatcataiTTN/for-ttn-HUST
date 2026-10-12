@@ -185,3 +185,68 @@ PARTS_A.append(dict(
    <tr><td>Trung gian</td><td>5</td><td>4</td><td>8</td><td>63</td></tr>
    <tr><td>Nhiều bộ nhớ hơn</td><td>10</td><td>2</td><td>4</td><td>2047</td></tr></table>"""),
  ]))
+
+
+# =====================================================================================================
+# Bổ sung đợt 2: hình gốc các thuật toán (crop từ arXiv:2403.19867v4) và cách đọc từng dòng
+# =====================================================================================================
+def _after(part, prefix, *new):
+    """Chèn các slide mới ngay sau slide có tiêu đề bắt đầu bằng prefix."""
+    for k, s in enumerate(part["slides"]):
+        if s["h"].startswith(prefix):
+            part["slides"][k + 1:k + 1] = list(new)
+            return
+    raise SystemExit("hd07: không tìm thấy slide '%s'" % prefix)
+
+
+_V4 = "Nguồn: Phạm, Tạ, Vu, <i>Constructing Decision Trees from Data Streams</i>, arXiv:2403.19867v4, "
+
+_after(PARTS_A[0], "Hình thức hoá", dict(h="Cách đọc Figure 1 của bài báo: đếm lại từng điểm trên hình", body=fig("ta_fig1_split.png", _V4 + "Figure 1.", 230) + """
+   <p>🗣️ <b>Nói nôm na:</b> kẻ một đường thẳng đứng chia các điểm làm hai nhóm. Bên nào cũng đoán chung <b>một giá trị</b> cho cả nhóm: hồi quy thì đoán bằng trung bình, phân loại thì đoán theo nhãn chiếm đa số. Đường kẻ tốt là đường làm tổng lỗi của hai bên nhỏ nhất.</p>
+   <table><tr><th>Hình</th><th>Nhìn thấy gì</th><th>Nhóm tự tính lại (toạ độ đọc từ hình)</th></tr>
+   <tr><td><b>Trái: hồi quy</b></td><td>Vạch đứng tại $x=4$ là ngưỡng. Hai đường chấm ngang ở $y=7$ và $y=2$ là giá trị dự đoán của hai phía</td>
+   <td>Trái có 7 điểm với $y=7,6,8,7,8,6,7$: tổng 49, trung bình <b>7</b>. Phải có 7 điểm với $y=2,2,1,3,2,3,1$: tổng 14, trung bình <b>2</b>. Lỗi bình phương mỗi phía bằng 4, nên $L(4)=(4+4)/14\\approx0{,}57$</td></tr>
+   <tr><td><b>Phải: phân loại</b></td><td>Chấm đặc và chấm rỗng là hai nhãn. Vạch đứng cũng tại $x=4$</td>
+   <td>Trái $[1,4]$: 4 chấm đặc, 2 chấm rỗng, đoán &quot;đặc&quot;, sai 2. Phải $[5,10]$: 5 chấm rỗng, 1 chấm đặc, đoán &quot;rỗng&quot;, sai 1. $L(4)=3/12=0{,}25$</td></tr></table>
+   <p><b>Thử ngưỡng khác ở hình phải:</b> $j=3$ cho sai $2+2=4$ điểm, $j=5$ cho sai $3+1=4$ điểm, $j=2$ cho sai $2+3=5$ điểm. Vậy $j=4$ với 3 điểm sai là tốt nhất, đúng như chú thích hình.</p>
+   <div class="callout info"><div class="lbl">Vì sao hai đường chấm khớp trung bình</div>Với một nhóm số cho trước, hằng số làm tổng bình phương sai lệch nhỏ nhất chính là <b>trung bình</b> của nhóm (bài 3 nhắc lại điều này ở Lemma 11). Vì thế bài báo định nghĩa $\\mu(j)$ và $\\gamma(j)$ là trung bình nhãn hai phía.</div>"""))
+
+_after(PARTS_A[3], "Thuật toán 1 lượt chính xác", dict(h="Hình gốc Algorithm 1: đọc từng dòng của thuật toán 1 lượt", body=two(fig("ta_alg1.png", _V4 + "Algorithm 1.", 330), """
+   <p style="margin-top:0"><b>Dòng 1 (khi một cặp $(x_i,y_i)$ đến):</b> mở đúng &quot;ngăn kéo&quot; mang số $x_i$ và sửa ba con số trong đó: số lần gặp $A$, tổng nhãn $B$, tổng bình phương nhãn $C$. Không lưu lại cặp dữ liệu.</p>
+   <p><b>Dòng 2 (hết luồng):</b> với mỗi ngưỡng $j$, $\\mu(j)$ = tổng nhãn bên trái chia số điểm bên trái; $\\gamma(j)$ tương tự cho bên phải.</p>
+   <p><b>Dòng 3:</b> công thức $L(j)$ chỉ dùng các tổng của $A$, $B$, $C$. &quot;Quy hoạch động&quot; ở đây là <b>tổng tiền tố</b>: tổng tới $j$ bằng tổng tới $j-1$ cộng thêm ngăn $j$.</p>
+   <p><b>Dòng 4:</b> trả về ngưỡng có $L(j)$ nhỏ nhất.</p>""", "52%") + """
+   <table><tr><th>Ví dụ 8 điểm: điểm đến</th><th>Ngăn kéo thay đổi</th></tr>
+   <tr><td>$(x,y)=(1,6)$</td><td>$A_1=1$, $B_1=6$, $C_1=36$</td></tr>
+   <tr><td>$(2,8)$</td><td>$A_2=1$, $B_2=8$, $C_2=64$</td></tr>
+   <tr><td>Giả sử có thêm điểm $(2,6)$ (minh hoạ)</td><td>$A_2=2$, $B_2=14$, $C_2=100$: cùng ngăn, chỉ cộng dồn</td></tr></table>
+   <div class="callout good"><div class="lbl">Ba điều rút ra từ hình</div>Bộ nhớ = 3 số cho mỗi giá trị $x$ khác nhau, tức $\\tilde O(D)$. Mỗi điểm đến chỉ tốn $O(1)$. Thứ tự các điểm đến <b>không ảnh hưởng</b> kết quả, vì phép cộng không phụ thuộc thứ tự: đây là lý do thuật toán không cần giả định i.i.d.</div>"""))
+
+_after(PARTS_A[3], "Thuật toán 2 lượt xấp xỉ cộng", dict(h="Hình gốc Algorithm 2: lượt một chọn ứng viên, lượt hai đếm chính xác", body=fig("ta_alg2.png", _V4 + "Algorithm 2.", 290) + """
+   <p>🗣️ <b>Nói nôm na:</b> thay vì thử mọi vạch chia, lượt đầu <b>bốc thăm</b> vài giá trị $x$ làm vạch ứng viên. Lượt hai mới đếm thật kỹ, nhưng chỉ đếm theo từng <b>khoang</b> nằm giữa hai vạch liền nhau.</p>
+   <table><tr><th>Dòng</th><th>Ý nghĩa</th></tr>
+   <tr><td>1</td><td>Mỗi điểm được giữ với xác suất $p=C\\log N/(m\\varepsilon)$, nên số điểm giữ lại kỳ vọng là $pm=C\\log N/\\varepsilon$: không phụ thuộc $m$</td></tr>
+   <tr><td>2</td><td>$S$ gồm mọi giá trị được bốc và giá trị đứng ngay trước nó, thêm hai đầu mút $0$ và $N$</td></tr>
+   <tr><td>3</td><td>Lượt hai: mỗi khoang $(j_t,j_{t+1}]$ có ba ngăn $A_t,B_t,C_t$ như Algorithm 1, nhưng số ngăn chỉ bằng số ứng viên</td></tr>
+   <tr><td>4 đến 6</td><td>Tính $L$ tại từng ứng viên bằng tổng tiền tố rồi trả về ứng viên tốt nhất</td></tr></table>
+   <p><b>Chạy thử trên ví dụ 8 điểm (minh hoạ, $N=8$):</b></p>
+   <table><tr><th>Giá trị được bốc</th><th>Tập ứng viên $S$</th><th>$L$ tại các ứng viên</th><th>Trả về</th></tr>
+   <tr><td>4 và 7</td><td>$\\{0,3,4,6,7,8\\}$</td><td>6,75; 3,0; <b>0,5</b>; 3,75; 5,0; 6,75</td><td>$j=4$, đúng tối ưu</td></tr>
+   <tr><td>2 và 6</td><td>$\\{0,1,2,5,6,8\\}$</td><td>6,75; 6,43; 4,67; <b>3,0</b>; 3,75; 6,75</td><td>$j=5$, kém tối ưu 2,5</td></tr></table>
+   <div class="callout warn"><div class="lbl">Bài học từ lần bốc thứ hai</div>Giữa hai ứng viên 2 và 5 còn tới 3 điểm, tức gần 40% dữ liệu, nên ngưỡng tốt nhất $j=4$ bị bỏ sót. Đảm bảo $\\mathrm{OPT}+\\varepsilon$ của bài báo dựa trên việc mỗi khoang chứa <b>không quá $\\varepsilon m$ điểm</b>, điều chỉ đúng khi bốc đủ nhiều: ví dụ 8 điểm quá nhỏ để lấy mẫu có ý nghĩa, nó chỉ để thấy cơ chế.</div>"""))
+
+_after(PARTS_A[3], "Thuật toán nhiều lượt", dict(h="Hình gốc Algorithm 3: vòng lặp đoán sai số và tìm nhị phân", body=two(fig("ta_alg3.png", _V4 + "Algorithm 3.", 470), """
+   <p style="margin-top:0"><b>Dòng 1:</b> duyệt mọi cặp đoán $(z_{left},z_{right})$ theo thang $0,(1+\\varepsilon),(1+\\varepsilon)^2,\\dots$ Đây là đoán <b>tổng lỗi bình phương</b> (chưa chia $m$) của hai phía ở ngưỡng tối ưu.</p>
+   <p><b>Dòng 2 đến 5:</b> tìm nhị phân trên $[1,N]$, thử điểm giữa $j$.</p>
+   <p><b>Dòng 6 đến 8:</b> một lượt để tính trung bình hai phía, thêm một lượt để tính lỗi hai phía. Mỗi điểm thử tốn <b>2 lượt</b>.</p>
+   <p><b>Dòng 9, 10:</b> cả hai phía không vượt mức đoán thì ghi nhận $j$.</p>
+   <p><b>Dòng 11, 12:</b> cả hai phía đều vượt thì cặp đoán sai.</p>
+   <p><b>Dòng 13 đến 16:</b> chỉ một phía vượt thì bỏ nửa khoảng tìm kiếm về phía đó.</p>
+   <p><b>Dòng 17:</b> trả về $j$ có giá trị ghi nhận nhỏ nhất.</p>""", "50%") + """
+   <p><b>Chạy thử trên ví dụ 8 điểm (minh hoạ), cặp đoán $(2;2)$:</b></p>
+   <table><tr><th>Điểm thử $j$</th><th>Lỗi trái</th><th>Lỗi phải</th><th>Nhánh của thuật toán</th></tr>
+   <tr><td>4</td><td>2 (không vượt)</td><td>2 (không vượt)</td><td>Dòng 9, 10: ghi $S[4]=4$, tức $L=4/8=0{,}5$</td></tr>
+   <tr><td>6 (nếu thử)</td><td>29,5 (vượt)</td><td>0,5</td><td>Dòng 13, 14: $j_r\\leftarrow5$, tìm sang trái</td></tr>
+   <tr><td>2 (nếu thử)</td><td>2</td><td>35,33 (vượt)</td><td>Dòng 15, 16: $j_l\\leftarrow3$, tìm sang phải</td></tr></table>
+   <p>Với cặp đoán $(1;1)$, tại $j=4$ cả hai lỗi đều bằng 2, cùng vượt 1: dòng 11, 12 kết luận đoán sai và bỏ qua.</p>
+   <div class="callout info"><div class="lbl">Vì sao được phép bỏ nửa khoảng</div>Dời ngưỡng sang phải thì phía trái chỉ <i>thêm</i> điểm, nên lỗi phía trái không giảm (bổ đề đơn điệu). Nếu lỗi trái tại $j$ đã vượt mức đoán thì mọi ngưỡng lớn hơn $j$ cũng vượt, nên chỉ cần tìm bên trái.</div>"""))

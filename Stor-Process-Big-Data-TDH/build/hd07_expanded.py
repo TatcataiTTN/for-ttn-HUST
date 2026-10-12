@@ -2,7 +2,7 @@
 """Module hd-07 (n=31): ba bài báo của thầy Tạ Duy Hoàng về chọn ngưỡng chia cây quyết định trên luồng dữ liệu
 và trên cụm song song (MPC). Tương ứng Phần 8 (Bonus) của deck Nhóm 1."""
 from hd07_a import PARTS_A
-from hd07_b import PARTS_B
+from hd07_b import PARTS_B, QUIZ_EXTRA
 
 QUIZ = [
  dict(q="Với 8 điểm (x=1..8; y=6,8,7,7,2,3,2,1), ngưỡng chia tối ưu theo sai số bình phương trung bình là gì?",
@@ -84,6 +84,8 @@ QUIZ = [
   opts=["Cùng Õ(M²/ε) nhưng bài 3 chỉ cần 1 lượt và không cần biết trước độ dài luồng", "Bài 3 dùng nhiều bộ nhớ hơn nhưng ít lượt hơn", "Bài 3 dùng 3 lượt", "Hai bài hoàn toàn giống nhau"],
   correct=0, explain="Cải tiến nằm ở số lượt (2 xuống 1) và việc không cần biết m trước, với cùng cận bộ nhớ Õ(M²/ε)."),
 ]
+
+QUIZ += QUIZ_EXTRA
 
 HD07_EXPANDED = dict(
  n=31, slug="hd-07-bai-bao-thay",
