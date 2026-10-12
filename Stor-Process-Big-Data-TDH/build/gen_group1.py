@@ -3,7 +3,7 @@
 Nội dung bám sát IT4931_lecture_notes.pdf (Chương 2, tr.23-36, nhóm tác giả Trần Văn Đặng,
 Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, Đại học Bách Khoa Hà Nội), không bịa thêm
 sự kiện hay số liệu ngoài những gì sách nêu. Định dạng theo mẫu lap_lich_50_slides.pdf."""
-import pathlib, sys
+import pathlib, sys, re
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from gen_site import HEAD_THEME_SCRIPT, KATEX, topbar, footer
 
@@ -32,73 +32,108 @@ def formula(label, math):
 def callout(kind, label, text):
     return f'<div class="callout {kind}"><div class="lbl">{label}</div>{text}</div>'
 
+def logo_img(f, h=40):
+    return f'<img src="../assets/images/logos/{f}" alt="" style="height:{h}px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;border-radius:6px;padding:3px 6px;border:1px solid var(--border)">'
+
 def tech_timeline_svg():
-    """Timeline nhiều lane tự vẽ bằng SVG gốc: lane ngang theo nhánh công nghệ, mốc tròn theo năm,
-    đường nét đứt = ảnh hưởng trực tiếp giữa các lane. Trục cắt ở 2013, mốc 2022 (KRaft) đặt sau dấu ngắt."""
+    """Timeline nhiều lane tự vẽ bằng SVG gốc. Đường nét đứt = ý tưởng/ảnh hưởng (bài báo → công nghệ);
+    đường liền = phụ thuộc lúc chạy (chạy trên Hadoop, dùng ZooKeeper, nạp dữ liệu vào Hadoop)."""
     y0, y1 = 2002, 2013
     ml, step = 150, 64
     def X(year): return ml + (year - y0) * step
     W = X(y1) + 150
-    H = 440
+    H = 470
     lanes = [
         {"label": "Nghiên cứu<br/>nền tảng (Google)", "y": 72, "color": "#2b5ce6"},
         {"label": "Lõi Hadoop", "y": 168, "color": "#0f9d58"},
-        {"label": "Công cụ<br/>hệ sinh thái", "y": 264, "color": "#d98e00"},
-        {"label": "Streaming", "y": 360, "color": "#c2255c"},
+        {"label": "Streaming", "y": 264, "color": "#c2255c"},
+        {"label": "Công cụ<br/>hệ sinh thái", "y": 360, "color": "#d98e00"},
     ]
-    # (lane, năm, tên, mô tả, key, dx, hướng nhãn 'u'/'d', căn 'c'/'l'/'r')
-    nodes = [
-        (0, 2003, "GFS", "SOSP 2003", True, 0, "u", "c"),
-        (0, 2004, "MapReduce", "OSDI 2004", True, 0, "u", "c"),
-        (0, 2006, "Bigtable", "OSDI 2006", True, -8, "u", "r"),
-        (0, 2006, "Chubby", "OSDI 2006", False, 8, "u", "l"),
-        (1, 2006, "Hadoop", "Tách từ Nutch<br/>(Cutting, Yahoo!)", True, 0, "d", "c"),
-        (1, 2012, "YARN", "Hadoop 2.0: tách<br/>quản lý tài nguyên", True, 0, "d", "c"),
-        (2, 2007, "ZooKeeper", "Yahoo Research", False, 0, "d", "c"),
-        (2, 2008.25, "HBase", "28/3/2008<br/>(Powerset)", True, 0, "u", "c"),
-        (2, 2008.75, "Pig", "9/2008 (Yahoo)", False, 0, "d", "c"),
-        (2, 2010.8, "Hive", "10/2010 (Facebook)", True, 0, "u", "c"),
-        (2, 2012.3, "Oozie", "Top-level 2012", False, 0, "d", "c"),
-        (3, 2011.1, "Kafka", "Mã nguồn mở (LinkedIn)", True, 0, "d", "c"),
-        (3, 2013.2, "KRaft", "2022: Kafka bỏ<br/>ZooKeeper", False, 0, "d", "c"),
+    # (lane, năm, tên, mô tả, key, dx, hướng nhãn, căn nhãn, lệch nhãn)
+    nodes = {
+        "GFS": (0, 2003, "GFS", "SOSP 2003", True, 0, "u", "r", 0),
+        "MR": (0, 2004, "MapReduce", "OSDI 2004", True, 0, "u", "c", 0),
+        "BT": (0, 2006, "Bigtable", "OSDI 2006", True, -8, "u", "r", 0),
+        "CH": (0, 2006, "Chubby", "OSDI 2006", False, 8, "u", "l", 0),
+        "HD": (1, 2006, "Hadoop", "Tách từ Nutch<br/>(Cutting, Yahoo!)", True, 0, "d", "r", 0),
+        "YARN": (1, 2012, "YARN", "Hadoop 2.0: tách<br/>quản lý tài nguyên", True, 0, "u", "c", 0),
+        "KF": (2, 2011.1, "Kafka", "Mã nguồn mở (LinkedIn)", True, 0, "u", "l", 14),
+        "KR": (2, 2013.2, "KRaft", "2022: Kafka bỏ<br/>ZooKeeper", False, 0, "d", "c", 0),
+        "ZK": (3, 2007, "ZooKeeper", "Yahoo Research", False, 0, "d", "c", 0),
+        "HB": (3, 2008.25, "HBase", "28/3/2008<br/>(Powerset)", True, 0, "d", "c", 0),
+        "PIG": (3, 2008.75, "Pig", "9/2008 (Yahoo)", False, 0, "u", "l", 8),
+        "HIVE": (3, 2010.8, "Hive", "10/2010 (Facebook)", True, 0, "u", "l", 8),
+        "OZ": (3, 2012.3, "Oozie", "Top-level 2012", False, 0, "d", "c", 0),
+    }
+    def pos(k):
+        n = nodes[k]; return X(n[1]) + n[5], lanes[n[0]]["y"]
+    # (từ, đến, kiểu, màu, chú thích ngắn)
+    GR = "#7a8499"
+    links = [
+        ("GFS", "HD", "dash", GR), ("MR", "HD", "dash", GR), ("BT", "HB", "dash", GR), ("CH", "ZK", "dash", GR),
+        ("HD", "YARN", "solid", "#0f9d58"),
+        ("HD", "HB", "solid", "#0f9d58"), ("HD", "PIG", "solid", "#0f9d58"),
+        ("HD", "HIVE", "solid", "#0f9d58"), ("HD", "OZ", "solid", "#0f9d58"),
+        ("ZK", "KF", "solid", "#c2255c"), ("ZK", "HB", "solid", "#d98e00"),
     ]
-    cross = [(2003, 0, 2006, 1), (2004, 0, 2006, 1), (2006, 0, 2008.25, 2), (2006, 0, 2007, 2)]
-
     svg = [f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="Timeline phát triển hệ sinh thái Hadoop">']
+    cols = sorted({c for _, _, _, c in links} | {"#c2255c"})
+    svg.append("<defs>" + "".join(
+        f'<marker id="ah{c[1:]}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">'
+        f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>' for c in cols) + "</defs>")
     yr = y0
     while yr < y1:
         x = X(yr)
-        svg.append(f'<line x1="{x}" y1="36" x2="{x}" y2="402" stroke="var(--border)" stroke-width="1"/>')
-        svg.append(f'<text x="{x}" y="424" font-size="13" fill="var(--muted)" text-anchor="middle">{yr}</text>')
+        svg.append(f'<line x1="{x}" y1="36" x2="{x}" y2="410" stroke="var(--border)" stroke-width="1"/>')
+        svg.append(f'<text x="{x}" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">{yr}</text>')
         yr += 1
     xb = X(2013.2)
-    svg.append(f'<text x="{xb}" y="424" font-size="13" fill="var(--muted)" text-anchor="middle">⋯ 2022</text>')
-    for yf, lf, yt, lt in cross:
-        svg.append(f'<line x1="{X(yf)}" y1="{lanes[lf]["y"]}" x2="{X(yt)}" y2="{lanes[lt]["y"]}" '
-                   f'stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="4,4" opacity=".75"/>')
+    svg.append(f'<text x="{xb}" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">⋯ 2022</text>')
     for ln in lanes:
         svg.append(f'<line x1="{ml-20}" y1="{ln["y"]}" x2="{xb+30}" y2="{ln["y"]}" stroke="{ln["color"]}" stroke-width="2.5" opacity=".5"/>')
         svg.append(f'<foreignObject x="0" y="{ln["y"]-24}" width="{ml-30}" height="48">'
                    f'<div xmlns="http://www.w3.org/1999/xhtml" style="font:700 14px sans-serif;color:{ln["color"]};'
                    f'text-align:right;line-height:1.25;height:48px;display:flex;align-items:center;justify-content:flex-end">'
                    f'<span>{ln["label"]}</span></div></foreignObject>')
-    for lane_i, year, name, sub, key, dx, side, al in nodes:
+    import math
+    def shorten(a, b, r=11):
+        dx, dy = b[0]-a[0], b[1]-a[1]; d = math.hypot(dx, dy) or 1
+        return (a[0]+dx/d*r, a[1]+dy/d*r), (b[0]-dx/d*(r+2), b[1]-dy/d*(r+2))
+    for a, b, kind, col in links:
+        pa, pb = shorten(pos(a), pos(b))
+        dash = ' stroke-dasharray="5,4"' if kind == "dash" else ""
+        svg.append(f'<line x1="{pa[0]:.1f}" y1="{pa[1]:.1f}" x2="{pb[0]:.1f}" y2="{pb[1]:.1f}" stroke="{col}" '
+                   f'stroke-width="{1.4 if kind=="dash" else 1.8}"{dash} opacity=".85" marker-end="url(#ah{col[1:]})"/>')
+    # Kafka nạp dữ liệu vào HDFS: mũi tên lên tới lane Hadoop
+    kx, ky = pos("KF"); hy = lanes[1]["y"]
+    svg.append(f'<line x1="{kx}" y1="{ky-11}" x2="{kx}" y2="{hy+10}" stroke="#c2255c" stroke-width="1.8" marker-end="url(#ah{"c2255c"})"/>')
+    svg.append(f'<rect x="{kx-5}" y="{hy-5}" width="10" height="10" transform="rotate(45 {kx} {hy})" fill="var(--panel)" stroke="#0f9d58" stroke-width="2"/>')
+    svg.append(f'<foreignObject x="{kx-150}" y="{hy+18}" width="144" height="40"><div xmlns="http://www.w3.org/1999/xhtml" '
+               f'style="font:600 11.5px sans-serif;color:#c2255c;text-align:right;line-height:1.2">nạp dữ liệu<br/>vào HDFS</div></foreignObject>')
+    for k, (lane_i, year, name, sub, key, dx, side, al, lx) in nodes.items():
         ln = lanes[lane_i]; x = X(year) + dx; y = ln["y"]
         svg.append(f'<circle cx="{x}" cy="{y}" r="{8 if key else 6}" fill="{ln["color"]}" stroke="var(--panel)" stroke-width="2"/>')
         bw = 150
-        bx = {"c": x - bw/2, "l": x - 6, "r": x - bw + 6}[al]
+        bx = {"c": x - bw/2, "l": x - 6 + lx, "r": x - bw + 6}[al]
         ta = {"c": "center", "l": "left", "r": "right"}[al]
-        if side == "u":
-            by, just = y - 12 - 52, "flex-end"
-        else:
-            by, just = y + 12, "flex-start"
+        ai = {"c": "center", "l": "flex-start", "r": "flex-end"}[al]
+        by, just = (y - 12 - 52, "flex-end") if side == "u" else (y + 12, "flex-start")
         svg.append(f'<foreignObject x="{bx}" y="{by}" width="{bw}" height="52">'
                    f'<div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;'
-                   f'justify-content:{just};text-align:{ta};font-family:sans-serif">'
+                   f'justify-content:{just};align-items:{ai};text-align:{ta};font-family:sans-serif">'
+                   f'<div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px">'
                    f'<div style="font-weight:{"800" if key else "700"};font-size:{"15" if key else "13.5"}px;color:var(--text);line-height:1.15">{name}</div>'
-                   f'<div style="font-size:11.5px;color:var(--muted);line-height:1.2">{sub}</div></div></foreignObject>')
+                   f'<div style="font-size:11.5px;color:var(--muted);line-height:1.2">{sub}</div></div></div></foreignObject>')
     svg.append('</svg>')
     return "".join(svg)
+
+def imgs_slide(title, items, body_after="", gap=18, maxh=None):
+    """Slide gồm nhiều ảnh cắt từ bài báo xếp ngang, mỗi ảnh có chú thích nguồn; items = [(file, caption, flex)]."""
+    cells = "".join(
+        f'<figure style="margin:0;flex:{fl}"><img src="../assets/images/papers/{f}" alt="" style="width:100%;height:auto;{('max-height:'+str(maxh)+'px;width:auto;max-width:100%;') if maxh else ''}'
+        f'border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.76rem;'
+        f'color:var(--muted);margin-top:4px">{cap}</figcaption></figure>' for f, cap, fl in items)
+    return slide(title, f'<div style="display:flex;gap:{gap}px;align-items:flex-start;justify-content:center">{cells}</div>{body_after}')
 
 def figslide(title, img, src, rows, side=True, img_w="56%"):
     """Slide hình gốc từ bài báo nền tảng (crop nguyên trạng, ghi nguồn) + bảng đối chiếu sang thuật ngữ Hadoop."""
@@ -198,6 +233,13 @@ SLIDES.append(figslide("Hình gốc: kiến trúc GFS, nguồn cảm hứng củ
      ["Chunk 64 MB, nhân bản trên nhiều chunkserver", "Block 64/128 MB, nhân bản 3 lần"],
      ["Client hỏi master vị trí, rồi đọc/ghi <b>trực tiếp</b> chunkserver (mũi tên dày = dữ liệu không đi qua master)", "Client hỏi NameNode, truyền dữ liệu thẳng với DataNode"]]))
 
+SLIDES.append(figslide("Hình gốc: luồng ghi của GFS, gốc của pipeline nhân bản trong HDFS", "gfs_fig2.png",
+    "Nguồn: Ghemawat, Gobioff, Leung. <i>The Google File System</i>, SOSP 2003, Figure 2 (mũi tên mảnh = điều khiển, mũi tên dày = dữ liệu).",
+    [["Bước 1-2: client hỏi master ai giữ lease (primary) và vị trí các replica", "Client hỏi NameNode danh sách DataNode cho block mới"],
+     ["Bước 3: client đẩy <b>dữ liệu</b> theo chuỗi replica, mỗi máy chuyển tiếp ngay cho máy gần nhất chưa nhận", "Ghi theo <b>pipeline</b> DataNode 1 → 2 → 3, tận dụng băng thông ra của từng máy"],
+     ["Bước 4-7: <b>điều khiển</b> đi qua primary, primary đánh số thứ tự rồi báo các secondary, tất cả trả lời lại", "Gói xác nhận (ack) chạy ngược pipeline về client"],
+     ["Tách luồng dữ liệu khỏi luồng điều khiển để dùng mạng hiệu quả", "Cùng nguyên tắc: NameNode chỉ điều khiển, dữ liệu đi thẳng giữa client và DataNode"]], side=True, img_w="40%"))
+
 SLIDES.append(slide("Block là gì?", f"""
 <p>Mỗi tệp trong HDFS được <b>chia thành nhiều block</b> (khối dữ liệu) thay vì lưu nguyên khối như hệ file thông thường.</p>
 {formula('Kích thước block mặc định', '64\\text{ MB hoặc }128\\text{ MB}')}
@@ -250,7 +292,12 @@ SLIDES.append(figslide("Hình gốc: luồng thực thi MapReduce của Google",
     [["User Program fork ra Master và các worker", "Client submit job; Master ↔ JobTracker (Hadoop 1.x) / ApplicationMaster (YARN)"],
      ["Input chia thành split, mỗi split cho 1 map worker", "InputSplit, 1 map task xử lý 1 split gần dữ liệu (data locality)"],
      ["Map ghi file trung gian lên <b>đĩa cục bộ</b>; reduce worker (5) remote read", "Giai đoạn shuffle: reduce kéo dữ liệu từ đĩa node chạy map"],
-     ["Reduce worker ghi output file", "Kết quả ghi xuống HDFS"]], side=True, img_w="58%"))
+     ["Reduce worker ghi output file", "Kết quả ghi xuống HDFS"]], side=True, img_w="54%"))
+
+SLIDES.append(imgs_slide("Hình gốc: MapReduce lan nhanh trong Google chỉ sau 18 tháng", [
+    ("mr_fig4.png", "Figure 4: số chương trình MapReduce trong kho mã nguồn, từ 0 (đầu 2003) lên gần 900 (9/2004).", 38),
+    ("mr_table1.png", "Table 1: các job MapReduce chạy tháng 8/2004 (nguồn: Dean, Ghemawat, OSDI 2004).", 45)],
+    maxh=290, body_after=callout('good', 'Đọc số liệu', 'Mỗi job trung bình dùng <b>157</b> máy và gặp <b>1,2</b> lần máy chết, nên chịu lỗi tự động không phải tính năng phụ mà là điều kiện để chạy được. Tổng cộng 29.423 job đọc 3.288 TB đầu vào trong 1 tháng.')))
 
 SLIDES.append(slide("Vai trò MapReduce: Hadoop 1.x → 2.x", tbl(
     ["Phiên bản", "Vai trò MapReduce"],
@@ -335,7 +382,7 @@ SLIDES.append(slide("Apache Pig: kịch bản xử lý dữ liệu", f"""
 <p>Pig Engine biên dịch kịch bản thành chuỗi job MapReduce: đặc biệt hiệu quả cho <b>transform &amp; join</b> dữ liệu phức tạp.</p>
 """))
 
-SLIDES.append(slide("So sánh Hive vs Pig", tbl(["Tiêu chí", "Hive", "Pig"], [
+SLIDES.append(slide("So sánh Hive vs Pig", tbl(["Tiêu chí", logo_img("apachehive.svg", 26) + " Hive", logo_img("pig.gif", 28) + " Pig"], [
     ["Ngôn ngữ", "HiveQL (giống SQL)", "Pig Latin (kịch bản)"],
     ["Đối tượng dùng", "Nhà phân tích quen SQL", "Kỹ sư dữ liệu, ETL phức tạp"],
     ["Mô hình dữ liệu", "Bảng (schema-on-read)", "Data flow tuần tự"],
@@ -369,6 +416,18 @@ SLIDES.append(figslide("Hình gốc: mô hình dữ liệu Bigtable, nền của
     [["Row key \"com.cnn.www\" (URL đảo ngược để các trang cùng domain nằm gần nhau, giữ thứ tự từ điển)", "Row key của HBase, sắp xếp theo thứ tự byte; thiết kế row key quyết định locality và hotspotting"],
      ["Column family <code>contents:</code> và <code>anchor:</code>", "Column family; cột viết dạng <code>family:qualifier</code>"],
      ["Mỗi ô có nhiều phiên bản gắn nhãn thời gian (t3, t5, t6)", "Cell có nhiều version theo timestamp"]], side=False, img_w="78%"))
+
+SLIDES.append(figslide("Hình gốc: cách Bigtable tìm tablet, và vai trò của Chubby", "bigtable_fig4.png",
+    "Nguồn: Chang et al. <i>Bigtable</i>, OSDI 2006, Figure 4 (phân cấp 3 tầng giống B+-tree).",
+    [["Tầng 1: một file trong <b>Chubby</b> chứa vị trí root tablet", "ZooKeeper lưu vị trí của bảng meta"],
+     ["Tầng 2-3: root tablet → các METADATA tablet → tablet của người dùng", "Bảng meta chứa vị trí từng region của mọi bảng"],
+     ["Client lưu đệm vị trí, hiếm khi phải hỏi master", "Client HBase cũng lưu đệm vị trí region"]], side=True, img_w="52%"))
+
+SLIDES.append(figslide("Hình gốc: tablet được lưu thế nào, gốc của MemStore và HFile", "bigtable_fig5.png",
+    "Nguồn: Chang et al. <i>Bigtable</i>, OSDI 2006, Figure 5 (Tablet Representation).",
+    [["Ghi: vào <b>tablet log</b> (commit log) rồi vào <b>memtable</b> trong bộ nhớ", "WAL rồi MemStore của HBase"],
+     ["Memtable đầy thì ghi thành <b>SSTable</b> bất biến trên GFS (minor compaction)", "MemStore flush thành HFile trên HDFS"],
+     ["Đọc: gộp memtable với các SSTable đã sắp xếp; định kỳ gộp lại (merging / major compaction)", "Đọc gộp MemStore và HFile; compaction định kỳ"]], side=True, img_w="48%"))
 
 SLIDES.append(slide("Khi nào dùng HDFS+Hive, khi nào dùng HBase?", tbl(
     ["Nhu cầu", "Chọn"],
@@ -428,6 +487,13 @@ SLIDES.append(figslide("Hình gốc: log của Kafka, thiết kế quanh offset"
      ["Message được đánh địa chỉ bằng <b>offset</b> logic trong log, không có message id riêng", "Offset: consumer tự nhớ vị trí đã đọc, broker không giữ trạng thái này (stateless broker)"],
      ["Chỉ ghi nối vào cuối (append), đọc tuần tự, xóa theo thời gian lưu giữ (điển hình 7 ngày)", "Retention theo thời gian; consumer có thể tua lại offset cũ để đọc lại"]], side=True, img_w="40%"))
 
+SLIDES.append(figslide("Hình gốc: Kafka tại LinkedIn, nơi dữ liệu chảy vào Hadoop", "kafka_fig3.png",
+    "Nguồn: Kreps, Narkhede, Rao. <i>Kafka: a Distributed Messaging System for Log Processing</i>, NetDB 2011, Figure 3.",
+    [["Frontend gửi log qua load balancer tới các broker ở datacenter chính", "Producer → broker, đẩy theo lô"],
+     ["Dịch vụ thời gian thực đọc trực tiếp từ broker", "Consumer xử lý gần thời gian thực"],
+     ["Datacenter phân tích có cụm Kafka kéo dữ liệu về, nuôi <b>Hadoop</b> và kho dữ liệu (DWH)", "MapReduce đọc thẳng từ Kafka qua input format riêng, ghi kết quả vào HDFS"],
+     ["Bài báo nêu cỡ năm 2011: hàng trăm GB và gần 1 tỉ thông điệp mỗi ngày, trễ đầu-cuối khoảng 10 giây", "Đây là lý do Kafka nằm ở tầng thu thập của hệ sinh thái"]], side=True, img_w="42%"))
+
 SLIDES.append(slide("Apache Oozie: lập lịch workflow", f"""
 <p>Hệ thống quản lý &amp; lập lịch luồng công việc (workflow scheduler) cho Hadoop: định nghĩa chuỗi job
 (MapReduce → Hive → shell script...) và quản lý thực thi tuần tự/song song.</p>
@@ -458,6 +524,12 @@ SLIDES.append(figslide("Hình gốc: cấu trúc Chubby, nguồn cảm hứng c�
      ["Cần đa số replica còn sống (3/5) thì cell mới hoạt động", "Quorum: đa số server phải sống, nếu không dịch vụ dừng"],
      ["Client application liên lạc qua chubby library bằng RPC", "Client dùng thư viện ZooKeeper; znode, watch, ephemeral node thay cho khóa/tệp nhỏ của Chubby"]], side=True, img_w="44%"))
 
+SLIDES.append(figslide("Hình gốc: Chubby xử lý mất master ra sao, ý tưởng cho failover của ZooKeeper", "chubby_fig2.png",
+    "Nguồn: Burrows. <i>The Chubby lock service</i>, OSDI 2006, Figure 2 (grace period khi master chuyển giao; thời gian chạy từ trái sang phải, không theo tỉ lệ).",
+    [["Client giữ <b>session lease</b>, gia hạn bằng KeepAlive tới master", "Session ZooKeeper có timeout, client gửi ping/heartbeat để giữ session"],
+     ["Master chết: client hết lease, vào <b>grace period</b>, chặn lời gọi API chứ chưa huỷ session", "Client mất kết nối nhưng chưa hết timeout: chờ kết nối lại tới server khác"],
+     ["Master mới được bầu trong vài giây, client nối lại và tiếp tục", "Leader mới được bầu (ZAB), session còn hạn thì giữ nguyên znode tạm"]], side=False, img_w="82%"))
+
 SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Thành phần", "ZooKeeper dùng để"], [
     ["HDFS High Availability", "Giám sát NameNode &amp; kích hoạt failover"],
     ["YARN", "Lưu thông tin ResourceManager chủ"],
@@ -468,22 +540,35 @@ SLIDES.append(slide("ZooKeeper được dùng ở đâu trong Hadoop?", tbl(["Th
 # ===================== PHẦN 7: Tổng kết =====================
 SLIDES.append(divider(7, 8, "Tổng kết", [
     "Sơ đồ toàn cảnh hệ sinh thái Hadoop", "Tổng kết nội dung chương 2",
-    "Câu hỏi thảo luận nhanh", "Tài liệu tham khảo"]))
+    "Công nghệ và nơi khởi nguồn", "Lộ trình phát triển", "Tài liệu tham khảo"]))
 
 SLIDES.append(slide("Toàn cảnh hệ sinh thái Hadoop", tbl(
     ["Tầng", "Thành phần", "Vai trò"],
-    [["Thu thập", "Kafka", "Streaming sự kiện thời gian thực"],
-     ["Lưu trữ", "HDFS, HBase", "Tệp phân tán &amp; NoSQL thời gian thực"],
-     ["Tính toán batch", "MapReduce", "Mô hình Map + Reduce song song"],
-     ["Phân tích", "Hive, Pig", "SQL-like &amp; kịch bản data flow"],
-     ["Quản trị luồng", "Oozie", "Lập lịch workflow dạng DAG"],
-     ["Vận hành", "ZooKeeper", "Điều phối, đồng bộ, bầu leader"],
-     ["Điều phối tài nguyên", "YARN", "Quản lý tài nguyên đa ứng dụng"],
-     ["Tích hợp RDBMS", "Sqoop", "Import/export với CSDL quan hệ"]], dense=True
+    [["Thu thập", logo_img("apachekafka.svg", 26) + " Kafka", "Streaming sự kiện thời gian thực"],
+     ["Lưu trữ", logo_img("apachehadoop.svg", 26) + " HDFS, " + logo_img("apachehbase.svg", 26) + " HBase", "Tệp phân tán &amp; NoSQL thời gian thực"],
+     ["Tính toán batch", logo_img("apachehadoop.svg", 26) + " MapReduce", "Mô hình Map + Reduce song song"],
+     ["Phân tích", logo_img("apachehive.svg", 26) + " Hive, " + logo_img("pig.gif", 28) + " Pig", "SQL-like &amp; kịch bản data flow"],
+     ["Quản trị luồng", logo_img("oozie.png", 22) + " Oozie", "Lập lịch workflow dạng DAG"],
+     ["Vận hành", logo_img("zookeeper.svg", 28) + " ZooKeeper", "Điều phối, đồng bộ, bầu leader"],
+     ["Điều phối tài nguyên", logo_img("apachehadoop.svg", 26) + " YARN", "Quản lý tài nguyên đa ứng dụng"],
+     ["Tích hợp RDBMS", logo_img("sqoop.png", 22) + " Sqoop", "Import/export với CSDL quan hệ"]], dense=True
 )))
 
+SLIDES.append(slide("Mỗi công nghệ ra đời để giải một bài toán của một công ty", tbl(
+    ["Công nghệ", "Khởi nguồn tại", "Bài toán gốc"],
+    [[logo_img("apachehadoop.svg") + " Hadoop (HDFS + MapReduce)", logo_img("yahoo.svg", 28) + " Yahoo!", "Lập chỉ mục web, mô phỏng GFS và MapReduce của Google"],
+     [logo_img("pig.gif", 44) + " Pig", logo_img("yahoo.svg", 28) + " Yahoo Research", "Viết MapReduce bằng Java quá tốn công"],
+     [logo_img("apachehive.svg") + " Hive", logo_img("meta.svg", 30) + " Facebook", "Dân phân tích muốn dùng SQL trên kho dữ liệu hàng chục PB"],
+     [logo_img("apachehbase.svg") + " HBase", "Powerset (theo Bigtable của " + logo_img("google.svg", 24) + " Google)", "Đọc ghi ngẫu nhiên theo khoá trên bảng khổng lồ"],
+     [logo_img("sqoop.png", 30) + " Sqoop", "Cloudera", "Đưa dữ liệu giữa RDBMS và Hadoop"],
+     [logo_img("apachekafka.svg") + " Kafka", logo_img("linkedin.svg", 28) + " LinkedIn", "Thu thập luồng sự kiện hoạt động người dùng"],
+     [logo_img("oozie.png", 30) + " Oozie", logo_img("yahoo.svg", 28) + " Yahoo!", "Điều phối chuỗi job Hadoop phụ thuộc nhau"],
+     [logo_img("zookeeper.svg", 44) + " ZooKeeper", logo_img("yahoo.svg", 28) + " Yahoo Research", "Điều phối, bầu leader (theo Chubby của Google)"],
+     [logo_img("tez.jpg", 30) + " Tez, " + logo_img("apachespark.svg", 30) + " Spark, " + logo_img("apacheflink.svg", 30) + " Flink", "Cộng đồng Apache", "Engine chạy trên YARN, thay MapReduce cho tác vụ lặp/tương tác"]],
+    dense=True)))
+
 SLIDES.append(slide("Lộ trình phát triển: từ 2 bài báo Google tới hệ sinh thái", f"""
-<p style="font-size:.92rem">4 nhánh song song, đường nét đứt = ảnh hưởng trực tiếp (vd: GFS → thiết kế HDFS trong Hadoop).</p>
+<p style="font-size:.9rem">Nét đứt xám = ý tưởng từ bài báo Google; nét liền = phụ thuộc lúc chạy (công cụ chạy trên Hadoop, HBase và Kafka dùng ZooKeeper, Kafka nạp dữ liệu vào HDFS).</p>
 {tech_timeline_svg()}
 """))
 
@@ -533,6 +618,11 @@ SLIDES.append(slide("Bài toán: tìm điểm chia cây quyết định", f"""
       ['Nhiều thuộc tính: chạy riêng từng thuộc tính rồi chọn tốt nhất','Bộ nhớ nhân thêm hệ số $d$ (số thuộc tính)']])}
 {callout('info', 'Liên hệ với môn học', 'Đếm theo khoảng cùng họ bài toán rank/quantile mà streaming đã học (q-digest, MRL, KLL). Lưu ý: chính các bài báo dùng <b>reservoir sampling</b> và <b>Count-Min sketch</b> (phân rã dyadic) chứ không dùng quantile sketch.')}
 """))
+
+SLIDES.append(imgs_slide("Hình gốc: ví dụ chọn ngưỡng chia, optimal split j = 4", [
+    ("ta_fig1_split.png", "Figure 1 (arXiv:2403.19867v4): trái là hồi quy (đường chấm là trung bình 2 nhóm), phải là phân loại; cả hai có ngưỡng tối ưu $j=4$.", 62),
+    ("ta3_fig1.png", "Figure 1 (arXiv:2604.20394v2): $\\mu(j^\\star)$ và $\\gamma(j^\\star)$ là giá trị dự đoán của 2 phía ngưỡng $j^\\star$.", 30)],
+    maxh=240, body_after=callout('info', 'Cách đọc', 'Chọn $j$ nghĩa là cắt trục $x$ làm 2 đoạn $[1,j]$ và $[j+1,N]$ rồi mỗi đoạn dự đoán bằng 1 giá trị (trung bình hoặc nhãn đa số). Sai số của mọi $j$ chỉ phụ thuộc số đếm trong 2 đoạn.')))
 
 SLIDES.append(slide("Kết nối 1: vì sao cần streaming?", f"""
 <p>Theo bài báo: dữ liệu thường <b>quá lớn để nạp vào bộ nhớ chính của 1 máy</b>, nên được đọc dạng luồng từ đĩa hoặc qua mạng,
@@ -587,6 +677,27 @@ SLIDES.append(slide("Bài báo 3: Nearly Optimal Bounds for Decision Tree Splits
     'Kỹ thuật: khai thác tính Lipschitz của hàm mất mát, kết hợp reservoir sampling với Count–Min sketch hỗ trợ truy vấn khoảng (range query).'])}
 """))
 
+SLIDES.append(slide("Hình gốc: bảng kết quả streaming và MPC dùng chung tham số $\\beta$", """<div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+<figure style="margin:0;width:62%"><img src="../assets/images/papers/ta_fig2_stream.png" alt="" style="width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.76rem;color:var(--muted);margin-top:4px">Figure 2 (arXiv:2403.19867v4): streaming, cột Space và No. of passes.</figcaption></figure>
+<figure style="margin:0;width:62%"><img src="../assets/images/papers/ta_fig3_mpc.png" alt="" style="width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.76rem;color:var(--muted);margin-top:4px">Figure 3 (cùng bài): MPC, cột Space per machine và No. of rounds.</figcaption></figure></div>"""))
+
+SLIDES.append(slide("Streaming và MPC trả giá cho cùng một phép đếm theo khoảng", f"""
+<p style="margin:0 0 8px">Mọi ngưỡng $j$ chỉ cần các số đếm $f_R$ (kèm nhãn) trên khoảng $R\\subseteq[1,N]$. Hai mô hình khác nhau ở thứ phải <b>trả giá</b>:</p>
+{tbl(['', 'Streaming', 'MPC (MapReduce, Hadoop, Spark)'],
+     [['Tài nguyên khan hiếm', 'Bộ nhớ của 1 máy', 'Bộ nhớ $\\\\tilde O(m^{{\\\\beta}})$ của <i>mỗi</i> máy, $m^{{1-\\\\beta}}$ máy'],
+      ['Chi phí được đếm', 'Số lượt duyệt (pass)', 'Số vòng giao tiếp (round)'],
+      ['Ví dụ trong bài', '1 lượt, $\\\\tilde O(M^2/\\\\varepsilon)$ (bài 3)', '$O(1)$ vòng, $\\\\tilde O(\\\\sqrt m)$/máy; hoặc $O(1/\\\\beta)$ vòng, $\\\\tilde O(m^{{\\\\beta}}/\\\\varepsilon^2)$/máy (bài 2)']], dense=True)}
+{callout('info', 'Đánh đổi nằm ngay trong công thức', 'Chọn $\\\\beta$ nhỏ để mỗi máy dùng ít bộ nhớ thì số vòng $O(1/\\\\beta)$ tăng. "Vòng" đắt vì (Figure 1, bài MapReduce) map ghi file trung gian lên <b>đĩa cục bộ</b> rồi reduce đọc từ xa: mỗi vòng thêm là 1 lần shuffle qua mạng.')}
+"""))
+
+SLIDES.append(slide("Streaming đã có cận dưới khớp, MPC thì các bài đã đọc chưa có", f"""
+{tbl(['Điểm nối', 'Căn cứ', 'Mức chắc chắn'],
+     [['Sắp xếp theo $x$ trong $O(1)$ vòng là bước đầu của thuật toán MPC', 'Bài 1, mục 4; bài MapReduce có ví dụ <i>Distributed Sort</i>', 'Nêu trong bài'],
+      ['MPC là phép trừu tượng hoá MapReduce, Hadoop, Spark', 'Bài 2, mục 1', 'Nêu trong bài'],
+      ['Count-Min cộng được từng ô: mỗi mapper dựng sketch riêng, reducer cộng lại (như <i>combiner</i>)', 'Tính chất đã biết của Count-Min', 'Suy luận của nhóm']], dense=True)}
+{callout('good', 'Đã chứng minh (streaming, bài 3)', 'Hồi quy: 1 lượt cần $\\\\Omega(M^2/\\\\varepsilon)$ bộ nhớ, thuật toán $\\\\tilde O(M^2/\\\\varepsilon)$ đạt đúng mức đó. Phân loại: $\\\\Omega(1/\\\\varepsilon)$ khớp $\\\\tilde O(1/\\\\varepsilon)$. <b>Còn mở:</b> bài 3 không nhắc MPC, bảng MPC của bài 2 chỉ có cận trên.')}
+"""))
+
 REFS = [
     ["[1]", "S. Ghemawat, H. Gobioff, S.-T. Leung. <i>The Google File System.</i> SOSP 2003.", "HDFS (Phần 1–2)"],
     ["[2]", "J. Dean, S. Ghemawat. <i>MapReduce: Simplified Data Processing on Large Clusters.</i> OSDI 2004.", "MapReduce (Phần 1, 3)"],
@@ -598,23 +709,63 @@ REFS = [
     ["[8]", "H. Ta, H. T. Vu. <i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams.</i> ESA 2026 (arXiv:2604.20394v2).", "Bonus (Phần 8)"],
 ]
 SLIDES.append(slide("Tài liệu tham khảo mở rộng (ngoài giáo trình)", f"""
-<p>Ngoài giáo trình chính (Chương 2, tr.23–36, xem Slide 47), nội dung liên hệ tới <b>8 bài báo gốc</b>
+<p>Ngoài giáo trình chính (Chương 2, tr.23–36, xem slide Tài liệu tham khảo ở Phần 7), nội dung liên hệ tới <b>8 bài báo gốc</b>
 sau: 5 bài nền tảng của từng công nghệ Apache, 3 bài nghiên cứu của giảng viên môn học dùng ở phần bonus.</p>
 {tbl(["#", "Trích dẫn", "Dùng ở"], REFS, dense=True)}
 <p style="color:var(--muted);font-size:.82rem">Bản PDF cả 8 bài báo: nhóm đã tải về, đọc trực tiếp phần Abstract và Introduction (mục 1) của từng bài, không trích dẫn gián tiếp qua nguồn thứ cấp.</p>
-"""))
-
-SLIDES.append(slide("Thông điệp của phần bonus", f"""
-<p>Hai mảng kiến thức tưởng tách biệt trong môn học: <b>thuật toán streaming</b> (ước lượng khi không đủ
-bộ nhớ) và <b>hệ sinh thái Hadoop</b> (xử lý khi dữ liệu phân tán nhiều máy): thực ra là <b>2 ràng buộc của
-cùng 1 bài toán lớn</b>: học máy trên dữ liệu khổng lồ.</p>
-{callout('good', 'Kết luận', 'Một thuật toán big-data thực chiến thường phải đồng thời tiết kiệm bộ nhớ (streaming) VÀ tiết kiệm vòng giao tiếp (massively parallel): đây là hướng nghiên cứu đang hoạt động, không phải bài toán đã đóng.')}
 """))
 
 SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">Cảm ơn đã theo dõi</div>
 <h2>Nhóm 1: Hệ sinh thái Hadoop</h2>
 <p>{" · ".join(MEMBERS)}</p>
 <p style="color:var(--muted)">Môn Lưu trữ &amp; xử lý dữ liệu lớn, giảng viên Tạ Duy Hoàng</p></div>""")
+
+# ---- gắn logo công nghệ vào góc phải các slide tương ứng ----
+LOGO_FOR = [("Nguồn gốc: 2 bài báo", "google.svg"), ("Bốn thành phần cốt lõi", "apachehadoop.svg"), ("Scale-out so với", "apachehadoop.svg"),
+            ("HDFS được tối ưu", "apachehadoop.svg"), ("Kiến trúc master/slave", "apachehadoop.svg"), ("Block là gì", "apachehadoop.svg"),
+            ("Replication", "apachehadoop.svg"), ("NameNode có phải", "apachehadoop.svg"), ("Hạn chế của HDFS", "apachehadoop.svg"),
+            ("Mô hình lập trình MapReduce", "apachehadoop.svg"), ("Vai trò MapReduce", "apachehadoop.svg"), ("MapReduce tích hợp", "apachehadoop.svg"),
+            ("Vì sao cần tách riêng YARN", "apachehadoop.svg"), ("Quy trình 1 ứng dụng", "apachehadoop.svg"), ("Lợi ích YARN", "apachehadoop.svg"),
+            ("Khi nào dùng HDFS", "apachehbase.svg"), ("Toàn cảnh hệ sinh thái", "apachehadoop.svg"), ("Tổng kết chương 2", "apachehadoop.svg"),
+            ("Lộ trình phát triển", "apachehadoop.svg"), ("Ví dụ minh hoạ: dung lượng", "apachehadoop.svg"),
+            ("Hình gốc: cách Bigtable", "apachehbase.svg"), ("Hình gốc: tablet được lưu", "apachehbase.svg"),
+            ("Hình gốc: luồng ghi của GFS", "apachehadoop.svg"), ("Hình gốc: MapReduce lan nhanh", "google.svg"),
+            ("Hình gốc: Chubby xử lý", "zookeeper.svg"), ("Hình gốc: Kafka tại LinkedIn", "apachekafka.svg"),
+            ("Tài liệu tham khảo mở rộng", "google.svg"),
+            ("Apache Hadoop là gì", "apachehadoop.svg"), ("Kiến trúc YARN", "apachehadoop.svg"), ("Hình gốc: kiến trúc GFS", "apachehadoop.svg"),
+            ("Hình gốc: luồng thực thi MapReduce", "apachehadoop.svg"),
+            ("Apache Hive", "apachehive.svg"), ("Hive hoạt động", "apachehive.svg"), ("Apache Pig", "pig.gif"),
+            ("Apache HBase", "apachehbase.svg"), ("HBase khác RDBMS", "apachehbase.svg"), ("Hình gốc: mô hình dữ liệu Bigtable", "apachehbase.svg"),
+            ("Apache Sqoop", "sqoop.png"), ("Quy trình Sqoop", "sqoop.png"),
+            ("Apache Kafka", "apachekafka.svg"), ("Ví dụ minh hoạ: Kafka", "apachekafka.svg"), ("Hình gốc: log của Kafka", "apachekafka.svg"),
+            ("Apache Oozie", "oozie.png"), ("Apache ZooKeeper", "zookeeper.svg"), ("Vì sao ZooKeeper", "zookeeper.svg"),
+            ("ZooKeeper được dùng", "zookeeper.svg"), ("Hình gốc: cấu trúc Chubby", "zookeeper.svg")]
+for _i, _s in enumerate(SLIDES):
+    _m = re.search(r"<h2>(.*?)</h2>", _s)
+    if not _m or 'part-divider' in _s[:80]:
+        continue
+    for _pref, _f in LOGO_FOR:
+        if _m.group(1).startswith(_pref):
+            SLIDES[_i] = _s.replace('<div class="mdeck-slide">',
+                f'<div class="mdeck-slide has-logo"><img class="tech-logo" src="../assets/images/logos/{_f}" alt="logo">', 1)
+            break
+
+# ---- áp theme HUST: cover, divider, nội dung (xoay 4 biến thể theo từng Phần), kết ----
+_part = -1
+for _i, _s in enumerate(SLIDES):
+    if _i == 0:
+        _cls = "cover"
+    elif _i == len(SLIDES) - 1:
+        _cls = "endcard"
+    elif 'part-divider' in _s[:90]:
+        _part += 1
+        continue
+    else:
+        _cls = f"th{max(_part, 0) % 4}"
+    _s2 = re.sub(r'<div class="mdeck-slide( [^"]*)?">', lambda m: f'<div class="mdeck-slide{m.group(1) or ""} {_cls}">', _s, count=1)
+    if _cls.startswith("th"):
+        _s2 = _s2.replace('</h2>', '</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">', 1)
+    SLIDES[_i] = _s2
 
 SLIDES[0] = SLIDES[0].replace("__SLIDE_COUNT__", str(len(SLIDES)))
 
@@ -634,6 +785,33 @@ HUST_THEME = """<style>
 :root[data-theme="dark"]{--accent:#ff5a68;--accent2:#ffb3b8}
 .hust-logo-row{display:flex;align-items:center;gap:16px;margin-bottom:8px}
 .hust-logo-row img{height:56px;width:auto}
+.tech-logo{position:absolute;top:24px;right:40px;height:56px;max-width:170px;width:auto;object-fit:contain;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px 8px}
+
+/* ---- Theme slide HUST (nền Beamer HUST: băng navy + đường đỏ, logo chân trang) ---- */
+.mdeck-slide{--text:#1b2433;--muted:#566074;--panel:#fff;--border:#d5dae6;--code:#eef2fa;--hred:#ce1628;--hnavy:#003366;
+  color:var(--text);background-color:#fff;background-size:100% 100%;background-repeat:no-repeat;padding:104px 60px 66px}
+.mdeck-slide.th0{background-image:url(../assets/images/hust-theme/content-full.png)}
+.mdeck-slide.th1{background-image:url(../assets/images/hust-theme/content-hust-full.png)}
+.mdeck-slide.th2{background-image:url(../assets/images/hust-theme/content-logo.png)}
+.mdeck-slide.th3{background-image:url(../assets/images/hust-theme/content-hust.png)}
+.mdeck-slide.th0 h2,.mdeck-slide.th1 h2,.mdeck-slide.th2 h2,.mdeck-slide.th3 h2{position:absolute;left:60px;right:96px;top:0;height:68px;
+  margin:0;display:flex;align-items:center;color:#fff;font-size:1.42rem;line-height:1.15}
+.mdeck-slide.has-logo h2{right:230px;padding-right:0}
+.mdeck-slide .hust-emblem{position:absolute;top:6px;right:20px;height:56px;width:auto}
+.mdeck-slide.part-divider{background-image:url(../assets/images/hust-theme/section.png);padding:0 80px}
+.mdeck-slide.part-divider h2{position:static;color:#fff}
+.mdeck-slide.cover{background-image:url(../assets/images/hust-theme/title.png);padding:150px 560px 70px 70px;align-items:flex-start}
+.mdeck-slide.cover h2{font-size:2.3rem}
+.mdeck-slide.endcard{background-image:url(../assets/images/hust-theme/end-empty.png);padding:150px 60px 70px 540px;align-items:flex-start}
+.mdeck-slide b,.mdeck-slide strong{color:var(--hred)}
+.mdeck-slide.part-divider b,.mdeck-slide.part-divider strong{color:#fff}
+.mdeck-slide p,.mdeck-slide li{font-size:1.04rem;line-height:1.42}
+.mdeck-slide table{font-size:.92rem}
+.mdeck-slide table.dense{font-size:.8rem}
+.mdeck-slide h3{font-size:1.12rem}
+.tblock{border-color:var(--hnavy)}.tblock .tblock-h{background:var(--hnavy)}
+.tech-logo{top:6px;right:90px;height:56px}
+
 .tblock{border:1px solid var(--accent);border-radius:10px;overflow:hidden;margin:10px 0;background:var(--panel)}
 .tblock .tblock-h{background:var(--accent);color:#fff;font-weight:800;padding:7px 16px;font-size:.98rem}
 .tblock ol{margin:0;padding:10px 16px 10px 34px}
