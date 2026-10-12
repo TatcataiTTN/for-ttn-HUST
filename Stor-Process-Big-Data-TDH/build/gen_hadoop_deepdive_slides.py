@@ -34,14 +34,11 @@ SLIDES = []
 # ---------- Title ----------
 SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">IT4931: Lưu trữ &amp; xử lý dữ liệu lớn · Tự học sâu Chương 2</div>
 <h2>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h2>
-<p style="font-size:1.05rem;color:var(--muted)">Bản deep-dive riêng cho nhóm tự học — tách biệt hoàn toàn khỏi
-slide thuyết trình bài tập lớn của Nhóm 1 (group-1-slides.html)</p>
+<p style="font-size:1.05rem;color:var(--muted)">Nguồn gốc, động lực và ảnh hưởng của từng công nghệ trong Chương 2</p>
 <p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Môn Lưu trữ &amp; xử lý dữ liệu lớn &nbsp;·&nbsp; __SLIDE_COUNT__ slide</p></div>""")
 
-SLIDES.append(slide("Mục đích của bản deck này", f"""
-<p>Nhóm đã đọc <i>group-1-slides.html</i> (73 slide, nội dung chính bám Chương 2 giáo trình tr.23–36) và nhận xét
-<i>"nửa sau đúng không hiểu gì"</i>. Bản deck này KHÔNG lặp lại Chương 2 — nó trả lời 3 câu hỏi mà Chương 2
-không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>
+SLIDES.append(slide("Bảy phần: nguồn gốc, động lực, ảnh hưởng", f"""
+<p>Mỗi công nghệ được xem qua 3 khía cạnh: <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>
 {tbl(["Phần","Công nghệ","Trọng tâm"],
      [["1","Hadoop &amp; HDFS","Nutch → 2 paper Google → Yahoo → kiến trúc Master/Slave"],
       ["2","MapReduce &amp; YARN","Mô hình Google 2004 → JobTracker nghẽn → YARN 2012"],
@@ -50,7 +47,7 @@ không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì độn
       ["5","Kafka","LinkedIn 2010-2011 → log-centric architecture → Confluent"],
       ["6","Oozie &amp; ZooKeeper","Điều phối workflow; Chubby → ZAB → 'xương sống vô hình'"],
       ["7","Ba bài báo của thầy","Chọn ngưỡng chia cây quyết định trên luồng (streaming) và trên cụm song song (MPC)"]])}
-{callout('info','Mỗi module đầy đủ (lịch sử, ví dụ, demo tương tác, 20+ câu quiz) nằm ở', 'site: mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ. Deck này chỉ tóm lược để trình bày/ôn nhanh.')}
+{callout('info','Chi tiết từng phần', 'Mỗi phần có module riêng (lịch sử, ví dụ, demo tương tác, 20+ câu quiz) ở mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ.')}
 """))
 
 # ===================== PHẦN 1: Hadoop & HDFS =====================
@@ -205,8 +202,7 @@ rel_lang = ""
 rel_root = "../"
 body = f"""<div class="hero"><div class="kicker">Tự học sâu · Chương 2</div>
 <h1>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h1>
-<p>Bản deck tổng hợp riêng cho nhóm tự học, tách biệt hoàn toàn khỏi slide thuyết trình bài tập lớn của Nhóm 1.
-Mọi fact lịch sử trong deck này đã được trích nguồn đầy đủ trong 7 module chi tiết tương ứng (xem link cuối trang).</p></div>
+<p>Nguồn gốc, động lực và ảnh hưởng của từng công nghệ trong Chương 2, từ Hadoop, HDFS, MapReduce, YARN tới Pig, Hive, HBase, Sqoop, Kafka, Oozie, ZooKeeper.</p></div>
 {DECK}
 <div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn &amp; 7 module chi tiết</div>
 Nội dung kỹ thuật cốt lõi: <i>IT4931_lecture_notes.pdf</i> (Chương 2, tr.23–36) và <i>materials/hangout/2024/2_hadoop_ecosystem_vn.pdf</i>.
@@ -218,7 +214,7 @@ Lịch sử/động lực/ảnh hưởng: xác nhận qua web search (xem từng
 <a href="modules/hd-05-kafka/index.html">05</a> ·
 <a href="modules/hd-06-oozie-zookeeper/index.html">06</a> ·
 <a href="modules/hd-07-bai-bao-thay/index.html">07</a>
-&nbsp;·&nbsp; <a href="group-1-slides.html">Slide thuyết trình gốc của Nhóm 1 (Chương 2, không sửa)</a></div>
+&nbsp;·&nbsp; <a href="group-1-slides.html">Slide thuyết trình Nhóm 1 (Chương 2)</a></div>
 """
 
 html = f"""<!doctype html>

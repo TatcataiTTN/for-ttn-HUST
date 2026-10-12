@@ -47,18 +47,14 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="wrap">
 <div class="hero"><div class="kicker">Tự học sâu · Chương 2</div>
 <h1>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h1>
-<p>Bản deck tổng hợp riêng cho nhóm tự học, tách biệt hoàn toàn khỏi slide thuyết trình bài tập lớn của Nhóm 1.
-Mọi fact lịch sử trong deck này đã được trích nguồn đầy đủ trong 7 module chi tiết tương ứng (xem link cuối trang).</p></div>
+<p>Nguồn gốc, động lực và ảnh hưởng của từng công nghệ trong Chương 2, từ Hadoop, HDFS, MapReduce, YARN tới Pig, Hive, HBase, Sqoop, Kafka, Oozie, ZooKeeper.</p></div>
 <div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">IT4931: Lưu trữ &amp; xử lý dữ liệu lớn · Tự học sâu Chương 2</div>
 <h2>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng</h2>
-<p style="font-size:1.05rem;color:var(--muted)">Bản deep-dive riêng cho nhóm tự học — tách biệt hoàn toàn khỏi
-slide thuyết trình bài tập lớn của Nhóm 1 (group-1-slides.html)</p>
-<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Môn Lưu trữ &amp; xử lý dữ liệu lớn &nbsp;·&nbsp; 22 slide</p></div><div class="mdeck-slide"><h2>Mục đích của bản deck này</h2>
-<p>Nhóm đã đọc <i>group-1-slides.html</i> (73 slide, nội dung chính bám Chương 2 giáo trình tr.23–36) và nhận xét
-<i>"nửa sau đúng không hiểu gì"</i>. Bản deck này KHÔNG lặp lại Chương 2 — nó trả lời 3 câu hỏi mà Chương 2
-không trả lời: công nghệ này <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>
+<p style="font-size:1.05rem;color:var(--muted)">Nguồn gốc, động lực và ảnh hưởng của từng công nghệ trong Chương 2</p>
+<p style="color:var(--muted);font-size:.9rem">Giảng viên: Tạ Duy Hoàng &nbsp;·&nbsp; Môn Lưu trữ &amp; xử lý dữ liệu lớn &nbsp;·&nbsp; 22 slide</p></div><div class="mdeck-slide"><h2>Bảy phần: nguồn gốc, động lực, ảnh hưởng</h2>
+<p>Mỗi công nghệ được xem qua 3 khía cạnh: <b>ra đời từ đâu</b>, <b>vì động lực gì</b>, và <b>ảnh hưởng tới thế giới ra sao</b>.</p>
 <table><tr><th>Phần</th><th>Công nghệ</th><th>Trọng tâm</th></tr><tr><td>1</td><td>Hadoop &amp; HDFS</td><td>Nutch → 2 paper Google → Yahoo → kiến trúc Master/Slave</td></tr><tr><td>2</td><td>MapReduce &amp; YARN</td><td>Mô hình Google 2004 → JobTracker nghẽn → YARN 2012</td></tr><tr><td>3</td><td>Pig &amp; Hive</td><td>Yahoo Research vs Facebook — 2 triết lý ngôn ngữ khác nhau</td></tr><tr><td>4</td><td>HBase &amp; Sqoop</td><td>Bigtable → Powerset → Facebook Messages; cầu nối RDBMS↔Hadoop</td></tr><tr><td>5</td><td>Kafka</td><td>LinkedIn 2010-2011 → log-centric architecture → Confluent</td></tr><tr><td>6</td><td>Oozie &amp; ZooKeeper</td><td>Điều phối workflow; Chubby → ZAB → 'xương sống vô hình'</td></tr><tr><td>7</td><td>Ba bài báo của thầy</td><td>Chọn ngưỡng chia cây quyết định trên luồng (streaming) và trên cụm song song (MPC)</td></tr></table>
-<div class="callout info"><div class="lbl">Mỗi module đầy đủ (lịch sử, ví dụ, demo tương tác, 20+ câu quiz) nằm ở</div>site: mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ. Deck này chỉ tóm lược để trình bày/ôn nhanh.</div>
+<div class="callout info"><div class="lbl">Chi tiết từng phần</div>Mỗi phần có module riêng (lịch sử, ví dụ, demo tương tác, 20+ câu quiz) ở mục "🐘 Hệ sinh thái Hadoop — Tự học sâu" trên trang chủ.</div>
 </div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/7</div>
 <div class="part-num">01</div><h2>Hadoop &amp; HDFS</h2><ul class="part-list"><li>Nutch (2002) không scale được → đọc 2 paper Google</li><li>2006: Cutting vào Yahoo, Hadoop tách từ Nutch</li><li>Tên: con voi nhồi bông của con trai Doug Cutting</li><li>Kiến trúc Master/Slave: NameNode/DataNode, block, replication</li></ul></div><div class="mdeck-slide"><h2>Từ một công cụ tìm kiếm thất bại, tới chuẩn công nghiệp</h2>
 <p>Doug Cutting &amp; Mike Cafarella xây <b>Nutch</b> (2002) — công cụ tìm kiếm mở không scale được. Đọc paper
@@ -127,7 +123,7 @@ Lịch sử/động lực/ảnh hưởng: xác nhận qua web search (xem từng
 <a href="modules/hd-05-kafka/index.html">05</a> ·
 <a href="modules/hd-06-oozie-zookeeper/index.html">06</a> ·
 <a href="modules/hd-07-bai-bao-thay/index.html">07</a>
-&nbsp;·&nbsp; <a href="group-1-slides.html">Slide thuyết trình gốc của Nhóm 1 (Chương 2, không sửa)</a></div>
+&nbsp;·&nbsp; <a href="group-1-slides.html">Slide thuyết trình Nhóm 1 (Chương 2)</a></div>
 
 </div>
 <footer>

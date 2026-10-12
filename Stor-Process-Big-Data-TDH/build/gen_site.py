@@ -240,9 +240,9 @@ def build_module_page(mod, prev_mod, next_mod):
         ex_section = ""
         nb_link = (f'<p><a href="{rel_root}data/source/IT4931_lecture_notes.pdf" target="_blank">'
                    f'📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> '
-                   f'— module này KHÔNG lặp lại nguyên văn Chương 2 mà đi sâu hơn: lịch sử ra đời, động lực, '
-                   f'ảnh hưởng tới thế giới của từng công nghệ (mỗi fact lịch sử có trích nguồn riêng trong bài). '
-                   f'Xem bản trình bày gốc của Nhóm 1: <a href="{rel_root}vi/group-1-slides.html">group-1-slides.html</a>.</p>'
+                   f'— nội dung đi sâu vào lịch sử ra đời, động lực và ảnh hưởng tới thế giới của từng công nghệ, '
+                   f'mỗi dữ kiện lịch sử có nguồn riêng trong bài. '
+                   f'Slide trình bày của Nhóm 1: <a href="{rel_root}vi/group-1-slides.html">group-1-slides.html</a>.</p>'
                    f'<p>📄 Bài báo gốc (PDF) được đọc trực tiếp trong các module: '
                    f'<a href="{rel_root}data/source/papers/GFS_Ghemawat2003.pdf" target="_blank">GFS 2003</a> · '
                    f'<a href="{rel_root}data/source/papers/MapReduce_Dean2004.pdf" target="_blank">MapReduce 2004</a> · '
@@ -359,7 +359,7 @@ def build_index():
 <div class="go">Mở slide thuyết trình →</div></a>"""
     hadoop_deck_card = """<a class="mod-card" href="hadoop-deep-dive-slides.html" style="border-color:var(--warn)">
 <span class="kicker">Tự học sâu · Chương 2</span><h3>Hệ sinh thái Hadoop: Lịch sử, Động lực, Ảnh hưởng (deck tổng hợp)</h3>
-<span class="tag">18 slide · tóm lược cả 7 module hd-01..hd-07 · không sửa slide Nhóm 1</span>
+<span class="tag">18 slide · tóm lược cả 7 module hd-01..hd-07</span>
 <div class="go">Mở deck tổng hợp →</div></a>"""
     body = f"""<div class="hero">
 <div class="kicker">Hệ thống tự học mở · Tiếng Việt</div>
@@ -388,8 +388,8 @@ Schwartz–Zippel bằng Monte Carlo.</div>
 công bằng tài nguyên (progressive filling, DRF), và phân công/tái cân bằng partition Kafka — mỗi buổi liên hệ
 trực tiếp Spark/YARN/MapReduce/Kafka, có nguồn trích trang cụ thể.</p>
 <div class="grid">{''.join(sched_cards)}</div>
-<h2>🐘 Hệ sinh thái Hadoop — Tự học sâu (Chương 2, dành cho nhóm bài tập lớn)</h2>
-<p>7 module tự học sâu, tách biệt khỏi slide thuyết trình gốc của Nhóm 1: không lặp lại Chương 2, mà đi sâu
+<h2>🐘 Hệ sinh thái Hadoop — Tự học sâu (Chương 2)</h2>
+<p>7 module tự học sâu đi sâu
 vào <b>lịch sử ra đời thật</b>, <b>động lực nghiệp vụ</b> và <b>ảnh hưởng tới thế giới</b> của từng công nghệ
 (Hadoop/HDFS, MapReduce/YARN, Pig/Hive, HBase/Sqoop, Kafka, Oozie/ZooKeeper) — mỗi fact lịch sử đều trích
 nguồn kiểm chứng được, và các module có <b>đọc trực tiếp bài báo gốc</b> (GFS, MapReduce, Bigtable, Chubby, Kafka). Module thứ 7 dành cho

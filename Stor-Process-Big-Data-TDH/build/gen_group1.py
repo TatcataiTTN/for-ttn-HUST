@@ -163,7 +163,6 @@ SLIDES.append(slide("Cơ chế nhân bản (replication)", f"""
 """))
 
 SLIDES.append(slide("Ví dụ minh hoạ: dung lượng vật lý thực cần", f"""
-<p style="color:var(--muted);font-size:.85rem">Ví dụ số liệu tự tính để minh hoạ khái niệm: không trích từ sách, chỉ dùng đúng các thông số sách đã nêu (block 128MB, nhân bản 3 lần).</p>
 {tbl(['Bước tính','Giá trị'],
      [['Kích thước tệp cần lưu', '1 TB = 1 048 576 MB'],
       ['Kích thước block', '128 MB'],
@@ -381,7 +380,6 @@ consumer đăng ký nhận từ topic đó.</p>
 """))
 
 SLIDES.append(slide("Ví dụ minh hoạ: Kafka trong pipeline thu thập log", f"""
-<p style="color:var(--muted);font-size:.85rem">Minh hoạ dựa trên ví dụ sách nêu (thu thập log sự kiện người dùng vào topic "website_events"): diễn giải thêm để dễ hình dung, không phải trích nguyên văn.</p>
 <ol style="line-height:2.1">
 <li>Hàng trăm máy chủ web sinh ra sự kiện người dùng (click, xem trang...) liên tục</li>
 <li>Mỗi sự kiện được gửi (<b>produce</b>) vào topic <code>website_events</code></li>
@@ -622,7 +620,6 @@ SLIDES.append(slide("Tài liệu tham khảo mở rộng (ngoài giáo trình)",
 <p>Ngoài giáo trình chính (Chương 2, tr.23–36, xem slide Tài liệu tham khảo ở Phần 7), nội dung liên hệ tới <b>8 bài báo gốc</b>
 sau: 5 bài nền tảng của từng công nghệ Apache, 3 bài nghiên cứu của giảng viên môn học dùng ở phần bonus.</p>
 {tbl(["#", "Trích dẫn", "Dùng ở"], REFS, dense=True)}
-<p style="color:var(--muted);font-size:.82rem">Bản PDF cả 8 bài báo: nhóm đã tải về, đọc trực tiếp phần Abstract và Introduction (mục 1) của từng bài, không trích dẫn gián tiếp qua nguồn thứ cấp.</p>
 """))
 
 SLIDES.append(f"""<div class="mdeck-slide"><div class="kicker">Cảm ơn đã theo dõi</div>
@@ -730,8 +727,7 @@ HUST_THEME = """<style>
 body = f"""<div class="hero"><div class="hust-logo-row"><img src="{rel_root}assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
 <div class="kicker">Bài tập lớn · Nhóm 1</div>
 <h1>Hệ sinh thái Hadoop: Chương 2</h1>
-<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm {", ".join(MEMBERS)}.
-Nội dung bám sát 100% Chương 2 giáo trình chính thức của môn học (IT4931_lecture_notes.pdf, tr.23–36), không bổ sung nội dung ngoài phạm vi sách.</p></div>
+<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm {", ".join(MEMBERS)}.</p></div>
 {DECK}
 <div class="callout info" style="margin-top:20px"><div class="lbl">Nguồn</div>
 Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung. <i>Lưu trữ và Xử lý Dữ liệu Lớn</i>, Chương 2: Hệ sinh thái Hadoop, tr.23–36. Trường CNTT&amp;TT, ĐH Bách Khoa Hà Nội, 2024.

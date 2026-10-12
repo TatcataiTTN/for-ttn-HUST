@@ -43,7 +43,7 @@ HD02_EXPANDED = dict(n=26, slug="hd-02-mapreduce-yarn",
       <div class="callout info"><div class="lbl">Nguồn: materials/hangout/2024/2_hadoop_ecosystem_vn.pdf (Chương 2)</div>
       Ví dụ Word Count trong giáo trình chính là minh hoạ kinh điển nhất của mô hình này: Map phát ra (từ, 1)
       cho mỗi từ, Reduce cộng tổng các giá trị 1 theo từng từ khoá.</div>""".replace("{callout_info}","")),
-    dict(h="Ví dụ minh hoạ MapReduce ở 3 ngành khác nhau (đều minh hoạ, không phải số liệu thật)", body="""
+    dict(h="Ví dụ minh hoạ MapReduce ở 3 ngành khác nhau", body="""
       <p>Để thấy MapReduce không phải khái niệm "chỉ dùng cho dữ liệu máy tính", dưới đây là cùng 1 cơ chế
       Map → Shuffle &amp; Sort → Reduce áp vào 3 ngành khác hẳn nhau:</p>
       <table><tr><th>Ngành</th><th>Map (chia nhỏ, xử lý cục bộ)</th><th>Shuffle&amp;Sort (gộp theo "khoá")</th><th>Reduce (tổng hợp cuối)</th></tr>

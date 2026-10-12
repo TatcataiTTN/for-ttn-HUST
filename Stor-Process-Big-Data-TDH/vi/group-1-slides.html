@@ -85,8 +85,7 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <div class="hero"><div class="hust-logo-row"><img src="../assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
 <div class="kicker">Bài tập lớn · Nhóm 1</div>
 <h1>Hệ sinh thái Hadoop: Chương 2</h1>
-<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm Trương Tuấn Nghĩa (20251196M), Nguyễn Vũ Việt Hoàng (20252091M), Nguyễn Thế Hoàng (20251228M).
-Nội dung bám sát 100% Chương 2 giáo trình chính thức của môn học (IT4931_lecture_notes.pdf, tr.23–36), không bổ sung nội dung ngoài phạm vi sách.</p></div>
+<p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm Trương Tuấn Nghĩa (20251196M), Nguyễn Vũ Việt Hoàng (20252091M), Nguyễn Thế Hoàng (20251228M).</p></div>
 <div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide cover"><div class="kicker">IT4931: Lưu trữ &amp; xử lý dữ liệu lớn · Bài tập lớn</div>
 <h2>Hệ sinh thái Hadoop</h2>
 <p style="font-size:1.05rem;color:var(--muted)">Chương 2: Lưu trữ và Xử lý Dữ liệu Lớn (Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung, ĐH Bách Khoa Hà Nội)</p>
@@ -120,7 +119,6 @@ trên phần cứng thông dụng (commodity hardware).</p>
 <div class="pd-formula"><div class="pd-formula-label">Hệ số nhân bản mặc định</div><div class="pd-formula-math">$3\text{ bản sao trên 3 DataNode khác nhau}$</div></div>
 <div class="callout good"><div class="lbl">Vì sao nhân bản giúp chịu lỗi</div>Khi 1 DataNode hỏng, hệ thống vẫn còn bản sao trên node khác: NameNode tự động điều phối sao chép lại để duy trì đủ số bản sao mặc định.</div>
 </div><div class="mdeck-slide has-logo th1"><img class="tech-logo" src="../assets/images/logos/apachehadoop.svg" alt="logo"><h2>Ví dụ minh hoạ: dung lượng vật lý thực cần</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
-<p style="color:var(--muted);font-size:.85rem">Ví dụ số liệu tự tính để minh hoạ khái niệm: không trích từ sách, chỉ dùng đúng các thông số sách đã nêu (block 128MB, nhân bản 3 lần).</p>
 <table><tr><th>Bước tính</th><th>Giá trị</th></tr><tr><td>Kích thước tệp cần lưu</td><td>1 TB = 1 048 576 MB</td></tr><tr><td>Kích thước block</td><td>128 MB</td></tr><tr><td>Số block cần (1 048 576 / 128)</td><td>= 8 192 block</td></tr><tr><td>Hệ số nhân bản</td><td>× 3</td></tr><tr><td><b>Dung lượng vật lý thực tế cần trên cụm</b></td><td><b>= 3 TB</b> (gấp 3 lần dữ liệu gốc)</td></tr></table>
 <div class="callout warn"><div class="lbl">Đánh đổi</div>Nhân bản 3 lần giúp chịu lỗi tốt nhưng tốn gấp 3 lần dung lượng lưu trữ thật: đây là chi phí đổi lấy độ tin cậy của HDFS.</div>
 </div><div class="mdeck-slide has-logo th1"><img class="tech-logo" src="../assets/images/logos/apachehadoop.svg" alt="logo"><h2>NameNode và rủi ro điểm lỗi duy nhất</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
@@ -201,7 +199,6 @@ consumer đăng ký nhận từ topic đó.</p>
 <table><tr><th>Đặc điểm</th><th>Giải thích</th></tr><tr><td>Thông lượng &amp; độ bền cao</td><td>Hàng triệu thông điệp/giây, ghi commit log tuần tự, nhân bản giữa broker</td></tr><tr><td>Partition</td><td>Mỗi topic chia nhiều partition: tăng song song; Kafka đảm bảo thứ tự <i>trong từng partition</i></td></tr><tr><td>Multi-subscriber</td><td>Nhiều consumer group độc lập đọc cùng dữ liệu mà không ảnh hưởng nhau</td></tr></table>
 <div class="callout info"><div class="lbl">Vai trò trong hệ sinh thái</div>Tầng thu thập/phân phối sự kiện (ingest): nguồn dữ liệu đầu vào liên tục cho Spark, Storm hoặc lưu vào HDFS/HBase.</div>
 </div><div class="mdeck-slide has-logo th1"><img class="tech-logo" src="../assets/images/logos/apachekafka.svg" alt="logo"><h2>Ví dụ minh hoạ: Kafka trong pipeline thu thập log</h2><img class="hust-emblem" src="../assets/images/hust_logo.png" alt="HUST">
-<p style="color:var(--muted);font-size:.85rem">Minh hoạ dựa trên ví dụ sách nêu (thu thập log sự kiện người dùng vào topic "website_events"): diễn giải thêm để dễ hình dung, không phải trích nguyên văn.</p>
 <ol style="line-height:2.1">
 <li>Hàng trăm máy chủ web sinh ra sự kiện người dùng (click, xem trang...) liên tục</li>
 <li>Mỗi sự kiện được gửi (<b>produce</b>) vào topic <code>website_events</code></li>
@@ -270,7 +267,6 @@ dùng bộ nhớ dưới tuyến tính, lý tưởng là <b>1 lượt duyệt</b
 <p>Ngoài giáo trình chính (Chương 2, tr.23–36, xem slide Tài liệu tham khảo ở Phần 7), nội dung liên hệ tới <b>8 bài báo gốc</b>
 sau: 5 bài nền tảng của từng công nghệ Apache, 3 bài nghiên cứu của giảng viên môn học dùng ở phần bonus.</p>
 <table class="dense"><tr><th>#</th><th>Trích dẫn</th><th>Dùng ở</th></tr><tr><td>[1]</td><td>S. Ghemawat, H. Gobioff, S.-T. Leung. <i>The Google File System.</i> SOSP 2003.</td><td>HDFS (Phần 1–2)</td></tr><tr><td>[2]</td><td>J. Dean, S. Ghemawat. <i>MapReduce: Simplified Data Processing on Large Clusters.</i> OSDI 2004.</td><td>MapReduce (Phần 1, 3)</td></tr><tr><td>[3]</td><td>F. Chang et al. <i>Bigtable: A Distributed Storage System for Structured Data.</i> OSDI 2006.</td><td>HBase (Phần 5)</td></tr><tr><td>[4]</td><td>M. Burrows. <i>The Chubby lock service for loosely-coupled distributed systems.</i> OSDI 2006.</td><td>ZooKeeper / ZAB (Phần 6)</td></tr><tr><td>[5]</td><td>J. Kreps, N. Narkhede, J. Rao. <i>Kafka: a Distributed Messaging System for Log Processing.</i> NetDB 2011.</td><td>Kafka (Phần 6)</td></tr><tr><td>[6]</td><td>H. Phạm, H. Ta, H. T. Vu. <i>Finding Decision Tree Splits in Streaming and Massively Parallel Models.</i> arXiv:2403.19867v1, 2024.</td><td>Bonus (Phần 8)</td></tr><tr><td>[7]</td><td>H. Phạm, H. Ta, H. T. Vu. <i>Constructing Decision Trees from Data Streams.</i> ISIT 2025 (arXiv:2403.19867v4).</td><td>Bonus (Phần 8)</td></tr><tr><td>[8]</td><td>H. Ta, H. T. Vu. <i>Nearly Optimal Bounds for Computing Decision Tree Splits in Data Streams.</i> ESA 2026 (arXiv:2604.20394v2).</td><td>Bonus (Phần 8)</td></tr></table>
-<p style="color:var(--muted);font-size:.82rem">Bản PDF cả 8 bài báo: nhóm đã tải về, đọc trực tiếp phần Abstract và Introduction (mục 1) của từng bài, không trích dẫn gián tiếp qua nguồn thứ cấp.</p>
 </div><div class="mdeck-slide endcard"><div class="kicker">Cảm ơn đã theo dõi</div>
 <h2>Nhóm 1: Hệ sinh thái Hadoop</h2>
 <p>Trương Tuấn Nghĩa (20251196M) · Nguyễn Vũ Việt Hoàng (20252091M) · Nguyễn Thế Hoàng (20251228M)</p>

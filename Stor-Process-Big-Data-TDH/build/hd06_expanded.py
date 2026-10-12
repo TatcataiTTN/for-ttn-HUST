@@ -36,7 +36,7 @@ HD06_EXPANDED = dict(n=30, slug="hd-06-oozie-zookeeper",
       '<a href="https://www.dremio.com/wiki/apache-oozie" target="_blank">Dremio — What is Apache Oozie?</a>.</div>')),
     dict(h="Ví dụ minh hoạ ở 3 ngành khác nhau: điều phối nhiều bước phụ thuộc", body="""
       <p>Khái niệm "bước sau chỉ chạy khi bước trước xong" không phải riêng của Big Data — nó xuất hiện ở
-      rất nhiều lĩnh vực khác. Ba ví dụ minh hoạ (nhãn rõ domain, không phải số liệu thật của Hadoop):</p>
+      rất nhiều lĩnh vực khác. Ba ví dụ minh hoạ:</p>
       <table><tr><th>Ngành</th><th>Quy trình nhiều bước phụ thuộc (minh hoạ)</th><th>Nếu bỏ qua kiểm tra phụ thuộc</th></tr>
       <tr><td>Sản xuất ô tô</td><td>Lắp khung xe → sơn khung → lắp ghế/nội thất → kiểm tra chất lượng</td>
       <td>Sơn trước khi lắp khung xong → xe bị méo, sơn không đều</td></tr>

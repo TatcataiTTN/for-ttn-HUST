@@ -86,8 +86,7 @@ HD05_EXPANDED = dict(
       partition cho consumer (RoundRobinAssignor/RangeAssignor/StickyAssignor) và bài toán tái cân bằng khi 1
       consumer rời nhóm đã được giải thích đầy đủ, kèm demo tương tác thật, ở
       <a href="../ll-08-kafka-roundrobin-range/index.html">Lập lịch 08</a> và
-      <a href="../ll-09-kafka-sticky-rebalance/index.html">Lập lịch 09</a> — module này không lặp lại, chỉ
-      liên kết tới đúng nội dung đó.</div>"""),
+      <a href="../ll-09-kafka-sticky-rebalance/index.html">Lập lịch 09</a>.</div>"""),
     dict(h="Log phân tán vs Message Queue: so sánh trực diện qua 3 ngành khác nhau", body="""
       <p>🗣️ <b>Nói nôm na:</b> message queue truyền thống giống một tờ giấy nháp — ai đọc xong thì xé bỏ,
       người đến sau không còn gì để đọc lại. Kafka giống 1 cuốn sổ ghi chép (ledger) ngân hàng: mọi giao dịch
@@ -257,7 +256,7 @@ HD05_EXPANDED = dict(
       Kafka cũ, ZooKeeper theo dõi tình trạng broker và phối hợp bầu leader mới cho partition; ở các bản Kafka
       mới dùng KRaft, chính cụm "controller" nội bộ của Kafka (dùng giao thức Raft) tự làm việc này, không cần
       ZooKeeper nữa. Cơ chế bầu cử chi tiết bằng znode tuần tự cho vai trò coordination nói chung đã có ví dụ
-      từng bước ở module Oozie &amp; ZooKeeper (n=30) — module này chỉ liên hệ vai trò, không lặp lại.</div>
+      từng bước ở module Oozie &amp; ZooKeeper (n=30).</div>
       <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu replication factor chỉ bằng 1 (không
       có follower nào), khi Broker 1 chết thì điều gì xảy ra? (Đáp: mất quyền truy cập dữ liệu của partition
       đó cho tới khi Broker 1 phục hồi — có thể mất dữ liệu vĩnh viễn nếu đĩa của Broker 1 hỏng luôn. Đây là
