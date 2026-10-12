@@ -475,7 +475,16 @@ DECK = f"""<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-v
 
 rel_lang = ""
 rel_root = "../"
-body = f"""<div class="hero"><div class="kicker">Bài tập lớn · Nhóm 1</div>
+# Theme HUST (đỏ chính thức #ce1628, theo beamerthemeHUST.sty của nhóm) — chỉ override biến màu
+# --accent/--accent2 CỤC BỘ cho trang này qua <style> riêng, không chỉnh _shared/common.css chung.
+HUST_THEME = """<style>
+:root{--accent:#ce1628;--accent2:#8a0f1f}
+:root[data-theme="dark"]{--accent:#ff5a68;--accent2:#ffb3b8}
+.hust-logo-row{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.hust-logo-row img{height:56px;width:auto}
+</style>"""
+body = f"""<div class="hero"><div class="hust-logo-row"><img src="{rel_root}assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
+<div class="kicker">Bài tập lớn · Nhóm 1</div>
 <h1>Hệ sinh thái Hadoop: Chương 2</h1>
 <p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm {", ".join(MEMBERS)}.
 Nội dung bám sát 100% Chương 2 giáo trình chính thức của môn học (IT4931_lecture_notes.pdf, tr.23–36), không bổ sung nội dung ngoài phạm vi sách.</p></div>
@@ -495,6 +504,7 @@ html = f"""<!doctype html>
 <link rel="stylesheet" href="{rel_root}_shared/deck.css">
 <link rel="stylesheet" href="{rel_root}_shared/glossary.css">
 {KATEX}
+{HUST_THEME}
 </head>
 <body>
 {topbar(rel_lang, rel_root)}

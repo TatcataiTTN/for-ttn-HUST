@@ -22,6 +22,12 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+<style>
+:root{--accent:#ce1628;--accent2:#8a0f1f}
+:root[data-theme="dark"]{--accent:#ff5a68;--accent2:#ffb3b8}
+.hust-logo-row{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+.hust-logo-row img{height:56px;width:auto}
+</style>
 </head>
 <body>
 <div class="topbar">
@@ -45,7 +51,8 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
   </details>
 </div>
 <div class="wrap">
-<div class="hero"><div class="kicker">Bài tập lớn · Nhóm 1</div>
+<div class="hero"><div class="hust-logo-row"><img src="../assets/images/hust_logo.png" alt="Logo Đại học Bách Khoa Hà Nội"></div>
+<div class="kicker">Bài tập lớn · Nhóm 1</div>
 <h1>Hệ sinh thái Hadoop: Chương 2</h1>
 <p>Slide thuyết trình môn <b>Lưu trữ &amp; xử lý dữ liệu lớn</b> (giảng viên Tạ Duy Hoàng), nhóm Trương Tuấn Nghĩa (20251196M), Nguyễn Vũ Việt Hoàng (20252091M), Nguyễn Thế Hoàng (20251228M).
 Nội dung bám sát 100% Chương 2 giáo trình chính thức của môn học (IT4931_lecture_notes.pdf, tr.23–36), không bổ sung nội dung ngoài phạm vi sách.</p></div>
