@@ -78,8 +78,7 @@ SLIDES.append(slide("Nội dung &amp; mục tiêu trình bày",
          ["MapReduce &amp; YARN", "Phân biệt vai trò 2 thành phần, kiến trúc YARN"],
          ["Hive, Pig", "So sánh 2 cách trừu tượng hoá MapReduce"],
          ["HBase, Sqoop", "Nêu use-case NoSQL thời gian thực &amp; ETL với RDBMS"],
-         ["Kafka, Oozie, ZooKeeper", "Giải thích vai trò streaming, điều phối workflow, coordination"]])
-    + '<p style="margin-top:10px;color:var(--muted);font-size:.88rem">Nguồn duy nhất: Chương 2 giáo trình môn học, tr.23–36.</p>',
+         ["Kafka, Oozie, ZooKeeper", "Giải thích vai trò streaming, điều phối workflow, coordination"]]),
     "Mục tiêu học tập"))
 
 # ===================== PHẦN 1 =====================
@@ -503,7 +502,7 @@ SLIDES.append(slide("Thuật ngữ quan trọng (tra cứu nhanh)", tbl(
 )))
 
 SLIDES.append(slide("Tài liệu tham khảo", f"""
-<p><b>Nguồn duy nhất của toàn bộ nội dung trình bày:</b></p>
+<p><b>Giáo trình chính của môn học:</b></p>
 {tbl(['Mục','Chi tiết'],
      [['Giáo trình','<i>Lưu trữ và Xử lý Dữ liệu Lớn</i>: Trần Văn Đặng, Nguyễn Hữu Đức, Nguyễn Bình Minh, Trần Việt Trung'],
       ['Đơn vị','Trường Công nghệ Thông tin &amp; Truyền thông, Đại học Bách Khoa Hà Nội (2024)'],
