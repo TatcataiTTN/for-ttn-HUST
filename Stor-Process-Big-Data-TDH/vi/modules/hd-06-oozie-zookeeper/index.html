@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 06: Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 06 / 7</div>
+<h1>Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 06 · Lịch sử Oozie · ZooKeeper (Chubby/ZAB) · Tổng kết chương</div><h2>Oozie & ZooKeeper: điều phối workflow, và "xương sống vô hình" của hệ phân tán</h2><p>ZooKeeper là công nghệ ít ai 'nhìn thấy' trực tiếp nhưng gần như MỌI hệ thống phân tán lớn (HBase, Kafka cũ, Solr, Mesos) đều phụ thuộc vào nó để tồn tại. Oozie là lớp điều phối để các job Hadoop không phải chạy rời rạc, thủ công.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/11</div>
+<div class="part-num">01</div><h2>Nhu cầu về một "người điều phối" riêng trong cụm Hadoop</h2>
+<ul class="part-list"><li>Pipeline xử lý dữ liệu thực tế hiếm khi chỉ có 1 job — thường là chuỗi nhiều bước phụ thuộc nhau</li>
+<li>Chạy thủ công bằng cron job: dễ vỡ khi 1 bước lỗi hoặc chạy chậm hơn dự kiến</li>
+<li>Oozie ra đời ở Yahoo! năm 2008 để giải quyết đúng bài toán này</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: Oozie</h2><p style="margin:0 0 8px"><img src="../../../assets/images/logos/oozie.png" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"></p>
+      <p><b>Nói nôm na:</b> Oozie giống một "quản đốc dây chuyền sản xuất" — nó không tự làm việc gì cả,
+      chỉ đứng ra ra lệnh: "bước 2 chỉ được bắt đầu khi bước 1 báo cáo xong, nếu bước 1 lỗi thì dừng cả
+      dây chuyền lại, không để sản phẩm lỗi trôi xuống bước sau."</p>
+      <p><b>Giải thích kỹ thuật:</b> một pipeline xử lý dữ liệu thực tế hiếm khi chỉ có 1 job MapReduce —
+      thường là chuỗi nhiều bước: chạy Sqoop import dữ liệu mới → chạy Hive script làm sạch → chạy job
+      MapReduce tổng hợp → gửi email báo cáo hoàn tất. Nếu làm thủ công (cron job gọi lần lượt từng bước),
+      rất dễ vỡ khi 1 bước lỗi hoặc chạy chậm hơn dự kiến — bước sau vẫn cứ chạy theo giờ đã đặt, dù dữ
+      liệu đầu vào của nó chưa sẵn sàng hoặc bị lỗi.</p>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>Oozie được phát triển lần đầu tại Yahoo! năm 2008 để giải quyết chính xác bài toán điều phối và lập lịch cho các triển khai Hadoop quy mô lớn; được mở ra như một dự án Apache (incubator) năm 2011, và trở thành Apache top-level project năm 2012. Nguồn: <a href="https://attic.apache.org/projects/oozie.html" target="_blank">Apache Attic — Oozie</a>, <a href="https://www.dremio.com/wiki/apache-oozie" target="_blank">Dremio — What is Apache Oozie?</a>.</div>
+    </div><div class="mdeck-slide"><h2>Ví dụ minh hoạ ở 3 ngành khác nhau: điều phối nhiều bước phụ thuộc</h2>
+      <p>Khái niệm "bước sau chỉ chạy khi bước trước xong" không phải riêng của Big Data — nó xuất hiện ở
+      rất nhiều lĩnh vực khác. Ba ví dụ minh hoạ:</p>
+      <table><tr><th>Ngành</th><th>Quy trình nhiều bước phụ thuộc (minh hoạ)</th><th>Nếu bỏ qua kiểm tra phụ thuộc</th></tr>
+      <tr><td>Sản xuất ô tô</td><td>Lắp khung xe → sơn khung → lắp ghế/nội thất → kiểm tra chất lượng</td>
+      <td>Sơn trước khi lắp khung xong → xe bị méo, sơn không đều</td></tr>
+      <tr><td>Y tế (minh hoạ)</td><td>Lấy máu xét nghiệm → có kết quả xét nghiệm → bác sĩ kê đơn thuốc</td>
+      <td>Kê đơn thuốc trước khi có kết quả xét nghiệm → thuốc không phù hợp, nguy hiểm cho bệnh nhân</td></tr>
+      <tr><td>Big Data (đúng bài toán Chương 2)</td><td>Sqoop import → Hive clean → MapReduce tổng hợp → gửi email báo cáo</td>
+      <td>Gửi email báo cáo dựa trên dữ liệu chưa được làm sạch → báo cáo sai, người nhận tin tưởng nhầm</td></tr></table>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp khi dùng cron job thay vì Oozie</div>Cron job
+      chỉ biết "tới giờ X thì chạy lệnh Y" — nó KHÔNG biết bước trước đã xong hay chưa, đã thành công hay
+      thất bại. Oozie khác: nó chủ động KIỂM TRA trạng thái của bước trước rồi mới quyết định chạy bước sau.</div>
+    </div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/11</div>
+<div class="part-num">02</div><h2>DAG là "ngôn ngữ" Oozie dùng để mô tả thứ tự phụ thuộc</h2>
+<ul class="part-list"><li>Workflow Oozie là đồ thị có hướng không chu trình (DAG) của các "action"</li>
+<li>Oozie hỗ trợ nhiều loại action: MapReduce, Pig/Hive script, Java/Shell, SSH, email</li>
+<li>DAG ở đây mô tả thứ tự giữa các JOB hoàn chỉnh, khác DAG ở Lập lịch 03 (giữa các TASK nhỏ)</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: DAG của Oozie so với DAG đã học</h2>
+      <p><b>Nói nôm na:</b> nếu DAG ở Lập lịch 03 là "bản vẽ chi tiết từng con vít phải siết trước/sau" bên
+      trong 1 cái máy, thì DAG của Oozie là "bản vẽ tổng thể cả nhà máy": công đoạn A (cả 1 cái máy chạy
+      xong) → công đoạn B (cả 1 cái máy khác chạy xong) → ... Oozie không quan tâm bên trong mỗi công đoạn
+      làm gì, chỉ quan tâm thứ tự giữa các công đoạn.</p>
+      <p><b>Giải thích kỹ thuật:</b> Oozie biểu diễn workflow dưới dạng <b>DAG</b> (đồ thị có hướng không
+      chu trình) các "action" — đúng khái niệm DAG đã học ở <a href="../ll-03-dag-mapreduce/index.html">
+      Lập lịch 03 — Lập lịch DAG, MapReduce và vị trí dữ liệu</a>, nhưng ở đây DAG biểu diễn thứ tự phụ
+      thuộc giữa các JOB hoàn chỉnh (1 job MapReduce, 1 script Hive...), không phải giữa các TASK nhỏ trong
+      1 job.</p>
+      <div class="callout good"><div class="lbl">🔗 Liên hệ trực tiếp</div>Cùng 1 khái niệm toán học (DAG,
+      critical path) được áp dụng ở 2 TẦNG khác nhau của hệ thống: tầng task (bên trong 1 job, Lập lịch 03)
+      và tầng job (giữa nhiều job, Oozie) — một minh chứng cho việc lý thuyết lập lịch áp dụng được xuyên
+      suốt nhiều mức trừu tượng khác nhau của cùng 1 hệ thống thực tế.</div></div><div class="mdeck-slide"><h2>Các loại action Oozie hỗ trợ — không chỉ MapReduce</h2>
+      <p>Oozie không chỉ điều phối job MapReduce — nó là 1 "nhạc trưởng" điều khiển nhiều loại công việc
+      khác nhau trong cùng 1 pipeline:</p>
+      <table><tr><th>Loại action</th><th>Dùng để làm gì</th><th>Ví dụ trong pipeline báo cáo doanh số</th></tr>
+      <tr><td>MapReduce action</td><td>Chạy 1 job MapReduce thuần</td><td>Tổng hợp doanh số theo khu vực</td></tr>
+      <tr><td>Pig/Hive action</td><td>Chạy 1 script PigLatin/HiveQL</td><td>Làm sạch dữ liệu bán hàng thô</td></tr>
+      <tr><td>Java action</td><td>Chạy 1 class Java tuỳ ý</td><td>Tính toán nghiệp vụ phức tạp không có sẵn trong Hive</td></tr>
+      <tr><td>Shell action</td><td>Chạy 1 lệnh shell trên máy chủ</td><td>Dọn dẹp thư mục tạm sau khi xử lý xong</td></tr>
+      <tr><td>SSH action</td><td>Chạy lệnh trên 1 máy chủ khác qua SSH</td><td>Đồng bộ kết quả sang hệ thống báo cáo bên ngoài cụm</td></tr>
+      <tr><td>Email action</td><td>Gửi email thông báo</td><td>Báo cáo hoàn tất hoặc báo lỗi cho quản trị viên</td></tr></table>
+      <div class="callout info"><div class="lbl">Vì sao điều này quan trọng</div>Một pipeline dữ liệu thật
+      hiếm khi "thuần Hadoop" — nó thường phải gọi ra ngoài (script dọn dẹp, gửi email, đồng bộ hệ thống
+      khác). Oozie cho phép khai báo TẤT CẢ các bước này trong 1 workflow DUY NHẤT, có kiểm tra phụ thuộc
+      xuyên suốt, thay vì phải tự viết 1 script điều phối riêng.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/11</div>
+<div class="part-num">03</div><h2>Khi 2 bước KHÔNG phụ thuộc nhau — fork và join</h2>
+<ul class="part-list"><li>Không phải mọi bước đều phải chạy tuần tự — một số bước có thể chạy song song</li>
+<li>Oozie hỗ trợ "fork" (tách thành nhiều nhánh song song) và "join" (chờ tất cả nhánh xong mới tiếp tục)</li>
+<li>Ví dụ: vừa tính báo cáo doanh số VÙA tính báo cáo tồn kho cùng lúc, rồi mới gộp lại gửi email tổng hợp</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: fork và join</h2>
+      <p><b>Nói nôm na:</b> giống việc 2 đầu bếp trong cùng 1 nhà hàng cùng làm 2 món khác nhau cho 1 bàn
+      (món khai vị và món chính) CÙNG LÚC, không ai phải chờ ai — nhưng người phục vụ chỉ mang cả 2 món ra
+      bàn khi CẢ HAI đều đã xong (đây là "join"). Nếu bắt 2 đầu bếp làm lần lượt (nấu khai vị xong mới nấu
+      món chính), khách sẽ phải chờ lâu hơn hẳn mà không có lý do kỹ thuật gì bắt buộc.</p>
+      <p><b>Giải thích kỹ thuật:</b> "fork" trong Oozie tách workflow thành nhiều nhánh action chạy SONG
+      SONG (không phụ thuộc nhau); "join" là điểm workflow CHỜ tất cả các nhánh đã fork ra hoàn thành rồi
+      mới tiếp tục bước kế tiếp. Dùng fork/join khi 2 bước không có quan hệ phụ thuộc dữ liệu thật — chạy
+      song song giúp giảm tổng thời gian hoàn thành pipeline (giống Makespan đã học ở Lập lịch 01-02: tận
+      dụng nhiều "máy" cùng lúc thay vì xếp hàng 1 máy).</p>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>Fork/join chỉ đúng khi 2 nhánh THỰC SỰ
+      độc lập dữ liệu. Nếu nhánh B cần đọc kết quả của nhánh A mà vẫn fork chạy song song, workflow sẽ chạy
+      "thành công" về mặt kỹ thuật nhưng cho KẾT QUẢ SAI (B đọc dữ liệu cũ/rỗng của A).</div></div><div class="mdeck-slide"><h2>Ví dụ: workflow có fork/join cho pipeline báo cáo doanh số + tồn kho</h2>
+      <p>Mở rộng workflow 4 bước tuyến tính đã học (Sqoop → Hive clean → MapReduce → Email) thành workflow
+      có nhánh rẽ, khi công ty cần CẢ báo cáo doanh số VÀ báo cáo tồn kho trong 1 lần gửi email:</p>
+      <div class="pd-formula"><div class="pd-formula-label">Workflow có fork/join</div>
+      <div class="pd-formula-math">$$\text{Sqoop import} \to \text{Hive clean} \to \text{fork}\begin{cases}\text{MapReduce doanh số}\\\text{MapReduce tồn kho}\end{cases}\to \text{join} \to \text{Gửi email tổng hợp}$$</div></div>
+      <p>Hai nhánh "MapReduce doanh số" và "MapReduce tồn kho" đọc từ 2 bảng dữ liệu ĐỘC LẬP (đã được Hive
+      clean chung ở bước trước) — không nhánh nào cần đọc kết quả của nhánh kia, nên fork song song là AN
+      TOÀN và giúp pipeline chạy nhanh hơn so với chạy tuần tự 2 nhánh này.</p>
+      <table><tr><th>Cách chạy</th><th>Thời gian mỗi nhánh (giả định, minh hoạ)</th><th>Tổng thời gian 2 nhánh</th></tr>
+      <tr><td>Tuần tự (không fork)</td><td>Doanh số: 8 phút, Tồn kho: 5 phút</td><td>8+5 = 13 phút</td></tr>
+      <tr><td>Song song (có fork/join)</td><td>Doanh số: 8 phút, Tồn kho: 5 phút (chạy cùng lúc)</td><td>max(8,5) = 8 phút</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu có 1 nhánh thứ 3 "MapReduce báo
+      cáo nhân sự" chạy song song, mất 12 phút, tổng thời gian của cả 3 nhánh fork là bao nhiêu?
+      (Đáp: max(8,5,12) = 12 phút — join luôn phải chờ nhánh CHẬM NHẤT, giống nguyên lý Makespan.)</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/11</div>
+<div class="part-num">04</div><h2>ZooKeeper: lấy cảm hứng từ Chubby của Google</h2>
+<ul class="part-list"><li>Ra đời ở Yahoo Research khoảng 2007, mở nguồn trên SourceForge cùng năm</li>
+<li>Mô phỏng theo Chubby (Google, paper Mike Burrows) — dịch vụ lock phân tán nội bộ của Google</li>
+<li>Vì sao các hệ thống phân tán cần 1 dịch vụ coordination RIÊNG, không tự cài đặt bên trong từng hệ thống</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: lý do cần ZooKeeper</h2><p style="margin:0 0 8px"><img src="../../../assets/images/logos/zookeeper.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/google.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"></p>
+      <p><b>Nói nôm na:</b> tưởng tượng 10 công ty con của 1 tập đoàn, mỗi công ty tự thuê 1 nhân viên lễ
+      tân riêng để "biết ai đang có mặt trong toà nhà, ai là trưởng phòng hiện tại". Rất tốn kém và dễ sai
+      lệch giữa các công ty. Giải pháp: thuê 1 nhân viên lễ tân CHUNG cho cả toà nhà, mọi công ty con hỏi
+      người này khi cần biết "ai đang có mặt" hay "ai đang là trưởng phòng" — ZooKeeper chính là nhân viên
+      lễ tân chung đó cho các hệ thống phân tán.</p>
+      <div class="callout info"><div class="lbl">📚 Nguồn lịch sử</div>ZooKeeper được mô hình hoá theo dịch
+      vụ lock Chubby của Google (paper của Mike Burrows), và ban đầu được phát triển tại Yahoo Research
+      khoảng năm 2007, mở nguồn trên SourceForge cùng năm đó. Kỹ sư Yahoo (trong đó có Ben Reed và Flavio
+      Junqueira) khi đọc paper Chubby nhận thấy đây chính là công cụ có thể giải quyết nhiều vấn đề sản xuất
+      ("production problems") họ đang gặp phải, và xây một phiên bản tương đương, tổng quát hoá giao diện
+      Chubby thành dịch vụ "coordination-as-a-service" dùng chung cho nhiều hệ thống.
+      Nguồn: <a href="https://en.wikipedia.org/wiki/Apache_ZooKeeper" target="_blank">Apache ZooKeeper — Wikipedia</a>.</div></div><div class="mdeck-slide"><h2>Ví dụ minh hoạ ở 3 ngành: "coordination-as-a-service" không phải khái niệm riêng của Big Data</h2>
+      <p>Ý tưởng "1 dịch vụ chung đứng ra điều phối, thay vì mỗi hệ thống tự làm riêng" xuất hiện ở nhiều
+      lĩnh vực khác, không chỉ phân tán máy tính:</p>
+      <table><tr><th>Ngành</th><th>"Dịch vụ điều phối chung" (minh hoạ)</th><th>Nếu mỗi bên tự làm riêng</th></tr>
+      <tr><td>Hàng không</td><td>Đài kiểm soát không lưu (1 đài chung cho mọi máy bay trong vùng)</td>
+      <td>Mỗi máy bay tự quyết định độ cao/hướng bay riêng → nguy cơ va chạm rất cao</td></tr>
+      <tr><td>Tài chính (minh hoạ)</td><td>Sàn giao dịch chứng khoán (1 nơi chung công bố giá khớp lệnh)</td>
+      <td>Mỗi nhà đầu tư tự thoả thuận giá riêng → giá cả hỗn loạn, không ai biết giá "thật" là bao nhiêu</td></tr>
+      <tr><td>Hệ thống phân tán (Big Data)</td><td>ZooKeeper (1 dịch vụ chung cho HBase, Kafka cũ, Solr, Mesos...)</td>
+      <td>Mỗi hệ thống tự cài thuật toán bầu leader/đồng thuận riêng → dễ sai, tốn công, khó kiểm chứng đúng</td></tr></table>
+    </div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 5/11</div>
+<div class="part-num">05</div><h2>Đọc trực tiếp bài báo Chubby (OSDI 2006): lock service, session, grace period, name service</h2>
+<ul class="part-list"><li>Chubby ra đời vì sao: thay những cuộc bầu primary tuỳ tiện bằng một dịch vụ khoá dùng chung</li>
+<li>Cấu trúc một cell: 5 replica, 1 master, đa số mới sống</li>
+<li>Session, KeepAlive, lease và grace period khi master chết</li>
+<li>Bất ngờ: Chubby phổ biến nhất như một name server; phép tính 9 triệu yêu cầu</li></ul></div><div class="mdeck-slide"><h2>Chubby ra đời vì sao: lock service thay vì thư viện đồng thuận</h2><p style="margin:0 0 8px"><img src="../../../assets/images/logos/zookeeper.svg" alt="" style="height:40px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/google.svg" alt="" style="height:40px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"></p>
+   <p>🗣️ <b>Nói nôm na:</b> trước khi có Chubby, mỗi nhóm kỹ sư tự nghĩ cách &quot;ai làm trưởng nhóm&quot; theo kiểu của mình; có nhóm cẩu thả, có nhóm phải nhờ người trực
+   bấm nút. Chubby là một &quot;phòng bảo vệ chung&quot; trả lời một câu duy nhất, đáng tin: <i>ai đang giữ chìa khoá?</i></p>
+   <table><tr><th>Lý do chọn lock service (bài báo nêu)</th><th>Giải thích</th></tr>
+   <tr><td>Nhà phát triển thường không lo sẵn tính sẵn sàng cao</td><td>Hệ thống bắt đầu là prototype; thêm nhân bản và bầu primary về sau dễ hơn nếu gọi một khoá thay vì viết lại để tham gia giao thức đồng thuận</td></tr>
+   <tr><td>Cần công bố kết quả bầu</td><td>Cho phép đọc ghi tệp nhỏ để primary được bầu tự công bố địa chỉ</td></tr>
+   <tr><td>Giao diện khoá quen thuộc</td><td>Lập trình viên đã biết khoá, dù hay dùng sai khi phân tán</td></tr>
+   <tr><td>Cần ít server hơn</td><td>Một dịch vụ khoá giúp ngay cả một client duy nhất cũng tiến triển an toàn; thư viện đồng thuận cần quorum phía client</td></tr></table>
+   <div class="callout info"><div class="lbl">Ai dùng Chubby trong chính bài báo</div>GFS dùng khoá Chubby để chỉ định <b>master</b>; Bigtable dùng để bầu master, để master khám phá tablet server và để client tìm master;
+   cả hai dùng Chubby làm nơi lưu một lượng nhỏ metadata ở vị trí &quot;ai cũng biết&quot;, nghĩa là làm gốc của cấu trúc dữ liệu phân tán. Một Chubby cell có thể phục vụ <b>mười nghìn máy</b> 4 bộ xử lý.</div></div><div class="mdeck-slide"><h2>Hình gốc: cấu trúc một Chubby cell, 5 replica và một master</h2><div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 40%"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/chubby_fig1.png" alt="Nguồn: Burrows, <i>The Chubby lock service for loosely-coupled distributed systems</i>, OSDI 2006, Figure 1." style="max-height:230px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Burrows, <i>The Chubby lock service for loosely-coupled distributed systems</i>, OSDI 2006, Figure 1.</figcaption></figure></div><div style="flex:1">
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li>Một <b>cell</b> gồm vài server (thường <b>5</b>) gọi là replica, đặt khác rack để giảm lỗi tương quan.</li>
+   <li>Replica dùng <b>giao thức đồng thuận</b> bầu master: cần phiếu của đa số và lời hứa không bầu master khác trong vài giây (<i>master lease</i>).</li>
+   <li>Chỉ master khởi xướng đọc/ghi cơ sở dữ liệu; replica khác sao chép cập nhật.</li>
+   <li>Ghi được xác nhận khi tới <b>đa số</b> replica; đọc do master một mình phục vụ.</li></ul></div></div>
+   <table><tr><th>Điểm</th><th>Số liệu trong bài</th></tr>
+   <tr><td>Số replica cần sống để cell hoạt động</td><td>3 trong 5</td></tr>
+   <tr><td>Bầu master mới</td><td>Thường vài giây; hai lần gần đây mất 6 s và 4 s, có lần tới 30 s</td></tr>
+   <tr><td>Client tìm master</td><td>Hỏi các replica trong DNS, replica không phải master trả lời danh tính master</td></tr>
+   <tr><td>Quy mô client</td><td>Nhiều instance phục vụ vài chục nghìn client; từng thấy <b>90.000</b> client nối thẳng tới một master</td></tr></table>
+   <p style="font-size:.92rem">Đối chiếu ZooKeeper: một <i>ensemble</i> thường 3 hoặc 5 server, bầu một <i>leader</i>, ghi cần đa số (quorum). Ý tưởng đồng nhất, chi tiết giao thức khác nhau (Chubby dùng Paxos, ZooKeeper dùng ZAB).</p></div><div class="mdeck-slide"><h2>Session, KeepAlive và lease: cách Chubby biết client còn sống</h2>
+   <table><tr><th>Cơ chế</th><th>Chi tiết bài báo nêu</th></tr>
+   <tr><td><b>Session</b></td><td>Quan hệ giữa client và cell, duy trì bằng các lần &quot;bắt tay&quot; định kỳ gọi là <b>KeepAlive</b></td></tr>
+   <tr><td><b>Lease</b></td><td>Master gia hạn lease khi tạo session, khi chuyển master và khi trả lời KeepAlive. Mặc định kéo dài thêm <b>12 giây</b>; master quá tải có thể kéo tới khoảng <b>60 giây</b> để giảm số KeepAlive phải xử lý</td></tr>
+   <tr><td>KeepAlive bị giữ lại</td><td>Master chủ động <i>chưa trả lời</i> KeepAlive tới khi lease cũ gần hết; client gửi ngay KeepAlive mới sau mỗi phản hồi, nên hầu như luôn có một KeepAlive đang chờ ở master</td></tr>
+   <tr><td>Sự kiện và vô hiệu bộ đệm</td><td>Được gắn kèm vào phản hồi KeepAlive; vì vậy client không thể giữ session mà không xác nhận việc vô hiệu hoá cache</td></tr>
+   <tr><td>Tải thực tế</td><td>RPC chủ yếu là KeepAlive; đọc dưới 10% tải; rất ít ghi và lấy khoá</td></tr></table>
+   <div class="callout good"><div class="lbl">Ý tưởng đáng nhớ</div>Chubby biến &quot;còn sống hay không&quot; thành một khái niệm <b>có thời hạn</b> (lease). Không ai cần hỏi liên tục &quot;còn sống không&quot;: chỉ cần gia hạn, và
+   quá hạn thì coi như mất. Đây chính là session và timeout của ZooKeeper; khi session hết hạn thì znode tạm (ephemeral) của client biến mất.</div></div><div class="mdeck-slide"><h2>Hình gốc: grace period khi master chết, ý tưởng cho failover của ZooKeeper</h2><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/chubby_fig2.png" alt="Nguồn: Burrows, OSDI 2006, Figure 2 (thời gian chạy từ trái sang phải, không theo tỉ lệ)." style="max-height:235px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Burrows, OSDI 2006, Figure 2 (thời gian chạy từ trái sang phải, không theo tỉ lệ).</figcaption></figure>
+   <table><tr><th>Diễn biến trên hình</th><th>Ý nghĩa</th><th>Trong ZooKeeper</th></tr>
+   <tr><td>Master cũ chết trước khi trả lời KeepAlive, lease của client (C2) hết hạn</td><td>Client tạm hết lease nhưng chưa biết session còn sống không</td><td>Client chuyển sang trạng thái mất kết nối nhưng chưa hết timeout</td></tr>
+   <tr><td>Client xoá cache, bắt đầu <b>grace period</b>, <b>chặn</b> lời gọi API (không huỷ session) và báo sự kiện <i>jeopardy</i></td><td>Ứng dụng tạm dừng thay vì thấy dữ liệu không nhất quán</td><td>Client chờ, tự nối lại tới server khác trong ensemble</td></tr>
+   <tr><td>Master mới được bầu; KeepAlive đầu bị từ chối vì sai <i>epoch</i>, KeepAlive thứ hai thành công, sự kiện <i>safe</i></td><td>Ứng dụng tiếp tục như không có chuyện gì</td><td>Leader mới (ZAB), session còn hạn thì znode tạm còn nguyên</td></tr>
+   <tr><td>Nếu bầu quá lâu, hết grace period</td><td>Client coi session hết hạn, báo lỗi cho ứng dụng</td><td>Session expired, znode tạm bị xoá</td></tr></table></div><div class="mdeck-slide"><h2>Chubby làm name server: bài toán DNS và phép tính 9 triệu yêu cầu</h2>
+   <p>Bài báo kể một bất ngờ: dù thiết kế để làm dịch vụ khoá, cách dùng <b>phổ biến nhất</b> của Chubby là làm <b>name server</b>.</p>
+   <p>🗣️ <b>Nói nôm na:</b> DNS giống danh bạ in sẵn có hạn dùng (TTL): hết hạn thì phải tra lại. Nếu muốn danh bạ cập nhật nhanh, hạn dùng phải ngắn, và lượng người tra lại tăng vọt.
+   Chubby giống nhóm chat: có thay đổi thì được báo ngay, không cần ai hỏi đi hỏi lại.</p>
+   <table><tr><th>Bước tính (số liệu bài báo)</th><th>Kết quả</th></tr>
+   <tr><td>1 job có 3.000 tiến trình, mỗi tiến trình nói chuyện với mọi tiến trình khác</td><td>$3\,000^2 = 9\,000\,000$ yêu cầu tra tên</td></tr>
+   <tr><td>Muốn bộ đệm DNS của job đó nhỏ như vậy phải tra lại thường xuyên</td><td>Khoảng <b>150.000</b> lượt tra/giây</td></tr>
+   <tr><td>Một server DNS 2 CPU 2,6 GHz xử lý được cỡ 50.000 yêu cầu/giây</td><td>$150\,000 / 50\,000 = 3$ server chỉ cho <b>một</b> job 3.000 tiến trình</td></tr>
+   <tr><td>Chubby dùng vô hiệu bộ đệm có chủ đích thay vì hết hạn theo thời gian</td><td>Một nhịp KeepAlive đều đặn đủ giữ <i>vô số</i> mục cache khi không có thay đổi</td></tr></table>
+   <div class="callout warn"><div class="lbl">Cái giá đã phải trả</div>Khi mới triển khai name service trên Chubby, một job 3.000 tiến trình (9 triệu yêu cầu) có thể làm master &quot;quỵ gối&quot;.
+   Giải pháp là máy chủ <b>proxy</b> gộp KeepAlive và đọc (giảm lưu lượng KeepAlive tới hệ số số client mỗi proxy, có thể 10.000 trở lên) và máy chủ chuyển giao thức sang DNS. Bài học dùng chung cho ZooKeeper: một dịch vụ điều phối
+   nên giữ tải ghi rất thấp và tải đọc/giữ phiên được giảm bằng bộ đệm, proxy hay observer.</div></div><div class="mdeck-slide"><h2>ZooKeeper và Chubby: giống ý tưởng, khác API</h2>
+   <table><tr><th>Khía cạnh</th><th>Chubby (bài báo 2006)</th><th>ZooKeeper (Apache)</th></tr>
+   <tr><td>Mô hình dữ liệu</td><td>Cây thư mục và <b>tệp nhỏ</b>, đọc/ghi cả tệp</td><td>Cây <b>znode</b>, mỗi znode giữ dữ liệu nhỏ</td></tr>
+   <tr><td>Nút tạm</td><td>Ephemeral file: xoá khi không còn client giữ mở</td><td>Ephemeral znode: xoá khi session kết thúc</td></tr>
+   <tr><td>Thông báo thay đổi</td><td>Event gắn vào phản hồi KeepAlive</td><td>Watch</td></tr>
+   <tr><td>Khoá</td><td>Mỗi tệp/thư mục là khoá đọc-ghi <b>advisory</b>, có sequencer chống yêu cầu chậm</td><td>Không có API khoá riêng: khoá và bầu leader xây bằng znode tuần tự + ephemeral</td></tr>
+   <tr><td>Đồng thuận</td><td>Paxos giữa 5 replica</td><td>ZAB (ZooKeeper Atomic Broadcast), họ Paxos</td></tr>
+   <tr><td>Session</td><td>KeepAlive + lease, mặc định 12 s, grace period khi chuyển master</td><td>Heartbeat + session timeout</td></tr>
+   <tr><td>Triển khai</td><td>Nội bộ Google, không mở</td><td>Mã nguồn mở, nền cho HBase, Kafka cũ, Hadoop HA</td></tr></table>
+   <div class="callout info"><div class="lbl">Lưu ý về mức chắc chắn</div>Cột Chubby lấy từ bài báo. Cột ZooKeeper tóm tắt các khái niệm đã học ở các phần trước của module này; đây là đối chiếu về ý tưởng, không phải hai hệ thống có cùng API.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 6/11</div>
+<div class="part-num">06</div><h2>Znode: "viên gạch" dữ liệu mà ZooKeeper quản lý</h2>
+<ul class="part-list"><li>Znode persistent: tồn tại tới khi bị xoá chủ động, giống file thường</li>
+<li>Znode ephemeral: tự biến mất khi session tạo ra nó kết thúc (client chết/mất kết nối)</li>
+<li>Znode sequential: tự được gắn thêm số thứ tự tăng dần (zxid) khi tạo</li></ul></div><div class="mdeck-slide"><h2>📖 Giải thích cho người mới bắt đầu: 3 loại znode</h2>
+      <details class="explain"><summary>📖 Bấm để xem giải thích đơn giản nhất về znode</summary>
+      <p>ZooKeeper tổ chức dữ liệu giống 1 hệ thống thư mục nhỏ (giống cây thư mục của HDFS/UNIX), mỗi "nút"
+      trong cây gọi là 1 <b>znode</b>. Có 3 đặc tính znode có thể mang, kết hợp được với nhau:</p>
+      <table><tr><th>Loại znode</th><th>Nói nôm na</th><th>Tồn tại tới khi nào</th></tr>
+      <tr><td>Persistent (bền)</td><td>Giống 1 tấm bảng thông báo dán cố định trên tường</td>
+      <td>Tới khi có ai đó CHỦ ĐỘNG xoá nó</td></tr>
+      <tr><td>Ephemeral (tạm thời)</td><td>Giống vé xem phim: chỉ có giá trị khi người giữ vé còn ở trong
+      rạp — khách ra khỏi rạp (session kết thúc), vé tự động mất hiệu lực</td>
+      <td>Tới khi session (kết nối) của client tạo ra nó bị đóng — dù chủ động (client thoát) hay bị động
+      (client sập, mất mạng)</td></tr>
+      <tr><td>Sequential (tuần tự)</td><td>Giống số thứ tự rút ở quầy ngân hàng — mỗi lần rút, số luôn LỚN
+      HƠN số trước đó, không ai trùng số với ai</td>
+      <td>Không ảnh hưởng thời gian sống — chỉ là ZooKeeper tự thêm 1 số (zxid) tăng dần vào TÊN znode khi
+      tạo, 2 đặc tính "sequential" và "ephemeral" có thể dùng ĐỒNG THỜI trên cùng 1 znode</td></tr></table>
+      <p>Bầu leader bằng "znode tuần tự" (đã học ở phần sau) chính là dùng znode có CẢ 2 đặc tính:
+      <b>ephemeral</b> (để tự rớt khỏi cuộc bầu cử khi node đó chết) VÀ <b>sequential</b> (để có 1 con số
+      duy nhất, không trùng, dùng so sánh "ai nhỏ hơn").</p>
+      </details></div><div class="mdeck-slide"><h2>Ví dụ minh hoạ ≥2 ngành: khi nào dùng loại znode nào</h2>
+      <table><tr><th>Tình huống</th><th>Loại znode phù hợp</th><th>Vì sao</th></tr>
+      <tr><td>Lưu cấu hình hệ thống (vd số lượng region tối đa của HBase)</td><td>Persistent</td>
+      <td>Cấu hình phải tồn tại xuyên suốt, không biến mất khi 1 client đọc xong rồi ngắt kết nối</td></tr>
+      <tr><td>Đánh dấu "node X đang sống" trong cluster</td><td>Ephemeral</td>
+      <td>Nếu node X chết (session ngắt), znode phải TỰ mất đi ngay — không cần ai dọn dẹp thủ công</td></tr>
+      <tr><td>Bầu leader giữa nhiều ứng viên</td><td>Ephemeral + Sequential</td>
+      <td>Vừa cần tự rớt khi ứng viên chết (ephemeral), vừa cần 1 số thứ tự duy nhất để so sánh (sequential)</td></tr></table>
+      <p><b>Ví dụ ở ngành khác (minh hoạ):</b> trong quản lý nhân sự 1 công ty, hồ sơ nhân viên (persistent,
+      tồn tại dù nhân viên đang nghỉ phép) khác với "đèn báo đang có mặt tại văn phòng" (ephemeral, tự tắt
+      khi nhân viên quẹt thẻ ra khỏi cổng) — cùng 1 hệ thống quản lý nhưng cần 2 loại trạng thái sống khác
+      hẳn nhau, giống phân biệt persistent/ephemeral trong ZooKeeper.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 7/11</div>
+<div class="part-num">07</div><h2>ZAB: làm sao nhiều node "đồng ý" với nhau mà không cần 1 trọng tài tuyệt đối tin cậy</h2>
+<ul class="part-list"><li>ZAB (ZooKeeper Atomic Broadcast) là biến thể của thuật toán Paxos</li>
+<li>Nguyên tắc cốt lõi: mọi thay đổi phải được leader đề xuất VÀ đa số (majority) follower xác nhận</li>
+<li>Vì sao cần "đa số" mà không phải "tất cả" — bài toán chịu lỗi khi 1 vài node chết/mất kết nối</li></ul></div><div class="mdeck-slide"><h2>📖 Giải thích cho người mới bắt đầu: nhu cầu "đồng thuận" (consensus)</h2>
+      <details class="explain"><summary>📖 Bấm để xem giải thích đơn giản nhất về đồng thuận phân tán</summary>
+      <p>Nếu chỉ có 1 máy duy nhất lưu trạng thái hệ thống, không có vấn đề gì — máy đó nói gì cũng là "sự
+      thật". Nhưng ZooKeeper chạy trên NHIỀU máy (để chịu lỗi): nếu để từng máy tự quyết định trạng thái
+      riêng, các máy có thể "cãi nhau" (máy A nghĩ X là leader, máy B nghĩ Y là leader) — đây gọi là tình
+      trạng "split-brain", rất nguy hiểm vì hệ thống phía trên (HBase, Kafka cũ) không biết tin ai.</p>
+      <p><b>Giải pháp đồng thuận (Paxos/ZAB):</b> mọi thay đổi trạng thái phải qua 2 bước: (1) 1 node
+      <b>leader</b> ĐỀ XUẤT thay đổi, (2) phải có <b>ĐA SỐ</b> (majority, vd 3/5 node) các node
+      <b>follower</b> XÁC NHẬN đã nhận được đề xuất đó, mới coi thay đổi là "chính thức". Vì sao là ĐA SỐ
+      mà không phải TẤT CẢ? Vì nếu bắt phải 100% node xác nhận, chỉ 1 node chết là toàn hệ thống TÊ LIỆT
+      không quyết định được gì nữa — đòi hỏi ĐA SỐ vẫn cho phép hệ thống hoạt động khi có một số node chết,
+      miễn số node còn sống vẫn chiếm đa số.</p>
+      </details></div><div class="mdeck-slide"><h2>Ví dụ minh hoạ ≥2 ngành: vì sao "đa số" là lựa chọn đúng, không phải "tất cả" hay "1 người"</h2>
+      <table><tr><th>Ngành</th><th>Cơ chế quyết định (minh hoạ)</th><th>Vấn đề nếu dùng "1 người quyết" hoặc "phải 100% đồng ý"</th></tr>
+      <tr><td>Chính trị/Luật pháp (minh hoạ)</td><td>Quốc hội thông qua luật cần quá bán (&gt;50%) phiếu bầu, không cần 100%</td>
+      <td>Nếu cần 100% đồng thuận, chỉ 1 người vắng mặt/phản đối là luật không bao giờ được thông qua</td></tr>
+      <tr><td>Y tế (minh hoạ)</td><td>Hội đồng y khoa quyết định phác đồ điều trị phức tạp cần đa số bác sĩ chuyên khoa đồng ý</td>
+      <td>Nếu chỉ 1 bác sĩ quyết định (giống "1 leader không ai xác nhận"), rủi ro sai sót cao không có kiểm tra chéo</td></tr>
+      <tr><td>Hệ thống phân tán (ZAB/Paxos)</td><td>Leader đề xuất, ĐA SỐ follower xác nhận mới chính thức</td>
+      <td>1 leader không kiểm tra chéo → rủi ro sai; bắt 100% đồng ý → 1 node chết là tê liệt cả hệ thống</td></tr></table>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>"Đa số" được tính trên tổng số node CẤU
+      HÌNH BAN ĐẦU của cluster, không phải trên số node ĐANG SỐNG tại thời điểm đó — đây là lý do cluster
+      ZooKeeper luôn khuyến nghị cấu hình SỐ LẺ node (3, 5, 7): với 5 node, cần tối thiểu 3 xác nhận; nếu 2
+      node chết, 3 node còn lại vẫn là "đa số của 5", hệ thống vẫn hoạt động bình thường.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 8/11</div>
+<div class="part-num">08</div><h2>4 chức năng cốt lõi ZooKeeper cung cấp</h2>
+<ul class="part-list"><li>Quản lý thành viên nhóm, bầu cử leader, quản lý cấu hình động, giám sát trạng thái hệ thống</li>
+<li>Mỗi chức năng đều có thể cài đặt riêng cho từng hệ thống — nhưng cài đúng và an toàn rất khó</li>
+<li>ZooKeeper là "thư viện dùng chung" cho 4 bài toán coordination lặp lại ở hầu hết hệ thống phân tán</li></ul></div><div class="mdeck-slide"><h2>Bảng 4 chức năng, kèm ví dụ cụ thể ở ≥2 hệ thống khác nhau</h2>
+      <table><tr><th>Chức năng</th><th>Ý nghĩa thực tế</th><th>Ví dụ ở HBase</th><th>Ví dụ ở Kafka (bản cũ trước KRaft)</th></tr>
+      <tr><td>Quản lý thành viên nhóm (group membership)</td><td>Biết chính xác node nào đang sống trong cluster tại mọi thời điểm</td>
+      <td>Biết region server nào đang hoạt động</td><td>Biết broker nào đang hoạt động trong cluster</td></tr>
+      <tr><td>Bầu cử leader (leader election)</td><td>Khi node leader cũ chết, nhanh chóng và AN TOÀN chọn ra 1 leader mới duy nhất</td>
+      <td>Bầu HMaster (master điều phối region server)</td><td>Bầu Controller broker (quản lý metadata partition)</td></tr>
+      <tr><td>Quản lý cấu hình động</td><td>Thay đổi cấu hình hệ thống mà không cần restart từng node</td>
+      <td>Cập nhật danh sách region server mà không restart cả cluster</td><td>Cập nhật danh sách topic/partition</td></tr>
+      <tr><td>Giám sát trạng thái hệ thống</td><td>Theo dõi sức khoẻ cluster theo thời gian thực</td>
+      <td>Phát hiện region server chết để điều phối lại region</td><td>Phát hiện broker chết để điều phối lại partition leader</td></tr></table>
+      <div class="callout good"><div class="lbl">Điểm chung quan trọng nhất</div>Cả 4 chức năng đều là bài
+      toán "biết đúng sự thật chung" trong 1 hệ thống nhiều máy — đúng chủ đề mà ZAB/Paxos (phần trước) giải
+      quyết ở tầng thuật toán nền. ZooKeeper đóng gói sẵn thuật toán khó đó, để HBase/Kafka/Solr không phải
+      tự cài đặt lại từ đầu (và dễ sai).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 9/11</div>
+<div class="part-num">09</div><h2>"Xương sống vô hình": khi ZooKeeper lỗi, mọi thứ phía trên đều lỗi theo</h2>
+<ul class="part-list"><li>HBase, Kafka cũ, Solr, Mesos đều phụ thuộc ZooKeeper để coordination</li>
+<li>Người dùng cuối không bao giờ "thấy" ZooKeeper trực tiếp — nhưng khi nó lỗi, hệ thống phía trên ngừng đúng</li>
+<li>Mở rộng ví dụ bầu leader: 5 ứng viên thay vì 3, và khi 2 ứng viên cùng chết liên tiếp</li></ul></div><div class="mdeck-slide"><h2>🌍 Ảnh hưởng tới thế giới — vì sao gọi là "xương sống vô hình"</h2>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>ZooKeeper trở thành thành
+      phần coordination nền tảng cho rất nhiều hệ thống phân tán lớn: HBase (bầu leader cho region server),
+      Kafka bản cũ trước KRaft (quản lý metadata cluster), Apache Solr (coordination cho SolrCloud), Apache
+      Mesos (quản lý trạng thái cluster). Phần lớn người dùng cuối không bao giờ "thấy" ZooKeeper trực tiếp
+      — nhưng khi ZooKeeper gặp sự cố, toàn bộ hệ thống phía trên (HBase, Kafka cũ...) đều ngừng hoạt động
+      đúng. Đây là lý do nó được gọi là "xương sống vô hình" của hệ phân tán.</div>
+      <p><b>Ví dụ minh hoạ ở ngành khác (minh hoạ):</b> hệ thống định vị GPS là "xương sống vô hình" của rất
+      nhiều ứng dụng hiện đại (bản đồ, gọi xe, giao hàng) — người dùng ứng dụng gọi xe không bao giờ "thấy"
+      vệ tinh GPS, nhưng khi tín hiệu GPS yếu/mất, hàng loạt ứng dụng phía trên đều lỗi theo, dù bản thân
+      ứng dụng gọi xe không có lỗi code nào.</p></div><div class="mdeck-slide"><h2>Ví dụ mở rộng: bầu leader với 5 ứng viên, và khi 2 ứng viên liên tiếp chết</h2>
+      <p>Mở rộng ví dụ 3 ứng viên đã học sang 5 ứng viên tạo znode tuần tự:</p>
+      <table><tr><th>Ứng viên</th><th>znode được tạo</th></tr>
+      <tr><td>Node A</td><td><code>/election/candidate-0000000014</code></td></tr>
+      <tr><td>Node B</td><td><code>/election/candidate-0000000009</code></td></tr>
+      <tr><td>Node C</td><td><code>/election/candidate-0000000011</code></td></tr>
+      <tr><td>Node D</td><td><code>/election/candidate-0000000007</code></td></tr>
+      <tr><td>Node E</td><td><code>/election/candidate-0000000016</code></td></tr></table>
+      <p><b>Bước 1:</b> số thứ tự nhỏ nhất trong 5 znode trên là 0000000007 (Node D) → <b>Node D là leader</b>.</p>
+      <p><b>Bước 2:</b> giả sử Node D chết — znode của D (ephemeral) tự bị xoá. So sánh 4 znode còn lại
+      (14, 9, 11, 16) → nhỏ nhất là 9 (Node B) → <b>Node B là leader mới</b>.</p>
+      <p><b>Bước 3:</b> ngay sau đó Node B CŨNG chết (2 ứng viên chết liên tiếp) — znode của B tự bị xoá. So
+      sánh 3 znode còn lại (14, 11, 16) → nhỏ nhất là 11 (Node C) → <b>Node C là leader mới</b>.</p>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Trong suốt quá trình 2 lần chết liên
+      tiếp ở trên, có lúc nào hệ thống KHÔNG có leader nào không? (Đáp: Không — mỗi lần 1 znode ephemeral bị
+      xoá, ZooKeeper thông báo ngay cho các node còn lại qua watch, việc bầu lại leader mới diễn ra gần như
+      lập tức, miễn vẫn còn ĐA SỐ node sống để đạt đồng thuận theo ZAB.)</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 10/11</div>
+<div class="part-num">10</div><h2>Tổng kết Chương 2 dưới góc nhìn lịch sử: 1 dòng thời gian</h2>
+<ul class="part-list"><li>2003-04: 2 paper Google (GFS, MapReduce) khởi nguồn mọi thứ</li>
+<li>2006-2008: Hadoop, Pig, Hive, HBase, ZooKeeper ra đời gần như cùng lúc ở Yahoo/Facebook/Powerset</li>
+<li>2009-2012: Sqoop, Oozie, YARN hoàn thiện hệ sinh thái; 2010-2011: Kafka ra đời ở LinkedIn</li></ul></div><div class="mdeck-slide"><h2>Một hệ sinh thái, nhưng không phải một công ty</h2>
+      <p>Điều đáng chú ý nhất khi nhìn lại lịch sử cả Chương 2: <b>hệ sinh thái Hadoop không do 1 công ty hay
+      1 nhóm thiết kế từ đầu</b> — mỗi công nghệ ra đời ở một công ty khác nhau, để giải quyết một bài toán nội
+      bộ cụ thể của công ty đó, rồi được mã nguồn mở hoá và ghép lại thành "hệ sinh thái" qua Apache Software
+      Foundation:</p>
+      <table><tr><th>Năm</th><th>Công nghệ</th><th>Nơi ra đời</th><th>Bài toán nội bộ ban đầu</th></tr>
+      <tr><td>2003-2004</td><td>GFS, MapReduce (paper)</td><td>Google</td><td>Lưu trữ &amp; xử lý chỉ mục web quy mô Internet</td></tr>
+      <tr><td>2006</td><td>Hadoop (tách từ Nutch)</td><td>Yahoo!</td><td>Công cụ tìm kiếm mở không scale được</td></tr>
+      <tr><td>2006-2008</td><td>Pig</td><td>Yahoo Research</td><td>MapReduce quá cấp thấp cho nghiên cứu ad hoc</td></tr>
+      <tr><td>2007</td><td>ZooKeeper</td><td>Yahoo Research</td><td>Cần coordination phân tán kiểu Chubby của Google</td></tr>
+      <tr><td>2008</td><td>HBase</td><td>Powerset</td><td>Tìm kiếm ngôn ngữ tự nhiên cần CSDL kiểu Bigtable</td></tr>
+      <tr><td>2008</td><td>Oozie</td><td>Yahoo!</td><td>Điều phối nhiều job Hadoop phụ thuộc nhau</td></tr>
+      <tr><td>2009</td><td>Sqoop</td><td>Cloudera</td><td>Cầu nối dữ liệu RDBMS cũ ↔ Hadoop mới cho doanh nghiệp</td></tr>
+      <tr><td>2010-2011</td><td>Hive</td><td>Facebook</td><td>Data warehouse Hadoop chỉ 6 người dùng được vì quá khó</td></tr>
+      <tr><td>2010-2011</td><td>Kafka</td><td>LinkedIn</td><td>Activity-stream bùng nổ, pub-sub cũ không chịu được</td></tr>
+      <tr><td>2012</td><td>YARN</td><td>Yahoo!/Hortonworks</td><td>JobTracker nghẽn, cần tách resource management</td></tr></table>
+      <div class="callout good"><div class="lbl">🌍 Bài học lớn nhất của cả Chương 2</div>"Hệ sinh thái Hadoop"
+      thực ra là lịch sử của NHIỀU công ty cùng đối mặt một dạng bài toán giống nhau (dữ liệu vượt quá 1 máy)
+      ở những thời điểm gần nhau (2006-2012), và văn hoá mã nguồn mở của Apache Software Foundation là thứ
+      cho phép các giải pháp riêng lẻ đó ghép lại thành 1 hệ sinh thái liên vận hành được — không ai đó ngồi
+      "thiết kế" cả hệ sinh thái này từ đầu.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 11/11</div>
+<div class="part-num">11</div><h2>Bản đồ tổng hợp: lộ trình, liên kết giữa các công nghệ và tám bài báo gốc</h2>
+<ul class="part-list"><li>Bốn nhánh: nghiên cứu nền tảng (Google), lõi Hadoop, công cụ hệ sinh thái, streaming</li>
+<li>Nét đứt = ý tưởng từ bài báo; nét liền = phụ thuộc lúc chạy</li>
+<li>Mỗi module của chuỗi này khớp với bài báo nào</li></ul></div><div class="mdeck-slide"><h2>Lộ trình nhiều nhánh: từ các bài báo Google tới hệ sinh thái Hadoop</h2>
+   <p style="font-size:.95rem;margin:0 0 4px">Nét đứt xám = ý tưởng từ bài báo Google; nét liền = phụ thuộc lúc chạy (công cụ chạy trên Hadoop, HBase và Kafka dùng ZooKeeper, Kafka nạp dữ liệu vào HDFS).</p>
+   <svg viewBox="0 0 1004 470" width="100%" role="img" aria-label="Timeline phát triển hệ sinh thái Hadoop"><defs><marker id="ah0f9d58" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0f9d58"/></marker><marker id="ah7a8499" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7a8499"/></marker><marker id="ahc2255c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2255c"/></marker><marker id="ahd98e00" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d98e00"/></marker></defs><line x1="150" y1="36" x2="150" y2="410" stroke="var(--border)" stroke-width="1"/><text x="150" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2002</text><line x1="214" y1="36" x2="214" y2="410" stroke="var(--border)" stroke-width="1"/><text x="214" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2003</text><line x1="278" y1="36" x2="278" y2="410" stroke="var(--border)" stroke-width="1"/><text x="278" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2004</text><line x1="342" y1="36" x2="342" y2="410" stroke="var(--border)" stroke-width="1"/><text x="342" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2005</text><line x1="406" y1="36" x2="406" y2="410" stroke="var(--border)" stroke-width="1"/><text x="406" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2006</text><line x1="470" y1="36" x2="470" y2="410" stroke="var(--border)" stroke-width="1"/><text x="470" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2007</text><line x1="534" y1="36" x2="534" y2="410" stroke="var(--border)" stroke-width="1"/><text x="534" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2008</text><line x1="598" y1="36" x2="598" y2="410" stroke="var(--border)" stroke-width="1"/><text x="598" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2009</text><line x1="662" y1="36" x2="662" y2="410" stroke="var(--border)" stroke-width="1"/><text x="662" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2010</text><line x1="726" y1="36" x2="726" y2="410" stroke="var(--border)" stroke-width="1"/><text x="726" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2011</text><line x1="790" y1="36" x2="790" y2="410" stroke="var(--border)" stroke-width="1"/><text x="790" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">2012</text><text x="866.8000000000029" y="440" font-size="13" fill="var(--muted)" text-anchor="middle">⋯ 2022-25</text><line x1="130" y1="72" x2="896.8000000000029" y2="72" stroke="#2b5ce6" stroke-width="2.5" opacity=".5"/><foreignObject x="0" y="48" width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font:700 14px sans-serif;color:#2b5ce6;text-align:right;line-height:1.25;height:48px;display:flex;align-items:center;justify-content:flex-end"><span>Nghiên cứu<br/>nền tảng (Google)</span></div></foreignObject><line x1="130" y1="168" x2="896.8000000000029" y2="168" stroke="#0f9d58" stroke-width="2.5" opacity=".5"/><foreignObject x="0" y="144" width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font:700 14px sans-serif;color:#0f9d58;text-align:right;line-height:1.25;height:48px;display:flex;align-items:center;justify-content:flex-end"><span>Lõi Hadoop</span></div></foreignObject><line x1="130" y1="264" x2="896.8000000000029" y2="264" stroke="#c2255c" stroke-width="2.5" opacity=".5"/><foreignObject x="0" y="240" width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font:700 14px sans-serif;color:#c2255c;text-align:right;line-height:1.25;height:48px;display:flex;align-items:center;justify-content:flex-end"><span>Streaming</span></div></foreignObject><line x1="130" y1="360" x2="896.8000000000029" y2="360" stroke="#d98e00" stroke-width="2.5" opacity=".5"/><foreignObject x="0" y="336" width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="font:700 14px sans-serif;color:#d98e00;text-align:right;line-height:1.25;height:48px;display:flex;align-items:center;justify-content:flex-end"><span>Công cụ<br/>hệ sinh thái</span></div></foreignObject><line x1="223.8" y1="76.9" x2="394.4" y2="162.2" stroke="#7a8499" stroke-width="1.4" stroke-dasharray="5,4" opacity=".85" marker-end="url(#ah7a8499)"/><line x1="286.8" y1="78.6" x2="395.6" y2="160.2" stroke="#7a8499" stroke-width="1.4" stroke-dasharray="5,4" opacity=".85" marker-end="url(#ah7a8499)"/><line x1="403.1" y1="81.7" x2="543.9" y2="348.5" stroke="#7a8499" stroke-width="1.4" stroke-dasharray="5,4" opacity=".85" marker-end="url(#ah7a8499)"/><line x1="416.1" y1="82.8" x2="467.5" y2="347.2" stroke="#7a8499" stroke-width="1.4" stroke-dasharray="5,4" opacity=".85" marker-end="url(#ah7a8499)"/><line x1="417.0" y1="168.0" x2="777.0" y2="168.0" stroke="#0f9d58" stroke-width="1.8" opacity=".85" marker-end="url(#ah0f9d58)"/><line x1="412.6" y1="176.8" x2="542.2" y2="349.6" stroke="#0f9d58" stroke-width="1.8" opacity=".85" marker-end="url(#ah0f9d58)"/><line x1="413.4" y1="176.1" x2="573.2" y2="350.4" stroke="#0f9d58" stroke-width="1.8" opacity=".85" marker-end="url(#ah0f9d58)"/><line x1="415.3" y1="173.8" x2="702.2" y2="353.1" stroke="#0f9d58" stroke-width="1.8" opacity=".85" marker-end="url(#ah0f9d58)"/><line x1="415.9" y1="172.7" x2="797.5" y2="354.4" stroke="#0f9d58" stroke-width="1.8" opacity=".85" marker-end="url(#ah0f9d58)"/><line x1="480.3" y1="356.2" x2="720.2" y2="268.5" stroke="#c2255c" stroke-width="1.8" opacity=".85" marker-end="url(#ahc2255c)"/><line x1="481.0" y1="360.0" x2="537.0" y2="360.0" stroke="#d98e00" stroke-width="1.8" opacity=".85" marker-end="url(#ahd98e00)"/><line x1="732.3999999999942" y1="253" x2="732.3999999999942" y2="178" stroke="#c2255c" stroke-width="1.8" marker-end="url(#ahc2255c)"/><rect x="727.3999999999942" y="163" width="10" height="10" transform="rotate(45 732.3999999999942 168)" fill="var(--panel)" stroke="#0f9d58" stroke-width="2"/><foreignObject x="582.3999999999942" y="186" width="144" height="40"><div xmlns="http://www.w3.org/1999/xhtml" style="font:600 11.5px sans-serif;color:#c2255c;text-align:right;line-height:1.2">nạp dữ liệu<br/>vào HDFS</div></foreignObject><circle cx="214" cy="72" r="8" fill="#2b5ce6" stroke="var(--panel)" stroke-width="2"/><foreignObject x="70" y="8" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;text-align:right;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">GFS</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">SOSP 2003</div></div></div></foreignObject><circle cx="278" cy="72" r="8" fill="#2b5ce6" stroke="var(--panel)" stroke-width="2"/><foreignObject x="203.0" y="8" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">MapReduce</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">OSDI 2004</div></div></div></foreignObject><circle cx="398" cy="72" r="8" fill="#2b5ce6" stroke="var(--panel)" stroke-width="2"/><foreignObject x="254" y="8" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;text-align:right;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">Bigtable</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">OSDI 2006</div></div></div></foreignObject><circle cx="414" cy="72" r="6" fill="#2b5ce6" stroke="var(--panel)" stroke-width="2"/><foreignObject x="408" y="8" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:700;font-size:13.5px;color:var(--text);line-height:1.15">Chubby</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">OSDI 2006</div></div></div></foreignObject><circle cx="406" cy="168" r="8" fill="#0f9d58" stroke="var(--panel)" stroke-width="2"/><foreignObject x="262" y="180" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-end;text-align:right;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">Hadoop</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">Tách từ Nutch<br/>(Cutting, Yahoo!)</div></div></div></foreignObject><circle cx="790" cy="168" r="8" fill="#0f9d58" stroke="var(--panel)" stroke-width="2"/><foreignObject x="715.0" y="104" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">YARN</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">Hadoop 2.0: tách<br/>quản lý tài nguyên</div></div></div></foreignObject><circle cx="732.3999999999942" cy="264" r="8" fill="#c2255c" stroke="var(--panel)" stroke-width="2"/><foreignObject x="740.3999999999942" y="200" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">Kafka</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">Mã nguồn mở (LinkedIn)</div></div></div></foreignObject><circle cx="866.8000000000029" cy="264" r="6" fill="#c2255c" stroke="var(--panel)" stroke-width="2"/><foreignObject x="791.8000000000029" y="276" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:700;font-size:13.5px;color:var(--text);line-height:1.15">KRaft</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">3.3 (2022): production<br/>4.0 (3/2025): bỏ ZK</div></div></div></foreignObject><circle cx="470" cy="360" r="6" fill="#d98e00" stroke="var(--panel)" stroke-width="2"/><foreignObject x="395.0" y="372" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:700;font-size:13.5px;color:var(--text);line-height:1.15">ZooKeeper</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">Yahoo Research</div></div></div></foreignObject><circle cx="550.0" cy="360" r="8" fill="#d98e00" stroke="var(--panel)" stroke-width="2"/><foreignObject x="475.0" y="372" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">HBase</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">28/3/2008<br/>(Powerset)</div></div></div></foreignObject><circle cx="582.0" cy="360" r="6" fill="#d98e00" stroke="var(--panel)" stroke-width="2"/><foreignObject x="584.0" y="296" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:700;font-size:13.5px;color:var(--text);line-height:1.15">Pig</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">9/2008 (Yahoo)</div></div></div></foreignObject><circle cx="713.1999999999971" cy="360" r="8" fill="#d98e00" stroke="var(--panel)" stroke-width="2"/><foreignObject x="715.1999999999971" y="296" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:800;font-size:15px;color:var(--text);line-height:1.15">Hive</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">10/2010 (Facebook)</div></div></div></foreignObject><circle cx="809.1999999999971" cy="360" r="6" fill="#d98e00" stroke="var(--panel)" stroke-width="2"/><foreignObject x="734.1999999999971" y="372" width="150" height="52"><div xmlns="http://www.w3.org/1999/xhtml" style="height:52px;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;font-family:sans-serif"><div style="background:color-mix(in srgb,var(--panel) 90%,transparent);padding:0 3px;border-radius:3px"><div style="font-weight:700;font-size:13.5px;color:var(--text);line-height:1.15">Oozie</div><div style="font-size:11.5px;color:var(--muted);line-height:1.2">Top-level 2012</div></div></div></foreignObject></svg></div><div class="mdeck-slide"><h2>Mỗi module tương ứng bài báo nào, và logo công nghệ</h2>
+   <table><tr><th>Module</th><th>Công nghệ</th><th>Bài báo nền tảng</th><th>Nơi công bố</th></tr>
+   <tr><td>hd-01</td><td><img src="../../../assets/images/logos/apachehadoop.svg" alt="" style="height:30px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"> HDFS</td><td>The Google File System (Ghemawat, Gobioff, Leung)</td><td>SOSP 2003</td></tr>
+   <tr><td>hd-02</td><td><img src="../../../assets/images/logos/apachehadoop.svg" alt="" style="height:30px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"> MapReduce, YARN</td><td>MapReduce: Simplified Data Processing on Large Clusters (Dean, Ghemawat)</td><td>OSDI 2004</td></tr>
+   <tr><td>hd-03</td><td><img src="../../../assets/images/logos/pig.gif" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/apachehive.svg" alt="" style="height:30px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"> Pig, Hive</td><td>Không có một bài báo học thuật gốc; dựa trên MapReduce</td><td>Yahoo, Facebook</td></tr>
+   <tr><td>hd-04</td><td><img src="../../../assets/images/logos/apachehbase.svg" alt="" style="height:30px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/sqoop.png" alt="" style="height:26px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"> HBase, Sqoop</td><td>Bigtable (Chang et al.)</td><td>OSDI 2006</td></tr>
+   <tr><td>hd-05</td><td><img src="../../../assets/images/logos/apachekafka.svg" alt="" style="height:30px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"> Kafka</td><td>Kafka: a Distributed Messaging System for Log Processing (Kreps, Narkhede, Rao)</td><td>NetDB 2011</td></tr>
+   <tr><td>hd-06</td><td><img src="../../../assets/images/logos/oozie.png" alt="" style="height:26px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/zookeeper.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"> Oozie, ZooKeeper</td><td>The Chubby lock service (Burrows)</td><td>OSDI 2006</td></tr>
+   <tr><td>hd-07</td><td>Streaming và MPC</td><td>3 bài của thầy Tạ Duy Hoàng và cộng sự về chọn ngưỡng chia cây quyết định</td><td>arXiv 2024, ISIT 2025, ESA 2026</td></tr></table>
+   <div class="callout good"><div class="lbl">Một nhận xét chung</div>Trong 5 bài nền tảng, bài nào cũng bắt đầu từ <b>một ràng buộc thực tế</b> (hỏng hóc là thường, tệp rất lớn, ghi nối thêm, tải KeepAlive chiếm đa số, log phải đi nhanh)
+   rồi suy ra thiết kế. Việc đọc bài báo gốc giúp phân biệt phần nào là <i>nguyên lý</i> còn nguyên giá trị và phần nào là chi tiết của một thời điểm, như replication của Kafka 2011.</div></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="hd06_oozie_zk"></div>
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — nội dung đi sâu vào lịch sử ra đời, động lực và ảnh hưởng tới thế giới của từng công nghệ, mỗi dữ kiện lịch sử có nguồn riêng trong bài. Slide trình bày của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p><p>📄 Bài báo gốc (PDF) được đọc trực tiếp trong các module: <a href="../../../data/source/papers/GFS_Ghemawat2003.pdf" target="_blank">GFS 2003</a> · <a href="../../../data/source/papers/MapReduce_Dean2004.pdf" target="_blank">MapReduce 2004</a> · <a href="../../../data/source/papers/Bigtable_Chang2006.pdf" target="_blank">Bigtable 2006</a> · <a href="../../../data/source/papers/Chubby_Burrows2006.pdf" target="_blank">Chubby 2006</a> · <a href="../../../data/source/papers/Kafka_Kreps2011.pdf" target="_blank">Kafka 2011</a> · 3 bài của thầy: <a href="../../../data/source/papers/Pham_Ta_Vu_2024_arXiv2403.19867v1.pdf" target="_blank">v1 (2024)</a>, <a href="../../../data/source/papers/Pham_Ta_Vu_2025_arXiv2403.19867v4.pdf" target="_blank">v4 (ISIT 2025)</a>, <a href="../../../data/source/papers/Ta_Vu_2026_arXiv2604.20394v2.pdf" target="_blank">ESA 2026</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Oozie biểu diễn thứ tự phụ thuộc giữa các bước bằng cấu trúc gì?", "opts": ["Đồ thị có hướng không chu trình (DAG) của các action", "Bảng băm ánh xạ tên action tới thời điểm chạy của nó", "Danh sách tuyến tính đơn giản các action chạy lần lượt", "Cây nhị phân tìm kiếm sắp xếp các action theo tên"], "correct": 0, "explain": "DAG của Oozie mô tả thứ tự phụ thuộc giữa các JOB hoàn chỉnh, khác DAG ở Lập lịch 03 (giữa các TASK)."}, {"q": "Oozie hỗ trợ loại action nào để gửi thông báo khi workflow hoàn tất hoặc lỗi?", "opts": ["SSH action", "Email action", "MapReduce action", "Shell action"], "correct": 1, "explain": "Email action là loại action chuyên để gửi thông báo cho người quản trị/người nhận báo cáo."}, {"q": "Trong workflow có fork/join, 2 nhánh chạy song song để giảm tổng thời gian pipeline. Điều kiện bắt buộc để làm vậy AN TOÀN là gì?", "opts": ["Không có điều kiện gì, fork/join luôn an toàn bất kể hai nhánh có phụ thuộc nhau hay không", "2 nhánh phải cùng loại action, ví dụ cả hai đều là MapReduce hoặc cả hai đều là Hive", "2 nhánh phải thực sự độc lập dữ liệu, không nhánh nào đọc kết quả của nhánh kia", "2 nhánh phải chạy trên cùng 1 máy để chia sẻ bộ nhớ đệm giữa các job"], "correct": 2, "explain": "Nếu nhánh B cần dữ liệu của nhánh A mà vẫn fork song song, workflow sẽ cho kết quả sai (B đọc dữ liệu cũ/rỗng)."}, {"q": "Với 3 nhánh fork có thời gian chạy 8, 5, 12 phút, tổng thời gian của điểm join là bao nhiêu?", "opts": ["8 phút (trung bình)", "5 phút (min của 3 nhánh)", "25 phút (8+5+12)", "12 phút (max của 3 nhánh)"], "correct": 3, "explain": "Join luôn phải chờ nhánh CHẬM NHẤT hoàn thành — đúng nguyên lý Makespan đã học ở Lập lịch 01-02."}, {"q": "Trong workflow Oozie 4 bước (Sqoop → Hive clean → MapReduce → Email), nếu bước Hive clean thất bại, điều gì xảy ra?", "opts": ["Email báo cáo vẫn được gửi đi nhưng kèm ghi chú rằng bước Hive đã thất bại", "Oozie dừng workflow, không chạy MapReduce/Email, báo lỗi đúng điểm hỏng", "Oozie vẫn chạy tiếp các bước sau (MapReduce, Email) với dữ liệu cũ của lần chạy trước", "Toàn bộ cluster Hadoop dừng hoạt động cho tới khi quản trị viên khởi động lại"], "correct": 1, "explain": "Lợi ích chính của điều phối workflow có khai báo phụ thuộc rõ ràng, so với chạy cron job thủ công không kiểm tra."}, {"q": "ZooKeeper được mô phỏng theo hệ thống nào của Google?", "opts": ["Chubby (dịch vụ lock phân tán)", "Spanner (cơ sở dữ liệu phân tán toàn cầu)", "Bigtable (cơ sở dữ liệu NoSQL phân tán)", "GFS (hệ file phân tán của Google)"], "correct": 0, "explain": "ZooKeeper dựa trên ý tưởng từ paper Chubby của Mike Burrows (Google)."}, {"q": "ZooKeeper ra đời ở đâu, khoảng năm nào?", "opts": ["Facebook, khoảng năm 2010", "Powerset, khoảng năm 2008", "LinkedIn, khoảng năm 2011", "Yahoo Research, khoảng 2007"], "correct": 3, "explain": "Phát triển ở Yahoo Research khoảng 2007, mở nguồn trên SourceForge cùng năm."}, {"q": "Znode loại 'ephemeral' tự biến mất khi nào?", "opts": ["Sau đúng 24 giờ kể từ lúc được tạo, không phụ thuộc vào trạng thái của client", "Khi dịch vụ ZooKeeper được khởi động lại, mọi znode ephemeral đều bị xoá sạch", "Khi session (kết nối) của client tạo ra nó kết thúc, dù chủ động hay do client chết", "Không bao giờ tự biến mất, phải được quản trị viên hoặc client xoá thủ công"], "correct": 2, "explain": "Giống vé xem phim: chỉ có giá trị khi người giữ vé (session) còn 'trong rạp' — session kết thúc là znode tự mất."}, {"q": "Đặc tính 'sequential' của znode nghĩa là gì?", "opts": ["ZooKeeper tự gắn thêm 1 số thứ tự (zxid) tăng dần vào tên znode khi tạo, không trùng ai", "Znode luôn là bản sao chỉ-đọc của một znode khác nằm trên server dự phòng", "Znode tự động bị xoá sau một khoảng thời gian cấu hình sẵn kể từ lúc tạo", "Znode chỉ cho phép đúng một client truy cập tại một thời điểm, các client khác bị khoá"], "correct": 0, "explain": "Giống số thứ tự rút ở quầy ngân hàng — luôn tăng dần, không trùng."}, {"q": "Bầu leader bằng znode tuần tự cần kết hợp 2 đặc tính znode nào?", "opts": ["Chỉ cần Sequential", "Persistent + Sequential", "Ephemeral + Sequential", "Persistent + Ephemeral"], "correct": 2, "explain": "Ephemeral để tự rớt khỏi bầu cử khi ứng viên chết, Sequential để có số thứ tự duy nhất dùng so sánh."}, {"q": "ZAB (dùng trong ZooKeeper) là biến thể của thuật toán đồng thuận nào?", "opts": ["Raft", "Two-Phase Commit", "Gossip protocol", "Paxos"], "correct": 3, "explain": "ZAB (ZooKeeper Atomic Broadcast) là một biến thể của Paxos."}, {"q": "Vì sao ZAB/Paxos yêu cầu ĐA SỐ (majority) follower xác nhận, không phải TẤT CẢ?", "opts": ["Không có lý do kỹ thuật cụ thể, đây chỉ là quy ước đặt ra cho thuận tiện khi cài đặt", "Vì nếu bắt 100% xác nhận, chỉ 1 node chết là toàn hệ thống tê liệt không quyết định được gì nữa", "Vì ZooKeeper không hỗ trợ cơ chế chờ xác nhận từ 100% các follower của ensemble", "Vì đa số xác nhận nhanh hơn nên toàn hệ thống đạt độ trễ thấp hơn mức cần thiết"], "correct": 1, "explain": "Đa số cho phép hệ thống vẫn hoạt động khi có một số node chết, miễn số node sống vẫn chiếm đa số."}, {"q": "Với cluster ZooKeeper 5 node, cần tối thiểu bao nhiêu node xác nhận để đạt 'đa số'?", "opts": ["3", "2", "5", "4"], "correct": 0, "explain": "3/5 là đa số (quá bán) — nếu 2 node chết, 3 node còn lại vẫn đủ đa số để hệ thống tiếp tục hoạt động."}, {"q": "Tình trạng 'split-brain' trong hệ phân tán là gì?", "opts": ["Hệ thống hết dung lượng lưu trữ trên đĩa nên không ghi thêm được dữ liệu mới", "Hệ thống chạy quá chậm vì một node nắm giữ toàn bộ tải của cụm trong thời gian dài", "Lỗi cú pháp trong mã nguồn khiến các node không biên dịch và khởi động được", "Các node 'cãi nhau' về trạng thái (vd node A nghĩ X là leader, node B nghĩ Y là leader)"], "correct": 3, "explain": "Đây chính là vấn đề mà cơ chế đồng thuận (Paxos/ZAB) được thiết kế để ngăn chặn."}, {"q": "4 chức năng cốt lõi ZooKeeper cung cấp gồm những gì?", "opts": ["Chạy các job MapReduce, các script Pig, truy vấn Hive và import dữ liệu bằng Sqoop", "Lưu trữ tệp lớn, nén dữ liệu, mã hoá dữ liệu và sao lưu dữ liệu định kỳ", "Quản lý thành viên nhóm, bầu cử leader, quản lý cấu hình động, giám sát trạng thái hệ thống", "Tạo báo cáo định kỳ, gửi email cảnh báo và lập lịch các tác vụ theo kiểu cron"], "correct": 2, "explain": "4 chức năng coordination nền tảng mà nhiều hệ thống phân tán dùng chung qua ZooKeeper."}, {"q": "Trong HBase, ZooKeeper được dùng để bầu cử thành phần nào?", "opts": ["NameNode (nút quản lý metadata của HDFS)", "HMaster (master điều phối region server)", "JobTracker (bộ theo dõi job của Hadoop 1.0)", "DataNode (nút lưu trữ block dữ liệu của HDFS)"], "correct": 1, "explain": "HMaster là thành phần điều phối trung tâm của HBase, được bầu qua ZooKeeper."}, {"q": "Hệ thống nào KHÔNG phụ thuộc vào ZooKeeper để coordination (theo nội dung đã học)?", "opts": ["Apache Solr (SolrCloud)", "Kafka bản cũ trước KRaft (quản lý metadata cluster)", "RDBMS truyền thống đơn lẻ không phân tán", "HBase (bầu leader region server)"], "correct": 2, "explain": "RDBMS đơn lẻ không cần coordination phân tán kiểu ZooKeeper; HBase/Kafka cũ/Solr/Mesos đều phụ thuộc vào nó."}, {"q": "Với 5 ứng viên tạo znode tuần tự có zxid 14, 9, 11, 7, 16 — ai là leader ban đầu?", "opts": ["Node có zxid=14", "Node có zxid=7", "Node có zxid=16", "Node có zxid=9"], "correct": 1, "explain": "zxid nhỏ nhất (7) là leader."}, {"q": "Tiếp câu trên: nếu node có zxid=7 chết, rồi node có zxid=9 cũng chết liên tiếp, ai là leader cuối cùng (trong số 14, 11, 16 còn lại)?", "opts": ["zxid=11", "zxid=16", "zxid=14", "Không còn leader"], "correct": 0, "explain": "Sau khi loại 7 và 9, zxid nhỏ nhất trong (14, 11, 16) là 11."}, {"q": "Theo dòng thời gian tổng kết, công nghệ nào ra đời SỚM NHẤT làm nền tảng cho cả hệ sinh thái?", "opts": ["Hive (Facebook), ra đời để dân phân tích dùng SQL trên Hadoop", "YARN (2012), tách quản lý tài nguyên khỏi MapReduce trong Hadoop 2.0", "Kafka (LinkedIn), ra đời sau khi các công cụ lưu trữ và xử lý đã có", "2 paper GFS và MapReduce của Google (2003-2004)"], "correct": 3, "explain": "2 paper Google là điểm khởi nguồn, truyền cảm hứng trực tiếp cho Hadoop và hầu hết công nghệ sau đó."}, {"q": "Bài học lớn nhất rút ra từ việc nhìn lại lịch sử toàn Chương 2 là gì?", "opts": ["Hệ sinh thái Hadoop là kết quả của NHIỀU công ty khác nhau giải quyết bài toán nội bộ riêng, rồi mã nguồn mở hoá và ghép lại qua Apache Software Foundation", "Hệ sinh thái Hadoop đã hoàn toàn lỗi thời và không còn công nghệ nào trong số đó được dùng tới ngày nay ở bất kỳ công ty nào", "Tất cả công nghệ trong hệ sinh thái đều do một nhóm kỹ sư ở Google thiết kế sẵn từ đầu thành một bộ thống nhất, rồi mới công bố ra ngoài", "Mọi công nghệ trong hệ sinh thái đều ra đời cùng một năm theo một kế hoạch chung của Apache Software Foundation đặt ra từ trước"], "correct": 0, "explain": "Đây là thông điệp tổng kết chính của cả 6 module deep-dive: hệ sinh thái là 'ghép lại' từ nhiều lời giải độc lập, không phải thiết kế tập trung."}, {"q": "Công nghệ nào trong hệ sinh thái đã chính thức bị 'nghỉ hưu' (Apache Attic), cho thấy không phải mọi thành phần đều tồn tại mãi?", "opts": ["Hive", "Sqoop", "ZooKeeper", "HBase"], "correct": 1, "explain": "Sqoop bị retired vào Apache Attic tháng 6/2021, nhường vai trò ETL batch cho các giải pháp CDC streaming."}, {"q": "Theo bài báo Chubby, để một Chubby cell hoạt động cần bao nhiêu replica còn sống trong tổng số 5?", "opts": ["4", "5", "3", "2"], "correct": 2, "explain": "Đa số, tức 3 trong 5, mới đủ để bầu master và xác nhận ghi."}, {"q": "Mặc định lease Chubby kéo dài thêm bao lâu mỗi lần gia hạn, và master quá tải có thể kéo tới đâu?", "opts": ["5 phút, tới khoảng 1 giờ", "1 giây, tới khoảng 5 giây", "60 giây, tới khoảng 10 phút", "12 giây, tới khoảng 60 giây"], "correct": 3, "explain": "Mặc định 12 giây; khi quá tải master tăng tới khoảng 60 giây để giảm số KeepAlive phải xử lý."}, {"q": "Grace period của Chubby phục vụ mục đích gì?", "opts": ["Xoá ngay tất cả khoá mà client đang giữ để nhường cho master mới bắt đầu", "Chuyển client sang một Chubby cell khác ngay lập tức mà không chờ master cũ", "Tăng tốc đọc dữ liệu từ bộ đệm bằng cách tạm ngừng mọi yêu cầu ghi trong vài giây", "Cho client không vội huỷ session khi master chết mà chờ master mới trong thời gian ngắn"], "correct": 3, "explain": "Client chặn lời gọi API, báo jeopardy, chờ master mới; nếu kịp (safe) tiếp tục như không có chuyện gì, nếu không thì session hết hạn."}, {"q": "Một job 3.000 tiến trình, mỗi tiến trình nói chuyện với mọi tiến trình khác. Số lượt tra tên cần cỡ nào?", "opts": ["Khoảng 6.000", "Khoảng 9 triệu", "Khoảng 9 tỉ", "Khoảng 3.000"], "correct": 1, "explain": "3.000² = 9.000.000. Bài báo nói đây từng làm master Chubby quỵ khi mới triển khai name service."}, {"q": "Vì sao Chubby dùng vô hiệu bộ đệm (invalidation) thay vì TTL như DNS?", "opts": ["Vì TTL không được Chubby hỗ trợ nên bắt buộc phải dùng cơ chế vô hiệu bộ đệm", "Vì vô hiệu bộ đệm luôn rẻ hơn TTL trong mọi trường hợp, kể cả khi dữ liệu đổi liên tục", "Vì một nhịp KeepAlive đều đặn đủ giữ nhiều mục cache vô thời hạn, khi không có thay đổi", "Vì client của Chubby không có bộ đệm nên mọi lần đọc đều phải hỏi lại master"], "correct": 2, "explain": "DNS với TTL ngắn làm tải tra cứu tăng vọt; Chubby chỉ gửi thông báo khi có thay đổi thật."}, {"q": "Điểm khác chính giữa khoá của Chubby và cách làm khoá trên ZooKeeper là gì?", "opts": ["Chubby có khoá advisory trên từng tệp; ZooKeeper dựng khoá bằng znode tuần tự và ephemeral", "ZooKeeper có API khoá riêng với lệnh lock/unlock, còn Chubby thì không có khoá nào", "Chubby không có khoá; ZooKeeper cung cấp khoá phân tán như một tính năng gốc", "Hai hệ thống giống hệt nhau về API, chỉ khác ở ngôn ngữ cài đặt (C++ so với Java)"], "correct": 0, "explain": "Chubby mỗi tệp/thư mục là khoá đọc-ghi advisory; ZooKeeper cung cấp các nguyên liệu (znode, ephemeral, watch) để lập trình viên tự dựng khoá và bầu leader."}, {"q": "Nhận định nào đúng về mức độ Bigtable phụ thuộc Chubby theo bài báo?", "opts": ["Bigtable không phụ thuộc Chubby vì mọi metadata và vị trí tablet đều được lưu ngay trong chính các tablet của nó", "Bigtable chỉ phụ thuộc Chubby một lần khi khởi động; sau đó cụm chạy độc lập hoàn toàn mà không cần Chubby nữa", "Bigtable phụ thuộc hoàn toàn vào Chubby: cứ mỗi giờ Chubby gián đoạn là toàn bộ dữ liệu trong Bigtable bị mất vĩnh viễn", "Nếu Chubby không khả dụng lâu thì Bigtable cũng không khả dụng; đo được trung bình 0,0047% giờ-server bị ảnh hưởng"], "correct": 3, "explain": "Chubby nằm trên đường găng của master, vị trí khởi đầu và danh sách server; trung bình chỉ 0,0047% giờ-server bị ảnh hưởng, cụm tệ nhất 0,0326%."}, {"q": "Bài học chung nào của bài báo Chubby áp dụng cho ZooKeeper?", "opts": ["Nên bỏ khái niệm session để giảm số lượt giữ phiên giữa client và server", "Nên cho mọi client nối thẳng tới leader để có dữ liệu mới nhất ở mọi lần đọc", "Nên giữ tải ghi rất thấp và giảm tải đọc, giữ phiên bằng bộ đệm hoặc proxy", "Nên ghi cả các tệp dữ liệu lớn vào dịch vụ điều phối để mọi client cùng thấy một bản"], "correct": 2, "explain": "Tải của Chubby chủ yếu là KeepAlive, đọc dưới 10% và rất ít ghi; vì vậy các cơ chế giảm tải KeepAlive là then chốt."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../hd-05-kafka/index.html">◀ Hadoop 05: Apache Kafka: từ bài toán nội bộ LinkedIn tới xương sống streaming của cả ngành</a><a href="../hd-07-bai-bao-thay/index.html">Hadoop 07: Ba bài báo của thầy: chọn ngưỡng chia cây quyết định trên luồng dữ liệu và trên cụm song song ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>

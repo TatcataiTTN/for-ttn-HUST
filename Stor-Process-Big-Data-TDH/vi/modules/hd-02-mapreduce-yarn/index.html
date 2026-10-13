@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Hadoop 02: MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm · Lưu trữ & xử lý dữ liệu lớn</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="../../../_shared/glossary.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}", "\\F": "\\mathbb{F}",
+  "\\Var": "\\operatorname{Var}", "\\eps": "\\varepsilon",
+  "\\norm": "\\left\\lVert #1 \\right\\rVert", "\\ip": "\\left\\langle #1, #2 \\right\\rangle"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Lưu trữ &amp; xử lý <span>dữ liệu lớn</span></a>
+  <div class="site-search" id="site-search" data-rel-root="../../../">
+    <input type="search" id="site-search-input" placeholder="🔎 Tra thuật ngữ… (vd: DRF, CountMin, SRPT)" autocomplete="off">
+    <div id="site-search-results" hidden></div>
+  </div>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/00-slide-goc/index.html">Bài tập trên slide gốc</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Hadoop 02 / 7</div>
+<h1>MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm</h1></div>
+<div class="mdeck"><div class="mdeck-canvas-wrap"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">HADOOP 02 · Lịch sử MapReduce · Vì sao YARN ra đời</div><h2>MapReduce & YARN: từ mô hình lập trình tới hệ điều hành cụm</h2><p>MapReduce giải quyết bài toán xử lý; nhưng chính MapReduce bản đầu lại tạo ra một điểm nghẽn mới — JobTracker. Câu chuyện YARN là câu chuyện sửa lỗi kiến trúc của chính Hadoop, và câu chuyện đó còn lặp lại 1 lần nữa 10 năm sau với Kubernetes.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/5</div>
+<div class="part-num">01</div><h2>MapReduce: mô hình lập trình từ Google</h2>
+<ul class="part-list"><li>Google công bố MapReduce năm 2004 (Dean & Ghemawat)</li>
+<li>Mô hình: Map → Shuffle & Sort → Reduce trên cặp key-value</li>
+<li>Ưu điểm được thiết kế có chủ đích: đơn giản, linh hoạt, khả mở</li></ul></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na: MapReduce là gì trước khi vào kỹ thuật</h2><p style="margin:0 0 8px"><img src="../../../assets/images/logos/apachehadoop.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/google.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"></p>
+      <p><b>Nói nôm na:</b> hãy tưởng tượng bạn cần đếm tổng số phiếu bầu cho 5 ứng viên, nhưng có 10 triệu
+      lá phiếu rải ở 1000 phòng khác nhau. Cách ngu nhất: 1 người đi gom hết 10 triệu phiếu về 1 bàn rồi đếm.
+      Cách MapReduce làm: mỗi phòng tự đếm phiếu CỦA PHÒNG MÌNH trước (đây là <b>Map</b>), rồi gửi riêng từng
+      kết quả theo TỪNG ứng viên về 1 người tổng hợp chuyên trách ứng viên đó (đây là <b>Shuffle</b>), người
+      đó chỉ cần cộng các số đã đếm sẵn lại (đây là <b>Reduce</b>) — không ai phải đụng tay vào cả 10 triệu
+      lá phiếu gốc.</p>
+      <div class="callout good"><div class="lbl">📖 Giải thích cho người mới bắt đầu</div>
+      <details><summary>Bấm để xem giải thích cực đơn giản về vì sao phải tách 3 bước</summary>
+      <p>Nếu không tách 3 bước, bạn phải viết 1 chương trình vừa biết "lấy dữ liệu ở đâu", vừa biết "chia
+      việc cho 1000 phòng ra sao", vừa biết "nếu 1 phòng báo cáo trễ/sai thì làm gì", vừa biết "cộng tổng
+      kiểu gì" — tất cả trộn chung trong 1 đoạn code. MapReduce tách phần "logic nghiệp vụ" (đếm 1 lá phiếu,
+      cộng 2 số) ra khỏi phần "logic hạ tầng" (chia việc, chịu lỗi, gửi dữ liệu) — người viết code chỉ cần lo
+      2 hàm nhỏ (map, reduce), còn framework tự lo toàn bộ phần hạ tầng phức tạp còn lại.</p></details></div>
+      
+      <p style="margin-top:10px">Trước MapReduce, kỹ sư Google phải tự viết code xử lý song song/phân tán
+      cho từng bài toán — dễ lỗi, khó bảo trì, logic phân tán (chia việc, xử lý lỗi node, gộp kết quả) trộn
+      lẫn với logic nghiệp vụ. MapReduce tách 2 phần này: người viết code chỉ cần định nghĩa 2 hàm
+      <code>map</code> và <code>reduce</code>, còn framework tự lo phân tán, chịu lỗi, gộp kết quả.</p>
+      <table><tr><th>Giai đoạn</th><th>Việc làm</th></tr>
+      <tr><td>Map</td><td>Đọc từng bản ghi đầu vào (key, value), sinh ra 0 hoặc nhiều cặp (key', value') trung gian</td></tr>
+      <tr><td>Shuffle &amp; Sort</td><td>Hadoop tự gộp và sắp xếp output của mọi Mapper theo key', chia vào các partition — mỗi partition là đầu vào của 1 Reducer</td></tr>
+      <tr><td>Reduce</td><td>Mỗi Reducer nhận toàn bộ value' của 1 key', xử lý và sinh ra cặp (key'', value'') cuối cùng</td></tr></table>
+      <div class="callout info"><div class="lbl">Nguồn: materials/hangout/2024/2_hadoop_ecosystem_vn.pdf (Chương 2)</div>
+      Ví dụ Word Count trong giáo trình chính là minh hoạ kinh điển nhất của mô hình này: Map phát ra (từ, 1)
+      cho mỗi từ, Reduce cộng tổng các giá trị 1 theo từng từ khoá.</div></div><div class="mdeck-slide"><h2>Ví dụ minh hoạ MapReduce ở 3 ngành khác nhau</h2>
+      <p>Để thấy MapReduce không phải khái niệm "chỉ dùng cho dữ liệu máy tính", dưới đây là cùng 1 cơ chế
+      Map → Shuffle &amp; Sort → Reduce áp vào 3 ngành khác hẳn nhau:</p>
+      <table><tr><th>Ngành</th><th>Map (chia nhỏ, xử lý cục bộ)</th><th>Shuffle&amp;Sort (gộp theo "khoá")</th><th>Reduce (tổng hợp cuối)</th></tr>
+      <tr><td>Bầu cử (minh hoạ)</td><td>Mỗi phòng phiếu tự đếm phiếu của ứng viên</td><td>Gộp kết quả theo TỪNG ứng viên từ mọi phòng</td><td>Cộng tổng phiếu toàn quốc cho mỗi ứng viên</td></tr>
+      <tr><td>Bán lẻ (minh hoạ)</td><td>Mỗi chi nhánh siêu thị tự tính doanh số theo từng mặt hàng trong ngày</td><td>Gộp theo TỪNG mặt hàng từ mọi chi nhánh</td><td>Tổng doanh số toàn hệ thống theo mặt hàng</td></tr>
+      <tr><td>Y tế (minh hoạ)</td><td>Mỗi bệnh viện tự đếm số ca mắc theo từng loại bệnh trong tuần</td><td>Gộp theo TỪNG loại bệnh từ mọi bệnh viện</td><td>Tổng số ca mắc toàn tỉnh theo loại bệnh (phục vụ cảnh báo dịch)</td></tr></table>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>Nhiều người tưởng "Shuffle" là bước xáo
+      trộn ngẫu nhiên — SAI. Shuffle trong MapReduce là GOM DỮ LIỆU THEO ĐÚNG KHOÁ (key) lại một chỗ, hoàn
+      toàn có trật tự, không phải xáo trộn vô nghĩa.</div></div><div class="mdeck-slide"><h2>Combiner & Partitioner — chi tiết hay bị bỏ qua</h2>
+      <p>Giáo trình gốc không nhấn vào 2 thành phần tối ưu quan trọng này — nhưng thiếu chúng, MapReduce thực
+      tế sẽ chậm hơn rất nhiều so với lý thuyết:</p>
+      <ul class="pd-legend"><li><b>Combiner</b><span>một "mini-Reducer" chạy ngay trên node Map, gộp trước
+      các giá trị cùng key TRƯỚC khi gửi qua mạng tới Reducer — giảm mạnh lưu lượng shuffle. Với Word Count,
+      combiner cộng tổng từng từ ngay tại Mapper trước khi gửi đi.</span></li>
+      <li><b>Partitioner</b><span>quyết định cặp (key', value') trung gian nào đi vào Reducer nào — mặc định
+      dùng hash(key) mod số-Reducer, đảm bảo mọi value' của cùng 1 key' luôn vào đúng 1 Reducer duy nhất.</span></li></ul>
+      <p><b>🗣️ Nói nôm na về Combiner:</b> giống việc mỗi chi nhánh ngân hàng (minh hoạ) tự cộng sổ quỹ của
+      chi nhánh mình trước khi gửi báo cáo về hội sở, thay vì gửi từng tờ biên lai lẻ về cho hội sở tự cộng —
+      hội sở chỉ nhận 1 số tổng mỗi chi nhánh, không phải hàng nghìn tờ biên lai.</p>
+      <div class="callout warn"><div class="lbl">Bẫy hay gặp</div>Combiner chỉ áp dụng được khi hàm reduce có
+      tính <b>kết hợp và giao hoán</b> (associative, commutative) — như cộng tổng, lấy max/min. Với phép tính
+      trung bình (average), combiner ngây thơ sẽ cho kết quả SAI nếu không cẩn thận (phải gộp cả tổng và số
+      lượng, không gộp trực tiếp giá trị trung bình).</div>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu Mapper 1 có điểm trung bình 8,0
+      (từ 10 bài) và Mapper 2 có điểm trung bình 6,0 (từ 2 bài), Combiner "ngây thơ" lấy trung bình của
+      (8,0; 6,0) = 7,0 — sai ở đâu? (Đáp: trung bình đúng phải tính lại theo TỔNG điểm/TỔNG số bài =
+      (10×8,0 + 2×6,0)/(10+2) = 92/12 ≈ 7,67, không phải trung bình đơn giản của 2 trung bình con có trọng
+      số khác nhau.)</div></div><div class="mdeck-slide"><h2>Ví dụ tính toán: mức giảm lưu lượng shuffle nhờ Combiner</h2>
+      <p>Giả sử 1 văn bản có 9.000 từ, chia cho 3 Mapper (mỗi Mapper xử lý 3.000 từ), và trong 3.000 từ đó
+      có trung bình 500 từ khác nhau (nhiều từ lặp lại nhiều lần).</p>
+      <ol><li><b>Không có Combiner:</b> mỗi Mapper gửi đúng 3.000 cặp (word, 1) qua mạng → tổng 3 Mapper gửi
+      3 × 3.000 = 9.000 cặp.</li>
+      <li><b>Có Combiner:</b> mỗi Mapper tự gộp trước thành tối đa 500 cặp (word, count) → tổng 3 Mapper gửi
+      3 × 500 = 1.500 cặp.</li>
+      <li>Mức giảm lưu lượng = (9.000 − 1.500) / 9.000 = 83,3%.</li></ol>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Nếu văn bản có RẤT ÍT từ lặp lại (gần
+      như mỗi từ chỉ xuất hiện 1 lần, ví dụ danh sách 3.000 mã khách hàng duy nhất), Combiner còn giúp được
+      bao nhiêu? (Đáp: gần như KHÔNG giúp gì — nếu mỗi key chỉ xuất hiện 1 lần, Combiner không có gì để gộp,
+      vẫn phải gửi gần như đủ 3.000 cặp. Combiner chỉ hiệu quả khi dữ liệu có nhiều key LẶP LẠI.)</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/5</div>
+<div class="part-num">02</div><h2>Đọc trực tiếp bài báo MapReduce (OSDI 2004): luồng thực thi, số liệu thật và cách chịu lỗi</h2>
+<ul class="part-list"><li>Sáu bước thực thi trong hình gốc, và mỗi thành phần tương ứng gì trong Hadoop</li>
+<li>Sáu ví dụ ngay trong bài báo: một khung, nhiều bài toán khác nhau</li>
+<li>Số liệu thật: 29.423 job tháng 8/2004, mỗi job trung bình 157 máy</li>
+<li>Chịu lỗi bằng tái thực thi, backup task, chọn số task M và R</li></ul></div><div class="mdeck-slide"><h2>Hình gốc: sáu bước thực thi và tên gọi tương ứng trong Hadoop</h2><p style="margin:0 0 8px"><img src="../../../assets/images/logos/apachehadoop.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"><img src="../../../assets/images/logos/google.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"></p><div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 46%"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_fig1.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce: Simplified Data Processing on Large Clusters</i>, OSDI 2004, Figure 1." style="max-height:320px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce: Simplified Data Processing on Large Clusters</i>, OSDI 2004, Figure 1.</figcaption></figure></div><div style="flex:1">
+   <ol style="margin:0;padding-left:20px;line-height:1.5">
+   <li><b>fork</b>: chương trình người dùng khởi tạo master và các worker; dữ liệu vào chia thành $M$ split.</li>
+   <li>Master giao <b>map task</b> và <b>reduce task</b> cho các worker rảnh.</li>
+   <li>Map worker <b>đọc</b> split, gọi hàm map, giữ cặp trung gian trong bộ nhớ.</li>
+   <li>Định kỳ <b>ghi xuống đĩa cục bộ</b>, chia thành $R$ vùng theo hàm phân vùng (ví dụ hash(key) mod $R$).</li>
+   <li>Reduce worker <b>đọc từ xa</b> (remote read) các vùng của mình từ đĩa của map worker, rồi sắp theo khoá.</li>
+   <li>Gọi hàm reduce, <b>ghi</b> tệp đầu ra (vào hệ file phân tán).</li></ol></div></div>
+   <p><b>Cách đọc hình từ trái sang phải:</b> cột trái là tệp đầu vào đã chia thành các <i>split</i>; cột worker thứ nhất chạy <b>map</b>; ở giữa là tệp trung gian nằm trên <b>đĩa cục bộ</b> của máy map;
+   cột worker thứ hai chạy <b>reduce</b>; cột phải là tệp đầu ra, mỗi reduce task một tệp. Master ở trên cùng chỉ giao việc và ghi nhớ vị trí tệp trung gian, dữ liệu không đi qua master.</p>
+   <table><tr><th>Trong bài báo</th><th>Trong Hadoop</th></tr>
+   <tr><td>Master</td><td>JobTracker (Hadoop 1.x), ApplicationMaster (YARN)</td></tr>
+   <tr><td>Worker</td><td>TaskTracker (1.x), NodeManager chạy container (2.x)</td></tr>
+   <tr><td>Bước (5) remote read + sắp xếp</td><td>Giai đoạn <b>shuffle &amp; sort</b></td></tr>
+   <tr><td>Tệp trung gian trên đĩa cục bộ</td><td>Map output spill trên đĩa của node chạy map</td></tr></table></div><div class="mdeck-slide"><h2>Sáu ví dụ ngay trong bài báo: một khung, nhiều bài toán</h2>
+   <p>🗣️ <b>Nói nôm na:</b> MapReduce giống một dây chuyền chia bài tập: mỗi người chỉ cần biết làm 1 việc nhỏ
+   (map: gắn nhãn từng phiếu, reduce: gộp các phiếu cùng nhãn). Bài báo chứng minh khung đó đủ rộng bằng 6 ví dụ
+   thật của Google (đây là ví dụ <i>trong bài báo</i>, không phải ví dụ tự dựng).</p>
+   <table><tr><th>Bài toán</th><th>Hàm map</th><th>Hàm reduce</th></tr>
+   <tr><td>Distributed Grep</td><td>Phát ra dòng nào khớp mẫu</td><td>Hàm đồng nhất: chỉ sao chép dữ liệu trung gian ra đầu ra</td></tr>
+   <tr><td>Đếm lượt truy cập URL</td><td>Từ log phát ra cặp $\langle URL, 1\rangle$</td><td>Cộng các giá trị cùng URL, phát ra $\langle URL, tổng\rangle$</td></tr>
+   <tr><td>Đồ thị liên kết ngược</td><td>Với mỗi liên kết từ trang <i>source</i> tới <i>target</i>, phát ra $\langle target, source\rangle$</td><td>Gom danh sách source cho mỗi target</td></tr>
+   <tr><td>Term-vector theo host</td><td>Phát ra $\langle host, term\ vector\rangle$ cho mỗi tài liệu</td><td>Cộng các term-vector của cùng host, bỏ từ hiếm</td></tr>
+   <tr><td>Chỉ mục ngược (inverted index)</td><td>Phát ra $\langle word, documentID\rangle$</td><td>Sắp các documentID, phát ra $\langle word, list(documentID)\rangle$</td></tr>
+   <tr><td>Sắp xếp phân tán (distributed sort)</td><td>Trích khoá, phát ra $\langle key, record\rangle$</td><td>Phát ra tất cả cặp không đổi; việc sắp xếp do hàm phân vùng và thứ tự khoá lo</td></tr></table>
+   <div class="callout good"><div class="lbl">Vì sao chọn đúng 6 ví dụ này</div>Chúng phủ cả lọc, đếm, đảo quan hệ, gộp theo nhóm và sắp xếp. Ví dụ
+   <i>Distributed Sort</i> còn là bước đầu của thuật toán MPC trong các bài báo của thầy (module hd-07): sắp theo $x$ trong $O(1)$ vòng.</div></div><div class="mdeck-slide"><h2>Số liệu thật: 29.423 job trong tháng 8/2004 và mức tăng chỉ sau 18 tháng</h2>
+   <div style="display:flex;gap:18px;align-items:flex-start;justify-content:center"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_fig4.png" alt="Figure 4: số chương trình MapReduce trong kho mã, từ 0 (đầu 2003) lên gần 900 (9/2004)." style="max-height:270px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Figure 4: số chương trình MapReduce trong kho mã, từ 0 (đầu 2003) lên gần 900 (9/2004).</figcaption></figure><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_table1.png" alt="Table 1: job MapReduce chạy tháng 8/2004 (Dean, Ghemawat, OSDI 2004)." style="max-height:270px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Table 1: job MapReduce chạy tháng 8/2004 (Dean, Ghemawat, OSDI 2004).</figcaption></figure></div>
+   <p><b>Phép tính từ bảng (số liệu gốc của bài báo):</b></p>
+   <table><tr><th>Đại lượng</th><th>Tính</th><th>Ý nghĩa</th></tr>
+   <tr><td>Dữ liệu trung gian so với đầu vào</td><td>758 / 3.288 ≈ 23%</td><td>Map đã lọc/rút gọn dữ liệu trước khi shuffle</td></tr>
+   <tr><td>Dữ liệu đầu ra so với đầu vào</td><td>193 / 3.288 ≈ 5,9%</td><td>Kết quả cuối nhỏ hơn đầu vào cỡ 17 lần</td></tr>
+   <tr><td>Đầu vào mỗi map task</td><td>3.288 TB / 29.423 job / 3.351 map task ≈ 33 MB</td><td>Khớp khuyến nghị 16 đến 64 MB mỗi task (xem slide sau)</td></tr>
+   <tr><td>Số map task trên mỗi reduce task</td><td>3.351 / 55 ≈ 61</td><td>Pha map rộng hơn pha reduce hàng chục lần</td></tr></table>
+   <div class="callout warn"><div class="lbl">Con số quan trọng nhất</div>Mỗi job trung bình có <b>1,2</b> lần worker chết (trên 157 máy). Hỏng hóc không phải biến cố hiếm mà là chuyện xảy ra
+   ở hầu như mọi job, nên chịu lỗi phải là phần lõi của khung, không phải tính năng thêm vào.</div></div><div class="mdeck-slide"><h2>Chịu lỗi theo bài báo: tái thực thi là cơ chế chính, backup task cứu đuôi dài</h2>
+   <table><tr><th>Tình huống</th><th>Cách xử lý trong bài báo</th><th>Vì sao</th></tr>
+   <tr><td>Worker không trả lời</td><td>Master ping định kỳ; worker im lặng bị coi là chết</td><td>Phát hiện lỗi đơn giản</td></tr>
+   <tr><td>Map task <b>đã xong</b> trên máy chết</td><td><b>Chạy lại</b></td><td>Đầu ra nằm trên đĩa cục bộ của máy đó nên không còn đọc được</td></tr>
+   <tr><td>Reduce task đã xong trên máy chết</td><td>Không cần chạy lại</td><td>Đầu ra nằm trong hệ file toàn cục</td></tr>
+   <tr><td>Straggler: 1 máy chậm bất thường ở những task cuối</td><td>Gần xong thì master chạy thêm <b>backup execution</b>, task xong khi một trong hai bản xong</td><td>Một máy chậm kéo dài cả job</td></tr>
+   <tr><td>Bản ghi gây lỗi lặp lại</td><td>Sau hơn 1 lần lỗi trên cùng bản ghi, master bỏ qua bản ghi đó ở lần chạy lại</td><td>Một dòng dữ liệu xấu không làm hỏng cả job</td></tr></table>
+   <p><b>Hai thí nghiệm trong bài (sort):</b></p>
+   <ul style="margin:6px 0 0;padding-left:20px;line-height:1.5">
+   <li>Cố ý <b>giết 200 trong 1746 worker</b> giữa chừng: job vẫn xong sau 933 giây, chỉ chậm hơn 5% so với chạy bình thường.</li>
+   <li><b>Tắt backup task</b>: job mất 1283 giây, chậm hơn <b>44%</b>: vài task đuôi kéo dài thêm khoảng 300 giây sau khi gần như mọi task khác đã xong.</li></ul>
+   <div class="callout info"><div class="lbl">Ý nghĩa chung</div>Nhờ hàm map và reduce là hàm thuần (cùng đầu vào cho cùng đầu ra), chạy lại hay chạy hai bản không đổi kết quả:
+   đó là điều kiện để &quot;tái thực thi&quot; trở thành cơ chế chịu lỗi chính.</div></div><div class="mdeck-slide"><h2>Chọn số task M và R, và vì sao dữ liệu nằm sẵn trên máy lại quan trọng</h2>
+   <p>🗣️ <b>Nói nôm na:</b> chia 1000 bài kiểm tra cho 10 giám khảo, bạn chia thành 10 xấp hay 1000 tờ lẻ? Xấp lớn thì có người xong sớm ngồi chơi, tờ lẻ thì mất công phát từng tờ.
+   MapReduce chọn khoảng giữa: chia vừa đủ nhỏ để cân tải, vừa đủ lớn để điều phối không quá tốn.</p>
+   <table><tr><th>Quy tắc trong bài báo</th><th>Số liệu</th></tr>
+   <tr><td>Mỗi map task xử lý chừng</td><td><b>16 đến 64 MB</b> đầu vào (để tối ưu <i>data locality</i>)</td></tr>
+   <tr><td>$R$ chọn bằng</td><td>một bội số nhỏ của số worker dự kiến dùng</td></tr>
+   <tr><td>Ví dụ job thật</td><td>$M = 200\,000$, $R = 5\,000$, <b>2.000 worker</b></td></tr>
+   <tr><td>Giới hạn thực tế</td><td>Master phải đưa ra $O(M+R)$ quyết định lập lịch và giữ $O(M\times R)$ trạng thái trong bộ nhớ</td></tr></table>
+   <p><b>Tính:</b> $M\times R = 200\,000 \times 5\,000 = 10^9$ cặp (map task, reduce task) mà master phải theo dõi: đó là lý do không thể chọn $M$ và $R$ lớn vô hạn.</p>
+   <p><b>Data locality:</b> dữ liệu đầu vào nằm trên đĩa của chính các máy trong cụm, do GFS chia khối 64 MB và giữ thường 3 bản sao. Master xếp map task lên máy đang giữ một bản sao,
+   hoặc máy gần nó, để phần lớn dữ liệu đọc ở đĩa cục bộ thay vì qua mạng. Đây cũng là lý do Hadoop đặt tính toán gần dữ liệu thay vì kéo dữ liệu về chỗ tính.</p></div><div class="mdeck-slide"><h2>Mã gốc trong bài báo: đếm từ chỉ với hai hàm map và reduce</h2><div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 42%"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_code.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, mục 2.1." style="max-height:300px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, mục 2.1.</figcaption></figure></div><div style="flex:1">
+   <p style="margin-top:0">🗣️ <b>Nói nôm na:</b> <code>map</code> là người đọc từng trang và hô &quot;có một chữ <i>mèo</i>!&quot;; <code>reduce</code> là người ngồi cộng tất cả tiếng hô của cùng một chữ.</p>
+   <p><b>Đọc từng dòng:</b></p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><code>map(key, value)</code>: key là tên tài liệu, value là nội dung. Với mỗi từ <code>w</code>, phát ra cặp trung gian <code>(w, "1")</code>.</li>
+   <li>Thư viện tự <b>gom</b> mọi giá trị cùng khoá lại (shuffle), người viết không phải làm.</li>
+   <li><code>reduce(key, values)</code>: key là một từ, values là danh sách các &quot;1&quot;; cộng lại rồi phát ra tổng.</li></ul></div></div>
+   <table><tr><th>Ví dụ (minh hoạ)</th><th>Kết quả</th></tr>
+   <tr><td>Hai tài liệu: d1 = &quot;mèo đen mèo&quot;, d2 = &quot;chó đen&quot;</td><td></td></tr>
+   <tr><td>Sau map</td><td>(mèo,1) (đen,1) (mèo,1) | (chó,1) (đen,1)</td></tr>
+   <tr><td>Sau gom theo khoá</td><td>mèo → [1,1]; đen → [1,1]; chó → [1]</td></tr>
+   <tr><td>Sau reduce</td><td>mèo 2; đen 2; chó 1</td></tr></table>
+   <p>Kiểu dữ liệu bài báo nêu: map nhận $(k_1,v_1)$ trả về danh sách $(k_2,v_2)$; reduce nhận $(k_2,\text{list}(v_2))$ trả về danh sách $v_2$. Mọi thứ khó (chia việc, chịu lỗi, truyền dữ liệu) nằm trong thư viện.</p></div><div class="mdeck-slide"><h2>Hình gốc: chương trình grep quét 1 TB trong khoảng 150 giây</h2><div style="display:flex;gap:22px;align-items:flex-start"><div style="flex:0 0 40%"><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_fig2.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 2." style="max-height:250px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 2.</figcaption></figure></div><div style="flex:1">
+   <p style="margin-top:0"><b>Cách đọc hình:</b> trục ngang là thời gian (giây), trục dọc là tốc độ quét dữ liệu vào (MB/s) của cả cụm.</p>
+   <ul style="margin:0;padding-left:20px;line-height:1.5">
+   <li><b>Đoạn dốc lên (0 đến 60 s):</b> master giao việc dần, càng lúc càng nhiều máy tham gia.</li>
+   <li><b>Đỉnh hơn 30.000 MB/s (30 GB/s):</b> khi đủ 1.764 worker.</li>
+   <li><b>Rơi về 0 ở khoảng 80 s:</b> các map task xong.</li></ul></div></div>
+   <table><tr><th>Thông số trong bài</th><th>Giá trị</th><th>Tự kiểm tra</th></tr>
+   <tr><td>Dữ liệu</td><td>$10^{10}$ bản ghi, mỗi bản ghi 100 byte</td><td>$10^{10}\times100=10^{12}$ byte = 1 TB</td></tr>
+   <tr><td>Chia việc</td><td>$M=15\,000$ mảnh khoảng 64 MB, $R=1$</td><td>$10^{12}/15\,000\approx 67$ MB mỗi mảnh</td></tr>
+   <tr><td>Kết quả</td><td>Mẫu tìm thấy trong 92.337 bản ghi</td><td>Chỉ khoảng 0,0009% dữ liệu, nên gần như không có shuffle</td></tr>
+   <tr><td>Thời gian</td><td>Khoảng 150 giây, trong đó khoảng 1 phút khởi động</td><td>Mỗi worker ở đỉnh: 30.000 / 1.764 ≈ 17 MB/s</td></tr></table>
+   <div class="callout info"><div class="lbl">Một phút khởi động đến từ đâu</div>Bài báo nêu: thời gian chép chương trình tới mọi worker và hỏi GFS để mở 1.000 tệp đầu vào, lấy thông tin vị trí cho tối ưu <i>locality</i>. Với job ngắn, chi phí cố định này chiếm phần lớn: đây cũng là lý do MapReduce không hợp truy vấn tương tác.</div></div><div class="mdeck-slide"><h2>Hình gốc: ba lần chạy sort, bình thường, tắt backup task và giết 200 worker</h2><figure style="margin:0 0 10px;text-align:center"><img src="../../../assets/images/papers/mr_fig3.png" alt="Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 3." style="max-height:400px;max-width:100%;width:auto;height:auto;border:1px solid var(--border);border-radius:8px;background:#fff"><figcaption style="font-size:.78rem;color:var(--muted);margin-top:4px">Nguồn: Dean, Ghemawat, <i>MapReduce</i>, OSDI 2004, Figure 3.</figcaption></figure>
+   <p><b>Cách đọc hình:</b> ba cột là ba lần chạy cùng một bài sắp xếp 1 TB ($M=15\,000$, $R=4\,000$, khoảng 1.700 máy). Ba hàng từ trên xuống là tốc độ <b>đọc vào</b> (map), tốc độ <b>shuffle</b> qua mạng và tốc độ <b>ghi ra</b> (reduce). Vạch dọc &quot;Done&quot; là lúc job xong.</p>
+   <table><tr><th>Cột</th><th>Nhìn thấy gì</th><th>Thời gian</th></tr>
+   <tr><td><b>(a) Bình thường</b></td><td>Đọc vào đạt đỉnh khoảng 13 GB/s, xong trước giây 200. Shuffle có <b>hai bướu</b>: bướu đầu cho khoảng 1.700 reduce task đầu tiên (mỗi máy một task), bướu sau cho phần còn lại; xong ở khoảng giây 600. Ghi ra 2 đến 4 GB/s, xong khoảng giây 850</td><td>891 giây</td></tr>
+   <tr><td><b>(b) Tắt backup task</b></td><td>Giống (a) nhưng có <b>cái đuôi rất dài</b> gần như không ghi gì: sau 960 giây chỉ còn 5 reduce task, mà phải chờ thêm 300 giây</td><td>1.283 giây (+44%)</td></tr>
+   <tr><td><b>(c) Giết 200 trong 1.746 worker</b></td><td>Tốc độ đọc vào có đoạn <b>âm</b>: phần việc map đã xong trên các worker bị giết &quot;biến mất&quot; và phải làm lại; làm lại khá nhanh</td><td>933 giây (+5%)</td></tr></table>
+   <p><b>Vì sao đọc vào nhanh hơn shuffle, shuffle nhanh hơn ghi ra?</b> Bài báo giải thích: đọc vào phần lớn lấy từ đĩa cục bộ (locality) nên không qua mạng; ghi ra chậm nhất vì phải ghi <b>hai bản sao</b> của kết quả vào GFS.</p>
+   <div class="callout good"><div class="lbl">Tự kiểm tra</div>$1283/891\approx1{,}44$ và $933/891\approx1{,}05$: đúng hai con số 44% và 5% ở slide chịu lỗi. Mất 11% số worker mà chỉ chậm 5%, còn 5 task chậm trong 4.000 task làm chậm 44%: <b>máy chậm nguy hiểm hơn máy chết</b>.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/5</div>
+<div class="part-num">03</div><h2>Giới hạn của Hadoop 1.0: JobTracker là điểm nghẽn</h2>
+<ul class="part-list"><li>1 JobTracker duy nhất quản lý TOÀN BỘ job + giám sát TaskTracker trên mọi node</li>
+<li>Giới hạn thực tế: cụm tối đa ~4.000 node, ~40.000 task đồng thời</li>
+<li>JobTracker vừa là lập lịch tài nguyên, vừa là giám sát tiến trình — gộp 2 vai trò khác nhau vào 1 chỗ</li></ul></div><div class="mdeck-slide"><h2>Vai trò quá tải của JobTracker</h2>
+      <p>Trong Hadoop 1.0, <b>JobTracker</b> (chạy trên 1 node duy nhất) đảm nhiệm cả 2 việc hoàn toàn khác
+      nhau: (1) quản lý tài nguyên cụm (máy nào còn trống để giao việc), và (2) theo dõi tiến trình của mọi
+      MapReduce job. <b>TaskTracker</b> chạy trên từng node, thực thi task và báo cáo tiến trình ngược lại
+      cho JobTracker.</p>
+      <div class="callout warn"><div class="lbl">📚 Nguồn lịch sử</div>Có 1 JobTracker duy nhất tạo ra giới
+      hạn mở rộng thực tế: kích thước cụm tối đa khoảng hơn 4.000 node, và số lượng task đồng thời giới hạn ở
+      khoảng 40.000 — vượt ngưỡng này, JobTracker trở thành nút nghẽn hiệu năng và điểm lỗi đơn (SPOF).
+      Nguồn: <a href="https://www.infoworld.com/article/2171598/hadoop-2-big-data-s-big-leap-forward.html" target="_blank">InfoWorld — Hadoop 2: Big data's big leap forward</a>.</div>
+      <p>Đây chính là động lực trực tiếp dẫn tới YARN: tách vai trò "quản lý tài nguyên" (ResourceManager) ra
+      khỏi vai trò "theo dõi 1 job cụ thể" (ApplicationMaster, giờ mỗi job có 1 cái riêng thay vì dồn hết vào
+      1 JobTracker).</p></div><div class="mdeck-slide"><h2>🗣️ Nói nôm na về điểm nghẽn — 3 ngành khác nhau cùng 1 bài học</h2>
+      <p><b>Nói nôm na:</b> JobTracker giống 1 người quản lý duy nhất phải vừa quyết định "phòng nào còn
+      trống để nhận khách", vừa tự tay ghi chép tiến độ phục vụ của TẤT CẢ phòng trong 1 khách sạn 5000
+      phòng — tới một quy mô nào đó, 1 người không thể theo kịp.</p>
+      <table><tr><th>Ngành</th><th>"JobTracker" trong ngành đó</th><th>Điểm nghẽn xảy ra khi nào</th></tr>
+      <tr><td>Khách sạn (minh hoạ)</td><td>1 lễ tân vừa xếp phòng vừa theo dõi tiến độ dọn phòng mọi tầng</td><td>Khi số phòng vượt quá khả năng 1 người nhớ/ghi chép kịp</td></tr>
+      <tr><td>Bệnh viện (minh hoạ)</td><td>1 điều phối viên vừa phân bác sĩ theo ca vừa theo dõi tiến độ mọi ca mổ</td><td>Khi số ca mổ đồng thời vượt quá khả năng theo dõi của 1 người</td></tr>
+      <tr><td>Call center (minh hoạ)</td><td>1 trưởng ca vừa phân cuộc gọi cho nhân viên vừa theo dõi tiến độ xử lý từng cuộc</td><td>Khi số cuộc gọi đồng thời vượt khả năng giám sát 1 người</td></tr></table>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Trong cả 3 ví dụ trên, giải pháp
+      "YARN-style" sẽ là gì? (Đáp: tách thành 2 vai trò riêng — 1 người/hệ thống lo PHÂN BỔ tài nguyên tổng
+      thể (phòng/bác sĩ/nhân viên), và MỖI ca/job/cuộc gọi có 1 người theo dõi tiến độ RIÊNG của chính nó,
+      không dồn hết việc theo dõi về 1 người.)</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 4/5</div>
+<div class="part-num">04</div><h2>YARN (Hadoop 2.0, 2012): tách resource management khỏi xử lý</h2>
+<ul class="part-list"><li>ResourceManager (toàn cụm) + NodeManager (mỗi node) + ApplicationMaster (mỗi job)</li>
+<li>YARN = Yet Another Resource Negotiator — đúng nghĩa đen, một cái tên tự trào</li>
+<li>Hệ quả quan trọng nhất: KHÔNG CHỈ MapReduce mới chạy được trên cụm Hadoop nữa</li></ul></div><div class="mdeck-slide"><h2>Ba vai trò mới của YARN</h2><p style="margin:0 0 8px"><img src="../../../assets/images/logos/apachehadoop.svg" alt="" style="height:34px;max-width:150px;width:auto;object-fit:contain;vertical-align:middle;background:#fff;padding:3px 6px;border:1px solid var(--border);border-radius:6px;margin-right:6px"></p>
+      <div class="pd-formula"><div class="pd-formula-label">Kiến trúc YARN</div>
+      <div class="pd-formula-math">$$\text{ResourceManager (1/cụm)} + \text{NodeManager (1/node)} + \text{ApplicationMaster (1/job)}$$</div></div>
+      <ul class="pd-legend"><li><b>ResourceManager</b><span>quản lý toàn bộ tài nguyên cụm (CPU, RAM theo
+      Container), quyết định cấp bao nhiêu tài nguyên cho ứng dụng nào</span></li>
+      <li><b>NodeManager</b><span>chạy trên mỗi node, báo cáo tài nguyên khả dụng của node đó, giám sát
+      Container chạy trên node mình</span></li>
+      <li><b>ApplicationMaster</b><span>MỖI job có 1 ApplicationMaster riêng, tự thương lượng tài nguyên với
+      ResourceManager cho job của mình — đây là điểm khác biệt cốt lõi: trách nhiệm theo dõi tiến trình được
+      PHÂN TÁN ra từng job, không dồn về 1 JobTracker duy nhất nữa</span></li></ul>
+      <div class="callout good"><div class="lbl">📖 Giải thích cho người mới bắt đầu</div>
+      <details><summary>Bấm để xem ví dụ cực đơn giản về "Container" là gì</summary>
+      <p>Container trong YARN không phải Docker container — nó chỉ là 1 "gói" tài nguyên được cấp (vd 2 CPU
+      core + 4GB RAM) mà ApplicationMaster xin từ ResourceManager để chạy 1 task cụ thể. Giống việc bạn đặt
+      trước "1 bàn 4 người" ở nhà hàng (minh hoạ) — bàn đó (Container) được cấp cho nhóm bạn dùng trong 1
+      khoảng thời gian, dùng xong thì trả lại cho nhà hàng cấp cho nhóm khác.</p></details></div>
+      <div class="callout good"><div class="lbl">Vì sao đây là bước nhảy kiến trúc, không chỉ bản vá lỗi</div>
+      YARN biến Hadoop từ "một hệ thống chỉ chạy được MapReduce" thành "một hệ điều hành cấp tài nguyên cho
+      NHIỀU loại ứng dụng khác nhau cùng lúc" — đây là lý do Spark, Tez, Flink đều có thể chạy trên cùng 1 cụm
+      Hadoop với YARN làm lớp cấp phát tài nguyên bên dưới.</div></div><div class="mdeck-slide"><h2>Capacity Scheduler vs Fair Scheduler — 2 chính sách chia tài nguyên của YARN</h2>
+      <p>ResourceManager không tự nghĩ ra cách chia Container — nó dùng 1 trong các "chính sách lập lịch"
+      (scheduler) có thể cấu hình được. 2 chính sách phổ biến nhất:</p>
+      <table><tr><th>Chính sách</th><th>Cách chia</th><th>Phù hợp khi</th></tr>
+      <tr><td>Capacity Scheduler</td><td>Chia cụm thành các "hàng đợi" (queue) có % tài nguyên cố định cho
+      từng phòng/nhóm (vd phòng Data Engineering 60%, phòng Data Science 40%)</td><td>Nhiều team dùng chung 1
+      cụm, cần đảm bảo mỗi team LUÔN có 1 phần tài nguyên tối thiểu, không bị team khác "nuốt" hết</td></tr>
+      <tr><td>Fair Scheduler</td><td>Chia công bằng động giữa các job đang chạy — tăng đều phần cấp tới khi
+      đạt nhu cầu hoặc hết tài nguyên</td><td>Khối lượng công việc biến động, muốn mọi job được đối xử công
+      bằng theo thời gian thực mà không cần đặt % cố định trước</td></tr></table>
+      <div class="callout info"><div class="lbl">🔗 Liên hệ trực tiếp</div>Fair Scheduler chính là bài toán
+      công bằng tài nguyên đã học ở <a href="../ll-07-drf/index.html">Lập lịch 07 — DRF</a> và
+      <a href="../ll-06-cong-bang-tai-nguyen/index.html">Lập lịch 06 — progressive filling</a>: đây là lý
+      thuyết max-min fairness được triển khai thực tế trong YARN, không phải khái niệm tách biệt.</div></div><div class="mdeck-slide"><h2>Ví dụ minh hoạ: 2 job xin tài nguyên đồng thời</h2>
+      <p>Giả sử cụm có tổng 20 Container trống. Job A (Spark) xin 12 Container, Job B (MapReduce) xin 10
+      Container, nộp gần như cùng lúc.</p>
+      <table><tr><th>Bước</th><th>ResourceManager làm gì</th></tr>
+      <tr><td>1</td><td>ApplicationMaster của Job A và Job B đều gửi yêu cầu tài nguyên tới ResourceManager</td></tr>
+      <tr><td>2</td><td>ResourceManager áp dụng chính sách lập lịch (Capacity Scheduler hoặc Fair Scheduler —
+      xem lại liên hệ với buổi Lập lịch 06/07 công bằng tài nguyên) để chia 20 Container đang có</td></tr>
+      <tr><td>3</td><td>Ví dụ dùng Fair Scheduler: Job A nhận 11 Container, Job B nhận 9 — không ai nhận đủ
+      100% yêu cầu ngay, nhưng cả hai được cấp một phần công bằng và tiếp tục xin thêm khi có Container trống</td></tr></table>
+      <div class="callout info"><div class="lbl">🔗 Liên hệ trực tiếp</div>Đây chính là bài toán công bằng tài
+      nguyên đã học ở <a href="../ll-07-drf/index.html">Lập lịch 07 — DRF</a>: YARN Fair Scheduler/Capacity
+      Scheduler là triển khai THỰC TẾ của đúng lý thuyết max-min fairness/DRF đó, không phải khái niệm tách
+      biệt.</div></div><div class="mdeck-slide"><h2>Ví dụ tính toán: 3 job xin tài nguyên qua Fair Scheduler (progressive filling)</h2>
+      <p>Cụm có 30 Container. 3 job xin lần lượt: Job X=8, Job Y=14, Job Z=20 (tổng yêu cầu 42 &gt; 30).</p>
+      <ol><li>Sắp theo yêu cầu tăng dần: X(8) &lt; Y(14) &lt; Z(20).</li>
+      <li>Chia đều mức "trần" tăng dần: nếu chia đều 30/3=10 cho mỗi job, X chỉ cần 8 (dư 2) → dư 2 Container
+      này dồn tiếp cho Y, Z.</li>
+      <li>Còn 22 Container chia cho Y, Z: chia đều 22/2=11 — nhưng Y chỉ cần 14 (chưa đạt), Z cần 20 (chưa
+      đạt) → cả 2 đều nhận 11.</li>
+      <li>Vậy phân bổ cuối: X=8 (đủ), Y=11 (thiếu 3), Z=11 (thiếu 9) — tổng cấp = 8+11+11=30, đúng bằng tổng
+      Container có.</li></ol>
+      <div class="callout good"><div class="lbl">Tự kiểm tra ngay</div>Vì sao Job Z (yêu cầu nhiều nhất) lại
+      KHÔNG được ưu tiên cấp nhiều hơn Job Y? (Đáp: progressive filling không ưu tiên theo "ai xin nhiều
+      hơn" — nó tăng ĐỀU mức cấp cho mọi job đang thiếu, nên 2 job cùng chưa đạt nhu cầu (Y và Z) luôn nhận
+      PHẦN TĂNG THÊM bằng nhau tại mỗi thời điểm, đúng nguyên lý max-min fairness.)</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 5/5</div>
+<div class="part-num">05</div><h2>Ảnh hưởng tới thế giới: từ YARN tới tư duy 'hệ điều hành cụm'</h2>
+<ul class="part-list"><li>YARN mở đường cho Spark thay thế MapReduce làm engine xử lý chính (giữ nguyên lớp resource negotiation)</li>
+<li>Tư duy tách 'quản lý tài nguyên' khỏi 'logic ứng dụng' là tiền thân trực tiếp của Kubernetes</li></ul></div><div class="mdeck-slide"><h2>Từ YARN tới Kubernetes: cùng một ý tưởng, 10 năm sau</h2>
+      <p>YARN ra đời năm 2012 để giải quyết đúng 1 bài toán: làm sao nhiều loại ứng dụng khác nhau có thể
+      xin và được cấp tài nguyên (CPU/RAM) một cách công bằng trên cùng 1 cụm máy, mà không cần biết gì về
+      logic nội bộ của ứng dụng khác.</p>
+      <div class="callout good"><div class="lbl">🌍 Ảnh hưởng tới thế giới</div>Đây chính xác là bài toán mà
+      <b>Kubernetes</b> (ra đời 2014 ở Google, dựa trên kinh nghiệm hệ thống nội bộ Borg) giải quyết cho toàn
+      bộ ngành công nghiệp phần mềm nói chung, không chỉ Big Data: YARN là minh chứng sớm cho thấy việc tách
+      lớp "cấp phát tài nguyên cụm" ra khỏi lớp "logic ứng dụng cụ thể" là một ý tưởng kiến trúc đúng đắn và
+      bền vững — ý tưởng này lặp lại ở quy mô lớn hơn nhiều với Kubernetes ngày nay.</div>
+      <table><tr><th></th><th>YARN (2012)</th><th>Kubernetes (2014)</th></tr>
+      <tr><td>Lớp cấp tài nguyên</td><td>ResourceManager + NodeManager</td><td>kube-scheduler + kubelet</td></tr>
+      <tr><td>Đơn vị cấp phát</td><td>Container (CPU/RAM)</td><td>Pod (1+ container Docker/OCI)</td></tr>
+      <tr><td>"Người đại diện" cho từng ứng dụng</td><td>ApplicationMaster</td><td>Controller/Operator (khái niệm tương đồng, không giống 100%)</td></tr>
+      <tr><td>Phạm vi ứng dụng</td><td>Chủ yếu xử lý dữ liệu lớn (Spark, Hive, MapReduce...)</td><td>Bất kỳ ứng dụng containerized nào</td></tr></table>
+      <p>Hệ quả trực tiếp với Hadoop: nhờ YARN, khi Apache Spark ra đời và chứng minh xử lý in-memory nhanh
+      hơn MapReduce rất nhiều lần cho các bài toán lặp (machine learning, graph), các công ty có thể CHUYỂN
+      engine xử lý từ MapReduce sang Spark mà KHÔNG cần xây lại toàn bộ cụm — chỉ cần Spark biết "nói chuyện"
+      với YARN. Đây là lý do MapReduce dần mất vai trò engine chính, nhưng YARN (ý tưởng resource negotiation)
+      vẫn tồn tại.</p></div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>🧪 Thực hành tương tác</h2>
+<div class="sim" data-sim="hd02_mapreduce_yarn"></div>
+
+<p><a href="../../../data/source/IT4931_lecture_notes.pdf" target="_blank">📄 Giáo trình gốc Chương 2 — Hệ sinh thái Hadoop (IT4931_lecture_notes.pdf, tr.23–36)</a> — nội dung đi sâu vào lịch sử ra đời, động lực và ảnh hưởng tới thế giới của từng công nghệ, mỗi dữ kiện lịch sử có nguồn riêng trong bài. Slide trình bày của Nhóm 1: <a href="../../../vi/group-1-slides.html">group-1-slides.html</a>.</p><p>📄 Bài báo gốc (PDF) được đọc trực tiếp trong các module: <a href="../../../data/source/papers/GFS_Ghemawat2003.pdf" target="_blank">GFS 2003</a> · <a href="../../../data/source/papers/MapReduce_Dean2004.pdf" target="_blank">MapReduce 2004</a> · <a href="../../../data/source/papers/Bigtable_Chang2006.pdf" target="_blank">Bigtable 2006</a> · <a href="../../../data/source/papers/Chubby_Burrows2006.pdf" target="_blank">Chubby 2006</a> · <a href="../../../data/source/papers/Kafka_Kreps2011.pdf" target="_blank">Kafka 2011</a> · 3 bài của thầy: <a href="../../../data/source/papers/Pham_Ta_Vu_2024_arXiv2403.19867v1.pdf" target="_blank">v1 (2024)</a>, <a href="../../../data/source/papers/Pham_Ta_Vu_2025_arXiv2403.19867v4.pdf" target="_blank">v4 (ISIT 2025)</a>, <a href="../../../data/source/papers/Ta_Vu_2026_arXiv2604.20394v2.pdf" target="_blank">ESA 2026</a>.</p>
+<h2>✅ Quiz tự kiểm tra</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "MapReduce tách biệt điều gì khỏi logic nghiệp vụ của người lập trình?", "opts": ["Logic giao diện: hiển thị kết quả, vẽ biểu đồ và tương tác với người dùng", "Logic phân tán: chia việc, xử lý lỗi node, gộp kết quả", "Logic cơ sở dữ liệu: lập chỉ mục, giao dịch ACID và khoá bản ghi", "Logic bảo mật: xác thực người dùng, phân quyền truy cập và mã hoá dữ liệu"], "correct": 1, "explain": "Người viết chỉ định nghĩa map/reduce; framework tự lo phân tán/chịu lỗi/gộp kết quả."}, {"q": "Trong ví dụ 'đếm phiếu bầu' minh hoạ MapReduce, bước nào tương ứng với Shuffle?", "opts": ["Gửi riêng kết quả theo TỪNG ứng viên về người tổng hợp chuyên trách ứng viên đó", "Kiểm tra từng phiếu bầu xem có hợp lệ hay không rồi loại bỏ phiếu không hợp lệ", "Mỗi phòng bỏ phiếu tự đếm xong số phiếu của riêng phòng mình trước khi gửi đi", "Cộng tổng phiếu của toàn quốc để ra người thắng cuộc sau cùng của cuộc bầu cử"], "correct": 0, "explain": "Shuffle gom dữ liệu theo đúng khoá (ở đây là 'ứng viên') lại một chỗ, không phải bước đếm hay bước tổng hợp cuối."}, {"q": "Combiner trong MapReduce chỉ dùng đúng khi hàm reduce có tính chất gì?", "opts": ["Không có điều kiện gì, combiner dùng được với mọi hàm reduce bất kỳ", "Chỉ dùng khi chạy đúng một Reducer duy nhất trên toàn cụm", "Chỉ dùng khi dữ liệu đầu vào đã được sắp xếp sẵn theo khoá", "Kết hợp và giao hoán (associative, commutative)"], "correct": 3, "explain": "Với trung bình (average) chẳng hạn, combiner ngây thơ cho kết quả sai nếu không gộp đúng (tổng + số lượng)."}, {"q": "Văn bản 9.000 từ chia 3 Mapper (3.000 từ/Mapper, trung bình 500 từ khác nhau/Mapper). Combiner giảm lưu lượng shuffle khoảng bao nhiêu %?", "opts": ["100%", "25%", "83,3%", "50%"], "correct": 2, "explain": "Không combiner: 9.000 cặp gửi đi. Có combiner: 3×500=1.500 cặp. Giảm = (9.000-1.500)/9.000 ≈ 83,3%."}, {"q": "Combiner giúp ÍT nhất trong trường hợp nào?", "opts": ["Dữ liệu gần như mỗi key chỉ xuất hiện 1 lần (vd danh sách mã khách hàng duy nhất)", "Reducer chạy rất nhanh nên không còn điểm nghẽn ở giai đoạn gộp kết quả", "Số Mapper rất nhỏ nên mỗi Mapper phải xử lý một lượng dữ liệu rất lớn mỗi lần", "Dữ liệu có rất nhiều từ lặp lại như văn bản ngôn ngữ tự nhiên cần đếm tần suất"], "correct": 0, "explain": "Nếu mỗi key chỉ xuất hiện 1 lần, Combiner không có gì để gộp — gần như không giảm được lưu lượng."}, {"q": "Trong Hadoop 1.0, JobTracker đồng thời đảm nhiệm bao nhiêu vai trò khác nhau?", "opts": ["1 vai trò duy nhất: chỉ theo dõi tiến trình của các job đang chạy trên cụm", "Không có vai trò điều phối nào, chỉ chuyển tiếp thông điệp giữa client và NameNode", "2 vai trò: quản lý tài nguyên cụm VÀ theo dõi tiến trình mọi job", "3 vai trò, gồm cả việc lưu trữ dữ liệu thật của các block trong HDFS"], "correct": 2, "explain": "Gộp 2 vai trò khác nhau vào 1 node là nguyên nhân chính gây nghẽn và SPOF."}, {"q": "Giới hạn thực tế của cụm Hadoop 1.0 (theo JobTracker) khoảng bao nhiêu node?", "opts": ["400 node", "40.000 node", "Không giới hạn", "~4.000 node"], "correct": 3, "explain": "Khoảng hơn 4.000 node và ~40.000 task đồng thời là giới hạn thực tế được ghi nhận."}, {"q": "YARN viết tắt của gì, và ý nghĩa cái tên đó?", "opts": ["Young Allocation Resource Node, tên dựa theo node cấp phát tài nguyên đầu tiên", "Yet Another Resource Negotiator — một cái tên tự trào của nhóm phát triển", "Không viết tắt gì cả, chỉ là tên thương hiệu lấy từ sợi len trong logo dự án", "Yarn Architecture for Resource Networks, viết tắt chính thức do Apache đặt ra"], "correct": 1, "explain": "YARN = Yet Another Resource Negotiator, đặt tên có chủ đích hài hước vì đây là framework quản lý tài nguyên 'thêm một cái nữa'."}, {"q": "ApplicationMaster trong YARN khác JobTracker cũ ở điểm cốt lõi nào?", "opts": ["Hai thành phần giống hệt nhau về chức năng, chỉ đổi tên khi chuyển sang Hadoop 2.0", "MỖI job có 1 ApplicationMaster riêng, thay vì dồn theo dõi mọi job vào 1 JobTracker", "ApplicationMaster không cần xin tài nguyên vì được ResourceManager cấp mặc định sẵn", "ApplicationMaster chạy trên máy có CPU mạnh hơn nên theo dõi job nhanh hơn JobTracker"], "correct": 1, "explain": "Đây là thay đổi kiến trúc cốt lõi: phân tán trách nhiệm theo dõi tiến trình ra từng job."}, {"q": "Container trong YARN là gì?", "opts": ["Một loại máy chủ vật lý riêng chỉ dùng để chạy ApplicationMaster của từng job", "Một Docker container thật chứa toàn bộ hệ điều hành và ứng dụng chạy bên trong", "1 'gói' tài nguyên (vd CPU+RAM) được cấp cho 1 task cụ thể trong 1 khoảng thời gian", "Một ổ đĩa vật lý gắn vào NodeManager để lưu các block dữ liệu của tệp HDFS"], "correct": 2, "explain": "Container KHÔNG phải Docker container — chỉ là đơn vị cấp phát tài nguyên logic trong YARN."}, {"q": "Khác biệt chính giữa Capacity Scheduler và Fair Scheduler là gì?", "opts": ["Capacity Scheduler chia công bằng động theo thời gian thực; Fair Scheduler chia theo phần trăm cố định cho từng hàng đợi", "Fair Scheduler chỉ chạy được khi cụm có đúng một job; Capacity Scheduler mới hỗ trợ nhiều job và nhiều team", "Hai bộ lập lịch giống hệt nhau về thuật toán, chỉ khác tên gọi giữa các bản phân phối Hadoop", "Capacity Scheduler chia theo % cố định cho từng hàng đợi/nhóm; Fair Scheduler chia công bằng động theo thời gian thực giữa các job đang chạy"], "correct": 3, "explain": "Capacity Scheduler phù hợp khi cần đảm bảo mỗi team có tài nguyên tối thiểu cố định; Fair Scheduler phù hợp khi tải biến động, cần công bằng động."}, {"q": "Nhờ YARN, điều gì trở nên khả thi mà Hadoop 1.0 không làm được?", "opts": ["Chạy nhiều loại ứng dụng khác nhau (Spark, Tez, MapReduce...) cùng lúc trên 1 cụm", "Lưu trữ dữ liệu lớn hơn nhiều so với trước nhờ nhân bản HDFS thông minh hơn", "Giảm số lần nhân bản HDFS xuống còn 1 bản mà vẫn chịu lỗi như cũ", "Thay thế hoàn toàn HDFS bằng một hệ file phân tán mới nhanh hơn nhiều"], "correct": 0, "explain": "Trước YARN, cụm Hadoop chỉ chạy được MapReduce; YARN biến Hadoop thành nền tảng đa ứng dụng."}, {"q": "YARN ra đời vào năm nào, cùng với phiên bản Hadoop nào?", "opts": ["2008, Hadoop 1.0", "2012, Hadoop 2.0", "2010, Hadoop 1.5", "2015, Hadoop 3.0"], "correct": 1, "explain": "YARN được đưa ra từ Hadoop 2.0, năm 2012."}, {"q": "Trong ví dụ 3 job (X=8, Y=14, Z=20) xin tổng cộng 42 Container trên cụm chỉ có 30, kết quả Fair Scheduler (progressive filling) cấp cho mỗi job là bao nhiêu?", "opts": ["X=14, Y=8, Z=8", "X=10, Y=10, Z=10", "X=0, Y=0, Z=30", "X=8, Y=11, Z=11"], "correct": 3, "explain": "X đạt đủ 8 (dư để dồn cho Y,Z); 22 Container còn lại chia đều cho Y,Z (cả 2 đều chưa đạt nhu cầu) → mỗi job 11."}, {"q": "Vì sao Job Z (yêu cầu nhiều nhất, 20 Container) không được ưu tiên cấp nhiều hơn Job Y trong ví dụ trên?", "opts": ["Vì progressive filling tăng đều mức cấp cho mọi job đang thiếu, không ưu tiên theo mức yêu cầu", "Vì ResourceManager luôn ưu tiên job nhỏ và đẩy job lớn xuống sau để giảm thời gian chờ", "Vì Z nộp yêu cầu sau cùng nên ResourceManager xếp Z vào cuối hàng đợi chờ cấp phát", "Vì Z bị lỗi ở lần chạy trước nên bị hạ mức ưu tiên cho tới khi chạy thành công"], "correct": 0, "explain": "Đúng nguyên lý max-min fairness: hai job cùng chưa đạt nhu cầu luôn nhận phần tăng thêm bằng nhau."}, {"q": "Trong ví dụ 2 job xin 12 và 10 Container trên cụm chỉ có 20 Container trống, Fair Scheduler làm gì?", "opts": ["Tạo thêm Container mới ngay lập tức để đáp ứng đủ 100% cả hai yêu cầu", "Từ chối cả hai yêu cầu vì tổng 22 Container vượt quá 20 Container đang trống", "Chia một phần công bằng cho cả hai, không ai nhận đủ 100% ngay lập tức", "Chỉ cấp đủ cho job nộp trước, job nộp sau phải chờ tới khi job đầu hoàn thành"], "correct": 2, "explain": "Fair Scheduler chia sẻ công bằng tài nguyên hiện có, đúng nguyên lý max-min fairness đã học ở module Lập lịch 06/07."}, {"q": "Ý tưởng kiến trúc nào của YARN lặp lại ở quy mô lớn hơn trong Kubernetes?", "opts": ["Tách lớp cấp phát tài nguyên cụm khỏi lớp logic ứng dụng cụ thể", "Lưu trữ phân tán có nhân bản 3 lần để chịu lỗi ở cấp độ từng tệp dữ liệu", "Dùng ngôn ngữ lập trình Java làm nền tảng chung cho mọi thành phần hệ thống", "Mô hình key-value phân tán để lưu trạng thái của từng ứng dụng trong cụm"], "correct": 0, "explain": "Kubernetes (2014, dựa trên Borg của Google) áp dụng đúng ý tưởng này cho toàn ngành phần mềm, không chỉ Big Data."}, {"q": "Trong bảng so sánh YARN/Kubernetes, 'Pod' của Kubernetes tương ứng gần nhất với khái niệm nào của YARN?", "opts": ["NodeManager", "Container", "ApplicationMaster", "ResourceManager"], "correct": 1, "explain": "Cả Container (YARN) và Pod (Kubernetes) đều là đơn vị cấp phát tài nguyên cho 1 đơn vị công việc/ứng dụng chạy trên cụm."}, {"q": "Vì sao Spark có thể dần thay thế MapReduce làm engine xử lý chính mà không cần xây lại cụm?", "opts": ["Vì Spark dùng hệ file khác HDFS hoàn toàn, nên dữ liệu phải được chuyển đổi trước khi chạy", "Vì Spark không chạy được trên cụm Hadoop, nên chỉ thay thế được ở một cụm tách biệt", "Vì Spark nói chuyện với YARN giống MapReduce, chỉ thay đổi engine xử lý phía trên lớp resource negotiation", "Vì Spark tự quản lý toàn bộ cụm riêng và không cần YARN, nên phải xây một cụm mới"], "correct": 2, "explain": "YARN tách biệt resource negotiation khỏi engine xử lý — đây là lý do engine có thể thay đổi (MapReduce → Spark) mà hạ tầng cấp tài nguyên giữ nguyên."}, {"q": "Partitioner mặc định trong MapReduce dùng cơ chế gì để chọn Reducer cho 1 key?", "opts": ["Theo thứ tự xuất hiện trong file", "Theo kích thước giá trị", "Ngẫu nhiên hoàn toàn", "hash(key) mod số-Reducer"], "correct": 3, "explain": "hash(key) mod R đảm bảo mọi value của cùng 1 key luôn vào đúng 1 Reducer duy nhất."}, {"q": "Theo Figure 1 của bài MapReduce, reduce worker lấy dữ liệu của map worker bằng cách nào?", "opts": ["Qua master: master nhận từng cặp trung gian rồi chuyển tiếp tới reduce worker tương ứng", "Đọc từ xa (remote read) từ đĩa cục bộ của map worker", "Map worker chủ động đẩy dữ liệu trực tiếp vào bộ nhớ của reduce worker khi map xong", "Qua hệ file toàn cục: map ghi ra HDFS, reduce đọc lại như tệp đầu vào thông thường"], "correct": 1, "explain": "Map ghi cặp trung gian xuống đĩa cục bộ chia thành R vùng; master báo vị trí và reduce worker đọc từ xa (bước 5)."}, {"q": "Vì sao map task đã hoàn thành trên máy chết phải chạy lại, còn reduce task đã hoàn thành thì không?", "opts": ["Vì hàm map chậm hơn hàm reduce nên master ưu tiên chạy lại các task chậm nhất", "Vì master chỉ ghi nhớ trạng thái của các reduce task, không ghi nhớ trạng thái map", "Vì đầu ra map nằm trên đĩa cục bộ của máy chết, còn đầu ra reduce nằm trong hệ file toàn cục", "Vì reduce chạy trên các máy mạnh hơn nên hiếm khi hỏng và không cần dự phòng"], "correct": 2, "explain": "Đầu ra map không còn truy cập được khi máy chết; đầu ra reduce đã lưu ở hệ file phân tán nên còn nguyên."}, {"q": "Trong thí nghiệm sort, tắt cơ chế backup task làm job chậm hơn bao nhiêu?", "opts": ["Khoảng 44%", "Khoảng 5%", "Khoảng 200%", "Khoảng 10%"], "correct": 0, "explain": "Job mất 1283 giây, chậm hơn 44%, vì vài task đuôi (straggler) kéo dài. Con số 5% là mức chậm khi giết 200 trong 1746 worker."}, {"q": "Từ Table 1: 3.288 TB đầu vào, 29.423 job, trung bình 3.351 map task mỗi job. Mỗi map task xử lý khoảng bao nhiêu dữ liệu?", "opts": ["Khoảng 3 GB", "Khoảng 330 MB", "Khoảng 3 MB", "Khoảng 33 MB"], "correct": 3, "explain": "3.288 TB / 29.423 ≈ 0,112 TB mỗi job ≈ 112 GB; chia 3.351 task ≈ 33 MB, nằm trong khoảng 16 đến 64 MB mà bài báo khuyến nghị."}, {"q": "Với M = 200.000 map task và R = 5.000 reduce task, số cặp (map, reduce) master phải theo dõi cỡ nào?", "opts": ["Khoảng 205.000", "Khoảng 1 tỉ (10^9)", "Khoảng 40 triệu", "Khoảng 1.000 tỉ"], "correct": 1, "explain": "M × R = 200.000 × 5.000 = 10^9. Vì master giữ O(M × R) trạng thái nên M và R không thể tăng vô hạn."}, {"q": "Ví dụ Distributed Sort trong bài báo, hàm reduce làm gì?", "opts": ["Gộp các bản ghi có cùng khoá thành một bản ghi duy nhất trước khi ghi ra", "Đếm số bản ghi của mỗi khoá rồi phát ra cặp (khoá, số lượng)", "Phát ra mọi cặp không đổi; việc sắp xếp do phân vùng và thứ tự khoá đảm nhiệm", "Tự thực hiện thuật toán quicksort trên toàn bộ các cặp mà reducer nhận được"], "correct": 2, "explain": "Map trích khoá và phát <key, record>; reduce chỉ phát lại. Khung đã sắp xếp khoá trung gian nên đầu ra theo thứ tự."}, {"q": "Vì sao chạy lại hay chạy song song hai bản của cùng một task (backup) không làm sai kết quả?", "opts": ["Vì dữ liệu đầu vào chỉ được đọc đúng một lần nên bản thứ hai không có gì để ghi", "Vì mỗi bản chạy trên một máy riêng nên kết quả của chúng không bao giờ trộn lẫn", "Vì master chọn ngẫu nhiên một trong hai kết quả và bỏ kết quả còn lại", "Vì hàm map và reduce là hàm thuần: cùng đầu vào cho cùng đầu ra"], "correct": 3, "explain": "Tính xác định (thuần) của hàm cho phép tái thực thi và backup: task xong khi một trong hai bản xong."}, {"q": "Ở Figure 2 của bài MapReduce (grep trên 1 TB), tốc độ quét đạt đỉnh hơn 30 GB/s với 1.764 worker. Mỗi worker quét khoảng bao nhiêu?", "opts": ["Khoảng 17 MB/s", "Khoảng 170 MB/s", "Khoảng 1,7 GB/s", "Khoảng 1,7 MB/s"], "correct": 0, "explain": "30.000 MB/s chia 1.764 worker ≈ 17 MB/s mỗi worker, cỡ tốc độ đọc tuần tự của một ổ đĩa IDE thời đó."}, {"q": "Trong Figure 3(c) của bài MapReduce, vì sao tốc độ đọc vào có đoạn mang giá trị âm?", "opts": ["Vì reduce task ghi đè lên dữ liệu đầu vào", "Vì việc map đã xong trên các worker bị giết biến mất và phải làm lại", "Vì đồng hồ các máy lệch nhau", "Vì master xoá bớt tệp đầu vào để cân tải"], "correct": 1, "explain": "Giết 200 trong 1.746 worker làm mất đầu ra map nằm trên đĩa cục bộ của chúng, nên tiến độ bị trừ lại; job vẫn xong sau 933 giây, chậm hơn 5%."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../hd-01-hadoop-hdfs/index.html">◀ Hadoop 01: Vì sao Hadoop ra đời, và HDFS giải quyết bài toán gì</a><a href="../hd-03-pig-hive/index.html">Hadoop 03: Pig & Hive: hai cách khác nhau để "thoát" khỏi việc viết MapReduce tay ▶</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;Lưu trữ &amp; xử lý dữ liệu lớn&quot; · dựng từ giáo trình Sketching
+  Algorithms (Jelani Nelson) và bộ 580 bài tập tự soạn. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở, xây từ giáo trình <i>Sketching Algorithms</i> (Jelani Nelson) và lộ trình 14 buổi
+  tự học môn Lưu trữ &amp; xử lý dữ liệu lớn. Toàn bộ nội dung, bài tập, quiz chạy tĩnh, không cần server.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/algo.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+<script src="../../../_shared/sim.js"></script>
+<script src="../../../_shared/glossary.js"></script>
+
+</body></html>

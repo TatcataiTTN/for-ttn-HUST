@@ -470,6 +470,169 @@ ALG.kafkaRebalanceCompare = function(parts, assignBefore, leavingConsumer, remai
   };
 };
 
+// ---------- Hadoop 01: HDFS block split + replication + chịu lỗi ----------
+ALG.hdfsSplitBlocks = function(fileSizeMB, blockSizeMB){
+  var blocks = [], left = fileSizeMB, i = 0;
+  while (left > 0){ var sz = Math.min(blockSizeMB, left); blocks.push({ id: 'B'+(i+1), sizeMB: sz }); left -= sz; i++; }
+  return blocks;
+};
+ALG.hdfsPlaceBlocks = function(blocks, numNodes, replication){
+  // Đặt bản sao của mỗi block lên replication DataNode khác nhau, xoay vòng để trải đều tải ghi.
+  var nodeLoad = new Array(numNodes).fill(0);
+  var placement = blocks.map(function(b, bi){
+    var nodes = [];
+    for (var r = 0; r < replication; r++) nodes.push((bi + r) % numNodes);
+    nodes.forEach(function(n){ nodeLoad[n]++; });
+    return { id: b.id, sizeMB: b.sizeMB, nodes: nodes };
+  });
+  return { placement: placement, nodeLoad: nodeLoad };
+};
+ALG.hdfsNodeFailure = function(placement, numNodes, failedNode){
+  // Khi 1 DataNode hỏng: mọi block có bản sao trên node đó cần tái nhân bản sang 1 node còn sống,
+  // ưu tiên node đang giữ ÍT block nhất (và chưa có bản sao của chính block đó) để cân bằng tải.
+  var nodeLoad = new Array(numNodes).fill(0);
+  placement.forEach(function(p){ p.nodes.forEach(function(n){ if (n !== failedNode) nodeLoad[n]++; }); });
+  var events = [];
+  var newPlacement = placement.map(function(p){
+    var nodes = p.nodes.slice();
+    if (nodes.indexOf(failedNode) === -1) return { id: p.id, nodes: nodes };
+    nodes = nodes.filter(function(n){ return n !== failedNode; });
+    var candidates = [];
+    for (var n = 0; n < numNodes; n++) if (n !== failedNode && nodes.indexOf(n) === -1) candidates.push(n);
+    var best = candidates[0];
+    candidates.forEach(function(c){ if (nodeLoad[c] < nodeLoad[best]) best = c; });
+    nodes.push(best); nodeLoad[best]++;
+    events.push({ block: p.id, from: failedNode, to: best });
+    return { id: p.id, nodes: nodes };
+  });
+  return { placement: newPlacement, events: events };
+};
+
+// ---------- Hadoop 02: MapReduce Word Count (có combiner) + cấp phát container YARN ----------
+ALG.wordCountMR = function(text, numMappers){
+  var words = text.toLowerCase().replace(/[^a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]/g, ' ')
+    .split(/\s+/).filter(Boolean);
+  var n = words.length, chunkSize = Math.ceil(n / numMappers), chunks = [];
+  for (var i = 0; i < n; i += chunkSize) chunks.push(words.slice(i, i + chunkSize));
+  // Map + Combiner: mỗi Mapper tự gộp tổng số lần xuất hiện của từng từ TRƯỚC khi gửi đi (giảm shuffle).
+  var mapOutputs = chunks.map(function(chunk){
+    var counts = {};
+    chunk.forEach(function(w){ counts[w] = (counts[w]||0) + 1; });
+    return counts;
+  });
+  // Shuffle & Sort: gộp theo key từ mọi Mapper
+  var shuffled = {};
+  mapOutputs.forEach(function(counts){
+    Object.keys(counts).forEach(function(w){ (shuffled[w] = shuffled[w]||[]).push(counts[w]); });
+  });
+  // Reduce: cộng tổng
+  var reduced = Object.keys(shuffled).map(function(w){
+    return { word: w, count: shuffled[w].reduce(function(a,b){ return a+b; }, 0) };
+  }).sort(function(a,b){ return b.count - a.count; });
+  var bytesWithoutCombiner = words.length; // mỗi (word,1) gửi riêng
+  var bytesWithCombiner = mapOutputs.reduce(function(s, c){ return s + Object.keys(c).length; }, 0);
+  return { numMappers: chunks.length, mapOutputs: mapOutputs, reduced: reduced,
+           bytesWithoutCombiner: bytesWithoutCombiner, bytesWithCombiner: bytesWithCombiner };
+};
+ALG.yarnAllocate = function(totalContainers, requests){
+  // Tái dùng ĐÚNG thuật toán progressive filling (max-min fairness) đã viết ở module Lập lịch 06 —
+  // Fair Scheduler của YARN chính là triển khai thực tế của thuật toán này, không viết lại logic mới.
+  return ALG.progressiveFilling(totalContainers, requests);
+};
+
+// ---------- Hadoop 03: Pig/Hive — cùng 1 bài toán group-by-sum, 2 cách viết, cùng 1 kết quả MapReduce ----------
+ALG.groupBySum = function(records, keyField, valField){
+  var groups = {};
+  records.forEach(function(r){ groups[r[keyField]] = (groups[r[keyField]]||0) + Number(r[valField]); });
+  return Object.keys(groups).map(function(k){ return { key: k, total: groups[k] }; }).sort(function(a,b){ return b.total - a.total; });
+};
+
+// ---------- Hadoop 04: HBase get/put/scan theo row key, và Sqoop split theo khoá ----------
+ALG.hbaseTable = function(){
+  var store = {}; // rowkey -> { cf:qualifier -> value }
+  return {
+    put: function(rowkey, cf, qualifier, value){ store[rowkey] = store[rowkey] || {}; store[rowkey][cf+':'+qualifier] = value; },
+    get: function(rowkey){ return store[rowkey] || null; },
+    scan: function(startKey, endKey){
+      return Object.keys(store).filter(function(k){ return k >= startKey && k <= endKey; }).sort()
+        .map(function(k){ return { rowkey: k, cols: store[k] }; });
+    },
+    allKeysSorted: function(){ return Object.keys(store).sort(); }
+  };
+};
+ALG.sqoopSplit = function(rows, splitField, numMappers){
+  var sorted = rows.slice().sort(function(a,b){ return a[splitField] - b[splitField]; });
+  var chunkSize = Math.ceil(sorted.length / numMappers), chunks = [];
+  for (var i = 0; i < sorted.length; i += chunkSize) chunks.push(sorted.slice(i, i + chunkSize));
+  return chunks.map(function(c, i){
+    return { mapper: 'Map-'+(i+1), rows: c,
+              range: c.length ? [c[0][splitField], c[c.length-1][splitField]] : [null,null] };
+  });
+};
+
+// ---------- Hadoop 05: Kafka — theo dõi offset của 1 consumer group qua nhiều batch sản xuất/tiêu thụ ----------
+ALG.kafkaOffsetTrace = function(numPartitions, producedPerBatch, consumedPerBatch, batches){
+  // produce trước, rồi consume theo batch, ghi lại log-end-offset (LEO) và vị trí offset đã commit của consumer group.
+  var logEnd = new Array(numPartitions).fill(0), committed = new Array(numPartitions).fill(0);
+  var trace = [];
+  for (var t = 0; t < batches; t++){
+    for (var p = 0; p < numPartitions; p++) logEnd[p] += producedPerBatch;
+    for (var p2 = 0; p2 < numPartitions; p2++) committed[p2] = Math.min(logEnd[p2], committed[p2] + consumedPerBatch);
+    var lag = logEnd.map(function(le, i){ return le - committed[i]; });
+    trace.push({ batch: t+1, logEnd: logEnd.slice(), committed: committed.slice(), lag: lag });
+  }
+  return trace;
+};
+
+// ---------- Hadoop 06: ZooKeeper leader election (znode tuần tự) + Oozie DAG workflow ----------
+ALG.zkElectLeader = function(candidates){
+  // candidates: [{name, zxid}] — znode có zxid (số thứ tự) nhỏ nhất đang tồn tại sẽ là leader.
+  if (!candidates.length) return null;
+  var leader = candidates[0];
+  candidates.forEach(function(c){ if (c.zxid < leader.zxid) leader = c; });
+  return leader;
+};
+ALG.zkLeaderFailover = function(candidates, leaderName){
+  var remaining = candidates.filter(function(c){ return c.name !== leaderName; });
+  return { remaining: remaining, newLeader: ALG.zkElectLeader(remaining) };
+};
+ALG.oozieDagRun = function(nodes, failAt){
+  // nodes: [{id, deps:[id,...]}] theo thứ tự đã topo-sort sẵn (đúng với ví dụ 4 bước tuyến tính trong bài).
+  var status = {}, log = [];
+  nodes.forEach(function(node){
+    var depsOk = node.deps.every(function(d){ return status[d] === 'OK'; });
+    if (!depsOk){ status[node.id] = 'SKIPPED'; log.push({ id: node.id, status: 'SKIPPED', reason: 'phụ thuộc chưa hoàn thành' }); return; }
+    if (node.id === failAt){ status[node.id] = 'FAILED'; log.push({ id: node.id, status: 'FAILED', reason: 'lỗi mô phỏng' }); return; }
+    status[node.id] = 'OK'; log.push({ id: node.id, status: 'OK', reason: 'chạy thành công' });
+  });
+  return log;
+};
+
+
+/* ---- hd-07: chọn ngưỡng chia trên dữ liệu (x, y), tính theo ba "moment" n, s, q của từng đoạn ---- */
+ALG.splitScan = function(points, kind){
+  // points: [{x,y}], kind: 'mse' | 'mis' | 'gini'; trả về mọi ngưỡng j (giữa các giá trị x đã sắp) và L(j)
+  var P = points.slice().sort(function(a,b){return a.x-b.x});
+  var m = P.length, xs = [];
+  P.forEach(function(p){ if (xs.indexOf(p.x) < 0) xs.push(p.x); });
+  function mom(arr){ var n=arr.length,s=0,q=0,pos=0; arr.forEach(function(p){ s+=p.y; q+=p.y*p.y; if(p.y>0) pos++; }); return {n:n,s:s,q:q,pos:pos,neg:n-pos}; }
+  function sse(a){ return a.n ? a.q - a.s*a.s/a.n : 0; }
+  function gini(a){ if(!a.n) return 0; var p=a.pos/a.n; return 1-p*p-(1-p)*(1-p); }
+  var rows = [];
+  for (var t = 0; t <= xs.length; t++){
+    var j = t === 0 ? (xs.length ? xs[0]-1 : 0) : xs[t-1];
+    var left = P.filter(function(p){return p.x<=j}), right = P.filter(function(p){return p.x>j});
+    var L = mom(left), R = mom(right), loss;
+    if (kind === 'mis') loss = (Math.min(L.pos,L.neg) + Math.min(R.pos,R.neg)) / m;
+    else if (kind === 'gini') loss = (L.n*gini(L) + R.n*gini(R)) / m;
+    else loss = (sse(L)+sse(R)) / m;
+    rows.push({j:j, left:L, right:R, sseL:sse(L), sseR:sse(R), loss:loss});
+  }
+  var best = rows[0];
+  rows.forEach(function(r){ if (r.loss < best.loss - 1e-12) best = r; });
+  return {rows:rows, best:best, m:m};
+};
+
 global.ALG = ALG;
 if (typeof module !== 'undefined' && module.exports) module.exports = ALG;
 })(typeof window !== 'undefined' ? window : globalThis);

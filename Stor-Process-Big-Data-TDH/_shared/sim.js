@@ -464,6 +464,218 @@ W.algo_picker = function(root){
   $(root,'#q').addEventListener('input', run); run();
 };
 
+// ======================= Hadoop deep-dive: 6 demo =======================
+
+W.hd01_hdfs = function(root){
+  frame(root,'HDFS: chia block, nhân bản, và tái nhân bản khi 1 DataNode hỏng',
+    '<div class="row"><label>Kích thước tệp (MB) = <input id="sz" type="number" value="300" style="width:90px"></label>'+
+    '<label>Block size (MB) = <input id="bs" type="number" value="128" style="width:90px"></label>'+
+    '<label>Số DataNode = <input id="dn" type="number" value="5" style="width:70px"></label>'+
+    '<label>Hệ số nhân bản = <input id="rep" type="number" value="3" style="width:60px"></label></div>'+
+    '<button class="btn" id="go">Chia block &amp; đặt nhân bản</button>'+
+    '<div class="row"><label>DataNode hỏng (số 0-based) = <input id="fail" type="number" value="2" style="width:70px"></label>'+
+    '<button class="btn" id="go2">Mô phỏng hỏng &amp; tái nhân bản</button></div><div class="out"></div>');
+  var lastPlacement = null, lastNumNodes = 5;
+  function run(){
+    var sz=+$(root,'#sz').value, bs=+$(root,'#bs').value, dn=+$(root,'#dn').value, rep=+$(root,'#rep').value;
+    var blocks = A.hdfsSplitBlocks(sz, bs);
+    var pl = A.hdfsPlaceBlocks(blocks, dn, rep);
+    lastPlacement = pl.placement; lastNumNodes = dn;
+    $(root,'.out').innerHTML = '<p>Tệp '+sz+'MB chia thành <b>'+blocks.length+' block</b> (block size '+bs+'MB), mỗi block nhân bản '+rep+' lần trên '+dn+' DataNode.</p>'+
+      tbl(['Block','Kích thước (MB)','Đặt trên DataNode'], pl.placement.map(function(p){ return [p.id, p.sizeMB, p.nodes.map(function(n){return 'DN'+n;}).join(', ')]; }))+
+      '<p><b>Tải ghi mỗi DataNode</b> (số bản sao đang giữ): '+pl.nodeLoad.map(function(l,i){return 'DN'+i+'='+l;}).join(', ')+
+      ' — tổng lượt ghi vật lý = '+pl.nodeLoad.reduce(function(a,b){return a+b;},0)+' = '+blocks.length+' block × '+rep+' bản sao.</p>';
+  }
+  function runFail(){
+    if (!lastPlacement){ run(); }
+    var fail = +$(root,'#fail').value;
+    var r = A.hdfsNodeFailure(lastPlacement, lastNumNodes, fail);
+    lastPlacement = r.placement;
+    $(root,'.out').innerHTML += '<p><b>DataNode '+fail+' hỏng.</b> NameNode phát hiện qua heartbeat, ra lệnh tái nhân bản:</p>'+
+      (r.events.length ? tbl(['Block mất bản sao','Từ DataNode','Tái nhân bản sang'], r.events.map(function(e){return [e.block,'DN'+e.from,'DN'+e.to];}))
+        : '<p>DataNode này không giữ bản sao của block nào — không cần tái nhân bản.</p>')+
+      '<p>Kết quả: mọi block vẫn đủ '+$(root,'#rep').value+' bản sao, không cần ứng dụng can thiệp.</p>';
+  }
+  $(root,'#go').onclick=run; $(root,'#go2').onclick=runFail; run();
+};
+
+W.hd02_mapreduce_yarn = function(root){
+  frame(root,'MapReduce Word Count (có Combiner) &amp; cấp phát Container YARN công bằng',
+    '<div class="row"><label>Văn bản mẫu: <input id="txt" size="55" value="the fox and the dog the fox ran the dog slept the fox barked"></label>'+
+    '<label>Số Mapper = <input id="nm" type="number" value="3" style="width:60px"></label></div>'+
+    '<button class="btn" id="go">Chạy Map→Shuffle&amp;Sort→Reduce</button>'+
+    '<div class="row"><label>Tổng Container cụm = <input id="tc" type="number" value="20" style="width:70px"></label>'+
+    '<label>Yêu cầu các Job (vd Spark=12, MR=10): <input id="req" size="20" value="12 10"></label>'+
+    '<button class="btn" id="go2">Cấp phát YARN (Fair Scheduler)</button></div><div class="out"></div>');
+  function run(){
+    var r = A.wordCountMR($(root,'#txt').value, +$(root,'#nm').value);
+    var html = '<p>Chia văn bản cho <b>'+r.numMappers+' Mapper</b>. Mỗi Mapper tự Combine (gộp tổng tại chỗ) trước khi gửi đi.</p>'+
+      tbl(['Mapper','Kết quả local (word:count)'], r.mapOutputs.map(function(c,i){
+        return ['Map-'+(i+1), Object.keys(c).map(function(w){return w+':'+c[w];}).join(', ')];
+      }))+
+      '<p><b>Sau Shuffle&amp;Sort + Reduce</b> (tổng theo từ):</p>'+
+      tbl(['Từ','Tổng số lần xuất hiện'], r.reduced.map(function(x){return [x.word,x.count];}))+
+      '<p>Số bản ghi trung gian phải truyền qua mạng: KHÔNG combiner = <b>'+r.bytesWithoutCombiner+'</b> cặp (word,1); '+
+      'CÓ combiner = <b>'+r.bytesWithCombiner+'</b> cặp đã gộp — giảm '+Math.round((1-r.bytesWithCombiner/r.bytesWithoutCombiner)*100)+'% lưu lượng shuffle.</p>';
+    $(root,'.out').innerHTML = html;
+  }
+  function runYarn(){
+    var tc = +$(root,'#tc').value, reqs = nums($(root,'#req').value);
+    var r = A.yarnAllocate(tc, reqs);
+    $(root,'.out').innerHTML += '<p><b>ResourceManager chia '+tc+' Container cho '+reqs.length+' job</b> (yêu cầu: '+reqs.join(', ')+'):</p>'+
+      tbl(['Job','Yêu cầu','Được cấp'], reqs.map(function(req,i){return ['Job '+(i+1), req, r.alloc[i]];}))+
+      '<p>Đây chính là thuật toán <i>progressive filling</i> (max-min fairness) đã học ở '+
+      '<a href="../ll-06-cong-bang-tai-nguyen/index.html">Lập lịch 06</a> — YARN Fair Scheduler là bản triển khai thực tế của nó, không phải thuật toán riêng khác.</p>';
+  }
+  $(root,'#go').onclick=run; $(root,'#go2').onclick=runYarn; run();
+};
+
+W.hd03_pig_hive = function(root){
+  frame(root,'Pig (thủ tục) vs Hive (khai báo): 2 cách viết, cùng 1 kết quả MapReduce',
+    '<div class="row"><small>Dữ liệu mẫu: (order, employee, sale) — giống ví dụ Chương 2 gốc.</small></div>'+
+    '<button class="btn" id="go">Chạy group-by-sum theo nhân viên</button><div class="out"></div>');
+  var orders = [{order:1,employee:'An',sale:120},{order:2,employee:'Binh',sale:80},{order:3,employee:'An',sale:60},
+                {order:4,employee:'Chi',sale:200},{order:5,employee:'Binh',sale:40},{order:6,employee:'An',sale:90}];
+  function run(){
+    var r = A.groupBySum(orders, 'employee', 'sale');
+    $(root,'.out').innerHTML =
+      '<p><b>PigLatin (thủ tục, từng bước):</b></p>'+
+      '<div class="pd-formula"><div class="pd-formula-math">orders = LOAD \'orders.csv\'; grouped = GROUP orders BY employee; '+
+      'result = FOREACH grouped GENERATE group, SUM(orders.sale);</div></div>'+
+      '<p><b>HiveQL (khai báo, 1 câu):</b></p>'+
+      '<div class="pd-formula"><div class="pd-formula-math">SELECT employee, SUM(sale) FROM orders GROUP BY employee;</div></div>'+
+      '<p><b>Cả hai đều cho ra đúng 1 kết quả</b> (sau khi dịch thành MapReduce Map→Shuffle&amp;Sort→Reduce):</p>'+
+      tbl(['Nhân viên','Tổng doanh số'], r.map(function(x){return [x.key, x.total];}));
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.hd04_hbase_sqoop = function(root){
+  frame(root,'HBase: thiết kế row key (tránh hotspotting) · Sqoop: chia bảng theo khoá',
+    '<div class="row"><label>Kiểu row key: </label>'+
+    '<select id="style"><option value="bad">Sai: timestamp_userid (hotspot)</option><option value="good" selected>Tốt: userid_timestamp (phân tán)</option></select></div>'+
+    '<button class="btn" id="go">Ghi 6 event &amp; scan theo khoảng</button>'+
+    '<div class="row"><label>Số Mapper Sqoop = <input id="nm" type="number" value="2" style="width:60px"></label>'+
+    '<button class="btn" id="go2">Sqoop import bảng orders</button></div><div class="out"></div>');
+  function run(){
+    var style = $(root,'#style').value;
+    var t = A.hbaseTable();
+    var events = [
+      {u:'u1', ts:'0001', ev:'click'}, {u:'u2', ts:'0002', ev:'view'}, {u:'u1', ts:'0003', ev:'buy'},
+      {u:'u3', ts:'0004', ev:'click'}, {u:'u2', ts:'0005', ev:'click'}, {u:'u1', ts:'0006', ev:'view'}];
+    events.forEach(function(e){
+      var key = (style==='bad') ? (e.ts+'_'+e.u) : (e.u+'_'+e.ts);
+      t.put(key, 'info', 'event', e.ev);
+    });
+    var keys = t.allKeysSorted();
+    var byRegion = {}; // giả lập 3 region chia theo khoảng khoá đều
+    var nRegions = 3, sorted = keys.slice();
+    sorted.forEach(function(k,i){ var r = Math.floor(i/Math.ceil(sorted.length/nRegions)); byRegion[r]=(byRegion[r]||[]).concat([k]); });
+    $(root,'.out').innerHTML = '<p>Row key kiểu <b>'+(style==='bad'?'timestamp_userid':'userid_timestamp')+'</b>: '+keys.join(', ')+'</p>'+
+      tbl(['Region (giả lập)','Row key rơi vào'], Object.keys(byRegion).map(function(r){return ['Region '+r, byRegion[r].join(', ')];}))+
+      '<p>'+(style==='bad'
+        ? '<b class="no">⚠ Hotspot:</b> mọi row MỚI luôn có timestamp lớn nhất → luôn rơi vào region cuối → 1 region server quá tải, các server khác rảnh.'
+        : '<b class="ok">✓ Phân tán tốt:</b> row của các user khác nhau trải đều các region, không dồn tải ghi vào 1 chỗ.')+'</p>';
+  }
+  function runSqoop(){
+    var rows = [{id:103},{id:21},{id:67},{id:8},{id:145},{id:52},{id:199}];
+    var r = A.sqoopSplit(rows, 'id', +$(root,'#nm').value);
+    $(root,'.out').innerHTML += '<p><b>Sqoop import bảng orders</b> (job Map-only, chia theo khoá chính):</p>'+
+      tbl(['Mapper','Khoảng id','Số dòng'], r.map(function(c){return [c.mapper, c.range[0]+' – '+c.range[1], c.rows.length];}))+
+      '<p>Mỗi Mapper ghi kết quả ra 1 tệp riêng trong thư mục HDFS <code>/data/orders</code>, không cần bước Reduce.</p>';
+  }
+  $(root,'#go').onclick=run; $(root,'#go2').onclick=runSqoop; run();
+};
+
+W.hd05_kafka_offset = function(root){
+  frame(root,'Kafka: theo dõi offset/lag của 1 consumer group qua nhiều batch',
+    '<div class="row"><label>Số partition = <input id="np" type="number" value="3" style="width:60px"></label>'+
+    '<label>Sản xuất/batch/partition = <input id="pr" type="number" value="10" style="width:70px"></label>'+
+    '<label>Tiêu thụ/batch/partition = <input id="co" type="number" value="7" style="width:70px"></label>'+
+    '<label>Số batch = <input id="nb" type="number" value="4" style="width:60px"></label></div>'+
+    '<button class="btn" id="go">Chạy mô phỏng</button><div class="out"></div>');
+  function run(){
+    var trace = A.kafkaOffsetTrace(+$(root,'#np').value, +$(root,'#pr').value, +$(root,'#co').value, +$(root,'#nb').value);
+    $(root,'.out').innerHTML = tbl(['Batch','Log-End-Offset mỗi partition','Offset đã commit','Lag (chưa tiêu thụ)'],
+        trace.map(function(r){ return [r.batch, r.logEnd.join(', '), r.committed.join(', '), r.lag.join(', ')]; }))+
+      '<p>Nếu tốc độ sản xuất &gt; tốc độ tiêu thụ, <b>lag tăng dần theo từng batch</b> — đây là chỉ số quan trọng nhất để biết'+
+      ' consumer group có đang "theo kịp" producer hay không trong vận hành Kafka thật.</p>';
+  }
+  $(root,'#go').onclick=run; run();
+};
+
+W.hd06_oozie_zk = function(root){
+  frame(root,'ZooKeeper: bầu leader bằng znode tuần tự · Oozie: chạy DAG 4 bước có phụ thuộc',
+    '<div class="row"><small>3 node tạo znode tuần tự: A=0000000007, B=0000000005, C=0000000009 (số nhỏ nhất thắng).</small></div>'+
+    '<button class="btn" id="go">Bầu leader, rồi cho leader \'chết\'</button>'+
+    '<div class="row"><label>Bước Oozie bị lỗi: </label><select id="failat"><option value="">Không lỗi</option>'+
+    '<option value="hive" selected>Hive clean</option><option value="mr">MapReduce tổng hợp</option></select></div>'+
+    '<button class="btn" id="go2">Chạy workflow Oozie 4 bước</button><div class="out"></div>');
+  function run(){
+    var cands = [{name:'A',zxid:7},{name:'B',zxid:5},{name:'C',zxid:9}];
+    var leader = A.zkElectLeader(cands);
+    var fo = A.zkLeaderFailover(cands, leader.name);
+    $(root,'.out').innerHTML = '<p>znode con hiện có: '+cands.map(function(c){return c.name+'='+c.zxid;}).join(', ')+'</p>'+
+      '<p><b>Leader hiện tại: '+leader.name+'</b> (zxid='+leader.zxid+' — nhỏ nhất).</p>'+
+      '<p>Giả sử leader '+leader.name+' chết — znode ephemeral của nó tự bị xoá:</p>'+
+      '<p><b>Leader mới: '+(fo.newLeader?fo.newLeader.name:'(không còn ai)')+'</b> (trong số znode còn lại: '+fo.remaining.map(function(c){return c.name+'='+c.zxid;}).join(', ')+')</p>';
+  }
+  function runOozie(){
+    var failAt = $(root,'#failat').value;
+    var nodes = [{id:'sqoop',label:'Sqoop import',deps:[]},{id:'hive',label:'Hive clean',deps:['sqoop']},
+                 {id:'mr',label:'MapReduce tổng hợp',deps:['hive']},{id:'email',label:'Gửi email',deps:['mr']}];
+    var log = A.oozieDagRun(nodes, failAt);
+    var byId = {}; nodes.forEach(function(n){byId[n.id]=n.label;});
+    $(root,'.out').innerHTML += '<p><b>Workflow:</b> Sqoop import → Hive clean → MapReduce tổng hợp → Gửi email</p>'+
+      tbl(['Action','Trạng thái','Lý do'], log.map(function(x){
+        var cls = x.status==='OK' ? 'ok' : (x.status==='FAILED' ? 'no' : '');
+        return [byId[x.id], '<span class="'+cls+'">'+x.status+'</span>', x.reason];
+      }));
+  }
+  $(root,'#go').onclick=run; $(root,'#go2').onclick=runOozie; run();
+};
+
+W.hd07_split = function(root){
+  frame(root,'Chọn ngưỡng chia cây quyết định: tính L(j) cho mọi ngưỡng và so với tập ứng viên lấy mẫu',
+    '<div class="row"><label>Tiêu chí: <select id="kind"><option value="mse" selected>Hồi quy: sai số bình phương trung bình</option>'+
+    '<option value="mis">Phân loại: tỉ lệ phân loại sai (nhãn ±1)</option><option value="gini">Phân loại: Gini (nhãn ±1)</option></select></label></div>'+
+    '<div class="row"><label>Dữ liệu (mỗi dòng <code>x,y</code>): </label><br>'+
+    '<textarea id="data" rows="8" style="width:100%;max-width:340px;font-family:monospace">1,6\n2,8\n3,7\n4,7\n5,2\n6,3\n7,2\n8,1</textarea></div>'+
+    '<div class="row"><label>Chỉ xét ngưỡng ứng viên (cách nhau bởi dấu phẩy, bỏ trống = xét tất cả): <input id="cand" value="" style="width:180px"></label></div>'+
+    '<button class="btn" id="go">Tính</button><div class="out"></div>');
+  function parse(){
+    return $(root,'#data').value.split(/\n+/).map(function(l){return nums(l)}).filter(function(a){return a.length>=2&&isFinite(a[0])&&isFinite(a[1])})
+      .map(function(a){return {x:a[0],y:a[1]}});
+  }
+  function run(){
+    var kind = $(root,'#kind').value, pts = parse();
+    if (pts.length < 2){ $(root,'.out').innerHTML = '<p class="no">Cần ít nhất 2 dòng x,y hợp lệ.</p>'; return; }
+    var r = A.splitScan(pts, kind), candTxt = $(root,'#cand').value.trim();
+    var cand = candTxt ? nums(candTxt) : null;
+    var rows = r.rows.filter(function(x){return x.left.n>0 && x.right.n>0});
+    var shown = cand ? rows.filter(function(x){return cand.indexOf(x.j)>=0}) : rows;
+    var opt = rows.reduce(function(b,x){return x.loss<b.loss?x:b}, rows[0]);
+    var bestC = shown.length ? shown.reduce(function(b,x){return x.loss<b.loss?x:b}, shown[0]) : null;
+    var head = kind==='mse' ? ['j','Trái (n, s, q)','SSE trái','Phải (n, s, q)','SSE phải','L(j)'] : ['j','Trái (n, +1, −1)','Phải (n, +1, −1)','L(j)'];
+    var body = shown.map(function(x){
+      var best = bestC && x.j===bestC.j;
+      var cells = kind==='mse'
+        ? [x.j, '('+x.left.n+', '+fnum(x.left.s)+', '+fnum(x.left.q)+')', fnum(x.sseL), '('+x.right.n+', '+fnum(x.right.s)+', '+fnum(x.right.q)+')', fnum(x.sseR), fnum(x.loss)]
+        : [x.j, '('+x.left.n+', '+x.left.pos+', '+x.left.neg+')', '('+x.right.n+', '+x.right.pos+', '+x.right.neg+')', fnum(x.loss)];
+      return best ? {cls:'ok', cells:cells} : cells;
+    });
+    var msg = '<p>Ngưỡng tối ưu trên <b>mọi</b> ngưỡng: <b>j = '+opt.j+'</b>, OPT = <b>'+fnum(opt.loss)+'</b>.</p>';
+    if (cand){
+      msg += bestC
+        ? '<p>Trong tập ứng viên <b>{'+cand.join(', ')+'}</b>: tốt nhất là j = <b>'+bestC.j+'</b> với L = <b>'+fnum(bestC.loss)+'</b>, '+
+          'chênh so với OPT là <b>'+fnum(bestC.loss-opt.loss)+'</b>'+(bestC.loss-opt.loss<1e-12?' (đúng bằng OPT).':' (sai số cộng so với tối ưu).')+'</p>'
+        : '<p class="no">Không ứng viên nào hợp lệ (ngưỡng phải là giá trị x có thật và để cả hai phía đều có điểm).</p>';
+    }
+    $(root,'.out').innerHTML = msg + tbl(head, body);
+  }
+  $(root,'#go').onclick = run; run();
+};
+
 document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('.sim[data-sim]').forEach(function(root){
     var f = W[root.getAttribute('data-sim')];
