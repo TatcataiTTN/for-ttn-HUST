@@ -1583,5 +1583,198 @@
     4.318181818181822
    ]
   ]
+ },
+ {
+  "id": "m04-051",
+  "q": "Blocking theo quận + giờ đo: JOIN tram_dwd với tram_netatmo khi CÙNG quan VÀ CÙNG gio_do — đếm số cặp ứng viên sinh ra (trước khi so khớp giá trị mưa).",
+  "difficulty": 1,
+  "topic": "Tích hợp PWS/DWD",
+  "referenceSql": "SELECT COUNT(*) AS so_cap_ung_vien FROM tram_dwd d JOIN tram_netatmo n ON d.quan = n.quan AND d.gio_do = n.gio_do;",
+  "expectedCols": [
+   "so_cap_ung_vien"
+  ],
+  "expectedRows": [
+   [
+    11
+   ]
+  ]
+ },
+ {
+  "id": "m04-052",
+  "q": "Matching với ngưỡng 10%: trong các cặp đã blocking ở câu trước, lấy các cặp có |luong_mua_mm lệch nhau| / luong_mua_mm (DWD) <= 0.10 — đây là các trạm Netatmo ĐÁNG TIN.",
+  "difficulty": 2,
+  "topic": "Tích hợp PWS/DWD",
+  "referenceSql": "SELECT d.ten_tram AS tram_chuan, n.ten_tram AS tram_ca_nhan, d.luong_mua_mm AS mua_dwd, n.luong_mua_mm AS mua_netatmo FROM tram_dwd d JOIN tram_netatmo n ON d.quan = n.quan AND d.gio_do = n.gio_do WHERE ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm <= 0.10;",
+  "expectedCols": [
+   "tram_chuan",
+   "tram_ca_nhan",
+   "mua_dwd",
+   "mua_netatmo"
+  ],
+  "expectedRows": [
+   [
+    "DWD-DongDa",
+    "PWS-DongDa-A",
+    12.0,
+    12.6
+   ],
+   [
+    "DWD-CauGiay",
+    "PWS-CauGiay-A",
+    9.5,
+    9.8
+   ],
+   [
+    "DWD-CauGiay",
+    "PWS-CauGiay-B",
+    9.5,
+    9.6
+   ],
+   [
+    "DWD-ThanhXuan",
+    "PWS-ThanhXuan-A",
+    15.0,
+    15.9
+   ],
+   [
+    "DWD-HoangMai",
+    "PWS-HoangMai-A",
+    7.0,
+    7.3
+   ],
+   [
+    "DWD-NamTuLiem",
+    "PWS-NamTuLiem-A",
+    20.0,
+    21.5
+   ],
+   [
+    "DWD-HaDong",
+    "PWS-HaDong-A",
+    5.0,
+    5.2
+   ],
+   [
+    "DWD-HaiBaTrung",
+    "PWS-HaiBaTrung-A",
+    18.0,
+    18.9
+   ]
+  ]
+ },
+ {
+  "id": "m04-053",
+  "q": "Tìm các trạm Netatmo 'NHIỄU': cùng quan + gio_do với 1 trạm DWD (đã blocking được) nhưng lệch giá trị mưa > 30% — đây là ứng viên nên LOẠI trước khi đưa vào nội suy, đúng tinh thần bước lọc trạm của Bárdossy et al. (2021).",
+  "difficulty": 2,
+  "topic": "Tích hợp PWS/DWD",
+  "referenceSql": "SELECT n.ten_tram, d.luong_mua_mm AS mua_dwd, n.luong_mua_mm AS mua_netatmo FROM tram_dwd d JOIN tram_netatmo n ON d.quan = n.quan AND d.gio_do = n.gio_do WHERE ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm > 0.30;",
+  "expectedCols": [
+   "ten_tram",
+   "mua_dwd",
+   "mua_netatmo"
+  ],
+  "expectedRows": [
+   [
+    "PWS-DongDa-B",
+    12.0,
+    18.0
+   ],
+   [
+    "PWS-CauGiay-C",
+    9.5,
+    2.0
+   ],
+   [
+    "PWS-BaDinh-A",
+    11.0,
+    16.0
+   ]
+  ]
+ },
+ {
+  "id": "m04-054",
+  "q": "Tìm các quan có trạm Netatmo nhưng KHÔNG có trạm DWD nào — minh hoạ khoảng trống phủ sóng (coverage gap) của mạng lưới trạm chuẩn, buộc phải dựa hoàn toàn vào dữ liệu cá nhân ở đó.",
+  "difficulty": 3,
+  "topic": "Tích hợp PWS/DWD",
+  "referenceSql": "SELECT DISTINCT quan FROM tram_netatmo WHERE quan NOT IN (SELECT quan FROM tram_dwd);",
+  "expectedCols": [
+   "quan"
+  ],
+  "expectedRows": [
+   [
+    "Tây Hồ"
+   ],
+   [
+    "Long Biên"
+   ]
+  ]
+ },
+ {
+  "id": "m04-055",
+  "q": "Tìm các trạm Netatmo nằm CÙNG quan với ít nhất 1 trạm DWD nhưng KHÔNG đo CÙNG gio_do — các trạm này không thể đối chiếu trực tiếp dù cùng khu vực (lệch thời gian quan trắc).",
+  "difficulty": 3,
+  "topic": "Tích hợp PWS/DWD",
+  "referenceSql": "SELECT n.ten_tram, n.quan, n.gio_do FROM tram_netatmo n WHERE n.quan IN (SELECT quan FROM tram_dwd) AND NOT EXISTS (SELECT 1 FROM tram_dwd d WHERE d.quan = n.quan AND d.gio_do = n.gio_do);",
+  "expectedCols": [
+   "ten_tram",
+   "quan",
+   "gio_do"
+  ],
+  "expectedRows": [
+   [
+    "PWS-DongDa-C",
+    "Đống Đa",
+    9
+   ]
+  ]
+ },
+ {
+  "id": "m04-056",
+  "q": "Bài tổng hợp: với mỗi quan có ít nhất 1 trạm Netatmo ĐÁNG TIN (lệch <=10% so với DWD cùng quan+gio_do), tính số trạm đáng tin và % lệch trung bình của chúng.",
+  "difficulty": 3,
+  "topic": "Tích hợp PWS/DWD",
+  "referenceSql": "SELECT d.quan, COUNT(*) AS so_tram_tin_cay, AVG(ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm * 100) AS pct_lech_tb FROM tram_dwd d JOIN tram_netatmo n ON d.quan = n.quan AND d.gio_do = n.gio_do WHERE ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm <= 0.10 GROUP BY d.quan;",
+  "expectedCols": [
+   "quan",
+   "so_tram_tin_cay",
+   "pct_lech_tb"
+  ],
+  "expectedRows": [
+   [
+    "Cầu Giấy",
+    2,
+    2.105263157894739
+   ],
+   [
+    "Hai Bà Trưng",
+    1,
+    4.999999999999992
+   ],
+   [
+    "Hoàng Mai",
+    1,
+    4.285714285714283
+   ],
+   [
+    "Hà Đông",
+    1,
+    4.0000000000000036
+   ],
+   [
+    "Nam Từ Liêm",
+    1,
+    7.5
+   ],
+   [
+    "Thanh Xuân",
+    1,
+    6.000000000000003
+   ],
+   [
+    "Đống Đa",
+    1,
+    4.9999999999999964
+   ]
+  ]
  }
 ]

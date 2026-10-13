@@ -8,7 +8,8 @@ const MODULES = [
   { slug: "01-data-integration-overview", prefix: "m01", sqlCount: 16 },
   { slug: "02-schema-alignment", prefix: "m02", sqlCount: 50 },
   { slug: "03-mediation-query-bigdata", prefix: "m03", sqlCount: 16 },
-  { slug: "04-record-linkage-entity-resolution", prefix: "m04", sqlCount: 50 },
+  { slug: "04-record-linkage-entity-resolution", prefix: "m04", sqlCount: 56 },
+  { slug: "05-bai-tap-lon-tich-hop-khi-tuong", prefix: "m05", sqlCount: 32 },
 ];
 
 (async () => {

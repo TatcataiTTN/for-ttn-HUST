@@ -1,0 +1,1619 @@
+[
+ {
+  "id": "m05-001",
+  "q": "Liệt kê toàn bộ bản ghi nasa_power_ngay của thanh_pho='hanoi', sắp theo ngay.",
+  "difficulty": 1,
+  "topic": "Khám phá dữ liệu",
+  "referenceSql": "SELECT * FROM nasa_power_ngay WHERE thanh_pho='hanoi' ORDER BY ngay;",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "vi_do",
+   "kinh_do",
+   "nhiet_do_tb_c",
+   "luong_mua_mm",
+   "buc_xa_mj_m2"
+  ],
+  "expectedRows": [
+   [
+    "hanoi",
+    "2024-01-01",
+    21.03,
+    105.85,
+    20.95,
+    0.0,
+    11.85
+   ],
+   [
+    "hanoi",
+    "2024-01-02",
+    21.03,
+    105.85,
+    21.47,
+    0.03,
+    9.19
+   ],
+   [
+    "hanoi",
+    "2024-01-03",
+    21.03,
+    105.85,
+    16.11,
+    0.94,
+    5.92
+   ],
+   [
+    "hanoi",
+    "2024-01-04",
+    21.03,
+    105.85,
+    16.34,
+    0.26,
+    6.36
+   ],
+   [
+    "hanoi",
+    "2024-01-05",
+    21.03,
+    105.85,
+    19.52,
+    0.05,
+    5.03
+   ],
+   [
+    "hanoi",
+    "2024-01-06",
+    21.03,
+    105.85,
+    20.18,
+    0.06,
+    8.85
+   ],
+   [
+    "hanoi",
+    "2024-01-07",
+    21.03,
+    105.85,
+    20.19,
+    0.08,
+    8.17
+   ],
+   [
+    "hanoi",
+    "2024-01-08",
+    21.03,
+    105.85,
+    21.25,
+    0.09,
+    7.81
+   ],
+   [
+    "hanoi",
+    "2024-01-09",
+    21.03,
+    105.85,
+    21.76,
+    0.68,
+    7.45
+   ],
+   [
+    "hanoi",
+    "2024-01-10",
+    21.03,
+    105.85,
+    19.21,
+    12.61,
+    2.84
+   ]
+  ]
+ },
+ {
+  "id": "m05-002",
+  "q": "Đếm số thành_pho DISTINCT xuất hiện trong nasa_power_ngay.",
+  "difficulty": 1,
+  "topic": "Khám phá dữ liệu",
+  "referenceSql": "SELECT COUNT(DISTINCT thanh_pho) AS so_thanh_pho FROM nasa_power_ngay;",
+  "expectedCols": [
+   "so_thanh_pho"
+  ],
+  "expectedRows": [
+   [
+    6
+   ]
+  ]
+ },
+ {
+  "id": "m05-003",
+  "q": "Liệt kê các element DISTINCT có trong ghcn_tram — minh hoạ cấu trúc EAV (mỗi biến 1 dòng riêng thay vì 1 cột).",
+  "difficulty": 1,
+  "topic": "Khám phá dữ liệu",
+  "referenceSql": "SELECT DISTINCT element FROM ghcn_tram;",
+  "expectedCols": [
+   "element"
+  ],
+  "expectedRows": [
+   [
+    "TMAX"
+   ],
+   [
+    "TMIN"
+   ],
+   [
+    "PRCP"
+   ],
+   [
+    "TAVG"
+   ]
+  ]
+ },
+ {
+  "id": "m05-004",
+  "q": "Đếm số dòng ghcn_tram theo từng element — cho thấy không phải ngày nào cũng có đủ cả 4 biến (dữ liệu trạm thật có thiếu, không đều như dữ liệu mô hình).",
+  "difficulty": 1,
+  "topic": "Khám phá dữ liệu",
+  "referenceSql": "SELECT element, COUNT(*) AS so_dong FROM ghcn_tram GROUP BY element;",
+  "expectedCols": [
+   "element",
+   "so_dong"
+  ],
+  "expectedRows": [
+   [
+    "PRCP",
+    7
+   ],
+   [
+    "TAVG",
+    10
+   ],
+   [
+    "TMAX",
+    9
+   ],
+   [
+    "TMIN",
+    4
+   ]
+  ]
+ },
+ {
+  "id": "m05-005",
+  "q": "So sánh vi_do, kinh_do của cùng thanh_pho='bangkok' giữa nasa_power_ngay và openmeteo_ngay (SELECT DISTINCT từ cả 2 bảng, UNION) — toạ độ có hoàn toàn trùng khớp không?",
+  "difficulty": 2,
+  "topic": "Khám phá dữ liệu",
+  "referenceSql": "SELECT 'nasa' AS nguon, vi_do, kinh_do FROM nasa_power_ngay WHERE thanh_pho='bangkok' UNION SELECT 'openmeteo', vi_do, kinh_do FROM openmeteo_ngay WHERE thanh_pho='bangkok';",
+  "expectedCols": [
+   "nguon",
+   "vi_do",
+   "kinh_do"
+  ],
+  "expectedRows": [
+   [
+    "nasa",
+    13.76,
+    100.5
+   ],
+   [
+    "openmeteo",
+    13.74,
+    100.5
+   ]
+  ]
+ },
+ {
+  "id": "m05-006",
+  "q": "Lấy riêng các dòng element='TMAX' từ ghcn_tram, quy đổi gia_tri (đơn vị 0.1°C) sang độ C thường (chia 10).",
+  "difficulty": 2,
+  "topic": "Chuẩn hoá EAV",
+  "referenceSql": "SELECT ngay, gia_tri/10.0 AS tmax_c FROM ghcn_tram WHERE element='TMAX' ORDER BY ngay;",
+  "expectedCols": [
+   "ngay",
+   "tmax_c"
+  ],
+  "expectedRows": [
+   [
+    "2024-01-01",
+    32.7
+   ],
+   [
+    "2024-01-03",
+    32.6
+   ],
+   [
+    "2024-01-04",
+    33.1
+   ],
+   [
+    "2024-01-05",
+    33.2
+   ],
+   [
+    "2024-01-06",
+    33.5
+   ],
+   [
+    "2024-01-07",
+    32.5
+   ],
+   [
+    "2024-01-08",
+    34.0
+   ],
+   [
+    "2024-01-09",
+    33.3
+   ],
+   [
+    "2024-01-10",
+    33.5
+   ]
+  ]
+ },
+ {
+  "id": "m05-007",
+  "q": "PIVOT thủ công: với mỗi ngay, lấy TMAX và TMIN (đã quy đổi độ C) trên CÙNG 1 dòng bằng self-join ghcn_tram với chính nó (a.element='TMAX', b.element='TMIN', a.ngay=b.ngay) — đây chính là bước 'unpivot EAV sang wide table' cần làm trước khi JOIN với 2 bảng kia.",
+  "difficulty": 3,
+  "topic": "Chuẩn hoá EAV",
+  "referenceSql": "SELECT a.ngay, a.gia_tri/10.0 AS tmax_c, b.gia_tri/10.0 AS tmin_c FROM ghcn_tram a JOIN ghcn_tram b ON a.ngay=b.ngay AND a.element='TMAX' AND b.element='TMIN' ORDER BY a.ngay;",
+  "expectedCols": [
+   "ngay",
+   "tmax_c",
+   "tmin_c"
+  ],
+  "expectedRows": [
+   [
+    "2024-01-03",
+    32.6,
+    24.1
+   ],
+   [
+    "2024-01-04",
+    33.1,
+    24.0
+   ],
+   [
+    "2024-01-08",
+    34.0,
+    24.0
+   ],
+   [
+    "2024-01-09",
+    33.3,
+    23.0
+   ]
+  ]
+ },
+ {
+  "id": "m05-008",
+  "q": "Từ bước PIVOT trên, chỉ lấy các ngày có CẢ TMAX lẫn TMIN (INNER JOIN tự nhiên đã loại ngày thiếu) — đếm có bao nhiêu ngày trong 10 ngày đầu tháng 1/2024 có đủ dữ liệu.",
+  "difficulty": 3,
+  "topic": "Chuẩn hoá EAV",
+  "referenceSql": "SELECT COUNT(*) AS so_ngay_du_lieu FROM ghcn_tram a JOIN ghcn_tram b ON a.ngay=b.ngay AND a.element='TMAX' AND b.element='TMIN';",
+  "expectedCols": [
+   "so_ngay_du_lieu"
+  ],
+  "expectedRows": [
+   [
+    4
+   ]
+  ]
+ },
+ {
+  "id": "m05-009",
+  "q": "Quy đổi PRCP (đơn vị 0.1mm theo chuẩn GHCN) sang mm thường, liệt kê theo ngay.",
+  "difficulty": 2,
+  "topic": "Chuẩn hoá EAV",
+  "referenceSql": "SELECT ngay, gia_tri/10.0 AS mua_mm FROM ghcn_tram WHERE element='PRCP' ORDER BY ngay;",
+  "expectedCols": [
+   "ngay",
+   "mua_mm"
+  ],
+  "expectedRows": [
+   [
+    "2024-01-01",
+    0.3
+   ],
+   [
+    "2024-01-02",
+    1.5
+   ],
+   [
+    "2024-01-04",
+    0.0
+   ],
+   [
+    "2024-01-05",
+    0.0
+   ],
+   [
+    "2024-01-06",
+    1.3
+   ],
+   [
+    "2024-01-09",
+    2.3
+   ],
+   [
+    "2024-01-10",
+    1.5
+   ]
+  ]
+ },
+ {
+  "id": "m05-010",
+  "q": "Tính nhiệt độ trung bình (TAVG, quy đổi độ C) của trạm TH000048565 trong 10 ngày có dữ liệu.",
+  "difficulty": 2,
+  "topic": "Chuẩn hoá EAV",
+  "referenceSql": "SELECT AVG(gia_tri/10.0) AS tavg_tb_c FROM ghcn_tram WHERE element='TAVG';",
+  "expectedCols": [
+   "tavg_tb_c"
+  ],
+  "expectedRows": [
+   [
+    28.01
+   ]
+  ]
+ },
+ {
+  "id": "m05-011",
+  "q": "JOIN nasa_power_ngay với openmeteo_ngay theo CÙNG thanh_pho + ngay, lấy nhiet_do_tb_c (NASA) và nhiet_do_max_c/nhiet_do_min_c (Open-Meteo) trên cùng 1 dòng, cho thanh_pho='hanoi'.",
+  "difficulty": 2,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT n.ngay, n.nhiet_do_tb_c, o.nhiet_do_max_c, o.nhiet_do_min_c FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay WHERE n.thanh_pho='hanoi' ORDER BY n.ngay;",
+  "expectedCols": [
+   "ngay",
+   "nhiet_do_tb_c",
+   "nhiet_do_max_c",
+   "nhiet_do_min_c"
+  ],
+  "expectedRows": [
+   [
+    "2024-01-01",
+    20.95,
+    26.9,
+    18.1
+   ],
+   [
+    "2024-01-02",
+    21.47,
+    27.5,
+    16.7
+   ],
+   [
+    "2024-01-03",
+    16.11,
+    18.9,
+    15.5
+   ],
+   [
+    "2024-01-04",
+    16.34,
+    23.4,
+    16.6
+   ],
+   [
+    "2024-01-05",
+    19.52,
+    24.5,
+    17.7
+   ],
+   [
+    "2024-01-06",
+    20.18,
+    25.2,
+    17.5
+   ],
+   [
+    "2024-01-07",
+    20.19,
+    25.0,
+    17.8
+   ],
+   [
+    "2024-01-08",
+    21.25,
+    26.7,
+    19.5
+   ],
+   [
+    "2024-01-09",
+    21.76,
+    26.7,
+    19.7
+   ],
+   [
+    "2024-01-10",
+    19.21,
+    22.4,
+    17.2
+   ]
+  ]
+ },
+ {
+  "id": "m05-012",
+  "q": "Kiểm tra TÍNH HỢP LÝ (sanity check veracity): với mọi thành phố/ngày, nhiet_do_tb_c (NASA) có luôn nằm trong khoảng [nhiet_do_min_c, nhiet_do_max_c] (Open-Meteo) không? Liệt kê các trường hợp VI PHẠM (nếu có) — đây là tín hiệu 2 nguồn đo/mô hình hoá khác nhau thật sự.",
+  "difficulty": 3,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT n.thanh_pho, n.ngay, n.nhiet_do_tb_c, o.nhiet_do_min_c, o.nhiet_do_max_c FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay WHERE n.nhiet_do_tb_c < o.nhiet_do_min_c OR n.nhiet_do_tb_c > o.nhiet_do_max_c;",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "nhiet_do_tb_c",
+   "nhiet_do_min_c",
+   "nhiet_do_max_c"
+  ],
+  "expectedRows": [
+   [
+    "hanoi",
+    "2024-01-04",
+    16.34,
+    16.6,
+    23.4
+   ],
+   [
+    "jakarta",
+    "2024-01-03",
+    28.42,
+    23.6,
+    28.2
+   ],
+   [
+    "manila",
+    "2024-01-07",
+    24.5,
+    24.7,
+    31.0
+   ]
+  ]
+ },
+ {
+  "id": "m05-013",
+  "q": "Tính độ lệch tuyệt đối lượng mưa (mm) giữa nasa_power_ngay.luong_mua_mm và openmeteo_ngay.luong_mua_mm cho CÙNG thanh_pho+ngay — sắp giảm dần để thấy ngày/thành phố lệch nhiều nhất (mưa đối lưu nhiệt đới rất khó mô hình hoá, 2 nguồn hay lệch nhau ở biến này).",
+  "difficulty": 3,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT n.thanh_pho, n.ngay, n.luong_mua_mm AS mua_nasa, o.luong_mua_mm AS mua_openmeteo, ABS(n.luong_mua_mm - o.luong_mua_mm) AS lech_mm FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay ORDER BY lech_mm DESC LIMIT 10;",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "mua_nasa",
+   "mua_openmeteo",
+   "lech_mm"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    "2024-01-04",
+    17.74,
+    57.2,
+    39.46000000000001
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-07",
+    38.63,
+    8.0,
+    30.630000000000003
+   ],
+   [
+    "jakarta",
+    "2024-01-03",
+    9.16,
+    26.1,
+    16.94
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-08",
+    12.06,
+    25.2,
+    13.139999999999999
+   ],
+   [
+    "jakarta",
+    "2024-01-02",
+    9.58,
+    21.6,
+    12.020000000000001
+   ],
+   [
+    "jakarta",
+    "2024-01-10",
+    9.01,
+    20.5,
+    11.49
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-05",
+    12.07,
+    1.1,
+    10.97
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-09",
+    11.95,
+    22.6,
+    10.650000000000002
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-04",
+    15.26,
+    25.9,
+    10.639999999999999
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-06",
+    16.59,
+    22.8,
+    6.210000000000001
+   ]
+  ]
+ },
+ {
+  "id": "m05-014",
+  "q": "Tính độ lệch tuyệt đối mưa trung bình (mm) theo TỪNG thành_pho (GROUP BY), xem thành phố nào có 2 nguồn lệch nhau nhiều nhất trung bình.",
+  "difficulty": 2,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT n.thanh_pho, AVG(ABS(n.luong_mua_mm - o.luong_mua_mm)) AS lech_mm_tb FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay GROUP BY n.thanh_pho ORDER BY lech_mm_tb DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "lech_mm_tb"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    10.125000000000002
+   ],
+   [
+    "kuala_lumpur",
+    9.464
+   ],
+   [
+    "hanoi",
+    2.3419999999999996
+   ],
+   [
+    "manila",
+    2.282
+   ],
+   [
+    "hcmc",
+    0.172
+   ],
+   [
+    "bangkok",
+    0.0
+   ]
+  ]
+ },
+ {
+  "id": "m05-015",
+  "q": "Đối chiếu nguồn THỨ 3 (trạm mặt đất thật): JOIN bảng TMAX đã PIVOT từ ghcn_tram (trạm TH000048565, khu vực Bangkok) với openmeteo_ngay.thanh_pho='bangkok' theo ngay, so lệch nhiet_do_max_c giữa trạm thật và mô hình Open-Meteo.",
+  "difficulty": 3,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT g.ngay, g.gia_tri/10.0 AS tmax_tram_that, o.nhiet_do_max_c AS tmax_openmeteo, ABS(g.gia_tri/10.0 - o.nhiet_do_max_c) AS lech_c FROM ghcn_tram g JOIN openmeteo_ngay o ON g.ngay=o.ngay AND o.thanh_pho='bangkok' WHERE g.element='TMAX' ORDER BY g.ngay;",
+  "expectedCols": [
+   "ngay",
+   "tmax_tram_that",
+   "tmax_openmeteo",
+   "lech_c"
+  ],
+  "expectedRows": [
+   [
+    "2024-01-01",
+    32.7,
+    33.3,
+    0.5999999999999943
+   ],
+   [
+    "2024-01-03",
+    32.6,
+    33.4,
+    0.7999999999999972
+   ],
+   [
+    "2024-01-04",
+    33.1,
+    32.5,
+    0.6000000000000014
+   ],
+   [
+    "2024-01-05",
+    33.2,
+    33.3,
+    0.09999999999999432
+   ],
+   [
+    "2024-01-06",
+    33.5,
+    32.8,
+    0.7000000000000028
+   ],
+   [
+    "2024-01-07",
+    32.5,
+    32.9,
+    0.3999999999999986
+   ],
+   [
+    "2024-01-08",
+    34.0,
+    32.7,
+    1.2999999999999972
+   ],
+   [
+    "2024-01-09",
+    33.3,
+    34.2,
+    0.9000000000000057
+   ],
+   [
+    "2024-01-10",
+    33.5,
+    33.7,
+    0.20000000000000284
+   ]
+  ]
+ },
+ {
+  "id": "m05-016",
+  "q": "Từ câu trước, tính độ lệch trung bình (°C) giữa trạm GHCN thật và mô hình Open-Meteo cho TMAX tại Bangkok — số càng nhỏ càng cho thấy Open-Meteo mô phỏng tốt khu vực này.",
+  "difficulty": 3,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT AVG(ABS(g.gia_tri/10.0 - o.nhiet_do_max_c)) AS lech_tb_c FROM ghcn_tram g JOIN openmeteo_ngay o ON g.ngay=o.ngay AND o.thanh_pho='bangkok' WHERE g.element='TMAX';",
+  "expectedCols": [
+   "lech_tb_c"
+  ],
+  "expectedRows": [
+   [
+    0.6222222222222216
+   ]
+  ]
+ },
+ {
+  "id": "m05-017",
+  "q": "Tìm các ngày Open-Meteo báo CÓ mưa (luong_mua_mm > 0) nhưng NASA POWER báo KHÔNG mưa (luong_mua_mm = 0) cho cùng thành phố — mâu thuẫn nhị phân giữa 2 nguồn, cần quy tắc survivorship khi tích hợp (nguồn nào đáng tin hơn cho biến nào).",
+  "difficulty": 2,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT n.thanh_pho, n.ngay, n.luong_mua_mm AS mua_nasa, o.luong_mua_mm AS mua_openmeteo FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay WHERE n.luong_mua_mm = 0 AND o.luong_mua_mm > 0;",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "mua_nasa",
+   "mua_openmeteo"
+  ],
+  "expectedRows": [
+   [
+    "hanoi",
+    "2024-01-01",
+    0.0,
+    0.3
+   ],
+   [
+    "hcmc",
+    "2024-01-03",
+    0.0,
+    0.2
+   ],
+   [
+    "hcmc",
+    "2024-01-04",
+    0.0,
+    0.2
+   ],
+   [
+    "hcmc",
+    "2024-01-08",
+    0.0,
+    0.6
+   ]
+  ]
+ },
+ {
+  "id": "m05-018",
+  "q": "Đếm tổng số ngày (trên toàn bộ 6 thành phố) rơi vào tình huống mâu thuẫn ở câu trước.",
+  "difficulty": 2,
+  "topic": "Data Fusion",
+  "referenceSql": "SELECT COUNT(*) AS so_ngay_mau_thuan FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay WHERE n.luong_mua_mm = 0 AND o.luong_mua_mm > 0;",
+  "expectedCols": [
+   "so_ngay_mau_thuan"
+  ],
+  "expectedRows": [
+   [
+    4
+   ]
+  ]
+ },
+ {
+  "id": "m05-019",
+  "q": "Viết 1 'view tích hợp' đơn giản bằng SELECT: với mỗi thành_pho+ngay, lấy nhiet_do_tb_c (NASA) LÀM GIÁ TRỊ CHÍNH, kèm buc_xa_mj_m2 (chỉ NASA có) và luong_mua_mm của CẢ 2 nguồn đặt cạnh nhau để người dùng tự đối chiếu — mô phỏng đúng ý tưởng mediated schema của đề tài.",
+  "difficulty": 2,
+  "topic": "Tích hợp đa nguồn",
+  "referenceSql": "SELECT n.thanh_pho, n.ngay, n.nhiet_do_tb_c, n.buc_xa_mj_m2, n.luong_mua_mm AS mua_nasa, o.luong_mua_mm AS mua_openmeteo FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay;",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "nhiet_do_tb_c",
+   "buc_xa_mj_m2",
+   "mua_nasa",
+   "mua_openmeteo"
+  ],
+  "expectedRows": [
+   [
+    "hanoi",
+    "2024-01-01",
+    20.95,
+    11.85,
+    0.0,
+    0.3
+   ],
+   [
+    "hanoi",
+    "2024-01-02",
+    21.47,
+    9.19,
+    0.03,
+    6.2
+   ],
+   [
+    "hanoi",
+    "2024-01-03",
+    16.11,
+    5.92,
+    0.94,
+    4.5
+   ],
+   [
+    "hanoi",
+    "2024-01-04",
+    16.34,
+    6.36,
+    0.26,
+    0.0
+   ],
+   [
+    "hanoi",
+    "2024-01-05",
+    19.52,
+    5.03,
+    0.05,
+    1.4
+   ],
+   [
+    "hanoi",
+    "2024-01-06",
+    20.18,
+    8.85,
+    0.06,
+    0.9
+   ],
+   [
+    "hanoi",
+    "2024-01-07",
+    20.19,
+    8.17,
+    0.08,
+    0.1
+   ],
+   [
+    "hanoi",
+    "2024-01-08",
+    21.25,
+    7.81,
+    0.09,
+    1.1
+   ],
+   [
+    "hanoi",
+    "2024-01-09",
+    21.76,
+    7.45,
+    0.68,
+    6.3
+   ],
+   [
+    "hanoi",
+    "2024-01-10",
+    19.21,
+    2.84,
+    12.61,
+    16.9
+   ],
+   [
+    "hcmc",
+    "2024-01-01",
+    26.91,
+    16.63,
+    0.0,
+    0.0
+   ],
+   [
+    "hcmc",
+    "2024-01-02",
+    27.17,
+    18.19,
+    0.01,
+    0.0
+   ],
+   [
+    "hcmc",
+    "2024-01-03",
+    27.58,
+    17.76,
+    0.0,
+    0.2
+   ],
+   [
+    "hcmc",
+    "2024-01-04",
+    26.17,
+    18.13,
+    0.0,
+    0.2
+   ],
+   [
+    "hcmc",
+    "2024-01-05",
+    25.77,
+    15.97,
+    0.0,
+    0.0
+   ],
+   [
+    "hcmc",
+    "2024-01-06",
+    26.92,
+    17.45,
+    0.1,
+    0.8
+   ],
+   [
+    "hcmc",
+    "2024-01-07",
+    27.41,
+    18.44,
+    0.0,
+    0.0
+   ],
+   [
+    "hcmc",
+    "2024-01-08",
+    27.04,
+    14.99,
+    0.0,
+    0.6
+   ],
+   [
+    "hcmc",
+    "2024-01-09",
+    27.2,
+    16.88,
+    0.0,
+    0.0
+   ],
+   [
+    "hcmc",
+    "2024-01-10",
+    27.41,
+    17.45,
+    0.01,
+    0.0
+   ],
+   [
+    "jakarta",
+    "2024-01-01",
+    28.59,
+    15.59,
+    5.3,
+    11.0
+   ],
+   [
+    "jakarta",
+    "2024-01-02",
+    29.09,
+    16.58,
+    9.58,
+    21.6
+   ],
+   [
+    "jakarta",
+    "2024-01-03",
+    28.42,
+    9.7,
+    9.16,
+    26.1
+   ],
+   [
+    "jakarta",
+    "2024-01-04",
+    27.39,
+    9.2,
+    17.74,
+    57.2
+   ],
+   [
+    "jakarta",
+    "2024-01-05",
+    28.43,
+    19.16,
+    5.56,
+    8.8
+   ],
+   [
+    "jakarta",
+    "2024-01-06",
+    28.32,
+    16.96,
+    11.09,
+    9.5
+   ],
+   [
+    "jakarta",
+    "2024-01-07",
+    27.51,
+    13.12,
+    16.85,
+    12.4
+   ],
+   [
+    "jakarta",
+    "2024-01-08",
+    27.91,
+    14.5,
+    10.5,
+    13.5
+   ],
+   [
+    "jakarta",
+    "2024-01-09",
+    28.56,
+    17.95,
+    6.06,
+    2.7
+   ],
+   [
+    "jakarta",
+    "2024-01-10",
+    28.52,
+    15.33,
+    9.01,
+    20.5
+   ],
+   [
+    "manila",
+    "2024-01-01",
+    25.9,
+    17.18,
+    5.23,
+    2.3
+   ],
+   [
+    "manila",
+    "2024-01-02",
+    25.7,
+    15.83,
+    2.38,
+    1.5
+   ],
+   [
+    "manila",
+    "2024-01-03",
+    25.71,
+    17.02,
+    1.62,
+    0.3
+   ],
+   [
+    "manila",
+    "2024-01-04",
+    25.13,
+    17.76,
+    2.55,
+    0.0
+   ],
+   [
+    "manila",
+    "2024-01-05",
+    24.62,
+    15.11,
+    1.99,
+    0.7
+   ],
+   [
+    "manila",
+    "2024-01-06",
+    24.68,
+    19.03,
+    0.49,
+    0.0
+   ],
+   [
+    "manila",
+    "2024-01-07",
+    24.5,
+    17.52,
+    0.98,
+    0.0
+   ],
+   [
+    "manila",
+    "2024-01-08",
+    24.87,
+    16.22,
+    11.52,
+    6.2
+   ],
+   [
+    "manila",
+    "2024-01-09",
+    25.69,
+    16.7,
+    6.87,
+    0.8
+   ],
+   [
+    "manila",
+    "2024-01-10",
+    26.23,
+    18.81,
+    0.71,
+    1.7
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-01",
+    25.9,
+    17.75,
+    5.66,
+    6.3
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-02",
+    25.95,
+    16.65,
+    0.53,
+    2.6
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-03",
+    25.95,
+    15.82,
+    23.84,
+    28.5
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-04",
+    25.37,
+    16.04,
+    15.26,
+    25.9
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-05",
+    25.16,
+    16.35,
+    12.07,
+    1.1
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-06",
+    25.24,
+    9.65,
+    16.59,
+    22.8
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-07",
+    24.91,
+    4.24,
+    38.63,
+    8.0
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-08",
+    25.38,
+    15.03,
+    12.06,
+    25.2
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-09",
+    25.19,
+    12.24,
+    11.95,
+    22.6
+   ],
+   [
+    "kuala_lumpur",
+    "2024-01-10",
+    25.74,
+    18.48,
+    1.77,
+    6.8
+   ],
+   [
+    "bangkok",
+    "2024-01-01",
+    28.15,
+    19.47,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-02",
+    28.42,
+    18.52,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-03",
+    27.21,
+    20.42,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-04",
+    26.57,
+    19.7,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-05",
+    26.85,
+    19.13,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-06",
+    26.51,
+    19.4,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-07",
+    26.95,
+    19.68,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-08",
+    27.7,
+    19.95,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-09",
+    28.52,
+    19.92,
+    0.0,
+    0.0
+   ],
+   [
+    "bangkok",
+    "2024-01-10",
+    28.24,
+    19.49,
+    0.0,
+    0.0
+   ]
+  ]
+ },
+ {
+  "id": "m05-020",
+  "q": "Tính biên độ nhiệt ngày (nhiet_do_max_c - nhiet_do_min_c) từ openmeteo_ngay cho mọi thành phố, trung bình theo thanh_pho — thành phố ven biển/xích đạo (Jakarta, KL) có biên độ nhỏ hơn thành phố có mùa đông rõ (Hà Nội) hay không?",
+  "difficulty": 3,
+  "topic": "Tích hợp đa nguồn",
+  "referenceSql": "SELECT thanh_pho, AVG(nhiet_do_max_c - nhiet_do_min_c) AS bien_do_nhiet_tb FROM openmeteo_ngay GROUP BY thanh_pho ORDER BY bien_do_nhiet_tb DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "bien_do_nhiet_tb"
+  ],
+  "expectedRows": [
+   [
+    "bangkok",
+    10.059999999999999
+   ],
+   [
+    "hcmc",
+    8.620000000000001
+   ],
+   [
+    "jakarta",
+    7.12
+   ],
+   [
+    "hanoi",
+    7.089999999999999
+   ],
+   [
+    "manila",
+    6.6
+   ],
+   [
+    "kuala_lumpur",
+    6.38
+   ]
+  ]
+ },
+ {
+  "id": "m05-021",
+  "q": "Xếp hạng 6 thành phố theo buc_xa_mj_m2 (bức xạ mặt trời) trung bình 10 ngày đầu năm 2024 — dữ liệu CHỈ có ở NASA POWER (openmeteo_ngay không có cột này), minh hoạ Variety thật giữa 2 nguồn (không chỉ khác giá trị mà khác cả BIẾN có sẵn).",
+  "difficulty": 2,
+  "topic": "Tích hợp đa nguồn",
+  "referenceSql": "SELECT thanh_pho, AVG(buc_xa_mj_m2) AS buc_xa_tb FROM nasa_power_ngay GROUP BY thanh_pho ORDER BY buc_xa_tb DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "buc_xa_tb"
+  ],
+  "expectedRows": [
+   [
+    "bangkok",
+    19.568
+   ],
+   [
+    "hcmc",
+    17.189
+   ],
+   [
+    "manila",
+    17.118000000000002
+   ],
+   [
+    "jakarta",
+    14.809000000000001
+   ],
+   [
+    "kuala_lumpur",
+    14.225
+   ],
+   [
+    "hanoi",
+    7.3469999999999995
+   ]
+  ]
+ },
+ {
+  "id": "m05-022",
+  "q": "Phát hiện dị thường đơn giản: tìm các (thanh_pho, ngay) có luong_mua_mm (Open-Meteo) lớn hơn 2 LẦN trung bình luong_mua_mm của CHÍNH thành phố đó trong 10 ngày — ứng dụng trực tiếp bài toán 'phát hiện dị thường khí hậu' của đề tài nhóm, viết bằng subquery tương quan.",
+  "difficulty": 3,
+  "topic": "Tích hợp đa nguồn",
+  "referenceSql": "SELECT o.thanh_pho, o.ngay, o.luong_mua_mm FROM openmeteo_ngay o WHERE o.luong_mua_mm > 2 * (SELECT AVG(o2.luong_mua_mm) FROM openmeteo_ngay o2 WHERE o2.thanh_pho = o.thanh_pho);",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "luong_mua_mm"
+  ],
+  "expectedRows": [
+   [
+    "hanoi",
+    "2024-01-10",
+    16.9
+   ],
+   [
+    "hcmc",
+    "2024-01-06",
+    0.8
+   ],
+   [
+    "hcmc",
+    "2024-01-08",
+    0.6
+   ],
+   [
+    "jakarta",
+    "2024-01-04",
+    57.2
+   ],
+   [
+    "manila",
+    "2024-01-08",
+    6.2
+   ]
+  ]
+ },
+ {
+  "id": "m05-023",
+  "q": "Thành phố nào có nhiet_do_tb_c (NASA) trung bình CAO NHẤT trong 10 ngày — gợi ý cho ứng dụng 'khuyến nghị khung giờ bay UAV' (nhiệt độ cao thường đi kèm nhiễu động khí quyển mạnh hơn vào buổi trưa).",
+  "difficulty": 2,
+  "topic": "Tích hợp đa nguồn",
+  "referenceSql": "SELECT thanh_pho, AVG(nhiet_do_tb_c) AS nhiet_tb FROM nasa_power_ngay GROUP BY thanh_pho ORDER BY nhiet_tb DESC LIMIT 1;",
+  "expectedCols": [
+   "thanh_pho",
+   "nhiet_tb"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    28.274
+   ]
+  ]
+ },
+ {
+  "id": "m05-024",
+  "q": "Với mỗi thành phố, tính số ngày 'mưa lớn' (luong_mua_mm Open-Meteo > 10mm) trong 10 ngày — ứng dụng cho khuyến nghị nông nghiệp (ngày nào nên hoãn tưới tiêu/thu hoạch).",
+  "difficulty": 3,
+  "topic": "Tích hợp đa nguồn",
+  "referenceSql": "SELECT thanh_pho, COUNT(*) AS so_ngay_mua_lon FROM openmeteo_ngay WHERE luong_mua_mm > 10 GROUP BY thanh_pho ORDER BY so_ngay_mua_lon DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "so_ngay_mua_lon"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    7
+   ],
+   [
+    "kuala_lumpur",
+    5
+   ],
+   [
+    "hanoi",
+    1
+   ]
+  ]
+ },
+ {
+  "id": "m05-025",
+  "q": "Xếp hạng các cặp (thanh_pho, ngay) theo ĐỘ TIN CẬY ước lượng: 'tin cậy cao' nếu độ lệch mưa giữa NASA/Open-Meteo <= 5mm VÀ nhiet_do_tb_c nằm trong khoảng [min,max] của Open-Meteo — đếm số cặp tin cậy cao theo từng thành phố (kết hợp điều kiện mục C).",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT n.thanh_pho, COUNT(*) AS so_cap_tin_cay FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay WHERE ABS(n.luong_mua_mm - o.luong_mua_mm) <= 5 AND n.nhiet_do_tb_c BETWEEN o.nhiet_do_min_c AND o.nhiet_do_max_c GROUP BY n.thanh_pho ORDER BY so_cap_tin_cay DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "so_cap_tin_cay"
+  ],
+  "expectedRows": [
+   [
+    "hcmc",
+    10
+   ],
+   [
+    "bangkok",
+    10
+   ],
+   [
+    "manila",
+    7
+   ],
+   [
+    "hanoi",
+    7
+   ],
+   [
+    "jakarta",
+    5
+   ],
+   [
+    "kuala_lumpur",
+    3
+   ]
+  ]
+ },
+ {
+  "id": "m05-026",
+  "q": "Tính tổng lượng mưa 10 ngày (Open-Meteo) của từng thành phố, sắp giảm dần — thành phố nào 'ướt' nhất đầu tháng 1/2024 trong 6 thành phố Đông Nam Á này?",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT thanh_pho, SUM(luong_mua_mm) AS tong_mua FROM openmeteo_ngay GROUP BY thanh_pho ORDER BY tong_mua DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "tong_mua"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    183.3
+   ],
+   [
+    "kuala_lumpur",
+    149.8
+   ],
+   [
+    "hanoi",
+    37.699999999999996
+   ],
+   [
+    "manila",
+    13.5
+   ],
+   [
+    "hcmc",
+    1.8
+   ],
+   [
+    "bangkok",
+    0.0
+   ]
+  ]
+ },
+ {
+  "id": "m05-027",
+  "q": "Vĩ độ (vi_do) của thành phố nào trong nasa_power_ngay gần xích đạo nhất (|vi_do| nhỏ nhất)?",
+  "difficulty": 1,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT DISTINCT thanh_pho, vi_do FROM nasa_power_ngay ORDER BY ABS(vi_do) ASC LIMIT 1;",
+  "expectedCols": [
+   "thanh_pho",
+   "vi_do"
+  ],
+  "expectedRows": [
+   [
+    "kuala_lumpur",
+    3.14
+   ]
+  ]
+ },
+ {
+  "id": "m05-028",
+  "q": "So sánh nhiệt độ trung bình (TAVG, GHCN, quy đổi độ C) của trạm TH000048565 với nhiet_do_tb_c (NASA, thanh_pho='bangkok') — chênh lệch trung bình bao nhiêu độ C?",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT AVG(ABS(g.gia_tri/10.0 - n.nhiet_do_tb_c)) AS lech_tb_c FROM ghcn_tram g JOIN nasa_power_ngay n ON g.ngay=n.ngay AND n.thanh_pho='bangkok' WHERE g.element='TAVG';",
+  "expectedCols": [
+   "lech_tb_c"
+  ],
+  "expectedRows": [
+   [
+    0.8439999999999994
+   ]
+  ]
+ },
+ {
+  "id": "m05-029",
+  "q": "Liệt kê 5 cặp (thanh_pho, ngay) có nhiet_do_tb_c (NASA) CAO NHẤT toàn bộ dữ liệu, kèm giá trị tương ứng ở Open-Meteo (max/min) để đối chiếu nhanh.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT n.thanh_pho, n.ngay, n.nhiet_do_tb_c, o.nhiet_do_max_c, o.nhiet_do_min_c FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay ORDER BY n.nhiet_do_tb_c DESC LIMIT 5;",
+  "expectedCols": [
+   "thanh_pho",
+   "ngay",
+   "nhiet_do_tb_c",
+   "nhiet_do_max_c",
+   "nhiet_do_min_c"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    "2024-01-02",
+    29.09,
+    32.0,
+    23.9
+   ],
+   [
+    "jakarta",
+    "2024-01-01",
+    28.59,
+    31.7,
+    24.0
+   ],
+   [
+    "jakarta",
+    "2024-01-09",
+    28.56,
+    33.2,
+    24.2
+   ],
+   [
+    "jakarta",
+    "2024-01-10",
+    28.52,
+    31.8,
+    24.5
+   ],
+   [
+    "bangkok",
+    "2024-01-09",
+    28.52,
+    34.2,
+    23.2
+   ]
+  ]
+ },
+ {
+  "id": "m05-030",
+  "q": "Đếm số thành phố có ÍT NHẤT 1 ngày 'không mưa cả 2 nguồn' (cả nasa và openmeteo đều luong_mua_mm = 0) trong 10 ngày.",
+  "difficulty": 2,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT COUNT(DISTINCT n.thanh_pho) AS so_thanh_pho FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay WHERE n.luong_mua_mm = 0 AND o.luong_mua_mm = 0;",
+  "expectedCols": [
+   "so_thanh_pho"
+  ],
+  "expectedRows": [
+   [
+    2
+   ]
+  ]
+ },
+ {
+  "id": "m05-031",
+  "q": "Bài tổng hợp cuối: với mỗi thành_pho, tính (a) nhiệt độ TB (NASA), (b) tổng mưa (Open-Meteo), (c) độ lệch mưa TB giữa 2 nguồn — trong 1 câu SELECT duy nhất dùng nhiều JOIN + GROUP BY, đúng dạng báo cáo tổng hợp cuối module các buổi trước.",
+  "difficulty": 3,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT n.thanh_pho, AVG(n.nhiet_do_tb_c) AS nhiet_tb, SUM(o.luong_mua_mm) AS tong_mua, AVG(ABS(n.luong_mua_mm - o.luong_mua_mm)) AS lech_mua_tb FROM nasa_power_ngay n JOIN openmeteo_ngay o ON n.thanh_pho=o.thanh_pho AND n.ngay=o.ngay GROUP BY n.thanh_pho ORDER BY nhiet_tb DESC;",
+  "expectedCols": [
+   "thanh_pho",
+   "nhiet_tb",
+   "tong_mua",
+   "lech_mua_tb"
+  ],
+  "expectedRows": [
+   [
+    "jakarta",
+    28.274,
+    183.3,
+    10.125000000000002
+   ],
+   [
+    "bangkok",
+    27.512,
+    0.0,
+    0.0
+   ],
+   [
+    "hcmc",
+    26.958,
+    1.8,
+    0.172
+   ],
+   [
+    "kuala_lumpur",
+    25.479,
+    149.8,
+    9.464
+   ],
+   [
+    "manila",
+    25.303,
+    13.5,
+    2.282
+   ],
+   [
+    "hanoi",
+    19.698,
+    37.699999999999996,
+    2.3419999999999996
+   ]
+  ]
+ },
+ {
+  "id": "m05-032",
+  "q": "Đếm tổng số bản ghi (dòng) trên CẢ 3 bảng gộp lại — quy mô dữ liệu mẫu thật dùng trong module này.",
+  "difficulty": 1,
+  "topic": "Tổng hợp",
+  "referenceSql": "SELECT (SELECT COUNT(*) FROM nasa_power_ngay) + (SELECT COUNT(*) FROM openmeteo_ngay) + (SELECT COUNT(*) FROM ghcn_tram) AS tong_so_dong;",
+  "expectedCols": [
+   "tong_so_dong"
+  ],
+  "expectedRows": [
+   [
+    150
+   ]
+  ]
+ }
+]

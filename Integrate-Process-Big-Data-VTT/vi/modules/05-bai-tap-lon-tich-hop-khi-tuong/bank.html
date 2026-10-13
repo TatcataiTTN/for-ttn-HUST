@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Ngân hàng trắc nghiệm · Bài tập lớn · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Luyện tập sâu · Bài tập lớn</div>
+<h1>Ngân hàng trắc nghiệm — Tích hợp dữ liệu khí tượng đa nguồn</h1>
+<p>Mỗi câu ghi rõ nguồn (<code>docs/02-nguon-du-lieu.md</code>, <code>docs/12-lich-su-he-sinh-thai-nguon-du-lieu.md</code>,
+README đồ án, hoặc trích trực tiếp từ dữ liệu mẫu thật dùng trong SQL Sandbox), đáp án đã chấm &amp; giải
+thích ngay, lưu tiến độ trên trình duyệt. Lọc theo chủ đề/nguồn, xem lại riêng các câu đã sai.</p></div>
+<div id="bank-mount"></div>
+<script src="../../../_shared/bank.js"></script>
+<script>
+BankUI.init({
+  mount: "#bank-mount",
+  dataUrl: "../../../data/bank/bank_m05.json",
+  storageKey: "bank:05-bai-tap-lon-tich-hop-khi-tuong"
+});
+</script>
+<div class="callout info" style="margin-top:18px">
+<a href="index.html">◀ Về trang bài giảng Bài tập lớn: Tích hợp dữ liệu khí tượng đa nguồn</a></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  module Bài tập lớn dựng từ dữ liệu &amp; tài liệu thật của đồ án Nhóm 16. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Module "Bài tập lớn" tổng hợp kiến thức nền của đồ án Nhóm 16 (IT5427-Nhom16-TichHopKhiTuong):
+  lịch sử, định dạng, dữ liệu mẫu thật, hệ sinh thái và nghiên cứu khoa học đã dùng cho 16 nguồn dữ
+  liệu khí tượng/khí hậu. Không bịa số liệu/lịch sử.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

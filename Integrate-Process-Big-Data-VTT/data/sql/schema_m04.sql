@@ -34,3 +34,43 @@ INSERT INTO nguon_b VALUES
  (208,'Can ho Van Phu Ha Dong','Van Phu','Hà Đông',55.0,10.0,'0911111111'),               -- KHÔNG trùng (chỉ có ở nguon_b)
  (209,'Nha mat pho Kim Ma','Kim Ma','Ba Đình',45.0,25.0,'0912222222'),                    -- KHÔNG trùng
  (210,'Can ho Time City','458 Minh Khai','Hai Bà Trưng',68.0,19.0,'0913333333');          -- KHÔNG trùng
+
+-- Bổ sung: Case thật "hợp nhất trạm quan trắc chuẩn (DWD) với trạm cá nhân (Netatmo)" mô phỏng
+-- theo cấu trúc bài toán của Bárdossy, Seidel & El Hachem (2021, HESS) — PWS nhiều hơn nhưng có
+-- trạm nhiễu/sai số, DWD ít hơn nhưng tin cậy, dùng làm "oracle" đối chiếu. Số liệu TỔNG HỢP, có
+-- chủ đích lệch giống phát hiện của bài báo (không phải số đo thật của Netatmo/DWD).
+DROP TABLE IF EXISTS tram_dwd; DROP TABLE IF EXISTS tram_netatmo;
+
+CREATE TABLE tram_dwd (id INTEGER PRIMARY KEY, ten_tram TEXT, quan TEXT, gio_do INTEGER, luong_mua_mm REAL);
+CREATE TABLE tram_netatmo (id INTEGER PRIMARY KEY, ten_tram TEXT, quan TEXT, gio_do INTEGER, luong_mua_mm REAL);
+
+-- tram_dwd: 8 trạm chuẩn, mỗi trạm 1 bản ghi đo lúc 14h — xem là "ground truth" tin cậy
+INSERT INTO tram_dwd VALUES
+ (1,'DWD-DongDa','Đống Đa',14,12.0),
+ (2,'DWD-CauGiay','Cầu Giấy',14,9.5),
+ (3,'DWD-ThanhXuan','Thanh Xuân',14,15.0),
+ (4,'DWD-HoangMai','Hoàng Mai',14,7.0),
+ (5,'DWD-NamTuLiem','Nam Từ Liêm',14,20.0),
+ (6,'DWD-HaDong','Hà Đông',14,5.0),
+ (7,'DWD-BaDinh','Ba Đình',14,11.0),
+ (8,'DWD-HaiBaTrung','Hai Bà Trưng',14,18.0);
+
+-- tram_netatmo: 14 trạm cá nhân — 8 khớp tốt với DWD cùng quận+giờ (lệch <10%), 2 trạm nhiễu nặng
+-- trong CÙNG quận+giờ (lệch rất lớn, id=109,114 — mô phỏng sai số thiết bị giá rẻ), 2 trạm ở quận
+-- KHÔNG có trạm DWD nào (id=111,112 — minh hoạ khoảng trống phủ sóng của mạng lưới chuẩn), 1 trạm
+-- cùng quận nhưng khác giờ đo (id=113 — không thể đối chiếu trực tiếp theo giờ)
+INSERT INTO tram_netatmo VALUES
+ (101,'PWS-DongDa-A','Đống Đa',14,12.6),
+ (102,'PWS-DongDa-B','Đống Đa',14,18.0),
+ (103,'PWS-CauGiay-A','Cầu Giấy',14,9.8),
+ (104,'PWS-CauGiay-B','Cầu Giấy',14,9.6),
+ (105,'PWS-ThanhXuan-A','Thanh Xuân',14,15.9),
+ (106,'PWS-HoangMai-A','Hoàng Mai',14,7.3),
+ (107,'PWS-NamTuLiem-A','Nam Từ Liêm',14,21.5),
+ (108,'PWS-HaDong-A','Hà Đông',14,5.2),
+ (109,'PWS-BaDinh-A','Ba Đình',14,16.0),
+ (110,'PWS-HaiBaTrung-A','Hai Bà Trưng',14,18.9),
+ (111,'PWS-TayHo-A','Tây Hồ',14,10.0),
+ (112,'PWS-LongBien-A','Long Biên',14,6.0),
+ (113,'PWS-DongDa-C','Đống Đa',9,3.0),
+ (114,'PWS-CauGiay-C','Cầu Giấy',14,2.0);

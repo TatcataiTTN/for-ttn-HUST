@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Bài tập lớn: Tích hợp dữ liệu khí tượng đa nguồn · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Bài tập lớn · Đồ án Nhóm 16</div>
+<h1>Tích hợp dữ liệu khí tượng đa nguồn Đông Nam Á</h1></div>
+
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">ĐỒ ÁN NHÓM 16 · IT5427-Nhom16-TichHopKhiTuong</div><h2>Tích hợp dữ liệu khí tượng đa nguồn Đông Nam Á</h2><p>Module này KHÔNG phải nội dung buổi học lý thuyết — đây là <b>bài giảng tổng hợp toàn bộ kiến thức nền của đồ án môn học nhóm</b>: lịch sử ra đời, định dạng, dữ liệu mẫu THẬT, hệ sinh thái công cụ, và nghiên cứu khoa học đã dùng từng nguồn dữ liệu khí tượng mà nhóm 16 đang tích hợp. Toàn bộ nội dung dựa trên <code>docs/02-nguon-du-lieu.md</code> (định dạng/truy cập đã verify kỹ thuật thật) và <code>docs/12-lich-su-he-sinh-thai-nguon-du-lieu.md</code> (lịch sử/hệ sinh thái/nghiên cứu, tra cứu web thật, có trích nguồn) của dự án nhóm.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/3</div>
+<div class="part-num">01</div><h2>Bài toán của đồ án &amp; kiến trúc dữ liệu</h2>
+<ul class="part-list"><li>Vì sao cần tích hợp ĐA nguồn thay vì dùng 1 nguồn duy nhất</li>
+<li>5 nhóm nguồn: Reanalysis lưới, Trạm mặt đất, Mưa vệ tinh, Bức xạ, API tổng hợp</li>
+<li>Spatio-Temporal Heterogeneity — dạng dị biệt trọng tâm của đề tài</li></ul></div><div class="mdeck-slide"><h2>Vì sao 1 nguồn duy nhất không đủ</h2>
+      <p>README của đồ án xác định rõ: hệ thống tích hợp dữ liệu từ nguồn <b>lưới toàn cầu liên tục</b> (ERA5) với nguồn <b>điểm rời rạc</b> (trạm NOAA ISD/GHCN) và nguồn <b>bức xạ vệ tinh</b> (NASA POWER) — ghép 3 bản chất không gian khác nhau vào 1 lược đồ trung gian (mediated schema) thống nhất.</p>
+      <div class="callout warn"><div class="lbl">Spatio-Temporal Heterogeneity</div>
+      Dị biệt không-thời gian giữa dữ liệu lưới liên tục và dữ liệu điểm rời rạc là dạng dị biệt <b>cấu trúc sâu hơn nhiều</b> so với ghép 2 bảng cùng định dạng — đây là lý do đề tài bám sát trực tiếp Schema Alignment, Record Linkage/ER, Sources Profiling, Batch vs Streaming, Governance &amp; Schema Drift của học phần.</div></div><div class="mdeck-slide"><h2>5 nhóm nguồn dữ liệu của đồ án</h2>
+      <ul class="pd-legend">
+      <li><b>A. Reanalysis lưới toàn cầu</b><span>ERA5, NCEP/NCAR R1, MERRA-2, JRA-55 — backbone không gian liên tục</span></li>
+      <li><b>B. Trạm mặt đất</b><span>GHCN-Daily, ISD, GSOD, Meteostat, ECA&amp;D, IEM-ASOS — ground truth điểm</span></li>
+      <li><b>C. Mưa vệ tinh độ phân giải cao</b><span>CHIRPS, GPM IMERG — bổ sung mưa vùng nhiệt đới/núi</span></li>
+      <li><b>D. Bức xạ &amp; năng lượng</b><span>NASA POWER — nông nghiệp/năng lượng tái tạo</span></li>
+      <li><b>E. API tổng hợp</b><span>Open-Meteo, Visual Crossing, Weatherbit — demo nhanh, không chạy mô hình riêng</span></li>
+      </ul></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/3</div>
+<div class="part-num">02</div><h2>Case thật từng nguồn: lịch sử, hệ sinh thái, nghiên cứu</h2>
+<ul class="part-list"><li>ERA5 — phả hệ 5 thế hệ tái phân tích ECMWF</li>
+<li>CHIRPS &amp; GPM IMERG — nhiều bằng chứng Việt Nam nhất, kết luận TRÁI CHIỀU theo vùng</li>
+<li>NASA POWER — lớp đóng gói nông nghiệp trên nền MERRA-2</li></ul></div><div class="mdeck-slide"><h2>ERA5 — thế hệ thứ 5 của tái phân tích ECMWF</h2>
+      <p>Phả hệ: FGGE (1979) → ERA-15 (giữa 1990s) → ERA-40 (2001-2003, phủ 1957-2002) → ERA-Interim (2006-2019) → <b>ERA5</b> (từ 2015, trong khuôn khổ Copernicus C3S, engine IFS Cy41r2). Production thật bắt đầu 1/2016; 1/2019 ECMWF mở rộng thêm 21 năm về trước (tới 1940). Đây là tái phân tích ĐẦU TIÊN của ECMWF vận hành như dịch vụ thường trực thay vì dự án nghiên cứu đơn lẻ.</p>
+      <div class="callout good"><div class="lbl">Hệ sinh thái nhóm đang dùng thật (ARCO-ERA5)</div>
+      <code>xarray.open_zarr</code> + <code>gcsfs</code> đọc trực tiếp bucket Google Cloud công khai, không cần tài khoản — nhóm đã verify thật 9/10/2026, tải subset 3 ngày vùng ĐNA (31MB, 4 biến) thành công.</div>
+      <p class="hint">Nguồn: ECMWF re-analysis overview, Copernicus "Going forward looking back" — xem đầy đủ trích dẫn trong <code>docs/12-lich-su-he-sinh-thai-nguon-du-lieu.md</code> mục A.</p></div><div class="mdeck-slide"><h2>Case thật: CHIRPS &amp; GPM IMERG — "không nguồn nào tốt nhất tuyệt đối"</h2>
+      <p><b>CHIRPS</b> (UC Santa Barbara Climate Hazards Group + USGS, Funk et al. 2015, <i>Scientific Data</i>) ra đời phục vụ hệ thống cảnh báo sớm nạn đói FEWS NET của USAID. <b>GPM IMERG</b> (NASA/JAXA) kế nhiệm TRMM (ngừng 8/2015), phóng vệ tinh lõi 27/2/2014, kết hợp 12 vệ tinh thành 1 bản đồ mưa liền mạch.</p>
+      <div class="callout warn"><div class="lbl">4 nghiên cứu Việt Nam thật về CHIRPS — kết luận TRÁI CHIỀU theo vùng</div>
+      Ngô nhờ nước trời (PMC8752618): CHIRPS tốt hơn CMORPH/CPC/GSMaP. Tây Bắc VN (11 trạm, 2000-2024): CHIRPS RMSE thấp hơn NHƯNG đánh giá thấp mưa ở trạm độ cao lớn. Thừa Thiên Huế (2020-2023): MSWEP vượt trội CHIRPS/GSMaP/GPM. Xie et al. (2025, <i>PLOS ONE</i>): hiệu năng ERA5/CHIRPS/IMERG/PERSIANN lệch mạnh theo vùng trên toàn ĐNA.</div>
+      <p class="hint">Kết luận cho đồ án: CHIRPS hoạt động tốt vùng thấp/nông nghiệp nhưng đánh giá thấp mưa vùng núi cao — PHẢI kiểm chứng theo vùng cụ thể, không giả định 1 nguồn luôn đáng tin cậy nhất. Đây chính là case-study sống động nhất cho khái niệm <b>Veracity</b> của môn học. Nguồn: Funk et al. 2015 (USGS), nghiên cứu Việt Nam PMC8752618 — trích đầy đủ trong <code>docs/12-...</code> mục C.</p></div><div class="mdeck-slide"><h2>Case thật: NASA POWER — lớp "đóng gói nông nghiệp" trên nền MERRA-2</h2>
+      <p>Dự án "Prediction of Worldwide Energy Resources" (NASA Langley) — bức xạ lấy từ CERES/GEWEX, khí tượng từ GEOS/MERRA-2. Phục vụ 3 cộng đồng: Năng lượng tái tạo, Công trình bền vững, <b>Agroclimatology</b> (gần nhất với bài toán nông nghiệp của đồ án).</p>
+      <div class="callout good"><div class="lbl">Nghiên cứu liên quan gần nhất tới đồ án</div>
+      Yuan et al. (2022), <i>Nature Food</i>, "Southeast Asia must narrow down the yield gap to continue to be a major rice bowl" — dùng NASA POWER Agro-climatic database thay dữ liệu trạm thiếu ở 8 điểm Indonesia + 3 điểm Thái Lan. Lưu ý: 1 nghiên cứu khác cho thấy NASA POWER ĐƠN LẺ mô phỏng năng suất kém hơn khi kết hợp với dữ liệu trạm NOAA — nên dùng POWER làm nguồn BỨC XẠ bổ sung, không thay thế hoàn toàn trạm.</div>
+      <p class="hint">Nguồn: NASA Earthdata POWER overview, Yuan et al. 2022 (DOI 10.1038/s43016-022-00477-z) — trích đầy đủ trong <code>docs/12-...</code> mục D.</p></div><div class="mdeck-slide"><h2>Các nguồn còn lại: ground-truth/đối chiếu đã verify kỹ thuật</h2>
+      <p>GHCN-Daily (NOAA NCEI, Menne et al. 2012) — &gt;80.000 trạm nhưng KHÔNG homogenized, cần xử lý thêm trước khi dùng định lượng biến đổi khí hậu. ISD (từ 1998, kế nhiệm bởi GHCNh). MERRA-2 (NASA GMAO, từ 2014) — nhiều nghiên cứu aerosol Đông Dương/Indonesia/Philippines nhưng đánh giá thấp AOD gần mặt đất mùa khô. Open-Meteo — KHÔNG tự chạy mô hình, chỉ tổng hợp &gt;15 cơ quan khí tượng quốc gia (AGPLv3, mã nguồn mở).</p>
+      <div class="callout warn"><div class="lbl">Trung thực về giới hạn tìm kiếm</div>
+      NCEP/NCAR R1, JRA-55, GHCN-Daily, ISD, GSOD, Meteostat, ECA&amp;D, IEM-ASOS, Visual Crossing, Weatherbit — nhóm nghiên cứu CHƯA tìm được bài báo học thuật trích dẫn trực tiếp cho Đông Nam Á trong phạm vi tìm kiếm đã làm. Các nguồn này vẫn hợp lệ cho vai trò ground-truth/đối chiếu/demo, chỉ là chưa có case-study khoa học cụ thể — ghi rõ thay vì bịa thêm cho đủ.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 3/3</div>
+<div class="part-num">03</div><h2>Thực hành trên dữ liệu mẫu THẬT của nhóm</h2>
+<ul class="part-list"><li>3 nguồn, 1 bài toán: NASA POWER (JSON) vs Open-Meteo (JSON hourly) vs GHCN (CSV, dạng EAV)</li>
+<li>Veracity thật: 2 nguồn mô hình cho ra số liệu mưa khác nhau cho CÙNG thành phố/ngày</li>
+<li>32 bài SQL chạy trên 150 dòng dữ liệu trích trực tiếp từ data_samples/ của đồ án</li></ul></div><div class="mdeck-slide"><h2>3 định dạng thật, 3 cách mô tả "cùng 1 hiện tượng"</h2>
+      <p>SQL Sandbox bên dưới dùng ĐÚNG dữ liệu đồ án nhóm đã tải thật (<code>data_samples/batch_week2/</code>), giữ nguyên cấu trúc gốc từng nguồn — không chuẩn hoá sẵn, để tự tay luyện Schema Alignment:</p>
+      <ul class="pd-legend">
+      <li><b>nasa_power_ngay</b><span>JSON → bảng phẳng: 1 dòng/ngày, nhiệt độ TRUNG BÌNH (T2M)</span></li>
+      <li><b>openmeteo_ngay</b><span>JSON hourly gộp ngày: 1 dòng/ngày, nhiệt độ MAX/MIN (khác định nghĩa biến với NASA POWER)</span></li>
+      <li><b>ghcn_tram</b><span>CSV dạng EAV thật của GHCN: mỗi biến (TMAX/TMIN/TAVG/PRCP) 1 DÒNG riêng, đơn vị phần mười độ C</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Veracity thật: 2 mô hình, 2 con số mưa khác nhau</h2>
+      <p>Với cùng 1 thành phố, cùng 1 ngày, NASA POWER và Open-Meteo thường xuyên cho ra giá trị lượng mưa KHÁC NHAU — có ngày 1 nguồn báo "có mưa", nguồn kia báo "không mưa" (0.0mm). Đây không phải lỗi dữ liệu mẫu — đây CHÍNH LÀ hiện tượng Veracity thật mà CHIRPS/GPM IMERG case-study ở Phần 2 đã chỉ ra: mưa đối lưu nhiệt đới cực khó mô hình hoá chính xác bằng mọi nguồn.</p>
+      <div class="callout good"><div class="lbl">Luyện trong SQL Sandbox</div>
+      Các câu m05-012, m05-013, m05-017, m05-025 bên dưới trực tiếp đo độ lệch này trên số liệu thật — xem phần "Data Fusion" trong Sandbox.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+
+<h2>🖥️ SQL Sandbox — 32 bài chạy thật trên dữ liệu đồ án (sql.js/SQLite, 100% trình duyệt)</h2>
+<p class="hint">3 bảng, 150 dòng — TOÀN BỘ là số thật trích trực tiếp từ <code>IT5427-Nhom16-TichHopKhiTuong/data_samples/batch_week2/</code> (6 thành phố Đông Nam Á, 01-10/01/2024), không tổng hợp. Viết SQL vào ô bên dưới rồi bấm <b>Chạy thử</b>; bấm <b>Chấm điểm</b> để so với lời giải mẫu đã chạy thật trên dữ liệu.</p>
+<div id="sb-mount-m05"></div>
+<script src="../../../_shared/sqlbank.js"></script>
+<script>
+SQLBank.init({
+  mount: "#sb-mount-m05",
+  vendorUrl: "../../../vendor/sql-wasm/",
+  schemaUrl: "../../../data/sql/schema_m05.sql",
+  dataUrl: "../../../data/sql/questions_m05.json",
+  storageKey: "sqlbank:05-bai-tap-lon-tich-hop-khi-tuong"
+});
+</script>
+
+<h2>📚 Ngân hàng luyện tập — lịch sử, định dạng, hệ sinh thái, nghiên cứu</h2>
+<p class="hint">Câu hỏi có nguồn gốc rõ ràng, trích từ <code>docs/02-nguon-du-lieu.md</code> (định dạng/truy cập đã verify kỹ thuật) và <code>docs/12-lich-su-he-sinh-thai-nguon-du-lieu.md</code> (lịch sử/nghiên cứu, tra web thật) của đồ án nhóm — lọc theo chủ đề, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../05-bai-tap-lon-tich-hop-khi-tuong/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng câu hỏi — Bài tập lớn</h3>
+<div class="go">Mở →</div></a>
+
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../04-record-linkage-entity-resolution/index.html">◀ Buổi 4: Record Linkage &amp; Entity Resolution</a><span></span></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  module Bài tập lớn dựng từ dữ liệu &amp; tài liệu thật của đồ án Nhóm 16. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Module "Bài tập lớn" tổng hợp kiến thức nền của đồ án Nhóm 16 (IT5427-Nhom16-TichHopKhiTuong):
+  lịch sử, định dạng, dữ liệu mẫu thật, hệ sinh thái và nghiên cứu khoa học đã dùng cho 16 nguồn dữ
+  liệu khí tượng/khí hậu. SQL Sandbox dùng đúng dữ liệu mẫu thật nhóm đã tải. Không bịa số liệu/lịch
+  sử — mục nào chưa tìm được nguồn tin cậy được ghi rõ "chưa xác minh" thay vì đoán.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

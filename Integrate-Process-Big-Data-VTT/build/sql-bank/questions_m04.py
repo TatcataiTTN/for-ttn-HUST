@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
-"""50 bài SQL chạy thật — Module 04 (Record Linkage & Entity Resolution).
+"""56 bài SQL chạy thật — Module 04 (Record Linkage & Entity Resolution).
 Lược đồ: nguon_a(id,tieu_de,dia_chi,quan,dien_tich,gia_trieu,sdt) · nguon_b(id,ten_tin,khu_vuc,
 quan,dt_m2,gia_rao_trieu,lien_he) — 2 nguồn rao vặt BĐS độc lập, 7/10 tin trùng thực thể (giá
 lệch 4-10%, tên/địa chỉ viết khác, nhưng SDT giống nhau — dùng SDT làm "oracle" kiểm tra kết quả
 matching bằng các tín hiệu khác yếu hơn, đúng tinh thần slide: SDT hiếm khi có sẵn/đúng 100% thực
-tế nên vẫn phải luyện matching bằng field khác)."""
+tế nên vẫn phải luyện matching bằng field khác).
+
+Bổ sung (m04-051..056): tram_dwd(id,ten_tram,quan,gio_do,luong_mua_mm) · tram_netatmo(id,ten_tram,
+quan,gio_do,luong_mua_mm) — case thật "hợp nhất trạm chuẩn/trạm cá nhân" mô phỏng theo cấu trúc bài
+toán của Bárdossy, Seidel & El Hachem (2021, HESS), xem build-practical-website/references/
+weather-data-integration-sql-exercises.md Schema 1. Số liệu tổng hợp, lệch có chủ đích."""
 
 QUESTIONS = [
   # ---- A: Data Preparation — chuẩn hoá/khám phá dữ liệu trước khi blocking ----
@@ -238,7 +243,45 @@ QUESTIONS = [
       " trung bình của các cặp đó.",
     referenceSql="SELECT a.quan, COUNT(*) AS so_cap, AVG(ABS(a.gia_trieu-b.gia_rao_trieu)/a.gia_trieu*100) AS pct_lech_tb "
       "FROM nguon_a a JOIN nguon_b b ON a.sdt = b.lien_he GROUP BY a.quan;"),
+
+  # ---- G: Case thật — hợp nhất trạm DWD (chuẩn) / Netatmo (cá nhân), theo Bárdossy et al. (2021) ----
+  dict(id="m04-051", difficulty=1, topic="Tích hợp PWS/DWD",
+    q="Blocking theo quận + giờ đo: JOIN tram_dwd với tram_netatmo khi CÙNG quan VÀ CÙNG gio_do —"
+      " đếm số cặp ứng viên sinh ra (trước khi so khớp giá trị mưa).",
+    referenceSql="SELECT COUNT(*) AS so_cap_ung_vien FROM tram_dwd d JOIN tram_netatmo n "
+      "ON d.quan = n.quan AND d.gio_do = n.gio_do;"),
+  dict(id="m04-052", difficulty=2, topic="Tích hợp PWS/DWD",
+    q="Matching với ngưỡng 10%: trong các cặp đã blocking ở câu trước, lấy các cặp có"
+      " |luong_mua_mm lệch nhau| / luong_mua_mm (DWD) <= 0.10 — đây là các trạm Netatmo ĐÁNG TIN.",
+    referenceSql="SELECT d.ten_tram AS tram_chuan, n.ten_tram AS tram_ca_nhan, d.luong_mua_mm AS mua_dwd, "
+      "n.luong_mua_mm AS mua_netatmo FROM tram_dwd d JOIN tram_netatmo n "
+      "ON d.quan = n.quan AND d.gio_do = n.gio_do "
+      "WHERE ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm <= 0.10;"),
+  dict(id="m04-053", difficulty=2, topic="Tích hợp PWS/DWD",
+    q="Tìm các trạm Netatmo 'NHIỄU': cùng quan + gio_do với 1 trạm DWD (đã blocking được) nhưng"
+      " lệch giá trị mưa > 30% — đây là ứng viên nên LOẠI trước khi đưa vào nội suy, đúng tinh"
+      " thần bước lọc trạm của Bárdossy et al. (2021).",
+    referenceSql="SELECT n.ten_tram, d.luong_mua_mm AS mua_dwd, n.luong_mua_mm AS mua_netatmo "
+      "FROM tram_dwd d JOIN tram_netatmo n ON d.quan = n.quan AND d.gio_do = n.gio_do "
+      "WHERE ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm > 0.30;"),
+  dict(id="m04-054", difficulty=3, topic="Tích hợp PWS/DWD",
+    q="Tìm các quan có trạm Netatmo nhưng KHÔNG có trạm DWD nào — minh hoạ khoảng trống phủ sóng"
+      " (coverage gap) của mạng lưới trạm chuẩn, buộc phải dựa hoàn toàn vào dữ liệu cá nhân ở đó.",
+    referenceSql="SELECT DISTINCT quan FROM tram_netatmo WHERE quan NOT IN (SELECT quan FROM tram_dwd);"),
+  dict(id="m04-055", difficulty=3, topic="Tích hợp PWS/DWD",
+    q="Tìm các trạm Netatmo nằm CÙNG quan với ít nhất 1 trạm DWD nhưng KHÔNG đo CÙNG gio_do —"
+      " các trạm này không thể đối chiếu trực tiếp dù cùng khu vực (lệch thời gian quan trắc).",
+    referenceSql="SELECT n.ten_tram, n.quan, n.gio_do FROM tram_netatmo n "
+      "WHERE n.quan IN (SELECT quan FROM tram_dwd) "
+      "AND NOT EXISTS (SELECT 1 FROM tram_dwd d WHERE d.quan = n.quan AND d.gio_do = n.gio_do);"),
+  dict(id="m04-056", difficulty=3, topic="Tích hợp PWS/DWD",
+    q="Bài tổng hợp: với mỗi quan có ít nhất 1 trạm Netatmo ĐÁNG TIN (lệch <=10% so với DWD cùng"
+      " quan+gio_do), tính số trạm đáng tin và % lệch trung bình của chúng.",
+    referenceSql="SELECT d.quan, COUNT(*) AS so_tram_tin_cay, "
+      "AVG(ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm * 100) AS pct_lech_tb "
+      "FROM tram_dwd d JOIN tram_netatmo n ON d.quan = n.quan AND d.gio_do = n.gio_do "
+      "WHERE ABS(d.luong_mua_mm - n.luong_mua_mm) / d.luong_mua_mm <= 0.10 GROUP BY d.quan;"),
 ]
 
-assert len(QUESTIONS) == 50, f"Expected 50 questions, got {len(QUESTIONS)}"
-assert len({q['id'] for q in QUESTIONS}) == 50, "Duplicate ids found"
+assert len(QUESTIONS) == 56, f"Expected 56 questions, got {len(QUESTIONS)}"
+assert len({q['id'] for q in QUESTIONS}) == 56, "Duplicate ids found"
