@@ -68,7 +68,9 @@ a{color:var(--accent)}
 .pd-formula-label{font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
 .pd-formula-math{font-size:1.15rem}
 .pd-legend{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:10px 0;padding:0}
+.pd-legend li{display:contents}
 .pd-legend b{color:var(--accent)}
+.pd-legend span{align-self:start}
 
 /* ---- Accordion (bài tập) ---- */
 details.ex{border:1px solid var(--border);border-radius:10px;margin:8px 0;background:var(--panel)}
