@@ -52,27 +52,147 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       <li><b>Entity Linking</b><span>khái niệm rộng hơn — tạo liên kết giữa các bản ghi có liên quan (không nhất thiết "là 1")</span></li>
       </ul>
       <div class="callout warn"><div class="lbl">Fellegi &amp; Sunter (1969)</div>
-      3 kết luận khi so 1 cặp bản ghi: <b>match</b>, <b>non-match</b>, hoặc <b>possible-match</b> (chưa đủ bằng chứng).</div></div><div class="mdeck-slide"><h2>Edit Distance (Levenshtein) — tính bằng Dynamic Programming</h2>
+      3 kết luận khi so 1 cặp bản ghi: <b>match</b>, <b>non-match</b>, hoặc <b>possible-match</b> (chưa đủ bằng chứng).</div></div><div class="mdeck-slide"><h2>Ví dụ mở đầu: 11 bản ghi chuyến bay — 1 thực thể hay 2?</h2>
+      <p>Bảng dữ liệu thật (Dong &amp; Srivastava, <i>Big Data Integration</i>, Table 3.1) liệt kê 11 bản ghi
+      chuyến bay (hãng bay AL, số hiệu FN, sân bay/giờ đi-đến). Một số dòng mô tả CÙNG 1 chuyến bay thật (chỉ
+      lệch vài phút do nhập liệu/làm tròn), số khác mô tả chuyến bay KHÁC HẲN.</p>
+      <div class="callout warn"><div class="lbl">Câu hỏi cốt lõi của cả bài giảng</div>
+      Giá trị nào là <b>lỗi nhập liệu</b> (vẫn cùng 1 chuyến bay), giá trị nào THỰC SỰ phân biệt 2 chuyến bay
+      khác nhau? Không có quy tắc "khớp tuyệt đối" — phải dùng độ đo tương đồng + ngưỡng quyết định.</div>
+      <p class="hint">Naïve Deduplication (dùng UNION DISTINCT/group-by theo hash) chỉ bắt bản ghi KHỚP TUYỆT
+      ĐỐI từng ký tự — ví dụ "Matthias Boehm" (IBM Research) vs "Matthias Böhm" (TU Graz) sẽ KHÔNG bị coi là
+      trùng dù rõ ràng cùng 1 người, chỉ khác dấu ö/oe và nơi công tác.</p></div><div class="mdeck-slide"><h2>5 loại lỗi khiến 2 chuỗi tả cùng 1 thực thể mà không giống hệt</h2>
+      <ul class="pd-legend">
+      <li><b>Lỗi gõ/OCR</b><span>"David Smith" vs "Davod Smith" — hợp với Edit Distance</span></li>
+      <li><b>Khác định dạng</b><span>"10/8" vs "Oct 8" — cần chuẩn hoá trước, không đo tương đồng nào tự xử lý được</span></li>
+      <li><b>Viết tắt</b><span>"Daniel Walker Herbert Smith" vs "Dan W. Smith"</span></li>
+      <li><b>Tên/biệt danh khác hẳn</b><span>"William Smith" vs "Bill Smith" — Edit Distance cho điểm RẤT THẤP dù đúng là 1 người</span></li>
+      <li><b>Đảo thứ tự từ</b><span>"Dept. of CS, UW" vs "CS Dept., UW" — hợp với Set-based (Jaccard/TF-IDF) hơn Edit Distance</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Phát biểu hình thức & 2 thách thức lớn</h2>
+      <p>Cho 2 tập chuỗi X, Y, tìm MỌI cặp $(x,y)$, $x\in X, y\in Y$ cùng chỉ 1 thực thể thật (gọi là 1
+      <b>match</b>). Ví dụ: $X=\{$Dave Smith, Joe Wilson, Dan Smith$\}$, $Y=\{$David D. Smith, Daniel W.
+      Smith$\}$ ⟹ match đúng: Dave Smith↔David D. Smith, Dan Smith↔Daniel W. Smith (Joe Wilson không match
+      ai cả — không phải bản ghi nào cũng có cặp).</p>
+      <div class="pd-legend">
+      <li><b>Accuracy</b><span>độ chính xác — quyết định đúng/sai từng cặp</span></li>
+      <li><b>Scalability</b><span>khả năng mở rộng — chạy nổi với dữ liệu lớn (n² cặp)</span></li>
+      </div></div><div class="mdeck-slide"><h2>Similarity measure vs Distance/Cost measure</h2>
+      <p>Giải pháp cho Accuracy: dùng $s(x,y)\in[0,1]$, $s$ càng CAO thì càng giống; khai báo match nếu
+      $s(x,y)\ge$ ngưỡng $t$. Có 1 biến thể NGƯỢC chiều — <b>distance/cost measure</b> $d(x,y)$ — giá trị
+      càng NHỎ thì càng giống (Edit Distance chính là 1 distance measure, không phải similarity trực tiếp,
+      phải đổi qua công thức $s=1-d/\max(len)$).</p>
+      <div class="callout warn"><div class="lbl">Thách thức Scalability</div>
+      Áp dụng $s(x,y)$ cho MỌI cặp là $O(n^2)$ — không khả thi với dữ liệu lớn. Giải pháp: hàm
+      <code>FindCands</code> chỉ tìm tập ứng viên $Z\subseteq Y$ nhỏ hơn nhiều để so — chính là ý tưởng gốc
+      của <b>Blocking</b> (sẽ học kỹ ở Phần 2).</div></div><div class="mdeck-slide"><h2>4 nhóm phương pháp đo tương đồng chuỗi</h2>
+      <ul class="pd-legend">
+      <li><b>Sequence-based</b><span>dựa theo THỨ TỰ ký tự — Edit distance, Needleman-Wunch, Jaro, Jaro-Winkler</span></li>
+      <li><b>Set-based</b><span>coi chuỗi là TẬP token, bỏ qua thứ tự — Overlap, Jaccard, TF/IDF</span></li>
+      <li><b>Hybrid</b><span>lai 2 nhóm trên — Generalized Jaccard, Soft TF/IDF, Monge-Elkan</span></li>
+      <li><b>Phonetic</b><span>dựa theo CÁCH PHÁT ÂM — Soundex</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Edit Distance (Levenshtein) — tính bằng Dynamic Programming</h2>
       <div class="pd-formula"><div class="pd-formula-label">Edit Distance</div>
       <div class="pd-formula-math">$d(i,j) = \min\{d(i-1,j-1)+c(x_i,y_j),\; d(i-1,j)+1,\; d(i,j-1)+1\}$</div></div>
       <p>Ví dụ: <code>color</code> → <code>colour</code> chỉ cần <b>1 phép chèn</b> (thêm 'u') ⟹ $d=1$.
-      Similarity: $s(x,y) = 1 - d(x,y)/\max(|x|,|y|) = 1 - 1/6 \approx 0.833$.</p></div><div class="mdeck-slide"><h2>Jaccard & TF/IDF — similarity dạng tập hợp</h2>
+      Similarity: $s(x,y) = 1 - d(x,y)/\max(|x|,|y|) = 1 - 1/6 \approx 0.833$.</p></div><div class="mdeck-slide"><h2>Dựng bảng DP đầy đủ: ví dụ x="dva", y="dave"</h2>
+      <p>Công thức truy hồi: $d(i,j)=\min\{d(i-1,j-1)+c(x_i,y_j),\ d(i-1,j)+1,\ d(i,j-1)+1\}$, với
+      $c=0$ nếu $x_i=y_j$ ngược lại $c=1$. Dựng bảng $4\times5$ (hàng ""/d/v/a, cột ""/d/a/v/e) và truy vết
+      mũi tên ngược từ góc dưới-phải.</p>
+      <div class="callout good"><div class="lbl">Kết quả</div>
+      $d(3,4)=2$: đường truy vết tối ưu là <b>chèn 'a'</b> (ngay sau 'd') và <b>thay 'a' thành 'e'</b> (vị
+      trí cuối) — 2 thao tác biến "dva"→"dave". Chi phí dựng bảng: $O(|x|\cdot|y|)$.</div></div><div class="mdeck-slide"><h2>Set-based: sinh token (word-split hoặc q-gram)</h2>
+      <p>Thay vì coi chuỗi là DÃY ký tự có thứ tự, coi chuỗi là TẬP (hoặc multi-set) <b>token</b>, rồi dùng
+      phép toán tập hợp để đo tương đồng. 2 cách sinh token phổ biến:</p>
+      <ul class="pd-legend">
+      <li><b>Tách theo từ</b><span>phân cách bởi khoảng trắng, có thể kèm stemming + loại stop-word — "david smith" → {"david","smith"}</span></li>
+      <li><b>q-gram</b><span>chuỗi con độ dài q liên tiếp, có ký tự biên # — "dave" với q=2 → {#d,da,av,ve,e#}</span></li>
+      </ul>
+      <p class="hint">Bài tập TF/IDF "hnoi"/"hanoi" đã giải dùng "tách theo ký tự" — chính là trường hợp đặc
+      biệt q=1 không ký tự biên, đúng theo ví dụ gốc x=aab ở slide sau.</p></div><div class="mdeck-slide"><h2>Overlap Measure — độ đo set-based đơn giản nhất</h2>
+      <div class="pd-formula"><div class="pd-formula-label">Overlap Measure</div>
+      <div class="pd-formula-math">$O(x,y) = |B_x \cap B_y|$</div></div>
+      <p>Ví dụ: $x=$"dave", $y=$"dav" (q-gram q=2, có ký tự biên): $B_x=\{$#d,da,av,ve,e#$\}$,
+      $B_y=\{$#d,da,av,v#$\}$ ⟹ $O(x,y)=3$.</p>
+      <div class="callout warn"><div class="lbl">Nhược điểm</div>
+      Không chuẩn hoá theo độ dài — 2 chuỗi DÀI sẽ có overlap cao hơn 2 chuỗi ngắn một cách "giả tạo", dù
+      không thực sự giống nhau hơn. Đây là động lực dẫn tới Jaccard.</div></div><div class="mdeck-slide"><h2>Jaccard & TF/IDF — similarity dạng tập hợp</h2>
       <div class="pd-formula"><div class="pd-formula-label">Jaccard Measure</div>
       <div class="pd-formula-math">$J(x,y) = \dfrac{|B_x \cap B_y|}{|B_x \cup B_y|}$</div></div>
       <p>$B_x=\{a,b,c,d\}$, $B_y=\{b,c,d,e\}$ ⟹ $J=3/5=0.6$.</p>
       <div class="callout good"><div class="lbl">Vì sao cần TF/IDF thay vì Jaccard thuần</div>
       "Apple Corporation, CA" vs "IBM Corporation, CA" vs "Apple Corp" — Jaccard thuần dễ khớp nhầm x↔y (cùng
-      "Corporation, CA" phổ biến). TF/IDF cho trọng số cao hơn cho từ hiếm ("Apple") ⟹ khớp đúng x↔z.</div></div><div class="mdeck-slide"><h2>Soundex — so khớp theo âm đọc</h2>
+      "Corporation, CA" phổ biến). TF/IDF cho trọng số cao hơn cho từ hiếm ("Apple") ⟹ khớp đúng x↔z.</div></div><div class="mdeck-slide"><h2>Công thức TF/IDF: Term Frequency & Inverse Document Frequency</h2>
+      <p>Mỗi chuỗi được chuyển thành 1 "túi term" gọi là <b>document</b>. $tf(t,d)$ = số lần term $t$ xuất
+      hiện trong document $d$.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Inverse Document Frequency (định nghĩa ĐƠN GIẢN dùng trong môn này)</div>
+      <div class="pd-formula-math">$idf(t) = N / N_t$</div></div>
+      <div class="callout warn"><div class="lbl">Ghi chú nguyên văn trên slide gốc — quan trọng</div>
+      "Trong thực tế, idf(t) thường được định nghĩa là $\log(N/N_t)$, ở đây ta dùng công thức ĐƠN GIẢN
+      trên để định nghĩa idf(t)" — giảng viên tự xác nhận đây là bản giản lược dùng cho bài tập trong môn,
+      khác công thức log chuẩn trong sách Information Retrieval.</div></div><div class="mdeck-slide"><h2>Ví dụ TF/IDF: 3 document x="aab", y="ac", z="a"</h2>
+      <p>$B_x=\{a,a,b\}$ (multi-set), $B_y=\{a,c\}$, $B_z=\{a\}$, $N=3$.</p>
+      <ul class="pd-legend">
+      <li><b>idf(a) = 3/3 = 1</b><span>'a' xuất hiện ở CẢ 3 document → phổ biến nhất, ít phân biệt</span></li>
+      <li><b>idf(b) = 3/1 = 3</b><span>'b' chỉ có ở x → hiếm, phân biệt mạnh</span></li>
+      <li><b>idf(c) = 3/1 = 3</b><span>'c' chỉ có ở y → hiếm, phân biệt mạnh</span></li>
+      </ul>
+      <p class="hint">Đây chính là ví dụ gốc mà bài tập TF/IDF "hnoi"/"hanoi" (đã giải, khớp 100% đáp án
+      chính thức BT_chữa.pdf) mô phỏng lại — cùng cách tách document thành bag-of-characters.</p></div><div class="mdeck-slide"><h2>Feature Vector & công thức Similarity cosine</h2>
+      <p>Mỗi document $d$ → feature vector $v_d(t) = tf(t,d)\times idf(t)$. Với ví dụ trên:
+      $v_x=(2,3,0)$, $v_y=(1,0,3)$, $v_z=(1,0,0)$ (3 chiều ứng a,b,c).</p>
+      <div class="pd-formula"><div class="pd-formula-label">TF/IDF Similarity Score (cosine)</div>
+      <div class="pd-formula-math">$s(p,q) = \dfrac{\sum_{t} v_p(t)\cdot v_q(t)}{\sqrt{\sum_t v_p(t)^2}\cdot\sqrt{\sum_t v_q(t)^2}}$</div></div>
+      <p class="hint">Chính xác công thức này đã dùng để tính $Sim(x,y)=1/\sqrt2\approx0.707$ cho bài
+      "hnoi"/"hanoi" — tử số là tích vô hướng, mẫu số là tích 2 độ dài Euclid của 2 vector.</p></div><div class="mdeck-slide"><h2>Dampening/chuẩn hoá TF/IDF & động lực Generalized Jaccard</h2>
+      <p>Trong THỰC TẾ (ngoài bài tập đơn giản của môn), người ta hay <b>dampen</b> bằng log:
+      $v_d(t)=\log(tf(t,d)+1)\cdot\log(idf(t))$ thay vì nhân thẳng — tránh 1 term xuất hiện quá nhiều lấn
+      át các term khác; và <b>chuẩn hoá vector</b> về độ dài 1.</p>
+      <div class="callout good"><div class="lbl">Nhược điểm của Jaccard thuần</div>
+      2 token phải GIỐNG HỆT mới tính là "chung" — ví dụ "energy" vs "eneryg" (lỗi chính tả nhẹ) bị coi là
+      KHÁC HOÀN TOÀN. Cần <b>Generalized Jaccard</b> để "làm mềm" phép so khớp token.</div></div><div class="mdeck-slide"><h2>Generalized Jaccard: thuật toán & ví dụ bipartite matching</h2>
+      <p>Bước 1: áp dụng độ đo $s$ (vd Jaro-Winkler) cho MỌI cặp token, giữ cặp có điểm $\ge\alpha$, tạo đồ
+      thị hai phía $G$; tìm <b>maximum-weight matching</b> $M$. Bước 2: $GJ(x,y) = \dfrac{\sum_{(x_i,y_j)\in M} s(x_i,y_j)}{|B_x|+|B_y|-|M|}$</p>
+      <p class="hint">Ví dụ: $B_x=\{a,b,c\}$, $B_y=\{p,q\}$, matching tối ưu $a\leftrightarrow p (0.7)$,
+      $b\leftrightarrow q (0.9)$ (c không ghép được) ⟹ $GJ=(0.7+0.9)/(3+2-2)=0.53$.</p></div><div class="mdeck-slide"><h2>Soft TF/IDF — cho phép token GẦN GIỐNG vẫn tính điểm</h2>
+      <p>Khắc phục trường hợp lỗi chính tả làm mất điểm TF/IDF thuần hoàn toàn (vd "Apple"→"Aple"). Bước 1:
+      $close(x,y,k)$ = các term $t\in B_x$ có ít nhất 1 term $u\in B_y$ với $s'(t,u)\ge k$. Bước 2: tính
+      TF/IDF như thường nhưng mỗi thành phần NHÂN THÊM $s'$ của cặp token gần nhất.</p>
+      <p class="hint">Ví dụ: $x=$"abcd", $y=$"aa'b'cd'", ngưỡng 0.75 ⟹ $close(x,y,0.75)=\{a,b,c\}$ (chỉ 'd'
+      bị loại vì $d\leftrightarrow d'=0.6<0.75$).</p></div><div class="mdeck-slide"><h2>Phonetic Similarity — so khớp theo CÁCH PHÁT ÂM</h2>
+      <p>Rất hiệu quả cho TÊN RIÊNG — hay có nhiều biến thể viết khác nhau nhưng ĐỌC GIỐNG NHAU: "Meyer,
+      Meier, Mire" hoặc "Smith, Smithe, Smythe" (Edit Distance/Jaccard khá thấp dù cùng 1 tên về bản chất).
+      <b>Soundex</b> là thuật toán phổ biến nhất trong nhóm này.</p></div><div class="mdeck-slide"><h2>Soundex — so khớp theo âm đọc</h2>
       <p>4 bước: (1) giữ chữ cái đầu (2) loại W/H, mã hoá chữ còn lại thành số theo nhóm âm
       (B,F,P,V=1; C,G,J,K,Q,S,X,Z=2; D,T=3; L=4; M,N=5; R=6) (3) gộp số liên tiếp trùng nhau
       (4) bỏ ký tự không phải số, lấy 4 ký tự đầu.</p>
       <div class="callout warn"><div class="lbl">Điểm yếu</div>
       Thiết kế cho tên gốc Caucasian — Soundex bỏ qua nguyên âm nên hoạt động kém với tên gốc Á Đông (vốn
-      phân biệt nhau chủ yếu qua nguyên âm).</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+      phân biệt nhau chủ yếu qua nguyên âm).</div></div><div class="mdeck-slide"><h2>Ví dụ Soundex đầy đủ 4 bước</h2>
+      <p>$x=$"Ashcraft": bước 2 (loại W/H, mã hoá) → "A226a13", bước 3 (gộp số liên tiếp trùng) →
+      "A26a13", bước 4 (bỏ ký tự không phải số, đệm 0 nếu thiếu) → <b>"A261"</b>.</p>
+      <div class="callout good"><div class="lbl">Đúng mục đích thiết kế</div>
+      "Robert" và "Rupert" → cùng mã <b>R163</b> — 2 tên NGHE gần giống, VIẾT khác nhau, Soundex vẫn bắt
+      được.</div>
+      <div class="callout warn"><div class="lbl">Hạn chế (giảng viên nêu rõ, không giấu điểm yếu)</div>
+      Soundex THẤT BẠI với "Gough"/"Goff" (đọc gần giống nhưng mã khác) hay "Jawornicki"/"Yavornitzky".</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
 <div class="part-num">02</div><h2>Entity Resolution Pipeline: Prepare → Block → Match → Cluster</h2>
 <ul class="part-list"><li>Blocking/Sorting — giảm O(n²) xuống khả thi</li>
 <li>Matching — threshold hoặc Learned Matchers (ML/Deep Learning)</li>
-<li>Clustering — Connected Components, Correlation Clustering, Markov Clustering</li></ul></div><div class="mdeck-slide"><h2>Case thật: vì sao ER khó hơn "so chuỗi giống nhau"</h2>
+<li>Clustering — Connected Components, Correlation Clustering, Markov Clustering</li></ul></div><div class="mdeck-slide"><h2>Ví dụ chạy qua cả 4 bước pipeline với 8 bản ghi thô</h2>
+      <p>8 bản ghi $\{A1,C1,D1,A2,B1,B2,C2,B3\}$ chạy qua pipeline <b>Prepare Data → Blocking/Sorting →
+      Matching → Clustering</b>:</p>
+      <ul class="pd-legend">
+      <li><b>1. Blocking</b><span>nhóm sơ bộ thành 3 cụm ứng viên: {A1,A2}, {C1,C2,D1}, {B1,B2,B3}</span></li>
+      <li><b>2. Matching</b><span>so khớp chi tiết trong từng cụm: A1-A2 khớp, C1-C2 khớp (D1 KHÔNG khớp dù cùng cụm — Blocking chỉ lọc thô), B1-B3 khớp (B2 không khớp ai)</span></li>
+      <li><b>3. Clustering</b><span>gộp liên kết thành cụm thực thể cuối: cụm A={r1,r4}, cụm C={r2,r7}, cụm D={r3}, cụm B={r5,r6,r8}</span></li>
+      </ul></div><div class="mdeck-slide"><h2>50 năm phát triển kỹ thuật Entity Linkage</h2>
+      <p>Theo Dong &amp; Rekatsinas (PVLDB 2018), <i>Data Integration and Machine Learning: A Natural
+      Synergy</i>:</p>
+      <ul class="pd-legend">
+      <li><b>1969 (Pre-ML)</b><span>Rule-based/stats-based — Blocking theo tên giống hệt, Matching theo similarity trung bình, Clustering bằng transitive closure</span></li>
+      <li><b>~2000-2015 (Early/ML)</b><span>Supervised/Unsupervised — Decision Tree/SVM (F1 70-90% với ~500 nhãn), Correlation/Markov clustering</span></li>
+      <li><b>2018 (Deep ML)</b><span>Random Forest cho matching (F1 &gt;95% với ~1 triệu nhãn), Active Learning cho blocking &amp; matching (F1 80-98% chỉ cần ~1000 nhãn)</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Case thật: vì sao ER khó hơn "so chuỗi giống nhau"</h2>
       <p>Moslemi, Mousavi, Behkamal &amp; Milani (2026) khảo sát <i>Heterogeneous Entity Matching</i> và chỉ ra
       heterogeneity có 2 nhóm chính — <b>representation</b> (cùng 1 thực thể biểu diễn khác dạng) và
       <b>semantic</b> (cùng ý nghĩa, khác từ ngữ) — mỗi nhóm chia nhỏ thành 8 loại con (Figure 1 của bài).</p>
@@ -83,11 +203,25 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       "suffer sharp drops in accuracy" khi gặp dữ liệu không đồng nhất kiểu này.</div>
       <p class="hint">Nguồn: Moslemi et al. (2026), <i>Heterogeneity in Entity Matching: A Survey and
       Experimental Analysis</i>, Data &amp; Knowledge Engineering (bản arXiv:2508.08076) — PDF đã verify
-      trong <code>Literature-Review-Papers/Dot4-Q1Q2-2020-2026/PDFs/</code>.</p></div><div class="mdeck-slide"><h2>Blocking/Sorting: Naïve All-Pairs quá chậm</h2>
+      trong <code>Literature-Review-Papers/Dot4-Q1Q2-2020-2026/PDFs/</code>.</p></div><div class="mdeck-slide"><h2>Data Preparation — bước 1 của pipeline</h2>
+      <ul class="pd-legend">
+      <li><b>Schema Matching and Mapping</b><span>tạo lược đồ đồng nhất để so sánh được (chính là nội dung GAV/LAV/GLAV ở Buổi 2), tách thuộc tính composite thành đơn</span></li>
+      <li><b>Normalization</b><span>bỏ ký tự đặc biệt/khoảng trắng thừa, stemming, viết hoa/thường thống nhất, giải nghĩa viết tắt</span></li>
+      <li><b>Data Cleaning</b><span>sửa lỗi hỏng/không nhất quán trong dữ liệu</span></li>
+      </ul>
+      <p class="hint">Bối cảnh: dữ liệu đến từ NHIỀU HỆ THỐNG ĐỘC LẬP (autonomous, heterogeneous systems),
+      không đồng bộ.</p></div><div class="mdeck-slide"><h2>Blocking/Sorting: Naïve All-Pairs quá chậm</h2>
       <p>So mọi cặp có thể là $O(n^2)$ — không khả thi ở quy mô lớn. 2 kỹ thuật chính:</p>
       <ul class="pd-legend">
       <li><b>Sorted Neighborhood</b><span>sắp xếp theo sorting key, chỉ so trong 1 cửa sổ trượt kích thước cố định</span></li>
       <li><b>LSH (Locality-Sensitive Hashing)</b><span>hash embedding bản ghi — bản ghi gần nhau rơi vào cùng bucket với xác suất cao</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Blocking predicate — các tiêu chí blocking cụ thể</h2>
+      <p>Cách cơ bản nhất: nhóm theo giá trị GIỐNG HỆT trên 1 thuộc tính chọn trước (vd cùng họ "name").
+      Các kiểu predicate phức tạp hơn:</p>
+      <ul class="pd-legend">
+      <li><b>Whole field</b><span>so khớp cả trường</span></li>
+      <li><b>Token field</b><span>so khớp 1 token trong trường</span></li>
+      <li><b>Common integer / same n-char start / n-gram</b><span>các tiêu chí phụ, có thể kết hợp hybrid (hội/tuyển)</span></li>
       </ul></div><div class="mdeck-slide"><h2>Case thật: taxonomy kỹ thuật Blocking (Papadakis et al. 2020)</h2>
       <img src="img/papadakis2020_fig1_blocking.png" alt="Figure 1, Papadakis et al. 2020 — mô hình Blocking bằng automaton 3 trạng thái và pipeline Blocking→Filtering→Matching" loading="lazy">
       <p class="hint">Fig. 1 (bản gốc, cắt nguyên trạng kèm chú thích): (a) Blocking mô hình hoá bằng automaton
@@ -101,7 +235,22 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       hoặc Deep Learning (DeepER, Magellan) tự học biểu diễn từ dữ liệu thô, tránh phải thiết kế feature thủ công.</p>
       <div class="callout warn"><div class="lbl">Vấn đề dữ liệu gán nhãn</div>
       Nhãn khan hiếm + class skew (match ít hơn non-match rất nhiều) → cần Transfer Learning (học từ kịch bản
-      nhiều dữ liệu, fine-tune ít nhãn) hoặc Active Learning (chủ động chọn cặp cần gán nhãn).</div></div><div class="mdeck-slide"><h2>Case thật: 12 pre-trained embedding model, model nào tốt cho Matching?</h2>
+      nhiều dữ liệu, fine-tune ít nhãn) hoặc Active Learning (chủ động chọn cặp cần gán nhãn).</div></div><div class="mdeck-slide"><h2>Deep Learning for ER — DeepER & Magellan</h2>
+      <p>Học biểu diễn TỰ ĐỘNG từ văn bản (tránh phải tự thiết kế đặc trưng), tận dụng pre-trained word
+      embedding để nắm bắt NGỮ NGHĨA (không bị giới hạn bởi khác biệt cú pháp/chính tả như độ đo string
+      truyền thống).</p>
+      <ul class="pd-legend">
+      <li><b>DeepER</b><span>(Ebraheem et al., PVLDB 2018) — embedding lookup mỗi từ → composition layer (trung bình/LSTM) gộp thành vector đại diện cả bộ (tuple) → similarity layer → classification</span></li>
+      <li><b>Magellan</b><span>(Mudgal et al., SIGMOD 2018) — hệ thống deep learning cho cả văn bản sạch lẫn văn bản bẩn (dirty data)</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Dữ liệu gán nhãn: khan hiếm, class skew & F1-score</h2>
+      <div class="pd-formula"><div class="pd-formula-label">F1-score</div>
+      <div class="pd-formula-math">$F_1 = \dfrac{2\cdot precision\cdot recall}{precision+recall}$</div></div>
+      <p>Trên tập chuẩn <b>DBLP-ACM</b>: Deep Learning đạt F1 cao nhất (~98) ngay cả khi số mẫu gán nhãn còn
+      ít, vượt Decision Tree/SVM/Naive Bayes — nhưng xuất phát THẤP NHẤT ở 0 mẫu (cần nhiều dữ liệu nhãn hơn
+      ở điểm khởi đầu).</p>
+      <p class="hint">2 hướng khắc phục thiếu nhãn: <b>Transfer Learning</b> (học từ bối cảnh ER nhiều dữ
+      liệu, tinh chỉnh bằng ít dữ liệu ở bối cảnh mới) và <b>Active Learning</b> (chọn lọc mẫu cần gán nhãn
+      để giảm số lượng nhãn cần có).</p></div><div class="mdeck-slide"><h2>Case thật: 12 pre-trained embedding model, model nào tốt cho Matching?</h2>
       <p>Zeakis, Papadakis, Skoutas &amp; Koubarakis (2023) thực nghiệm <b>12 language model</b> phổ biến
       (fastText và các biến thể BERT) trên <b>17 bộ dữ liệu benchmark</b> chuẩn — đo chi phí vectorize, hiệu
       năng Blocking, VÀ hiệu năng Matching (cả supervised lẫn unsupervised) của từng model.</p>
@@ -119,7 +268,20 @@ window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$
       </ul>
       <div class="callout good"><div class="lbl">Incremental Data Deduplication</div>
       Khi có dữ liệu mới, dùng greedy update (connect/merge/split/move) trên similarity graph đã có — nhanh
-      hơn nhiều so với tính lại correlation clustering từ đầu.</div></div></div>
+      hơn nhiều so với tính lại correlation clustering từ đầu.</div></div><div class="mdeck-slide"><h2>Connected Components — thuật toán lan truyền giá trị lớn nhất</h2>
+      <p>Xác định các thành phần liên thông của 1 đồ thị bằng cách lan truyền giá trị LỚN NHẤT hiện có tới
+      các nút lân cận nếu khác giá trị hiện tại, dừng khi không còn thông điệp nào lan truyền nữa — Step 0
+      (giá trị khởi tạo rời rạc mỗi nút) → ... → hội tụ (mỗi thành phần liên thông về cùng 1 nhãn).</p>
+      <p class="hint">3 cách tiếp cận Clustering: <b>Basic</b> (connected components/transitive closure trên
+      cạnh có $sim&gt;\theta_h$), <b>Correlation clustering</b> (dùng cả cạnh +/-, tối ưu toàn cục NP-hard),
+      <b>Markov clustering</b> (mô phỏng stochastic flow qua random walk).</p></div><div class="mdeck-slide"><h2>Tài liệu tham khảo gốc & kết thúc bài giảng</h2>
+      <p>4 tài liệu tham khảo gốc của toàn bộ bài giảng Record Linkage &amp; Entity Resolution:</p>
+      <ul class="pd-legend">
+      <li><b>Dong &amp; Srivastava</b><span><i>Big Data Integration</i>, Chapter 3 — nguồn bảng flight records</span></li>
+      <li><b>Peter Christen</b><span><i>Data Matching: Concepts and Techniques for Record Linkage</i></span></li>
+      <li><b>Fellegi &amp; Sunter (1969)</b><span>"A Theory for Record Linkage" — bài báo nền tảng của cả lĩnh vực</span></li>
+      <li><b>Winkler (1995)</b><span>"Matching and Record Linkage", in Business Survey Methods, J. Wiley</span></li>
+      </ul></div></div>
 <div class="mdeck-bar">
   <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
   <span class="mdeck-count"></span><div class="mdeck-dots"></div>
