@@ -17,10 +17,10 @@
   "id": "era5-mo-rong-1940",
   "q": "Mốc mở rộng dữ liệu ERA5 về quá khứ — chọn mô tả ĐÚNG:",
   "opts": [
-   "ERA5 luôn phủ từ 1940 ngay từ lần phát hành đầu tiên năm 2016",
-   "Tháng 1/2019, ECMWF công bố mở rộng thêm 21 năm, đưa chuỗi dữ liệu về tới năm 1940",
    "ERA5 chỉ phủ từ năm 2000 tới nay, không có dữ liệu lịch sử xa hơn",
-   "Việc mở rộng về 1940 diễn ra năm 2023, gần đây nhất — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+   "Tháng 1/2019, ECMWF công bố mở rộng thêm 21 năm, đưa chuỗi dữ liệu về tới năm 1940",
+   "ERA5 luôn phủ từ 1940 ngay từ lần phát hành đầu tiên năm 2016",
+   "Việc mở rộng về 1940 diễn ra năm 2023, gần đây nhất — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
   ],
   "correct": 1,
   "topic": "Reanalysis — Lịch sử",
@@ -31,10 +31,10 @@
   "id": "era5-arco-khong-can-key",
   "q": "ARCO-ERA5 trên Google Cloud — chọn mô tả ĐÚNG:",
   "opts": [
-   "Chỉ truy cập được qua giao diện web, không đọc được bằng Python — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "Yêu cầu đăng ký tài khoản Copernicus CDS trước khi dùng được ARCO-ERA5",
+   "Chỉ truy cập được qua giao diện web, không đọc được bằng Python — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Cần tài khoản AWS có thẻ tín dụng mới truy cập được (giống bucket S3 Requester Pays)",
    "Đọc trực tiếp bằng xarray.open_zarr + gcsfs, KHÔNG cần tài khoản/key gì — nhóm đã verify thật 30/9 và 9/10/2026",
-   "Cần tài khoản AWS có thẻ tín dụng mới truy cập được (giống bucket S3 Requester Pays)"
+   "Yêu cầu đăng ký tài khoản Copernicus CDS trước khi dùng được ARCO-ERA5"
   ],
   "correct": 2,
   "topic": "Reanalysis — Hệ sinh thái",
@@ -45,9 +45,9 @@
   "id": "merra2-dong-luc",
   "q": "Động lực ra đời MERRA-2 (NASA GMAO) — chọn mô tả ĐÚNG:",
   "opts": [
-   "MERRA gốc chỉ phủ được 5 năm dữ liệu, quá ngắn để dùng nghiên cứu",
-   "NASA muốn chuyển từ định dạng NetCDF sang GRIB2 — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
    "MERRA gốc bị lỗi kỹ thuật nghiêm trọng phải thay thế hoàn toàn",
+   "NASA muốn chuyển từ định dạng NetCDF sang GRIB2 — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "MERRA gốc chỉ phủ được 5 năm dữ liệu, quá ngắn để dùng nghiên cứu",
    "MERRA gốc không đồng hoá được quan trắc vệ tinh hyperspectral/radiance và GPS-Radio Occultation hiện đại"
   ],
   "correct": 3,
@@ -60,9 +60,9 @@
   "q": "Hạn chế MERRA-2 đã phát hiện ở Đông Nam Á — chọn mô tả ĐÚNG:",
   "opts": [
    "Đánh giá thấp AOD (aerosol optical depth) ở độ cao dưới 1km mùa khô, do thiếu ước lượng phát thải đốt sinh khối gần mặt đất (Ohno et al. 2022)",
-   "MERRA-2 đánh giá QUÁ CAO aerosol ở mọi độ cao trong nghiên cứu này — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Nghiên cứu Ohno et al. 2022 kết luận MERRA-2 hoàn toàn chính xác, không cần hiệu chỉnh — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
-   "MERRA-2 không có dữ liệu aerosol, chỉ có nhiệt độ/gió/áp suất — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+   "MERRA-2 đánh giá QUÁ CAO aerosol ở mọi độ cao trong nghiên cứu này",
+   "MERRA-2 không có dữ liệu aerosol, chỉ có nhiệt độ/gió/áp suất — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Nghiên cứu Ohno et al. 2022 kết luận MERRA-2 hoàn toàn chính xác, không cần hiệu chỉnh"
   ],
   "correct": 0,
   "topic": "Reanalysis — Nghiên cứu",
@@ -73,10 +73,10 @@
   "id": "ghcn-not-homogenized",
   "q": "Lưu ý quan trọng khi dùng GHCN-Daily — chọn mô tả ĐÚNG:",
   "opts": [
-   "GHCN-Daily chỉ có ở Mỹ, không có trạm ở Đông Nam Á — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "GHCN-Daily chỉ có ở Mỹ, không có trạm ở Đông Nam Á — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "GHCN-Daily KHÔNG được đồng nhất hoá (not homogenized) — NOAA cảnh báo không dùng trực tiếp để định lượng biến đổi khí hậu mà không xử lý thêm",
-   "GHCN-Daily đã được NOAA đồng nhất hoá đầy đủ, dùng trực tiếp được cho mọi phân tích — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "GHCN-Daily chỉ chứa dữ liệu dự báo, không phải dữ liệu quan trắc thật — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+   "GHCN-Daily đã được NOAA đồng nhất hoá đầy đủ, dùng trực tiếp được cho mọi phân tích",
+   "GHCN-Daily chỉ chứa dữ liệu dự báo, không phải dữ liệu quan trắc thật — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
   ],
   "correct": 1,
   "topic": "Trạm mặt đất — Lịch sử",
@@ -87,10 +87,10 @@
   "id": "ghcn-kich-thuoc",
   "q": "Quy mô GHCN-Daily — chọn mô tả ĐÚNG:",
   "opts": [
-   "Chỉ có khoảng 500 trạm trên toàn thế giới, quy mô rất nhỏ",
-   "Chỉ phủ các nước G7, không có dữ liệu châu Á/Đông Nam Á — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ tích hợp dữ liệu từ đúng 1 nguồn duy nhất (vệ tinh NOAA)",
+   "Chỉ phủ các nước G7, không có dữ liệu châu Á/Đông Nam Á — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
    "Tích hợp từ khoảng 30 nguồn dữ liệu khác nhau, hơn 80.000 trạm, 180 quốc gia",
-   "Chỉ tích hợp dữ liệu từ đúng 1 nguồn duy nhất (vệ tinh NOAA)"
+   "Chỉ có khoảng 500 trạm trên toàn thế giới, quy mô rất nhỏ"
   ],
   "correct": 2,
   "topic": "Trạm mặt đất — Lịch sử",
@@ -101,9 +101,9 @@
   "id": "ghcn-ke-nhiem-ghcnh",
   "q": "Thế hệ kế tiếp của GHCN-Daily và ISD — chọn mô tả ĐÚNG:",
   "opts": [
+   "GHCN-Daily và ISD sẽ không bao giờ bị thay thế, là sản phẩm vĩnh viễn của NOAA",
    "GHCN-Monthly sẽ thay thế GHCN-Daily, chuyển về tần suất tháng",
    "ERA5 sẽ thay thế hoàn toàn GHCN-Daily và ISD",
-   "GHCN-Daily và ISD sẽ không bao giờ bị thay thế, là sản phẩm vĩnh viễn của NOAA",
    "GHCNh (hourly) — dự kiến thay thế cả GHCN-Daily lẫn ISD trong tương lai"
   ],
   "correct": 3,
@@ -116,8 +116,8 @@
   "q": "Tên gốc của ISD (Integrated Surface Data) — chọn mô tả ĐÚNG:",
   "opts": [
    "ISH — Integrated Surface Hourly, đổi tên thành ISD khoảng năm 2004 khi thêm dữ liệu tổng hợp ngày/tháng",
-   "ISD chưa từng đổi tên kể từ khi ra đời năm 1998 — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
    "ISD là viết tắt của 'International Standard Data', không liên quan NOAA",
+   "ISD chưa từng đổi tên kể từ khi ra đời năm 1998 — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "ISD có tên gốc là GHCN, sau đổi tên để tránh nhầm lẫn"
   ],
   "correct": 0,
@@ -132,7 +132,7 @@
    "Ra đời để thay thế hoàn toàn mạng lưới trạm mặt đất GHCN",
    "Hỗ trợ hệ thống cảnh báo sớm nạn đói FEWS NET của USAID (Famine Early Warning Systems Network)",
    "Phục vụ ngành hàng không dân dụng dự báo thời tiết sân bay",
-   "Là sản phẩm thương mại của 1 công ty bảo hiểm thời tiết — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+   "Là sản phẩm thương mại của 1 công ty bảo hiểm thời tiết — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
   ],
   "correct": 1,
   "topic": "Mưa vệ tinh — Lịch sử",
@@ -143,10 +143,10 @@
   "id": "chirps-nguon",
   "q": "Đơn vị phát triển CHIRPS — chọn mô tả ĐÚNG:",
   "opts": [
-   "Cơ quan Khí tượng Nhật Bản (JMA), giống JRA-55 — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
-   "ECMWF, cùng đơn vị phát triển ERA5 — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "NASA Goddard Space Flight Center, cùng nhóm phát triển GPM IMERG — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "ECMWF, cùng đơn vị phát triển ERA5 — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "UC Santa Barbara Climate Hazards Group, hợp tác USGS — công bố chính thức trong Funk et al. (2015), Scientific Data",
-   "NASA Goddard Space Flight Center, cùng nhóm phát triển GPM IMERG — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+   "Cơ quan Khí tượng Nhật Bản (JMA), giống JRA-55 — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
   ],
   "correct": 2,
   "topic": "Mưa vệ tinh — Lịch sử",
@@ -157,9 +157,9 @@
   "id": "chirps-vn-trai-chieu",
   "q": "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS — chọn mô tả ĐÚNG:",
   "opts": [
-   "Chỉ có 1 nghiên cứu Việt Nam từng dùng CHIRPS, chưa đủ để so sánh — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Cả 4 nghiên cứu đều đồng thuận CHIRPS là nguồn mưa chính xác nhất cho mọi vùng Việt Nam — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Cả 4 nghiên cứu đều kết luận CHIRPS không đáng tin cậy, nên loại bỏ hoàn toàn — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
-   "Cả 4 nghiên cứu đều đồng thuận CHIRPS là nguồn mưa chính xác nhất cho mọi vùng Việt Nam — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ có 1 nghiên cứu Việt Nam từng dùng CHIRPS, chưa đủ để so sánh — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
    "Kết luận TRÁI CHIỀU theo vùng: tốt cho vùng thấp/nông nghiệp nhưng đánh giá thấp mưa ở vùng núi cao, không có nguồn nào tốt nhất tuyệt đối"
   ],
   "correct": 3,
@@ -173,8 +173,8 @@
   "opts": [
    "Kế nhiệm trực tiếp TRMM 3B42 (TMPA) — TRMM chính thức ngừng hoạt động 8/2015",
    "GPM IMERG là sản phẩm hoàn toàn độc lập, không liên quan TRMM",
-   "GPM IMERG kế nhiệm CHIRPS, do cùng 1 nhóm phát triển",
-   "GPM IMERG ra đời TRƯỚC TRMM, là tiền thân của nó — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+   "GPM IMERG ra đời TRƯỚC TRMM, là tiền thân của nó — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "GPM IMERG kế nhiệm CHIRPS, do cùng 1 nhóm phát triển"
   ],
   "correct": 0,
   "topic": "Mưa vệ tinh — Lịch sử",
@@ -185,10 +185,10 @@
   "id": "gpm-phong-ve-tinh",
   "q": "Vệ tinh lõi GPM Core Observatory — chọn mô tả ĐÚNG:",
   "opts": [
-   "Phóng năm 2020, gần đây hơn nhiều so với TRMM — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Chưa từng phóng vệ tinh riêng, chỉ dùng dữ liệu từ vệ tinh TRMM cũ",
    "Phóng 27/2/2014 từ Tanegashima (Nhật) bằng tên lửa H-IIA, hợp tác NASA-JAXA",
-   "Phóng từ Cape Canaveral (Mỹ), chỉ do NASA phát triển",
-   "Chưa từng phóng vệ tinh riêng, chỉ dùng dữ liệu từ vệ tinh TRMM cũ"
+   "Phóng năm 2020, gần đây hơn nhiều so với TRMM — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Phóng từ Cape Canaveral (Mỹ), chỉ do NASA phát triển"
   ],
   "correct": 1,
   "topic": "Mưa vệ tinh — Lịch sử",
@@ -199,10 +199,10 @@
   "id": "power-3-cong-dong",
   "q": "3 cộng đồng người dùng chính thức của NASA POWER — chọn mô tả ĐÚNG:",
   "opts": [
-   "Chỉ phục vụ nghiên cứu khí hậu học thuật, không có ứng dụng thực tế",
-   "Chỉ phục vụ duy nhất ngành hàng không vũ trụ nội bộ NASA",
+   "Chỉ phục vụ duy nhất ngành hàng không vũ trụ nội bộ NASA — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Quân sự, Y tế, và Giáo dục — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Năng lượng tái tạo, Công trình bền vững (Sustainable Buildings), và Nông-khí hậu học (Agroclimatology)",
-   "Quân sự, Y tế, và Giáo dục — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+   "Chỉ phục vụ nghiên cứu khí hậu học thuật, không có ứng dụng thực tế"
   ],
   "correct": 2,
   "topic": "Bức xạ/năng lượng — Lịch sử",
@@ -213,8 +213,8 @@
   "id": "power-nen-merra2",
   "q": "Quan hệ giữa NASA POWER và MERRA-2 — chọn mô tả ĐÚNG:",
   "opts": [
-   "MERRA-2 được xây dựng dựa trên nền NASA POWER, không phải ngược lại — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "NASA POWER chỉ dùng dữ liệu trạm mặt đất, không liên quan mô hình tái phân tích nào",
+   "MERRA-2 được xây dựng dựa trên nền NASA POWER, không phải ngược lại — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "NASA POWER và MERRA-2 là 2 sản phẩm hoàn toàn độc lập, không liên quan nhau",
    "NASA POWER là lớp đóng gói thân thiện người dùng trên nền MERRA-2 cho phần khí tượng (bức xạ lấy từ CERES/GEWEX)"
   ],
@@ -228,9 +228,9 @@
   "q": "Nghiên cứu NASA POWER liên quan gần nhất tới đồ án nhóm — chọn mô tả ĐÚNG:",
   "opts": [
    "Yuan et al. (2022), Nature Food — dùng NASA POWER Agro-climatic database cho 8 điểm Indonesia + 3 điểm Thái Lan, chủ đề năng suất lúa gạo Đông Nam Á",
+   "Chưa có nghiên cứu nào dùng NASA POWER liên quan tới Đông Nam Á — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "Nghiên cứu về UAV quân sự sử dụng NASA POWER cho định vị GPS — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
-   "Chưa có nghiên cứu nào dùng NASA POWER liên quan tới Đông Nam Á — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
-   "Nghiên cứu về năng lượng mặt trời ở châu Âu, không liên quan Đông Nam Á — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+   "Nghiên cứu về năng lượng mặt trời ở châu Âu, không liên quan Đông Nam Á — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
   ],
   "correct": 0,
   "topic": "Bức xạ/năng lượng — Nghiên cứu",
@@ -241,10 +241,10 @@
   "id": "openmeteo-khong-tu-chay-mo-hinh",
   "q": "Bản chất kỹ thuật của Open-Meteo — chọn mô tả ĐÚNG:",
   "opts": [
-   "Open-Meteo tự phát triển mô hình số trị riêng, độc lập hoàn toàn với ERA5/DWD/NOAA — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Open-Meteo là dự án thương mại đóng, không mã nguồn mở — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "KHÔNG tự chạy mô hình dự báo riêng — tổng hợp/chuẩn hoá dữ liệu mở từ hơn 15 cơ quan khí tượng quốc gia (gồm ERA5/DWD/NOAA) thành 1 API thống nhất",
-   "Open-Meteo là dự án thương mại đóng, không mã nguồn mở — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Open-Meteo chỉ là bản sao dữ liệu tĩnh, không cập nhật theo thời gian thực — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+   "Open-Meteo tự phát triển mô hình số trị riêng, độc lập hoàn toàn với ERA5/DWD/NOAA",
+   "Open-Meteo chỉ là bản sao dữ liệu tĩnh, không cập nhật theo thời gian thực — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
   ],
   "correct": 1,
   "topic": "API tổng hợp — Lịch sử",
@@ -255,10 +255,10 @@
   "id": "openmeteo-license",
   "q": "Giấy phép mã nguồn của Open-Meteo — chọn mô tả ĐÚNG:",
   "opts": [
+   "Mã nguồn đóng hoàn toàn, chỉ dùng được qua API trả phí",
    "Chỉ cấp phép sử dụng cho mục đích học thuật, cấm dùng thương mại",
-   "Giấy phép MIT, không cho phép tự host",
    "AGPLv3, mã nguồn mở, có thể tự host bằng Docker",
-   "Mã nguồn đóng hoàn toàn, chỉ dùng được qua API trả phí"
+   "Giấy phép MIT, không cho phép tự host"
   ],
   "correct": 2,
   "topic": "API tổng hợp — Hệ sinh thái",
@@ -269,9 +269,9 @@
   "id": "nasa-power-dinh-dang",
   "q": "Định dạng dữ liệu NASA POWER API — chọn mô tả ĐÚNG:",
   "opts": [
-   "Chỉ cung cấp dữ liệu dạng ảnh PNG, không có dữ liệu số",
-   "Yêu cầu tài khoản AWS trả phí để truy cập — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
    "Chỉ có định dạng NetCDF4/GRIB2, cần thư viện xarray chuyên dụng mới đọc được",
+   "Yêu cầu tài khoản AWS trả phí để truy cập — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ cung cấp dữ liệu dạng ảnh PNG, không có dữ liệu số",
    "JSON/CSV qua REST API, hỗ trợ sẵn định dạng DSSAT ASCII cho mô hình cây trồng"
   ],
   "correct": 3,
@@ -284,9 +284,9 @@
   "q": "Định dạng dữ liệu CHIRPS — chọn mô tả ĐÚNG:",
   "opts": [
    "GeoTIFF/NetCDF, độ phân giải 0.05° (~5km), tải bulk hoặc qua Google Earth Engine",
-   "Chỉ có bản in giấy, chưa số hoá — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "JSON lồng nhau theo cấu trúc REST API, không có định dạng ảnh raster",
-   "CSV dạng bảng phẳng, độ phân giải theo từng trạm quan trắc"
+   "CSV dạng bảng phẳng, độ phân giải theo từng trạm quan trắc",
+   "Chỉ có bản in giấy, chưa số hoá — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
   ],
   "correct": 0,
   "topic": "Định dạng & truy cập",
@@ -297,10 +297,10 @@
   "id": "ghcn-dinh-dang-eav",
   "q": "Cấu trúc bảng GHCN-Daily (EAV) — chọn mô tả ĐÚNG:",
   "opts": [
-   "GHCN-Daily lưu dạng JSON lồng nhau theo ngày, giống Open-Meteo",
+   "Mỗi biến là 1 CỘT riêng trong cùng 1 dòng, giống NASA POWER — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
    "Mỗi biến (TMAX/TMIN/PRCP...) là 1 DÒNG riêng (Entity-Attribute-Value), không phải 1 cột/biến như dữ liệu mô hình JSON",
-   "Mỗi biến là 1 CỘT riêng trong cùng 1 dòng, giống NASA POWER — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "GHCN-Daily không có cấu trúc cố định, mỗi trạm 1 định dạng khác nhau"
+   "GHCN-Daily không có cấu trúc cố định, mỗi trạm 1 định dạng khác nhau",
+   "GHCN-Daily lưu dạng JSON lồng nhau theo ngày, giống Open-Meteo"
   ],
   "correct": 1,
   "topic": "Định dạng & truy cập",
@@ -311,10 +311,10 @@
   "id": "ghcn-don-vi",
   "q": "Đơn vị gốc của TMAX/TMIN/PRCP trong GHCN-Daily — chọn mô tả ĐÚNG:",
   "opts": [
-   "Theo Kelvin cho nhiệt độ, lít/m² cho lượng mưa",
    "Đã quy đổi sẵn sang độ C và mm thông thường, không cần xử lý thêm",
+   "Theo độ F (Fahrenheit) và inch, chuẩn Mỹ — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Phần mười đơn vị chuẩn — nhiệt độ theo 0.1°C, lượng mưa theo 0.1mm (phải tự chia 10 để quy đổi)",
-   "Theo độ F (Fahrenheit) và inch, chuẩn Mỹ — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+   "Theo Kelvin cho nhiệt độ, lít/m² cho lượng mưa"
   ],
   "correct": 2,
   "topic": "Định dạng & truy cập",
@@ -325,9 +325,9 @@
   "id": "power-vs-openmeteo-bien",
   "q": "Khác biệt định nghĩa biến nhiệt độ giữa NASA POWER và Open-Meteo — chọn mô tả ĐÚNG:",
   "opts": [
+   "NASA POWER cho max/min, Open-Meteo chỉ cho trung bình — ngược lại với thực tế — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Cả 2 nguồn đều cho đúng 1 giá trị nhiệt độ trung bình duy nhất, hoàn toàn giống nhau — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
-   "Cả 2 nguồn đều không cung cấp dữ liệu nhiệt độ, chỉ có lượng mưa — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "NASA POWER cho max/min, Open-Meteo chỉ cho trung bình — ngược lại với thực tế — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Cả 2 nguồn đều không cung cấp dữ liệu nhiệt độ, chỉ có lượng mưa — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
    "NASA POWER cho nhiệt độ TRUNG BÌNH ngày (T2M, 1 giá trị/ngày); Open-Meteo (dữ liệu hourly) cho cả MAX và MIN — 2 cách mô tả khác nhau cho cùng 1 ngày"
   ],
   "correct": 3,
@@ -340,9 +340,9 @@
   "q": "Lý do chính đồ án nhóm cần mediated schema — chọn mô tả ĐÚNG:",
   "opts": [
    "Ghép dữ liệu lưới liên tục (ERA5) với dữ liệu điểm rời rạc (trạm NOAA) và dữ liệu bức xạ vệ tinh (NASA POWER) vào 1 lược đồ trung gian thống nhất",
-   "Chỉ để tiết kiệm dung lượng lưu trữ, không liên quan tới dị biệt cấu trúc dữ liệu — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Mediated schema chỉ cần thiết khi dùng đúng 1 nguồn dữ liệu duy nhất — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Vì 3 nguồn dữ liệu có cùng định dạng, chỉ cần gộp file đơn giản — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+   "Chỉ để tiết kiệm dung lượng lưu trữ, không liên quan tới dị biệt cấu trúc dữ liệu — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Vì 3 nguồn dữ liệu có cùng định dạng, chỉ cần gộp file đơn giản — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
   ],
   "correct": 0,
   "topic": "Kiến trúc đồ án",
@@ -353,14 +353,406 @@
   "id": "spatio-temporal-heterogeneity",
   "q": "Spatio-Temporal Heterogeneity (đồ án nhóm xác định là bài toán cốt lõi) — chọn mô tả ĐÚNG:",
   "opts": [
-   "Chỉ đơn giản là sự khác biệt về múi giờ giữa các nguồn dữ liệu — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
-   "Dị biệt không-thời gian giữa dữ liệu lưới liên tục và dữ liệu điểm rời rạc — dạng dị biệt cấu trúc sâu hơn việc ghép 2 bảng cùng định dạng",
    "Chỉ xảy ra khi dùng dữ liệu từ quá khứ, không liên quan dữ liệu thời gian thực",
-   "Là vấn đề về tốc độ mạng khi tải dữ liệu từ nhiều server khác nhau"
+   "Dị biệt không-thời gian giữa dữ liệu lưới liên tục và dữ liệu điểm rời rạc — dạng dị biệt cấu trúc sâu hơn việc ghép 2 bảng cùng định dạng",
+   "Chỉ đơn giản là sự khác biệt về múi giờ giữa các nguồn dữ liệu — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Là vấn đề về tốc độ mạng khi tải dữ liệu từ nhiều server khác nhau — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
   ],
   "correct": 1,
   "topic": "Kiến trúc đồ án",
   "src": "README đồ án",
   "explain": "Đáp án đúng: Dị biệt không-thời gian giữa dữ liệu lưới liên tục và dữ liệu điểm rời rạc — dạng dị biệt cấu trúc sâu hơn việc ghép 2 bảng cùng định dạng"
+ },
+ {
+  "id": "era5-the-he-5-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Thế hệ thứ 5 trong phả hệ tái phân tích ECMWF (sau FGGE, ERA-15, ERA-40, ERA-Interim), production bắt đầu 1/2016\"",
+  "opts": [
+   "Khác biệt định nghĩa biến nhiệt độ giữa NASA POWER và Open-Meteo",
+   "Lưu ý quan trọng khi dùng GHCN-Daily",
+   "ERA5",
+   "GPM IMERG kế nhiệm sản phẩm nào"
+  ],
+  "correct": 2,
+  "topic": "Reanalysis — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: ERA5"
+ },
+ {
+  "id": "era5-mo-rong-1940-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Tháng 1/2019, ECMWF công bố mở rộng thêm 21 năm, đưa chuỗi dữ liệu về tới năm 1940\"",
+  "opts": [
+   "Động lực ra đời CHIRPS — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Định dạng dữ liệu NASA POWER API",
+   "Vệ tinh lõi GPM Core Observatory",
+   "Mốc mở rộng dữ liệu ERA5 về quá khứ"
+  ],
+  "correct": 3,
+  "topic": "Reanalysis — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Mốc mở rộng dữ liệu ERA5 về quá khứ"
+ },
+ {
+  "id": "era5-arco-khong-can-key-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Đọc trực tiếp bằng xarray.open_zarr + gcsfs, KHÔNG cần tài khoản/key gì — nhóm đã verify thật 30/9 và 9/10/2026\"",
+  "opts": [
+   "ARCO-ERA5 trên Google Cloud",
+   "Mốc mở rộng dữ liệu ERA5 về quá khứ",
+   "Cấu trúc bảng GHCN-Daily (EAV)",
+   "Động lực ra đời CHIRPS"
+  ],
+  "correct": 0,
+  "topic": "Reanalysis — Hệ sinh thái",
+  "src": "docs/02",
+  "explain": "Đáp án đúng: ARCO-ERA5 trên Google Cloud"
+ },
+ {
+  "id": "merra2-dong-luc-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"MERRA gốc không đồng hoá được quan trắc vệ tinh hyperspectral/radiance và GPS-Radio Occultation hiện đại\"",
+  "opts": [
+   "Tên gốc của ISD (Integrated Surface Data)",
+   "Động lực ra đời MERRA-2 (NASA GMAO)",
+   "Nghiên cứu NASA POWER liên quan gần nhất tới đồ án nhóm",
+   "Định dạng dữ liệu NASA POWER API"
+  ],
+  "correct": 1,
+  "topic": "Reanalysis — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Động lực ra đời MERRA-2 (NASA GMAO)"
+ },
+ {
+  "id": "merra2-aerosol-dna-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Đánh giá thấp AOD (aerosol optical depth) ở độ cao dưới 1km mùa khô, do thiếu ước lượng phát thải đốt sinh khối gần mặt đất (Ohno et al. 2022)\"",
+  "opts": [
+   "Vệ tinh lõi GPM Core Observatory",
+   "Mốc mở rộng dữ liệu ERA5 về quá khứ",
+   "Hạn chế MERRA-2 đã phát hiện ở Đông Nam Á",
+   "Quy mô GHCN-Daily — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Reanalysis — Nghiên cứu",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Hạn chế MERRA-2 đã phát hiện ở Đông Nam Á"
+ },
+ {
+  "id": "ghcn-not-homogenized-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"GHCN-Daily KHÔNG được đồng nhất hoá (not homogenized) — NOAA cảnh báo không dùng trực tiếp để định lượng biến đổi khí hậu mà không xử lý thêm\"",
+  "opts": [
+   "ERA5",
+   "Đơn vị phát triển CHIRPS",
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "Lưu ý quan trọng khi dùng GHCN-Daily"
+  ],
+  "correct": 3,
+  "topic": "Trạm mặt đất — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Lưu ý quan trọng khi dùng GHCN-Daily"
+ },
+ {
+  "id": "ghcn-kich-thuoc-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Tích hợp từ khoảng 30 nguồn dữ liệu khác nhau, hơn 80.000 trạm, 180 quốc gia\"",
+  "opts": [
+   "Quy mô GHCN-Daily",
+   "ARCO-ERA5 trên Google Cloud",
+   "3 cộng đồng người dùng chính thức của NASA POWER",
+   "Động lực ra đời MERRA-2 (NASA GMAO)"
+  ],
+  "correct": 0,
+  "topic": "Trạm mặt đất — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Quy mô GHCN-Daily"
+ },
+ {
+  "id": "ghcn-ke-nhiem-ghcnh-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"GHCNh (hourly) — dự kiến thay thế cả GHCN-Daily lẫn ISD trong tương lai\"",
+  "opts": [
+   "Tên gốc của ISD (Integrated Surface Data)",
+   "Thế hệ kế tiếp của GHCN-Daily và ISD",
+   "Động lực ra đời CHIRPS",
+   "Giấy phép mã nguồn của Open-Meteo"
+  ],
+  "correct": 1,
+  "topic": "Trạm mặt đất — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Thế hệ kế tiếp của GHCN-Daily và ISD"
+ },
+ {
+  "id": "isd-ten-goc-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"ISH — Integrated Surface Hourly, đổi tên thành ISD khoảng năm 2004 khi thêm dữ liệu tổng hợp ngày/tháng\"",
+  "opts": [
+   "Quy mô GHCN-Daily",
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "Tên gốc của ISD (Integrated Surface Data)",
+   "Đơn vị gốc của TMAX/TMIN/PRCP trong GHCN-Daily"
+  ],
+  "correct": 2,
+  "topic": "Trạm mặt đất — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Tên gốc của ISD (Integrated Surface Data)"
+ },
+ {
+  "id": "chirps-dong-luc-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Hỗ trợ hệ thống cảnh báo sớm nạn đói FEWS NET của USAID (Famine Early Warning Systems Network)\"",
+  "opts": [
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "Lý do chính đồ án nhóm cần mediated schema",
+   "GPM IMERG kế nhiệm sản phẩm nào",
+   "Động lực ra đời CHIRPS"
+  ],
+  "correct": 3,
+  "topic": "Mưa vệ tinh — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Động lực ra đời CHIRPS"
+ },
+ {
+  "id": "chirps-nguon-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"UC Santa Barbara Climate Hazards Group, hợp tác USGS — công bố chính thức trong Funk et al. (2015), Scientific Data\"",
+  "opts": [
+   "Đơn vị phát triển CHIRPS",
+   "Mốc mở rộng dữ liệu ERA5 về quá khứ",
+   "Đơn vị gốc của TMAX/TMIN/PRCP trong GHCN-Daily",
+   "GPM IMERG kế nhiệm sản phẩm nào"
+  ],
+  "correct": 0,
+  "topic": "Mưa vệ tinh — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Đơn vị phát triển CHIRPS"
+ },
+ {
+  "id": "chirps-vn-trai-chieu-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Kết luận TRÁI CHIỀU theo vùng: tốt cho vùng thấp/nông nghiệp nhưng đánh giá thấp mưa ở vùng núi cao, không có nguồn nào tốt nhất tuyệt đối\"",
+  "opts": [
+   "Định dạng dữ liệu NASA POWER API",
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "ARCO-ERA5 trên Google Cloud — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Vệ tinh lõi GPM Core Observatory"
+  ],
+  "correct": 1,
+  "topic": "Mưa vệ tinh — Nghiên cứu",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS"
+ },
+ {
+  "id": "gpm-ke-nhiem-trmm-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Kế nhiệm trực tiếp TRMM 3B42 (TMPA) — TRMM chính thức ngừng hoạt động 8/2015\"",
+  "opts": [
+   "Cấu trúc bảng GHCN-Daily (EAV)",
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "GPM IMERG kế nhiệm sản phẩm nào",
+   "Bản chất kỹ thuật của Open-Meteo"
+  ],
+  "correct": 2,
+  "topic": "Mưa vệ tinh — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: GPM IMERG kế nhiệm sản phẩm nào"
+ },
+ {
+  "id": "gpm-phong-ve-tinh-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Phóng 27/2/2014 từ Tanegashima (Nhật) bằng tên lửa H-IIA, hợp tác NASA-JAXA\"",
+  "opts": [
+   "Hạn chế MERRA-2 đã phát hiện ở Đông Nam Á",
+   "3 cộng đồng người dùng chính thức của NASA POWER",
+   "Tên gốc của ISD (Integrated Surface Data)",
+   "Vệ tinh lõi GPM Core Observatory"
+  ],
+  "correct": 3,
+  "topic": "Mưa vệ tinh — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Vệ tinh lõi GPM Core Observatory"
+ },
+ {
+  "id": "power-3-cong-dong-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Năng lượng tái tạo, Công trình bền vững (Sustainable Buildings), và Nông-khí hậu học (Agroclimatology)\"",
+  "opts": [
+   "3 cộng đồng người dùng chính thức của NASA POWER",
+   "Quy mô GHCN-Daily",
+   "Lý do chính đồ án nhóm cần mediated schema",
+   "Nghiên cứu NASA POWER liên quan gần nhất tới đồ án nhóm"
+  ],
+  "correct": 0,
+  "topic": "Bức xạ/năng lượng — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: 3 cộng đồng người dùng chính thức của NASA POWER"
+ },
+ {
+  "id": "power-nen-merra2-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"NASA POWER là lớp đóng gói thân thiện người dùng trên nền MERRA-2 cho phần khí tượng (bức xạ lấy từ CERES/GEWEX)\"",
+  "opts": [
+   "Quy mô GHCN-Daily — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Quan hệ giữa NASA POWER và MERRA-2",
+   "ARCO-ERA5 trên Google Cloud",
+   "Giấy phép mã nguồn của Open-Meteo"
+  ],
+  "correct": 1,
+  "topic": "Bức xạ/năng lượng — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Quan hệ giữa NASA POWER và MERRA-2"
+ },
+ {
+  "id": "power-nature-food-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Yuan et al. (2022), Nature Food — dùng NASA POWER Agro-climatic database cho 8 điểm Indonesia + 3 điểm Thái Lan, chủ đề năng suất lúa gạo Đông Nam Á\"",
+  "opts": [
+   "Động lực ra đời MERRA-2 (NASA GMAO)",
+   "Vệ tinh lõi GPM Core Observatory",
+   "Nghiên cứu NASA POWER liên quan gần nhất tới đồ án nhóm",
+   "Cấu trúc bảng GHCN-Daily (EAV) — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 2,
+  "topic": "Bức xạ/năng lượng — Nghiên cứu",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Nghiên cứu NASA POWER liên quan gần nhất tới đồ án nhóm"
+ },
+ {
+  "id": "openmeteo-khong-tu-chay-mo-hinh-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"KHÔNG tự chạy mô hình dự báo riêng — tổng hợp/chuẩn hoá dữ liệu mở từ hơn 15 cơ quan khí tượng quốc gia (gồm ERA5/DWD/NOAA) thành 1 API thống nhất\"",
+  "opts": [
+   "Quan hệ giữa NASA POWER và MERRA-2",
+   "Đơn vị phát triển CHIRPS",
+   "Vệ tinh lõi GPM Core Observatory",
+   "Bản chất kỹ thuật của Open-Meteo"
+  ],
+  "correct": 3,
+  "topic": "API tổng hợp — Lịch sử",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Bản chất kỹ thuật của Open-Meteo"
+ },
+ {
+  "id": "openmeteo-license-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"AGPLv3, mã nguồn mở, có thể tự host bằng Docker\"",
+  "opts": [
+   "Giấy phép mã nguồn của Open-Meteo",
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "Lưu ý quan trọng khi dùng GHCN-Daily",
+   "Mốc mở rộng dữ liệu ERA5 về quá khứ"
+  ],
+  "correct": 0,
+  "topic": "API tổng hợp — Hệ sinh thái",
+  "src": "docs/12",
+  "explain": "Đáp án đúng: Giấy phép mã nguồn của Open-Meteo"
+ },
+ {
+  "id": "nasa-power-dinh-dang-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"JSON/CSV qua REST API, hỗ trợ sẵn định dạng DSSAT ASCII cho mô hình cây trồng\"",
+  "opts": [
+   "Khác biệt định nghĩa biến nhiệt độ giữa NASA POWER và Open-Meteo",
+   "Định dạng dữ liệu NASA POWER API",
+   "Lưu ý quan trọng khi dùng GHCN-Daily",
+   "Vệ tinh lõi GPM Core Observatory"
+  ],
+  "correct": 1,
+  "topic": "Định dạng & truy cập",
+  "src": "docs/02",
+  "explain": "Đáp án đúng: Định dạng dữ liệu NASA POWER API"
+ },
+ {
+  "id": "chirps-dinh-dang-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"GeoTIFF/NetCDF, độ phân giải 0.05° (~5km), tải bulk hoặc qua Google Earth Engine\"",
+  "opts": [
+   "3 cộng đồng người dùng chính thức của NASA POWER",
+   "Quan hệ giữa NASA POWER và MERRA-2",
+   "Định dạng dữ liệu CHIRPS",
+   "Tên gốc của ISD (Integrated Surface Data)"
+  ],
+  "correct": 2,
+  "topic": "Định dạng & truy cập",
+  "src": "docs/02",
+  "explain": "Đáp án đúng: Định dạng dữ liệu CHIRPS"
+ },
+ {
+  "id": "ghcn-dinh-dang-eav-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Mỗi biến (TMAX/TMIN/PRCP...) là 1 DÒNG riêng (Entity-Attribute-Value), không phải 1 cột/biến như dữ liệu mô hình JSON\"",
+  "opts": [
+   "Hạn chế MERRA-2 đã phát hiện ở Đông Nam Á",
+   "Lý do chính đồ án nhóm cần mediated schema",
+   "Động lực ra đời MERRA-2 (NASA GMAO)",
+   "Cấu trúc bảng GHCN-Daily (EAV)"
+  ],
+  "correct": 3,
+  "topic": "Định dạng & truy cập",
+  "src": "data thật module",
+  "explain": "Đáp án đúng: Cấu trúc bảng GHCN-Daily (EAV)"
+ },
+ {
+  "id": "ghcn-don-vi-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Phần mười đơn vị chuẩn — nhiệt độ theo 0.1°C, lượng mưa theo 0.1mm (phải tự chia 10 để quy đổi)\"",
+  "opts": [
+   "Đơn vị gốc của TMAX/TMIN/PRCP trong GHCN-Daily",
+   "Spatio-Temporal Heterogeneity (đồ án nhóm xác định là bài toán cốt lõi)",
+   "Định dạng dữ liệu NASA POWER API",
+   "3 cộng đồng người dùng chính thức của NASA POWER"
+  ],
+  "correct": 0,
+  "topic": "Định dạng & truy cập",
+  "src": "data thật module",
+  "explain": "Đáp án đúng: Đơn vị gốc của TMAX/TMIN/PRCP trong GHCN-Daily"
+ },
+ {
+  "id": "power-vs-openmeteo-bien-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"NASA POWER cho nhiệt độ TRUNG BÌNH ngày (T2M, 1 giá trị/ngày); Open-Meteo (dữ liệu hourly) cho cả MAX và MIN — 2 cách mô tả khác nhau cho cùng 1 ngày\"",
+  "opts": [
+   "Động lực ra đời MERRA-2 (NASA GMAO)",
+   "Khác biệt định nghĩa biến nhiệt độ giữa NASA POWER và Open-Meteo",
+   "Hạn chế MERRA-2 đã phát hiện ở Đông Nam Á",
+   "Định dạng dữ liệu CHIRPS — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Schema Alignment thật",
+  "src": "data thật module",
+  "explain": "Đáp án đúng: Khác biệt định nghĩa biến nhiệt độ giữa NASA POWER và Open-Meteo"
+ },
+ {
+  "id": "mediated-schema-dna-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Ghép dữ liệu lưới liên tục (ERA5) với dữ liệu điểm rời rạc (trạm NOAA) và dữ liệu bức xạ vệ tinh (NASA POWER) vào 1 lược đồ trung gian thống nhất\"",
+  "opts": [
+   "Nghiên cứu NASA POWER liên quan gần nhất tới đồ án nhóm",
+   "Phát hiện quan trọng từ 4 nghiên cứu Việt Nam dùng CHIRPS",
+   "Lý do chính đồ án nhóm cần mediated schema",
+   "Đơn vị phát triển CHIRPS"
+  ],
+  "correct": 2,
+  "topic": "Kiến trúc đồ án",
+  "src": "README đồ án",
+  "explain": "Đáp án đúng: Lý do chính đồ án nhóm cần mediated schema"
+ },
+ {
+  "id": "spatio-temporal-heterogeneity-t2",
+  "q": "Mô tả sau nói về thuật ngữ/mốc nào? — \"Dị biệt không-thời gian giữa dữ liệu lưới liên tục và dữ liệu điểm rời rạc — dạng dị biệt cấu trúc sâu hơn việc ghép 2 bảng cùng định dạng\"",
+  "opts": [
+   "Đơn vị phát triển CHIRPS — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Quan hệ giữa NASA POWER và MERRA-2",
+   "Đơn vị gốc của TMAX/TMIN/PRCP trong GHCN-Daily",
+   "Spatio-Temporal Heterogeneity (đồ án nhóm xác định là bài toán cốt lõi)"
+  ],
+  "correct": 3,
+  "topic": "Kiến trúc đồ án",
+  "src": "README đồ án",
+  "explain": "Đáp án đúng: Spatio-Temporal Heterogeneity (đồ án nhóm xác định là bài toán cốt lõi)"
+ },
+ {
+  "id": "m05-worked-00",
+  "q": "Trong SQL sandbox module 05, vì sao không thể JOIN trực tiếp nasa_power_ngay và openmeteo_ngay theo (vi_do, kinh_do) bằng dấu '=' để so sánh nhiệt độ cùng 1 thành phố?",
+  "opts": [
+   "Vì mỗi nguồn tự ghi toạ độ tâm lưới/trạm độc lập (số thực nhiều chữ số thập phân), gần như không bao giờ trùng tuyệt đối — cần so khớp theo thành_phố hoặc ngưỡng khoảng cách, không so bằng dấu '='",
+   "Vì toạ độ ở nasa_power_ngay luôn là số nguyên còn ở openmeteo_ngay luôn là chuỗi, không so sánh được — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Vì SQLite (sql.js) không hỗ trợ JOIN giữa 2 bảng khác tên — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Vì 2 bảng không có cột toạ độ nào, phải tự thêm trước khi JOIN — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 0,
+  "topic": "Kiến trúc đồ án",
+  "src": "data thật module (áp dụng SQL sandbox)",
+  "explain": "Đáp án đúng: Vì mỗi nguồn tự ghi toạ độ tâm lưới/trạm độc lập (số thực nhiều chữ số thập phân), gần như không bao giờ trùng tuyệt đối — cần so khớp theo thành_phố hoặc ngưỡng khoảng cách, không so bằng dấu '='"
+ },
+ {
+  "id": "m05-worked-01",
+  "q": "Bảng ghcn_tram trong SQL sandbox module 05 lưu dữ liệu theo cấu trúc Entity-Attribute-Value (mỗi dòng 1 element như TMAX/TMIN/PRCP), khác hẳn 2 bảng nasa_power_ngay/openmeteo_ngay (mỗi biến 1 cột). Để so sánh nhiệt độ TMAX của 1 trạm GHCN với nhiet_do_max_c của Open-Meteo cùng ngày, bước xử lý nào là BẮT BUỘC trước khi so sánh?",
+  "opts": [
+   "Không cần xử lý gì thêm, JOIN trực tiếp 2 bảng theo ngay là so sánh đúng ngay — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Lọc/PIVOT bảng ghcn_tram theo element='TMAX' trước, rồi mới JOIN theo ngày — không thể so trực tiếp vì ghcn_tram gộp nhiều loại biến trong cùng 1 cột gia_tri",
+   "Chỉ cần đổi tên cột gia_tri thành nhiet_do_max_c là so sánh được — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Phải xoá bảng ghcn_tram vì SQLite không hỗ trợ cấu trúc EAV — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 1,
+  "topic": "Kiến trúc đồ án",
+  "src": "data thật module (áp dụng SQL sandbox)",
+  "explain": "Đáp án đúng: Lọc/PIVOT bảng ghcn_tram theo element='TMAX' trước, rồi mới JOIN theo ngày — không thể so trực tiếp vì ghcn_tram gộp nhiều loại biến trong cùng 1 cột gia_tri"
  }
 ]
