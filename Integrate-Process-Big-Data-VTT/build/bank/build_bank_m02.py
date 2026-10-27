@@ -159,6 +159,64 @@ COMPARE_QS = [
        wrong=["Probabilistic Mediated Schema luôn chỉ có đúng 1 phiên bản duy nhất, giống truyền thống", "Chỉ khác ở chỗ dùng ngôn ngữ truy vấn khác (NoSQL thay vì SQL)", "Không có gì khác biệt về bản chất, chỉ khác cách gọi tên"]),
 ]
 
+# -------- T9: 9 câu đơn-chọn từ Quiz DI.pdf (Phần B: GAV; Phần C: LAV/GLAV) — giữ đúng 4 phương
+# án gốc của đề; đáp án theo suy luận đối chiếu lý thuyết đã học, đề gốc KHÔNG có đáp án chính thức
+# giảng viên cho phần này (xem slides/Quiz-DI-DataIntegration-GAV-LAV-GLAV.md). Câu 9 (chọn nhiều)
+# không đưa vào vì bank chỉ hỗ trợ chọn 1 đáp án. --------
+QUIZ_DI_CONVERTED = [
+  dict(q="(Quiz DI, câu 5) Trong cách ánh xạ lược đồ Global-as-View (GAV):",
+       correct="Mỗi quan hệ trong lược đồ trung gian được định nghĩa là một view từ các nguồn dữ liệu",
+       topic="GAV",
+       wrong=["Mỗi quan hệ nguồn là một view trên lược đồ trung gian (đây là LAV)",
+              "Định nghĩa ánh xạ phụ thuộc tập hợp các nguồn tham gia vào hệ thống",
+              "Lược đồ trung gian không cần đến dữ liệu nguồn"]),
+  dict(q="(Quiz DI, câu 7) Điểm yếu lớn nhất của ánh xạ theo kiểu GAV là gì?",
+       correct="Không linh hoạt với thay đổi nguồn vì mỗi thay đổi cần cập nhật lại lược đồ trung gian",
+       topic="GAV",
+       wrong=["Không hỗ trợ ánh xạ từ nhiều nguồn", "Không hỗ trợ các bảng có quan hệ khóa ngoại", "Không thể xử lý dữ liệu phi cấu trúc"]),
+  dict(q="(Quiz DI, câu 10) Trong GAV, mediated schema được định nghĩa như thế nào?",
+       correct="Là tập các view trên các nguồn dữ liệu", topic="GAV",
+       wrong=["Là tập các nguồn dữ liệu trên mediated schema (bị đảo ngược)", "Là tập các khóa ngoại", "Là tập các file vật lý"]),
+  dict(q="(Quiz DI, câu 11) Viết lại truy vấn (reformulation) trong GAV thường tương ứng với kỹ thuật nào?",
+       correct="Query/View Unfolding", topic="GAV",
+       wrong=["Answering Queries Using Views (đây là kỹ thuật của LAV)", "Định vị các nguồn dữ liệu", "Định vị các phân đoạn dữ liệu"]),
+  dict(q="(Quiz DI, câu 14) Query unfolding có nghĩa là gì?",
+       correct="Mở rộng truy vấn bằng cách thay view bằng định nghĩa của view đó", topic="GAV",
+       wrong=["Tối ưu truy vấn bằng cách rút gọn các bảng biểu diễn nó", "Sử dụng khóa chính để kết nối", "Viết lại truy vấn (quá chung, không phải định nghĩa kỹ thuật cụ thể)"]),
+  dict(q="(Quiz DI, câu 6) Mô hình ánh xạ lược đồ nào định nghĩa mỗi NGUỒN như một view trên lược đồ trung gian?",
+       correct="Local-as-View (LAV)", topic="LAV/GLAV",
+       wrong=["Global-as-View (GAV)", "Cả hai GAV và LAV", "Không có đáp án nào đúng"]),
+  dict(q="(Quiz DI, câu 8) Trong bối cảnh dữ liệu không đầy đủ, ánh xạ nào phù hợp nhất để bảo toàn tính linh hoạt và mở rộng các truy vấn có tính chất suy diễn?",
+       correct="GLAV", topic="LAV/GLAV",
+       wrong=["GAV", "LAV", "ETL Pipeline"]),
+  dict(q="(Quiz DI, câu 12) Trong LAV, các nguồn dữ liệu được định nghĩa như thế nào?",
+       correct="Là view trên mediated schema", topic="LAV/GLAV",
+       wrong=["Là khóa của mediated schema", "Dựa trên cách thực thi tối ưu truy vấn", "Không phải cách nào trong các phương án trên"]),
+  dict(q="(Quiz DI, câu 13) Trong GLAV, biểu thức mapping thường liên hệ giữa gì?",
+       correct="Query trên mediated schema và query trên data sources", topic="LAV/GLAV",
+       wrong=["Người dùng và trình duyệt", "Xóa các tuple trùng lặp", "File và thư mục"]),
+]
+
+# -------- T10: Bài 2 (Schema Matching S1/S2/S3 → S) từ BT.pdf, đáp án CHÍNH THỨC đối chiếu
+# BT_chữa.pdf (bản chữa tay của giảng viên) — xem slides/BT-EditDistance-TFIDF-SchemaMapping.md.
+# S1{ProductDescription,BusinessUnit,Rating,Price}, S2{ProductName,Unit}, S3{ProductName,Rating,Price}
+# (giả thiết ProductDescription≡ProductName cùng domain), mediated S{ProductDescription,BusinessUnit,Rating,Price}.
+SCHEMA_MATCHING_OFFICIAL = [
+  dict(q="(BT.pdf câu 2a, đáp án chính thức BT_chữa.pdf) Dùng name-based matching (kết hợp giả thiết domain đã cho), thuộc tính S.BusinessUnit khớp với thuộc tính nào ở các nguồn?",
+       correct="S1.BusinessUnit và S2.Unit", topic="Schema Matching",
+       wrong=["S1.BusinessUnit và S3.Rating", "S2.ProductName và S3.ProductName", "S1.Price và S3.Price"]),
+  dict(q="(BT.pdf câu 2b, đáp án chính thức BT_chữa.pdf) Ánh xạ Global-as-View (GAV) chính thức cho mediated schema S là gì?",
+       correct="S ⊇ S1, và S ⊇ S2 ⋈ S3 (join S2 với S3 theo ProductName)", topic="Schema Matching",
+       wrong=["S ⊆ S1, và S ⊆ S2 ⋈ S3 (dùng sai dấu chiều — đây là LAV, không phải GAV)",
+              "S ⊇ S1 ⋈ S2 ⋈ S3 (join cả 3 nguồn cùng lúc, không khớp đáp án chính thức)",
+              "Chỉ có đúng 1 cách phủ duy nhất S ⊇ S1, không cần xét S2/S3"]),
+  dict(q="(BT.pdf câu 2c, đáp án chính thức BT_chữa.pdf) Ánh xạ Local-as-View (LAV) chính thức cho 3 nguồn S1, S2, S3 là gì?",
+       correct="S1 ⊆ S, S2 ⊆ S, S3 ⊆ S (mỗi nguồn là tập con của mediated schema, không chia nhỏ theo cột)",
+       topic="Schema Matching",
+       wrong=["S ⊆ S1, S ⊆ S2, S ⊆ S3 (dùng sai dấu chiều — đây là kiểu viết của GAV, không phải LAV)",
+              "S1 ⊇ S, S2 ⊇ S, S3 ⊇ S", "Chỉ S1 ⊆ S là đúng, S2/S3 không thể viết dạng LAV vì thiếu cột"]),
+]
+
 # Chống length-bias: nếu đáp án đúng là đáp án DÀI NHẤT tuyệt đối (unique max), kéo dài đáp án
 # nhiễu ngắn nhất bằng 1 trong các câu đệm trung lập (không gợi ý đúng/sai), chọn đệm theo hash để
 # không có 1 câu đệm cố định nào trở thành "dấu hiệu luôn-luôn-sai" mới.
@@ -239,6 +297,16 @@ def main():
     # T6: áp dụng trên lược đồ SQL sandbox thật
     for i, c in enumerate(SCHEMA_QS):
         add(c["q"], c["correct"], c["wrong"], c["topic"], "bổ-sung", f"m02-t6-{i:02d}")
+
+    # T9: Quiz DI.pdf Phần B (GAV) + Phần C (LAV/GLAV), chuyển thành trắc nghiệm
+    for i, c in enumerate(QUIZ_DI_CONVERTED):
+        add(c["q"], c["correct"], c["wrong"], c["topic"],
+            "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)", f"m02-t9-{i:02d}")
+
+    # T10: BT.pdf câu 2 (Schema Matching), đáp án CHÍNH THỨC đối chiếu BT_chữa.pdf
+    for i, c in enumerate(SCHEMA_MATCHING_OFFICIAL):
+        add(c["q"], c["correct"], c["wrong"], c["topic"],
+            "BT_chữa.pdf (đáp án chính thức giảng viên, chuyển thành trắc nghiệm)", f"m02-t10-{i:02d}")
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(items, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -4,9 +4,9 @@
   "q": "'Data Integration' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
    "Tạo một lớp trừu tượng bậc cao hơn DBMS, cho phép truy cập thống nhất tới nhiều nguồn dữ liệu độc lập (khác vị trí, mô hình dữ liệu, ngữ nghĩa)",
-   "Chỉ đơn giản là copy dữ liệu từ 1 nguồn sang 1 nguồn khác — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
-   "Một tính năng có sẵn trong mọi DBMS, không cần lớp trừu tượng riêng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Một ngôn ngữ truy vấn mới thay thế hoàn toàn SQL — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+   "Một tính năng có sẵn trong mọi DBMS, không cần lớp trừu tượng riêng — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Một ngôn ngữ truy vấn mới thay thế hoàn toàn SQL — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ đơn giản là copy dữ liệu từ 1 nguồn sang 1 nguồn khác — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
   ],
   "correct": 0,
   "topic": "Khái niệm nền",
@@ -17,10 +17,10 @@
   "id": "m01-t1-mediated-schema",
   "q": "'Mediated Schema' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "Chỉ là tên gọi khác của Wrapper — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Lược đồ vật lý của riêng 1 nguồn dữ liệu cụ thể — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Lược đồ trung gian/thống nhất — 'giao diện' duy nhất mà người dùng thấy khi truy vấn, che giấu sự khác biệt giữa các nguồn phía sau",
-   "Lược đồ vật lý của riêng 1 nguồn dữ liệu cụ thể — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
-   "Bản sao đầy đủ dữ liệu từ tất cả các nguồn gộp lại — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+   "Chỉ là tên gọi khác của Wrapper — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Bản sao đầy đủ dữ liệu từ tất cả các nguồn gộp lại — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
   ],
   "correct": 1,
   "topic": "Khái niệm nền",
@@ -31,8 +31,8 @@
   "id": "m01-t1-wrapper",
   "q": "'Wrapper' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "Một bước trong Query Unfolding của GAV — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
-   "Thành phần chỉ dùng để mã hoá dữ liệu khi truyền qua mạng",
+   "Một bước trong Query Unfolding của GAV — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Thành phần chỉ dùng để mã hoá dữ liệu khi truyền qua mạng — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Bộ chuyển đổi — nhận truy vấn, gửi tới nguồn dữ liệu thật, chuyển kết quả trả về đúng mô hình dữ liệu nội bộ",
    "Giao diện duy nhất người dùng thấy khi truy vấn (đây là Mediated Schema)"
   ],
@@ -45,9 +45,9 @@
   "id": "m01-t1-heterogeneity-7",
   "q": "'7 mức độ Heterogeneity' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "6 mức, không bao gồm Instance/Identity (ER sẽ không cần thiết nếu đúng)",
-   "Chỉ có 3 mức: Syntactic, Semantic, và Structural — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
-   "Chỉ phân theo 2 loại: dữ liệu có cấu trúc và không có cấu trúc — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "6 mức, không bao gồm Instance/Identity (ER sẽ không cần thiết nếu đúng) — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Chỉ có 3 mức: Syntactic, Semantic, và Structural — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ phân theo 2 loại: dữ liệu có cấu trúc và không có cấu trúc — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "System/platform, Syntactic/format, Structural/schema, Semantic/conceptual, Instance/identity, Temporal/process, Quality/provenance/governance"
   ],
   "correct": 3,
@@ -60,9 +60,9 @@
   "q": "'Structural/Schema Heterogeneity' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
    "Khác biệt về cách tổ chức bảng, khóa, độ chi tiết (granularity) — VD 1 bảng gộp vs nhiều bảng tách",
-   "Khác biệt về đơn vị đo (VD Celsius vs Fahrenheit) — đây là Data-level Heterogeneity",
-   "Khác biệt về tốc độ mạng giữa các nguồn — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Khác biệt chỉ xảy ra giữa 2 hệ điều hành khác nhau"
+   "Khác biệt về tốc độ mạng giữa các nguồn — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Khác biệt chỉ xảy ra giữa 2 hệ điều hành khác nhau",
+   "Khác biệt về đơn vị đo (VD Celsius vs Fahrenheit) — đây là Data-level Heterogeneity"
   ],
   "correct": 0,
   "topic": "Heterogeneity",
@@ -75,7 +75,7 @@
   "opts": [
    "Khác biệt về cách tổ chức bảng (đây là Structural Heterogeneity)",
    "Khác biệt ý nghĩa thuật ngữ — đồng nghĩa (synonym), đa nghĩa (homonym), cần ontology/glossary để giải quyết",
-   "Chỉ xảy ra khi 2 nguồn dùng 2 ngôn ngữ lập trình khác nhau — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Chỉ xảy ra khi 2 nguồn dùng 2 ngôn ngữ lập trình khác nhau — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
    "Luôn giải quyết được bằng cách đổi tên cột, không cần ontology"
   ],
   "correct": 1,
@@ -87,10 +87,10 @@
   "id": "m01-t1-instance-het",
   "q": "'Instance/Identity Heterogeneity' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "Giải quyết bằng Query Unfolding, không phải Record Linkage — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "Chỉ xảy ra khi dữ liệu được mã hoá — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Khác biệt về định dạng file (CSV vs JSON) — đây là Syntactic/Format Heterogeneity",
+   "Chỉ xảy ra khi dữ liệu được mã hoá — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
    "Cùng 1 thực thể thế giới thực xuất hiện khác nhau ở các nguồn — giải quyết bằng Entity Resolution/Record Linkage",
-   "Khác biệt về định dạng file (CSV vs JSON) — đây là Syntactic/Format Heterogeneity"
+   "Giải quyết bằng Query Unfolding, không phải Record Linkage — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
   ],
   "correct": 2,
   "topic": "Heterogeneity",
@@ -101,9 +101,9 @@
   "id": "m01-t1-virtual-integration",
   "q": "'Virtual Data Integration' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "Một loại cơ sở dữ liệu ảo hoá (virtual machine), không liên quan Data Integration",
-   "Kiến trúc chỉ hoạt động offline, không hỗ trợ truy vấn trực tiếp — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Kiến trúc chỉ hoạt động offline, không hỗ trợ truy vấn trực tiếp — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Kiến trúc copy dữ liệu về 1 kho tập trung định kỳ (đây là Data Warehousing)",
+   "Một loại cơ sở dữ liệu ảo hoá (virtual machine), không liên quan Data Integration",
    "Kiến trúc 'ảo' — dữ liệu vẫn ở nguồn gốc, chỉ truy cập lúc có truy vấn (query-time), qua wrapper"
   ],
   "correct": 3,
@@ -117,8 +117,8 @@
   "opts": [
    "Kiến trúc 'vật lý' — copy dữ liệu về 1 kho tập trung định kỳ (ETL), truy vấn trên bản copy, không làm phiền nguồn gốc",
    "Chỉ lưu được dữ liệu dạng văn bản, không lưu được dữ liệu số",
-   "Kiến trúc dữ liệu vẫn ở nguồn gốc, chỉ truy cập lúc có truy vấn (đây là Virtual Integration)",
-   "Yêu cầu phải xoá dữ liệu gốc sau khi copy xong — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+   "Yêu cầu phải xoá dữ liệu gốc sau khi copy xong — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Kiến trúc dữ liệu vẫn ở nguồn gốc, chỉ truy cập lúc có truy vấn (đây là Virtual Integration)"
   ],
   "correct": 0,
   "topic": "Kiến trúc",
@@ -129,10 +129,10 @@
   "id": "m01-t1-query-reformulation",
   "q": "'Query Reformulation' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "Bước chạy thử truy vấn trên dữ liệu giả để kiểm tra lỗi cú pháp",
-   "Viết lại truy vấn trên mediated schema thành truy vấn thật thực thi được trên các nguồn",
    "Bước chọn kế hoạch thực thi vật lý tối ưu (đây là Query Optimizer)",
-   "Bước mã hoá truy vấn để bảo mật khi gửi qua mạng — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+   "Viết lại truy vấn trên mediated schema thành truy vấn thật thực thi được trên các nguồn",
+   "Bước chạy thử truy vấn trên dữ liệu giả để kiểm tra lỗi cú pháp",
+   "Bước mã hoá truy vấn để bảo mật khi gửi qua mạng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
   ],
   "correct": 1,
   "topic": "Query Processing",
@@ -143,10 +143,10 @@
   "id": "m01-t1-5v",
   "q": "'5V của Big Data' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
+   "Chỉ có 3V: Volume, Velocity, Variety (thiếu Veracity và Value)",
    "Volume, Velocity, Variety, Visualization, Vocabulary (2 chữ V cuối sai)",
-   "5 loại định dạng file: Video, Voice, Vector, Variable, Value — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Volume (khối lượng), Velocity (tốc độ), Variety (đa dạng), Veracity (độ tin cậy), Value (giá trị)",
-   "Chỉ có 3V: Volume, Velocity, Variety (thiếu Veracity và Value)"
+   "5 loại định dạng file: Video, Voice, Vector, Variable, Value — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
   ],
   "correct": 2,
   "topic": "Big Data",
@@ -157,9 +157,9 @@
   "id": "m01-t1-pipeline-3buoc",
   "q": "'Pipeline tổng thể Big Data Integration' được định nghĩa như thế nào (theo đúng nội dung slide buổi 2)?",
   "opts": [
-   "Data Fusion → Entity Resolution → Schema Alignment (đảo ngược toàn bộ thứ tự) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
-   "Chỉ có 2 bước: Schema Alignment và Data Fusion, không có Entity Resolution — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
-   "Entity Resolution → Schema Alignment → Data Fusion (sai thứ tự 2 bước đầu) — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ có 2 bước: Schema Alignment và Data Fusion, không có Entity Resolution — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Data Fusion → Entity Resolution → Schema Alignment (đảo ngược toàn bộ thứ tự) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Entity Resolution → Schema Alignment → Data Fusion (sai thứ tự 2 bước đầu) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Schema Alignment → Entity Resolution → Data Fusion — 3 bước giải quyết lần lượt dị biệt #3-4 (schema/semantic), #5 (instance/identity), và xung đột giá trị sau khi gộp"
   ],
   "correct": 3,
@@ -172,9 +172,9 @@
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Tạo một lớp trừu tượng bậc cao hơn DBMS, cho phép truy cập thống nhất tới nhiều nguồn dữ liệu độc lập (khác vị trí, mô hình dữ liệu, ngữ nghĩa)\"",
   "opts": [
    "Data Integration",
-   "Semantic/Conceptual Heterogeneity",
-   "Structural/Schema Heterogeneity",
-   "Query Reformulation"
+   "Instance/Identity Heterogeneity",
+   "Data Warehousing",
+   "Mediated Schema"
   ],
   "correct": 0,
   "topic": "Khái niệm nền",
@@ -185,10 +185,10 @@
   "id": "m01-t2-mediated-schema",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Lược đồ trung gian/thống nhất — 'giao diện' duy nhất mà người dùng thấy khi truy vấn, che giấu sự khác biệt giữa các nguồn phía sau\"",
   "opts": [
-   "Query Reformulation",
+   "Instance/Identity Heterogeneity",
    "Mediated Schema",
-   "7 mức độ Heterogeneity",
-   "Data Integration"
+   "Semantic/Conceptual Heterogeneity",
+   "7 mức độ Heterogeneity"
   ],
   "correct": 1,
   "topic": "Khái niệm nền",
@@ -199,10 +199,10 @@
   "id": "m01-t2-wrapper",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Bộ chuyển đổi — nhận truy vấn, gửi tới nguồn dữ liệu thật, chuyển kết quả trả về đúng mô hình dữ liệu nội bộ\"",
   "opts": [
-   "Semantic/Conceptual Heterogeneity",
    "Query Reformulation",
+   "Data Integration",
    "Wrapper",
-   "Mediated Schema"
+   "Data Warehousing"
   ],
   "correct": 2,
   "topic": "Khái niệm nền",
@@ -213,9 +213,9 @@
   "id": "m01-t2-heterogeneity-7",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"System/platform, Syntactic/format, Structural/schema, Semantic/conceptual, Instance/identity, Temporal/process, Quality/provenance/governance\"",
   "opts": [
+   "Instance/Identity Heterogeneity",
+   "Mediated Schema",
    "5V của Big Data",
-   "Query Reformulation",
-   "Semantic/Conceptual Heterogeneity",
    "7 mức độ Heterogeneity"
   ],
   "correct": 3,
@@ -228,9 +228,9 @@
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Khác biệt về cách tổ chức bảng, khóa, độ chi tiết (granularity) — VD 1 bảng gộp vs nhiều bảng tách\"",
   "opts": [
    "Structural/Schema Heterogeneity",
-   "Virtual Data Integration",
-   "Data Warehousing",
-   "Wrapper — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+   "Mediated Schema — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Data Integration",
+   "7 mức độ Heterogeneity"
   ],
   "correct": 0,
   "topic": "Heterogeneity",
@@ -241,10 +241,10 @@
   "id": "m01-t2-semantic-het",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Khác biệt ý nghĩa thuật ngữ — đồng nghĩa (synonym), đa nghĩa (homonym), cần ontology/glossary để giải quyết\"",
   "opts": [
-   "Wrapper — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Mediated Schema",
    "Semantic/Conceptual Heterogeneity",
-   "Query Reformulation",
-   "7 mức độ Heterogeneity"
+   "Virtual Data Integration",
+   "Wrapper — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
   ],
   "correct": 1,
   "topic": "Heterogeneity",
@@ -255,10 +255,10 @@
   "id": "m01-t2-instance-het",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Cùng 1 thực thể thế giới thực xuất hiện khác nhau ở các nguồn — giải quyết bằng Entity Resolution/Record Linkage\"",
   "opts": [
-   "Data Integration",
-   "Mediated Schema",
+   "Structural/Schema Heterogeneity",
+   "Wrapper",
    "Instance/Identity Heterogeneity",
-   "Semantic/Conceptual Heterogeneity"
+   "7 mức độ Heterogeneity"
   ],
   "correct": 2,
   "topic": "Heterogeneity",
@@ -270,8 +270,8 @@
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Kiến trúc 'ảo' — dữ liệu vẫn ở nguồn gốc, chỉ truy cập lúc có truy vấn (query-time), qua wrapper\"",
   "opts": [
    "Query Reformulation",
-   "5V của Big Data",
-   "Mediated Schema — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Data Integration",
+   "Pipeline tổng thể Big Data Integration",
    "Virtual Data Integration"
   ],
   "correct": 3,
@@ -284,9 +284,9 @@
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Kiến trúc 'vật lý' — copy dữ liệu về 1 kho tập trung định kỳ (ETL), truy vấn trên bản copy, không làm phiền nguồn gốc\"",
   "opts": [
    "Data Warehousing",
-   "Structural/Schema Heterogeneity",
-   "5V của Big Data",
-   "Query Reformulation"
+   "Instance/Identity Heterogeneity",
+   "Mediated Schema",
+   "Wrapper"
   ],
   "correct": 0,
   "topic": "Kiến trúc",
@@ -297,10 +297,10 @@
   "id": "m01-t2-query-reformulation",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Viết lại truy vấn trên mediated schema thành truy vấn thật thực thi được trên các nguồn\"",
   "opts": [
-   "5V của Big Data",
+   "Wrapper",
    "Query Reformulation",
-   "Data Warehousing",
-   "Wrapper — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+   "Mediated Schema",
+   "7 mức độ Heterogeneity"
   ],
   "correct": 1,
   "topic": "Query Processing",
@@ -311,10 +311,10 @@
   "id": "m01-t2-5v",
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Volume (khối lượng), Velocity (tốc độ), Variety (đa dạng), Veracity (độ tin cậy), Value (giá trị)\"",
   "opts": [
-   "Instance/Identity Heterogeneity",
    "Data Warehousing",
+   "Semantic/Conceptual Heterogeneity",
    "5V của Big Data",
-   "Pipeline tổng thể Big Data Integration"
+   "Wrapper"
   ],
   "correct": 2,
   "topic": "Big Data",
@@ -326,8 +326,8 @@
   "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Schema Alignment → Entity Resolution → Data Fusion — 3 bước giải quyết lần lượt dị biệt #3-4 (schema/semantic), #5 (instance/identity), và xung đột giá trị sau khi gộp\"",
   "opts": [
    "Virtual Data Integration",
-   "5V của Big Data — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Data Warehousing",
+   "Data Warehousing — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Semantic/Conceptual Heterogeneity",
    "Pipeline tổng thể Big Data Integration"
   ],
   "correct": 3,
@@ -341,8 +341,8 @@
   "opts": [
    "Tạo một lớp trừu tượng bậc cao hơn DBMS, cho phép truy cập thống nhất tới nhiều nguồn dữ liệu độc lập (khác vị trí, mô hình dữ liệu, ngữ nghĩa)",
    "Một tính năng có sẵn trong mọi DBMS, không cần lớp trừu tượng riêng — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "Chỉ đơn giản là copy dữ liệu từ 1 nguồn sang 1 nguồn khác — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Một ngôn ngữ truy vấn mới thay thế hoàn toàn SQL — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+   "Một ngôn ngữ truy vấn mới thay thế hoàn toàn SQL — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ đơn giản là copy dữ liệu từ 1 nguồn sang 1 nguồn khác — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
   ],
   "correct": 0,
   "topic": "Khái niệm nền",
@@ -353,10 +353,10 @@
   "id": "m01-t3-mediated-schema",
   "q": "Phát biểu nào sau đây về Mediated Schema là ĐÚNG?",
   "opts": [
-   "Lược đồ vật lý của riêng 1 nguồn dữ liệu cụ thể — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Bản sao đầy đủ dữ liệu từ tất cả các nguồn gộp lại — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Lược đồ trung gian/thống nhất — 'giao diện' duy nhất mà người dùng thấy khi truy vấn, che giấu sự khác biệt giữa các nguồn phía sau",
-   "Chỉ là tên gọi khác của Wrapper — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Bản sao đầy đủ dữ liệu từ tất cả các nguồn gộp lại — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+   "Lược đồ vật lý của riêng 1 nguồn dữ liệu cụ thể — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Chỉ là tên gọi khác của Wrapper — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
   ],
   "correct": 1,
   "topic": "Khái niệm nền",
@@ -367,10 +367,10 @@
   "id": "m01-t3-wrapper",
   "q": "Phát biểu nào sau đây về Wrapper là ĐÚNG?",
   "opts": [
-   "Một bước trong Query Unfolding của GAV — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
-   "Giao diện duy nhất người dùng thấy khi truy vấn (đây là Mediated Schema)",
+   "Thành phần chỉ dùng để mã hoá dữ liệu khi truyền qua mạng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một bước trong Query Unfolding của GAV — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
    "Bộ chuyển đổi — nhận truy vấn, gửi tới nguồn dữ liệu thật, chuyển kết quả trả về đúng mô hình dữ liệu nội bộ",
-   "Thành phần chỉ dùng để mã hoá dữ liệu khi truyền qua mạng"
+   "Giao diện duy nhất người dùng thấy khi truy vấn (đây là Mediated Schema)"
   ],
   "correct": 2,
   "topic": "Khái niệm nền",
@@ -381,9 +381,9 @@
   "id": "m01-t3-heterogeneity-7",
   "q": "Phát biểu nào sau đây về 7 mức độ Heterogeneity là ĐÚNG?",
   "opts": [
-   "Chỉ phân theo 2 loại: dữ liệu có cấu trúc và không có cấu trúc — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "Chỉ có 3 mức: Syntactic, Semantic, và Structural — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
-   "6 mức, không bao gồm Instance/Identity (ER sẽ không cần thiết nếu đúng) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ phân theo 2 loại: dữ liệu có cấu trúc và không có cấu trúc — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "6 mức, không bao gồm Instance/Identity (ER sẽ không cần thiết nếu đúng) — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
    "System/platform, Syntactic/format, Structural/schema, Semantic/conceptual, Instance/identity, Temporal/process, Quality/provenance/governance"
   ],
   "correct": 3,
@@ -396,8 +396,8 @@
   "q": "Phát biểu nào sau đây về Structural/Schema Heterogeneity là ĐÚNG?",
   "opts": [
    "Khác biệt về cách tổ chức bảng, khóa, độ chi tiết (granularity) — VD 1 bảng gộp vs nhiều bảng tách",
+   "Khác biệt về tốc độ mạng giữa các nguồn — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "Khác biệt về đơn vị đo (VD Celsius vs Fahrenheit) — đây là Data-level Heterogeneity",
-   "Khác biệt về tốc độ mạng giữa các nguồn — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Khác biệt chỉ xảy ra giữa 2 hệ điều hành khác nhau"
   ],
   "correct": 0,
@@ -409,10 +409,10 @@
   "id": "m01-t3-semantic-het",
   "q": "Phát biểu nào sau đây về Semantic/Conceptual Heterogeneity là ĐÚNG?",
   "opts": [
-   "Luôn giải quyết được bằng cách đổi tên cột, không cần ontology",
-   "Khác biệt ý nghĩa thuật ngữ — đồng nghĩa (synonym), đa nghĩa (homonym), cần ontology/glossary để giải quyết",
    "Khác biệt về cách tổ chức bảng (đây là Structural Heterogeneity)",
-   "Chỉ xảy ra khi 2 nguồn dùng 2 ngôn ngữ lập trình khác nhau — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+   "Khác biệt ý nghĩa thuật ngữ — đồng nghĩa (synonym), đa nghĩa (homonym), cần ontology/glossary để giải quyết",
+   "Luôn giải quyết được bằng cách đổi tên cột, không cần ontology",
+   "Chỉ xảy ra khi 2 nguồn dùng 2 ngôn ngữ lập trình khác nhau — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
   ],
   "correct": 1,
   "topic": "Heterogeneity",
@@ -426,7 +426,7 @@
    "Khác biệt về định dạng file (CSV vs JSON) — đây là Syntactic/Format Heterogeneity",
    "Chỉ xảy ra khi dữ liệu được mã hoá — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
    "Cùng 1 thực thể thế giới thực xuất hiện khác nhau ở các nguồn — giải quyết bằng Entity Resolution/Record Linkage",
-   "Giải quyết bằng Query Unfolding, không phải Record Linkage — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+   "Giải quyết bằng Query Unfolding, không phải Record Linkage — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
   ],
   "correct": 2,
   "topic": "Heterogeneity",
@@ -437,9 +437,9 @@
   "id": "m01-t3-virtual-integration",
   "q": "Phát biểu nào sau đây về Virtual Data Integration là ĐÚNG?",
   "opts": [
-   "Kiến trúc copy dữ liệu về 1 kho tập trung định kỳ (đây là Data Warehousing)",
    "Một loại cơ sở dữ liệu ảo hoá (virtual machine), không liên quan Data Integration",
-   "Kiến trúc chỉ hoạt động offline, không hỗ trợ truy vấn trực tiếp — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Kiến trúc copy dữ liệu về 1 kho tập trung định kỳ (đây là Data Warehousing)",
+   "Kiến trúc chỉ hoạt động offline, không hỗ trợ truy vấn trực tiếp — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
    "Kiến trúc 'ảo' — dữ liệu vẫn ở nguồn gốc, chỉ truy cập lúc có truy vấn (query-time), qua wrapper"
   ],
   "correct": 3,
@@ -452,7 +452,7 @@
   "q": "Phát biểu nào sau đây về Data Warehousing là ĐÚNG?",
   "opts": [
    "Kiến trúc 'vật lý' — copy dữ liệu về 1 kho tập trung định kỳ (ETL), truy vấn trên bản copy, không làm phiền nguồn gốc",
-   "Yêu cầu phải xoá dữ liệu gốc sau khi copy xong — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Yêu cầu phải xoá dữ liệu gốc sau khi copy xong — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
    "Chỉ lưu được dữ liệu dạng văn bản, không lưu được dữ liệu số",
    "Kiến trúc dữ liệu vẫn ở nguồn gốc, chỉ truy cập lúc có truy vấn (đây là Virtual Integration)"
   ],
@@ -465,10 +465,10 @@
   "id": "m01-t3-query-reformulation",
   "q": "Phát biểu nào sau đây về Query Reformulation là ĐÚNG?",
   "opts": [
-   "Bước mã hoá truy vấn để bảo mật khi gửi qua mạng — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Bước mã hoá truy vấn để bảo mật khi gửi qua mạng — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "Viết lại truy vấn trên mediated schema thành truy vấn thật thực thi được trên các nguồn",
-   "Bước chọn kế hoạch thực thi vật lý tối ưu (đây là Query Optimizer)",
-   "Bước chạy thử truy vấn trên dữ liệu giả để kiểm tra lỗi cú pháp"
+   "Bước chạy thử truy vấn trên dữ liệu giả để kiểm tra lỗi cú pháp",
+   "Bước chọn kế hoạch thực thi vật lý tối ưu (đây là Query Optimizer)"
   ],
   "correct": 1,
   "topic": "Query Processing",
@@ -479,10 +479,10 @@
   "id": "m01-t3-5v",
   "q": "Phát biểu nào sau đây về 5V của Big Data là ĐÚNG?",
   "opts": [
-   "Chỉ có 3V: Volume, Velocity, Variety (thiếu Veracity và Value)",
    "Volume, Velocity, Variety, Visualization, Vocabulary (2 chữ V cuối sai)",
+   "5 loại định dạng file: Video, Voice, Vector, Variable, Value — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Volume (khối lượng), Velocity (tốc độ), Variety (đa dạng), Veracity (độ tin cậy), Value (giá trị)",
-   "5 loại định dạng file: Video, Voice, Vector, Variable, Value — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+   "Chỉ có 3V: Volume, Velocity, Variety (thiếu Veracity và Value)"
   ],
   "correct": 2,
   "topic": "Big Data",
@@ -493,9 +493,9 @@
   "id": "m01-t3-pipeline-3buoc",
   "q": "Phát biểu nào sau đây về Pipeline tổng thể Big Data Integration là ĐÚNG?",
   "opts": [
-   "Entity Resolution → Schema Alignment → Data Fusion (sai thứ tự 2 bước đầu) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Entity Resolution → Schema Alignment → Data Fusion (sai thứ tự 2 bước đầu) — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Data Fusion → Entity Resolution → Schema Alignment (đảo ngược toàn bộ thứ tự) — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Chỉ có 2 bước: Schema Alignment và Data Fusion, không có Entity Resolution — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
-   "Data Fusion → Entity Resolution → Schema Alignment (đảo ngược toàn bộ thứ tự) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
    "Schema Alignment → Entity Resolution → Data Fusion — 3 bước giải quyết lần lượt dị biệt #3-4 (schema/semantic), #5 (instance/identity), và xung đột giá trị sau khi gộp"
   ],
   "correct": 3,
@@ -508,9 +508,9 @@
   "q": "Virtual Integration và Data Warehousing khác nhau cơ bản ở điểm nào?",
   "opts": [
    "Virtual: dữ liệu ở nguyên nguồn, truy cập query-time qua wrapper; Warehousing: copy định kỳ về kho tập trung (ETL)",
+   "2 kiến trúc này hoàn toàn giống nhau, chỉ khác tên gọi — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
    "Virtual Integration luôn chạy chậm hơn Data Warehousing trong mọi trường hợp",
-   "2 kiến trúc này hoàn toàn giống nhau, chỉ khác tên gọi — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
-   "Data Warehousing không cần ETL, chỉ Virtual Integration mới cần"
+   "Data Warehousing không cần ETL, chỉ Virtual Integration mới cần — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
   ],
   "correct": 0,
   "topic": "Kiến trúc",
@@ -521,10 +521,10 @@
   "id": "m01-t4-01",
   "q": "Vì sao Data Warehousing cho phép chạy data mining/ML dễ hơn Virtual Integration?",
   "opts": [
-   "Vì Virtual Integration không hỗ trợ bất kỳ loại truy vấn nào — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Vì Data Warehousing luôn có phần cứng mạnh hơn Virtual Integration",
    "Vì dữ liệu đã copy về kho, có thể chạy tính toán nặng tuỳ ý trên bản copy mà không làm phiền nguồn gốc",
-   "Vì ML chỉ chạy được trên dữ liệu đã ETL, không chạy được trên dữ liệu thô",
-   "Vì Data Warehousing luôn có phần cứng mạnh hơn Virtual Integration"
+   "Vì Virtual Integration không hỗ trợ bất kỳ loại truy vấn nào — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Vì ML chỉ chạy được trên dữ liệu đã ETL, không chạy được trên dữ liệu thô"
   ],
   "correct": 1,
   "topic": "Kiến trúc",
@@ -535,10 +535,10 @@
   "id": "m01-t4-02",
   "q": "DBMS và Data Integration khác nhau ở tầng trừu tượng nào?",
   "opts": [
-   "2 khái niệm này hoàn toàn giống nhau, Data Integration chỉ là tên gọi khác của DBMS — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
-   "Data Integration chỉ hoạt động được khi không có DBMS nào cả — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "2 khái niệm này hoàn toàn giống nhau, Data Integration chỉ là tên gọi khác của DBMS — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Data Integration chỉ hoạt động được khi không có DBMS nào cả — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
    "DBMS = trừu tượng logical vs physical (trong 1 CSDL); Data Integration = trừu tượng bậc cao hơn, che giấu sự khác biệt GIỮA NHIỀU nguồn độc lập",
-   "DBMS luôn ở tầng cao hơn Data Integration (bị đảo ngược) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+   "DBMS luôn ở tầng cao hơn Data Integration (bị đảo ngược) — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
   ],
   "correct": 2,
   "topic": "Khái niệm nền",
@@ -549,9 +549,9 @@
   "id": "m01-t4-03",
   "q": "Structural Heterogeneity và Semantic Heterogeneity khác nhau ở điểm nào?",
   "opts": [
-   "2 loại dị biệt này hoàn toàn giống nhau, chỉ khác tên gọi — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
-   "Semantic Heterogeneity chỉ xảy ra ở cấp độ vật lý (ổ đĩa), không liên quan ngữ nghĩa",
+   "2 loại dị biệt này hoàn toàn giống nhau, chỉ khác tên gọi — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
    "Structural Heterogeneity chỉ giải quyết được bằng Entity Resolution",
+   "Semantic Heterogeneity chỉ xảy ra ở cấp độ vật lý (ổ đĩa), không liên quan ngữ nghĩa",
    "Structural: khác cách TỔ CHỨC bảng/khoá/độ chi tiết; Semantic: khác Ý NGHĨA thuật ngữ (đồng nghĩa/đa nghĩa)"
   ],
   "correct": 3,
@@ -564,13 +564,195 @@
   "q": "Instance/Identity Heterogeneity khác với 6 mức dị biệt còn lại ở điểm nào, và giải quyết bằng kỹ thuật học ở buổi nào?",
   "opts": [
    "Nó xảy ra ở mức DỮ LIỆU THỰC THỂ (không phải schema) — giải quyết bằng Entity Resolution/Record Linkage, học ở buổi 4",
-   "Nó không cần giải quyết, có thể bỏ qua an toàn — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
-   "Nó chỉ là vấn đề định dạng file, giải quyết bằng đổi tên cột",
-   "Nó giống hoàn toàn Structural Heterogeneity, học ở buổi 3"
+   "Nó giống hoàn toàn Structural Heterogeneity, học ở buổi 3",
+   "Nó không cần giải quyết, có thể bỏ qua an toàn — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Nó chỉ là vấn đề định dạng file, giải quyết bằng đổi tên cột"
   ],
   "correct": 0,
   "topic": "Heterogeneity",
   "src": "bổ-sung",
   "explain": "Đáp án đúng: Nó xảy ra ở mức DỮ LIỆU THỰC THỂ (không phải schema) — giải quyết bằng Entity Resolution/Record Linkage, học ở buổi 4"
+ },
+ {
+  "id": "m01-t9-00",
+  "q": "(Quiz DI, câu 2) Điều nào sau đây KHÔNG phải là vấn đề chính trong tích hợp dữ liệu?",
+  "opts": [
+   "Đồng nhất lược đồ",
+   "Trực quan hóa dữ liệu tự động",
+   "Xử lý truy vấn phân tán",
+   "Vấn đề về bảo mật và quyền riêng tư"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Trực quan hóa dữ liệu tự động"
+ },
+ {
+  "id": "m01-t9-01",
+  "q": "(Quiz DI, câu 4) Trường hợp nào sau đây là ví dụ về sự không đồng nhất ngữ nghĩa (semantic heterogeneity) giữa hai nguồn dữ liệu?",
+  "opts": [
+   "Hai nguồn chứa cùng dữ liệu và cùng lược đồ",
+   "Sử dụng tên bảng và thuộc tính khác nhau để biểu diễn cùng một đối tượng (đây là Structural/Schema heterogeneity)",
+   "Sử dụng 2 giá trị khác nhau để biểu diễn cùng 1 trạng thái của cùng 1 đối tượng (VD mã giới tính 'M/F' vs '1/2')",
+   "Có lược đồ giống nhau nhưng dữ liệu khác nhau"
+  ],
+  "correct": 2,
+  "topic": "Heterogeneity",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Sử dụng 2 giá trị khác nhau để biểu diễn cùng 1 trạng thái của cùng 1 đối tượng (VD mã giới tính 'M/F' vs '1/2')"
+ },
+ {
+  "id": "m01-t9-02",
+  "q": "(Quiz DI, câu 22) Trong kiến trúc kho dữ liệu (data warehouse), dữ liệu được tích hợp bằng cách nào?",
+  "opts": [
+   "Chỉ dùng dữ liệu XML",
+   "Biểu diễn bởi cùng 1 lược đồ (chưa đủ, bản chất là vật lý hoá)",
+   "Không cần ánh xạ dữ liệu",
+   "Đưa dữ liệu vào một kho dữ liệu vật lý chung (ETL)"
+  ],
+  "correct": 3,
+  "topic": "Kiến trúc",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Đưa dữ liệu vào một kho dữ liệu vật lý chung (ETL)"
+ },
+ {
+  "id": "m01-t9-03",
+  "q": "(Quiz DI, câu 23) Kiến trúc tích hợp dữ liệu ảo (virtual data integration) hoạt động như thế nào?",
+  "opts": [
+   "Để dữ liệu tại nguồn và truy cập qua wrapper tại thời điểm có truy vấn (query-time)",
+   "Không sử dụng truy vấn — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Chỉ hoạt động với một nguồn dữ liệu duy nhất",
+   "Luôn sao chép toàn bộ dữ liệu về một nơi (đây là data warehouse)"
+  ],
+  "correct": 0,
+  "topic": "Kiến trúc",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Để dữ liệu tại nguồn và truy cập qua wrapper tại thời điểm có truy vấn (query-time)"
+ },
+ {
+  "id": "m01-t9-04",
+  "q": "(Quiz DI, câu 24) Điểm chung của kho dữ liệu (warehouse) và tích hợp ảo dữ liệu (virtual) là gì?",
+  "opts": [
+   "Cả hai đều không cần nguồn dữ liệu",
+   "Cả hai đều có thể gặp vấn đề tính không đồng nhất ngữ nghĩa giữa các nguồn",
+   "Cả hai đều không cần lược đồ",
+   "Chỉ virtual integration mới gặp vấn đề dị biệt ngữ nghĩa, warehouse thì không"
+  ],
+  "correct": 1,
+  "topic": "Kiến trúc",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Cả hai đều có thể gặp vấn đề tính không đồng nhất ngữ nghĩa giữa các nguồn"
+ },
+ {
+  "id": "m01-t9-05",
+  "q": "(Quiz DI, câu 15) Mediated Query (câu truy vấn trung gian) là gì?",
+  "opts": [
+   "Câu truy vấn của người dùng hệ tích hợp",
+   "Câu truy vấn chạy trực tiếp trên các nguồn dữ liệu",
+   "Câu truy vấn biểu diễn ánh xạ giữa lược đồ tích hợp (mediated schema) và lược đồ nguồn",
+   "Câu truy vấn phân tán trên các nguồn — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 2,
+  "topic": "Kiến trúc",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Câu truy vấn biểu diễn ánh xạ giữa lược đồ tích hợp (mediated schema) và lược đồ nguồn"
+ },
+ {
+  "id": "m01-t9-06",
+  "q": "(Quiz DI, câu 17) Trong kiến trúc tích hợp dữ liệu, lược đồ tích hợp (mediated schema) có vai trò gì?",
+  "opts": [
+   "Là nơi lưu duy nhất toàn bộ dữ liệu vật lý (đây là warehouse)",
+   "Là khóa chính của tất cả bảng",
+   "Là ánh xạ giữa các nguồn dữ liệu (ánh xạ là thứ KẾT NỐI mediated schema với nguồn, không phải chính nó)",
+   "Là giao diện/lược đồ chung để người dùng truy vấn nhiều nguồn dữ liệu khác nhau"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Là giao diện/lược đồ chung để người dùng truy vấn nhiều nguồn dữ liệu khác nhau"
+ },
+ {
+  "id": "m01-t9-07",
+  "q": "(Quiz DI, câu 18) Ánh xạ ngữ nghĩa giữa các lược đồ (Semantic mappings) dùng để làm gì?",
+  "opts": [
+   "Mô tả quan hệ ngữ nghĩa giữa lược đồ chung (mediated schema) và các nguồn dữ liệu",
+   "Xóa các bảng trùng nhau",
+   "Nén dữ liệu — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Tạo định dạng chung biểu diễn yêu cầu truy vấn"
+  ],
+  "correct": 0,
+  "topic": "Kiến trúc",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Mô tả quan hệ ngữ nghĩa giữa lược đồ chung (mediated schema) và các nguồn dữ liệu"
+ },
+ {
+  "id": "m01-t9-08",
+  "q": "(Quiz DI, câu 20) Mục tiêu của tích hợp dữ liệu là cung cấp gì?",
+  "opts": [
+   "Một ngôn ngữ lập trình mới",
+   "Một truy vấn thống nhất đến nhiều nguồn dữ liệu khác nhau",
+   "Một tổ chức lưu trữ mới — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Một hệ thống phần mềm mới"
+  ],
+  "correct": 1,
+  "topic": "Khái niệm nền",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Một truy vấn thống nhất đến nhiều nguồn dữ liệu khác nhau"
+ },
+ {
+  "id": "m01-t9-09",
+  "q": "(Quiz DI, câu 25) Bộ trích lọc/trình bao bọc (Wrapper/Extractor) trong kiến trúc tích hợp dữ liệu có nhiệm vụ gì?",
+  "opts": [
+   "Chỉ biểu diễn dữ liệu đã trích chọn bằng ngôn ngữ chung (thiếu phần GỬI truy vấn xuống nguồn)",
+   "Thay thế cho nguồn dữ liệu",
+   "Gửi truy vấn đến nguồn dữ liệu và chuyển kết quả về mô hình dữ liệu chung",
+   "Xóa dữ liệu lỗi"
+  ],
+  "correct": 2,
+  "topic": "Khái niệm nền",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Gửi truy vấn đến nguồn dữ liệu và chuyển kết quả về mô hình dữ liệu chung"
+ },
+ {
+  "id": "m01-t9-10",
+  "q": "(Quiz DI, câu 16) Mục tiêu chính của tích hợp dữ liệu là gì?",
+  "opts": [
+   "Tăng khả năng xử lý truy vấn — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Xóa bỏ tất cả các cơ sở dữ liệu cũ",
+   "Chuyển toàn bộ dữ liệu sang định dạng văn bản",
+   "Kết nối nhiều nguồn dữ liệu khác nhau dưới một lược đồ chung"
+  ],
+  "correct": 3,
+  "topic": "Khái niệm nền",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Kết nối nhiều nguồn dữ liệu khác nhau dưới một lược đồ chung"
+ },
+ {
+  "id": "m01-t9-11",
+  "q": "(Quiz DI, câu 3) Trong tích hợp dữ liệu, 'lược đồ trung gian' (mediated schema) đề cập đến gì?",
+  "opts": [
+   "Một lược đồ tiêu chuẩn ánh xạ đến nhiều lược đồ nguồn khác nhau",
+   "Bản sao lưu của tất cả các cơ sở dữ liệu vật lý",
+   "Lược đồ của nguồn dữ liệu lớn nhất",
+   "Bản sao của kho dữ liệu mới nhất — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 0,
+  "topic": "Khái niệm nền",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Một lược đồ tiêu chuẩn ánh xạ đến nhiều lược đồ nguồn khác nhau"
+ },
+ {
+  "id": "m01-t9-12",
+  "q": "(Quiz DI, câu 19) Tính không đồng nhất về lược đồ (Schema heterogeneity) thể hiện điều gì?",
+  "opts": [
+   "Giá trị dữ liệu trong các nguồn khác nhau có thể biểu diễn theo các cách khác nhau (đây là Instance/Semantic heterogeneity)",
+   "Các nguồn dữ liệu khác nhau về lược đồ (tên bảng/thuộc tính/cấu trúc)",
+   "Các nguồn sử dụng các công cụ lưu trữ khác nhau (đây là System/Platform heterogeneity)",
+   "Các hệ thống có thể cùng tên bảng và cùng thuộc tính (đây là trường hợp KHÔNG có dị biệt)"
+  ],
+  "correct": 1,
+  "topic": "Heterogeneity",
+  "src": "Quiz DI.pdf (tự suy luận, chưa có đáp án chính thức giảng viên, chuyển thành trắc nghiệm)",
+  "explain": "Đáp án đúng: Các nguồn dữ liệu khác nhau về lược đồ (tên bảng/thuộc tính/cấu trúc)"
  }
 ]

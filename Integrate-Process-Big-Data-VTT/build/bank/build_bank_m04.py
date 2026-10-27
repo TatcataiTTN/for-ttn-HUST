@@ -61,6 +61,18 @@ QUIZ_CONVERTED = [
        wrong=["Vì Jaccard/Edit Distance chỉ chạy được trên hệ điều hành Linux",
               "Vì trạm quan trắc không có toạ độ, chỉ có tên",
               "Thực ra vẫn dùng được Jaccard/Edit Distance trực tiếp, không cần kỹ thuật gì thêm"]),
+  # BT.pdf câu 1, đáp án CHÍNH THỨC đối chiếu BT_chữa.pdf — xem slides/BT-EditDistance-TFIDF-SchemaMapping.md
+  dict(q="(BT.pdf câu 1a, đáp án chính thức BT_chữa.pdf) Cho x='hnoi', y='hanoi'. Similarity score s(x,y)=1-d(x,y)/max(|x|,|y|) bằng bao nhiêu?",
+       correct="4/5 = 0.8 (d(x,y)=1, chỉ cần 1 phép chèn ký tự 'a'; max độ dài = 5)",
+       topic="Similarity Measures",
+       wrong=["3/5 = 0.6 (nhầm d(x,y)=2)", "1.0 (nhầm cho rằng 2 xâu giống nhau hoàn toàn)",
+              "1/5 = 0.2 (nhầm lấy luôn d(x,y) chia độ dài, quên lấy 1 trừ đi)"]),
+  dict(q="(BT.pdf câu 1b, đáp án chính thức BT_chữa.pdf) Cho x='hnoi', y='hanoi', tách term theo KÝ TỰ (vì xâu không có khoảng trắng để tách từ), idf(t)=N/N_t với N=2. TF/IDF cosine similarity Sim(x,y) bằng bao nhiêu?",
+       correct="1/√2 ≈ 0.707 (tích vô hướng 2 vector = 4, chuẩn 2 vector là 2 và 2√2)",
+       topic="Similarity Measures",
+       wrong=["0 (nhầm tách term theo TỪ nguyên xâu, khiến 2 xâu không chung term nào)",
+              "1.0 (nhầm cho rằng 2 vector hoàn toàn giống nhau)",
+              "0.5 (nhầm công thức, quên chuẩn hoá theo norm của từng vector)"]),
 ]
 
 def main():
