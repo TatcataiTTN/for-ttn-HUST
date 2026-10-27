@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){try{
+  var t = localStorage.getItem('site-theme');
+  if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+}catch(e){}})();</script>
+<title>Buổi 05: Sources Profiling & Selection · IT5427</title>
+<link rel="stylesheet" href="../../../_shared/common.css">
+<link rel="stylesheet" href="../../../_shared/deck.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script>
+window.KATEX_MACROS = {
+  "\\E": "\\mathbb{E}", "\\Prob": "\\mathbb{P}", "\\R": "\\mathbb{R}",
+  "\\Var": "\\operatorname{Var}"
+};
+window.KATEX_DELIMS = [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}];
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:window.KATEX_DELIMS, macros:window.KATEX_MACROS, throwOnError:false});"></script>
+</head>
+<body>
+<div class="topbar">
+  <a class="brand" href="../../index.html">Tích hợp &amp; xử lý <span>dữ liệu lớn</span></a>
+  <nav>
+    <a href="../../index.html">Trang chủ</a>
+    <a href="../../modules/99-tai-lieu-tham-khao/index.html">Tài liệu tham khảo</a>
+  </nav>
+  <details class="switcher">
+    <summary>🎨 Giao diện</summary>
+    <div class="menu">
+      <button data-theme-set="light">☀️ Sáng</button>
+      <button data-theme-set="dark">🌙 Tối</button>
+      <button data-font-set="Georgia, serif">Font chữ có chân</button>
+      <button data-font-set="">Font mặc định</button>
+    </div>
+  </details>
+</div>
+<div class="wrap">
+<div class="hero"><div class="kicker">Buổi 05</div>
+<h1>Sources Profiling & Selection</h1></div>
+<div class="mdeck"><div class="mdeck-viewport"><div class="mdeck-slide"><div class="kicker">BUỔI 05 · Bước cuối cùng của quy trình Data Integration</div><h2>Sources Profiling & Selection</h2><p>Đã có mediated schema (Schema Alignment), mapping GAV/LAV/GLAV, và cách viết lại truy vấn (Query
+Processing). Câu hỏi còn lại: làm sao biết 1 nguồn dữ liệu CÓ GÌ bên trong (<b>Source Profiling</b>),
+làm sao tự động "bóc" dữ liệu từ các trang không có API chuẩn (<b>Wrapper</b>), và khi có quá nhiều
+nguồn trùng lặp thì nên chọn tập con nào để tích hợp (<b>Source Selection</b>)? Nguồn: slide gốc
+<i>5_SourcesSelection.pdf</i> (Vu Tuyet Trinh, SoICT-HUST), 25 trang vật lý/50 slide — giải thích đầy
+đủ từng slide dưới đây.</p></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 1/2</div>
+<div class="part-num">01</div><h2>Wrapper — trích xuất dữ liệu từ nguồn Web</h2>
+<ul class="part-list"><li>Kiến trúc tổng thể: Query → Reformulation → Optimizer → Execution → Wrapper → Source</li>
+<li>Wrapper = (T_W, E_W): lược đồ đích + chương trình trích xuất</li>
+<li>4 hướng xây dựng: Manual, Learning (HLRT/Stalker), Automatic (RoadRunner), Interactive</li></ul></div><div class="mdeck-slide"><h2>Kiến trúc hệ thống truy vấn tích hợp (slide 1-2)</h2>
+      <p>Nôm na: đây là "bản đồ" mọi bước mà 1 câu truy vấn người dùng phải đi qua trước khi chạm được
+      vào dữ liệu thật.</p>
+      <ul class="pd-legend">
+      <li><b>Query reformulation</b><span>viết lại truy vấn trên mediated schema — chính là GAV/LAV/GLAV unfolding đã học</span></li>
+      <li><b>Query optimizer</b><span>chọn thứ tự join, chọn nguồn nào chạy trước → Physical query plan</span></li>
+      <li><b>Execution engine</b><span>thực thi, phân phối truy vấn xuống nhiều <b>wrapper</b>, mỗi wrapper gắn 1 <b>source</b></span></li>
+      </ul>
+      <div class="callout good"><div class="lbl">Re-planning request</div>
+      Có mũi tên ngược từ Execution engine về Optimizer — nếu phát hiện kế hoạch không ổn lúc thực thi
+      (1 nguồn quá chậm/trả ít dữ liệu hơn dự kiến), hệ thống có thể yêu cầu lập lại kế hoạch (adaptive
+      query processing), không chạy cứng nhắc 1 lần.</div></div><div class="mdeck-slide"><h2>Wrapper là gì? (slide 3-4)</h2>
+      <p>Nôm na: wrapper giống "người phiên dịch" đứng giữa 1 trang web lộn xộn và hệ thống tích hợp —
+      đọc trang rồi "bóc" ra đúng những ô dữ liệu hệ thống cần.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Wrapper</div>
+      <div class="pd-formula-math">W = (T_W,\ E_W)</div></div>
+      <p><b>T_W</b> (target schema): lược đồ ĐÍCH — không nhất thiết giống lược đồ gốc T_S của trang.
+      <b>E_W</b> (extraction program): dùng format F_S của trang để lấy ra 1 instance đúng khuôn T_W.</p>
+      <div class="callout good"><div class="lbl">Ví dụ: countries.com</div>
+      Trang hiển thị "GERMANY / Capital: Berlin / Population: 81757600". T_W=T_S=(country, capital,
+      population, continent) — lấy đủ cả 4 thuộc tính. E_W: script Perl kiểu "lấy chuỗi VIẾT HOA đầu
+      tiên làm country", "lấy chuỗi sau nhãn 'Capital:' làm capital".</div></div><div class="mdeck-slide"><h2>Schema T_S vs. Format F_S; ví dụ sách (slide 5-6)</h2>
+      <p>Phân biệt quan trọng hay bị nhầm: <b>Schema</b> (T_S) là các TRƯỜNG LOGIC và cách chúng lồng
+      nhau — thường KHÔNG ghi rõ trên trang. <b>Format</b> (F_S) là CÁCH trang hiển thị (thẻ HTML,
+      nhãn, vùng lặp). 2 nguồn có thể CÙNG schema nhưng KHÁC format.</p>
+      <div class="callout good"><div class="lbl">Ví dụ worked: trang sách</div>
+      Nội dung: <code>&lt;b&gt;Data Integration&lt;/b&gt;</code>, <code>&lt;u&gt;A. Author&lt;/u&gt;</code>,
+      "Price: $45.00". Target T_W = Book(title, price) — wrapper CHỈ cần 2 trường, bỏ qua tác giả dù
+      có mặt trên trang. Quy tắc: title = chữ trong thẻ <code>&lt;b&gt;</code>, price = số sau "Price: $".
+      Kết quả: <code>('Data Integration', 45.00)</code>.</div></div><div class="mdeck-slide"><h2>2 bài toán xây wrapper; các khó khăn (slide 7-8)</h2>
+      <table><tr><th>Biến thể</th><th>Đầu vào đã biết</th><th>Đầu ra cần tìm</th></tr>
+      <tr><td>Biết trước target schema</td><td>Các trang + trường mong muốn</td><td>Chương trình trích E_W</td></tr>
+      <tr><td>Không biết schema nguồn</td><td>Chỉ có các trang của 1 nguồn</td><td>Cả T_S lẫn E_W</td></tr></table>
+      <div class="callout warn"><div class="lbl">Ghi chú quan trọng của slide</div>
+      "Học được CẤU TRÚC không tự động cho biết Ý NGHĨA của các trường" — máy có thể dò ra "có 4 cột
+      lặp lại" nhưng không tự biết cột nào là "giá", cột nào là "tên sản phẩm" nếu không có thêm
+      thông tin (nhãn text, ví dụ mẫu). Khó khăn khác: rất nhiều chương trình trích cùng khớp dữ liệu
+      mẫu, optional field/danh sách lặp làm mờ ranh giới, ngoại lệ định dạng, và overfitting trên
+      trang huấn luyện.</div></div><div class="mdeck-slide"><h2>4 hướng xây wrapper; công cụ đại diện (slide 9-10)</h2>
+      <table><tr><th>Hướng</th><th>Input của con người</th><th>Phương pháp đại diện</th></tr>
+      <tr><td>Manual</td><td>Quy tắc/code trích xuất</td><td>Regex, DOM paths</td></tr>
+      <tr><td>Learning</td><td>Target schema + trang đã gán nhãn</td><td>HLRT, Stalker</td></tr>
+      <tr><td>Automatic</td><td>Trang chưa gán nhãn</td><td>RoadRunner</td></tr>
+      <tr><td>Interactive</td><td>Feedback trong lúc tìm kiếm</td><td>Co-testing, Poly, Lixto</td></tr></table>
+      <p class="hint">Slide còn liệt kê công cụ scraping công nghiệp ngày nay (không thuộc 4 phương
+      pháp học thuật trên): Beautiful Soup, Pandas, Selenium, Scrapy, Instant Data Scraper, Firecrawl —
+      thường kết hợp Manual (developer viết selector) với 1 phần hỗ trợ tự động.</p></div><div class="mdeck-slide"><h2>Trích xuất tay: mô hình String vs. DOM (slide 11-12)</h2>
+      <table><tr><th></th><th>Mô hình String</th><th>Mô hình DOM</th></tr>
+      <tr><td>Coi trang như</td><td>Chuỗi ký tự/token tuần tự</td><td>Cây các phần tử HTML</td></tr>
+      <tr><td>Cách định vị</td><td>Dấu phân cách/regex</td><td>Đường dẫn (path) tới 1 trường</td></tr>
+      <tr><td>Dễ hỏng khi</td><td>Thẻ xuất hiện ở vùng khác ý muốn</td><td>Layout thay đổi làm lệch path</td></tr></table>
+      <div class="callout warn"><div class="lbl">Ví dụ DOM path cụ thể</div>
+      <code>title: /html/body/div[1]/table/td[2]/text()</code> → "Inception". Ghi chú slide: "1 div
+      hoặc ô bảng bị chèn thêm có thể làm lệch đường dẫn vị trí" — minh hoạ đúng điểm yếu "dễ hỏng khi
+      layout thay đổi".</div></div><div class="mdeck-slide"><h2>HLRT: mô hình delimiter (slide 13-14)</h2>
+      <p>Nôm na: HLRT "đóng khung" 1 vùng dữ liệu bằng các chuỗi mốc (delimiter) ở đầu/cuối, giống
+      dùng dấu ngoặc khoanh vùng cần lấy.</p>
+      <div class="pd-formula"><div class="pd-formula-label">HLRT</div>
+      <div class="pd-formula-math">W = (h,\ t,\ l_1, r_1, \ldots, l_n, r_n)\quad \Rightarrow\quad 2n+2 \text{ chuỗi mốc}</div></div>
+      <p><b>h/t</b> (head/tail): khoanh ranh giới CẢ VÙNG dữ liệu. <b>lᵢ/rᵢ</b>: khoanh ranh giới RIÊNG
+      giá trị thuộc tính i.</p>
+      <div class="callout good"><div class="lbl">Ví dụ worked (n=2 thuộc tính)</div>
+      HTML: <code>&lt;B&gt;Australia&lt;/B&gt; &lt;I&gt;61&lt;/I&gt;&lt;BR&gt;</code>... Tham số: h=<code>&lt;P&gt;</code>,
+      t=<code>&lt;HR&gt;</code>; l₁=<code>&lt;B&gt;</code>, r₁=<code>&lt;/B&gt;</code> (tên nước);
+      l₂=<code>&lt;I&gt;</code>, r₂=<code>&lt;/I&gt;</code> (mã điện thoại). Kết quả: (Australia, 61),
+      (East Timor, 670) — đúng 2n+2=6 chuỗi mốc.</div></div><div class="mdeck-slide"><h2>Học tham số HLRT; giới hạn (slide 15-16)</h2>
+      <p>Quy trình học: gán nhãn điểm bắt đầu/kết thúc mọi giá trị trên trang mẫu → tìm ứng viên h,t
+      (chuỗi chung ở ranh giới trang) → tìm delimiter trái (hậu tố chung trước giá trị) → delimiter
+      phải (tiền tố chung sau giá trị) → tìm tổ hợp tham số khớp MỌI nhãn.</p>
+      <div class="callout warn"><div class="lbl">Giới hạn HLRT</div>
+      Giả định lược đồ là tuple PHẲNG (không xử lý cấu trúc lồng nhau); mọi trường cần delimiter đáng
+      tin cậy; danh sách lồng nhau/định dạng pha trộn làm HLRT bó tay. → Slide tự chỉ lối thoát:
+      "Stalker giới thiệu trích xuất phân cấp và landmark phong phú hơn".</div></div><div class="mdeck-slide"><h2>Stalker: lược đồ lồng nhau; lệnh & landmark (slide 17-18)</h2>
+      <table><tr><th>Node</th><th>Kiểu</th><th>Ví dụ</th></tr>
+      <tr><td>restaurant</td><td>Tuple</td><td>name, cuisine, addresses</td></tr>
+      <tr><td>addresses</td><td>Danh sách tuple</td><td>1 hoặc nhiều địa điểm</td></tr>
+      <tr><td>address</td><td>Tuple</td><td>street, city, state, zip, phone</td></tr></table>
+      <p>Nguyên lý: "Trích xuất ĐI XUỐNG DẦN qua lược đồ, dùng văn bản đã trích của nút CHA làm ngữ
+      cảnh cho nút CON" — khắc phục giới hạn "chỉ xử lý tuple phẳng" của HLRT.</p>
+      <ul class="pd-legend">
+      <li><b>SkipTo(x)</b><span>quét tới trước, đi qua landmark x</span></li>
+      <li><b>BackTo(x)</b><span>quét lùi lại, đi qua x</span></li>
+      <li><b>BackUntil(x)</b><span>dừng tại x nhưng KHÔNG tiêu thụ nó</span></li>
+      </ul></div><div class="mdeck-slide"><h2>Dấu vết trích xuất Stalker; học bằng Sequential Covering (slide 19-20)</h2>
+      <table><tr><th>Bước</th><th>Ngữ cảnh</th><th>Kết quả</th></tr>
+      <tr><td>1</td><td>Toàn trang nhà hàng</td><td>name, cuisine</td></tr>
+      <tr><td>2</td><td>Toàn trang nhà hàng</td><td>Đoạn con danh sách địa chỉ</td></tr>
+      <tr><td>3</td><td>Đoạn con danh sách địa chỉ</td><td>Các địa chỉ riêng lẻ</td></tr>
+      <tr><td>4</td><td>1 đoạn con địa chỉ</td><td>street, city, state, zip, phone</td></tr></table>
+      <div class="callout good"><div class="lbl">Sequential Covering</div>
+      Học 1 luật phủ đúng 1 phần ví dụ → LOẠI BỎ ví dụ đã phủ → học tiếp luật khác cho phần còn lại →
+      kết hợp các luật bằng phép HOẶC (disjunction) → tinh chỉnh bằng mở rộng landmark/thêm lệnh.</div></div><div class="mdeck-slide"><h2>RoadRunner: học tự động từ trang chưa gán nhãn (slide 21-22)</h2>
+      <p>Đầu vào: các trang CHƯA GÁN NHÃN nhưng cùng 1 template. Cách làm: khởi tạo bằng CHÍNH 1 trang
+      đầu tiên → TỔNG QUÁT HOÁ dần để khớp các trang bổ sung. Trường học được mang tên chung A, B
+      (máy không biết ý nghĩa thật — đúng cảnh báo đã nêu ở slide 7-8).</p>
+      <table><tr><th>Loại không khớp</th><th>Cách tổng quát hoá</th></tr>
+      <tr><td>Văn bản khác nhau</td><td><code>#PCDATA</code></td></tr>
+      <tr><td>Thêm 1 vùng tuỳ chọn</td><td><code>(pattern)?</code></td></tr>
+      <tr><td>Số lần lặp khác nhau</td><td><code>(pattern)+</code></td></tr></table>
+      <p class="hint">Ghi chú: với 1 điểm không khớp về THẺ, thuật toán thử bộ lặp (iterator) TRƯỚC khi
+      thử tuỳ chọn (optional) — có thứ tự ưu tiên cố định.</p></div><div class="mdeck-slide"><h2>Ví dụ tổng quát hoá; xây dựng tương tác (slide 23-24)</h2>
+      <p>Ví dụ worked: Trang 1 "chủ đề Database, không ảnh, 2 sách" + Trang 2 "chủ đề Data Integration,
+      có ảnh, 3 sách" → mẫu tổng quát: chủ đề=<code>&lt;B&gt;#PCDATA&lt;/B&gt;</code>, ảnh tuỳ chọn=
+      <code>(&lt;IMG…/&gt;)?</code>, danh sách sách=<code>(&lt;LI&gt;…#PCDATA…&lt;/LI&gt;)+</code>.</p>
+      <div class="callout good"><div class="lbl">Interactive wrapper building</div>
+      Duy trì nhiều wrapper ứng viên, phát hiện khi máy "không chắc chắn" → hỏi người dùng feedback
+      ĐÚNG CHỖ còn mơ hồ → dùng câu trả lời tinh chỉnh ứng viên → lặp tới khi người dùng hài lòng.
+      "Lựa chọn thiết kế then chốt là KHI NÀO hỏi và HỎI GÌ" — bài toán active learning.</div></div><div class="mdeck-slide"><h2>So sánh 3 hệ tương tác; chuyển sang Big Data Integration (slide 25-26)</h2>
+      <table><tr><th>Hệ thống</th><th>Tương tác người dùng</th><th>Cơ chế tìm kiếm</th></tr>
+      <tr><td>Stalker co-testing</td><td>Gán nhãn trang có bất đồng</td><td>So luật chạy xuôi/ngược</td></tr>
+      <tr><td>Poly</td><td>Chọn bộ tuple trích đúng</td><td>Thu hẹp ứng viên dựa DOM</td></tr>
+      <tr><td>Lixto</td><td>Highlight bản ghi/trường</td><td>Luật trích kiểu Datalog</td></tr></table>
+      <div class="callout warn"><div class="lbl">5V của Big Data (mở đầu phần 2)</div>
+      2 câu hỏi cốt lõi còn lại: <b>Source profiling</b> (mỗi nguồn chứa gì?) và <b>Source selection</b>
+      (nên tích hợp nguồn nào, ngân sách ra sao?). Khung 5V: Velocity, Value, Volume, Variety, Veracity
+      — nhấn mạnh khi dữ liệu đạt quy mô "big", profiling/selection không còn làm thủ công được.</div></div><div class="mdeck-slide part-divider"><div class="kicker">PHẦN 2/2</div>
+<div class="part-num">02</div><h2>Big Data Integration: Crowdsourcing, Selection, Profiling</h2>
+<ul class="part-list"><li>Source Profiling (hiểu nguồn) luôn làm TRƯỚC Source Selection (chọn nguồn)</li>
+<li>Chọn nguồn là bài toán tối ưu có ràng buộc, NP-complete tổng quát</li>
+<li>Bellman/Min-hash: tóm tắt cột bằng chữ ký cô đọng, ước lượng Jaccard</li></ul></div><div class="mdeck-slide"><h2>Profiling vs. Selection — bảng quan trọng nhất của bài (slide 27-28)</h2>
+      <table><tr><th>Khía cạnh</th><th>Source profiling</th><th>Source selection</th></tr>
+      <tr><td>Mục đích</td><td>Hiểu &amp; mô tả đặc điểm nguồn</td><td>Chọn tập con nguồn hữu ích</td></tr>
+      <tr><td>Đầu vào</td><td>Dữ liệu, lược đồ, metadata</td><td>Hồ sơ nguồn (profile), mục tiêu, chi phí</td></tr>
+      <tr><td>Đầu ra</td><td>1 hồ sơ mô tả mỗi nguồn</td><td>Tập nguồn đã chọn</td></tr></table>
+      <div class="callout good"><div class="lbl">Nói đơn giản</div>
+      Profiling trả lời "nguồn này CÓ GÌ", Selection trả lời "nên LẤY nguồn nào" — Profiling luôn làm
+      TRƯỚC vì Selection cần input chính là hồ sơ do Profiling tạo ra.</div>
+      <p class="hint">3 chủ đề nổi lên tiếp theo (slide 28 — mục lục phần còn lại): Crowdsourcing,
+      Source selection, Source profiling.</p></div><div class="mdeck-slide"><h2>Crowdsourcing; Hybrid Record Linkage (slide 29-30)</h2>
+      <p>Nôm na: có việc máy làm chưa tốt (vd phân biệt 2 bản ghi có PHẢI cùng 1 thực thể khi dữ liệu
+      mơ hồ) — crowdsourcing nhờ CON NGƯỜI (đám đông) làm phần đó. Hệ thống phải: tuyển/giữ chân người
+      góp, kết hợp đóng góp thành 1 lời giải thống nhất, đánh giá chất lượng người góp.</p>
+      <div class="callout warn"><div class="lbl">Hybrid Record Linkage</div>
+      Gán nhãn thủ công kiểu "naive" cần O(n²) lượt — quá tốn kém. Giải pháp: <b>lọc bằng tính toán</b>
+      (Blocking) loại cặp chắc chắn KHÔNG khớp → <b>đám đông chỉ gán nhãn</b> các cặp ứng viên còn lại
+      → dùng <b>quan hệ bắc cầu</b> suy ra thêm nhãn mà không cần hỏi người.</div></div><div class="mdeck-slide"><h2>Suy luận bắc cầu; ví dụ 8 cặp ứng viên (slide 31-32)</h2>
+      <table><tr><th>Nhãn đã biết</th><th>Suy luận</th><th>Trạng thái</th></tr>
+      <tr><td>A=B và B=C</td><td>A=C</td><td>Hợp lệ</td></tr>
+      <tr><td>A=B và B≠C</td><td>A≠C</td><td>Hợp lệ</td></tr>
+      <tr><td>A≠B và B≠C</td><td>A?C</td><td>KHÔNG suy luận được</td></tr></table>
+      <div class="callout warn"><div class="lbl">Rủi ro lan truyền</div>
+      "Các quy tắc này giả định nhãn định danh NHẤT QUÁN. Nhãn sai có thể LAN TRUYỀN." Ví dụ: biết
+      L1 (R2=R3 match), L2 (R1=R2 match) ⟹ suy ra ngay L4 (R1=R3 match) KHÔNG CẦN hỏi người — chỉ cần
+      6/8 nhãn do người gán là đủ xác định toàn bộ bảng.</div></div><div class="mdeck-slide"><h2>Bằng chứng &amp; giới hạn của crowd labeling; Corleone (slide 33-34)</h2>
+      <table><tr><th>Kết quả báo cáo</th><th>Bối cảnh</th></tr>
+      <tr><td>Giảm 95% số cặp cần gán nhãn</td><td>Mô phỏng Cora</td></tr>
+      <tr><td>Giảm 96.5% số HIT, mất ~5% chất lượng</td><td>Cora trên Amazon Mechanical Turk</td></tr></table>
+      <p class="hint">⚠️ Các số liệu trên TRÍCH TỪ TÀI LIỆU GỐC của slide (không phải tự tính) — slide
+      không ghi citation đầy đủ, cần hỏi lại giảng viên nếu cần trích dẫn chính xác.</p>
+      <div class="callout good"><div class="lbl">Corleone — hệ end-to-end</div>
+      Blocker (học luật loại cặp chắc chắn không khớp) → Matcher (random forest từ nhãn đám đông) →
+      Accuracy estimator (ước lượng precision/recall dù mất cân bằng lớp) → Difficult pairs locator.
+      Input người dùng chỉ cần: 2 bảng, hướng dẫn đối sánh, 2 ví dụ dương + 2 ví dụ âm.</div></div><div class="mdeck-slide"><h2>Học &amp; đánh giá Corleone; Lợi ích-chi phí chọn nguồn (slide 35-36)</h2>
+      <p><b>Active learning</b> nhắm tới nhãn crowd CÓ GIÁ TRỊ nhất (không hỏi tràn lan); luật
+      "negative forest" tận dụng ngược làm luật blocking; ước lượng độ chính xác xử lý được tình huống
+      cặp dương (match) RẤT HIẾM.</p>
+      <div class="callout warn"><div class="lbl">Lợi ích/chi phí khi chọn nguồn</div>
+      Nguồn MỚI có thể tăng độ phủ hoặc cải thiện độ chính xác (data fusion). Nguồn DƯ THỪA gần như
+      không mang lợi ích thêm. Nguồn CHẤT LƯỢNG THẤP có thể làm GIẢM độ chính xác (không chỉ "không
+      giúp ích"). Chi phí: acquisition + engineering + computation.</div></div><div class="mdeck-slide"><h2>Mục tiêu chọn nguồn; giới hạn chiến lược Greedy (slide 37-38)</h2>
+      <div class="pd-formula"><div class="pd-formula-label">3 dạng mục tiêu (ràng buộc)</div>
+      <div class="pd-formula-math">\max\ benefit_I(S)\ \text{s.t.}\ cost_I(S)\le B \quad|\quad \min\ cost_I(S)\ \text{s.t.}\ benefit_I(S)\ge G \quad|\quad \max\ benefit_I(S)-cost_I(S)</div></div>
+      <p class="hint">Mục tiêu profit (trừ benefit cho cost) đòi hỏi 2 đại lượng phải CÙNG đơn vị đo.</p>
+      <div class="callout warn"><div class="lbl">Giới hạn Greedy</div>
+      Lợi ích biên của 1 nguồn PHỤ THUỘC nguồn ĐÃ CHỌN trước (overlap/complement). "Lợi ích giảm dần"
+      KHÔNG CHẮC đúng với data fusion. Quan trọng nhất: chọn nguồn tĩnh tổng quát là <b>NP-complete</b>.</div></div><div class="mdeck-slide"><h2>GRASP; ví dụ số cụ thể (slide 39-40)</h2>
+      <p><b>GRASP</b> (Greedy Randomized Adaptive Search Procedure): xây tập ứng viên NGẪU NHIÊN → chọn
+      trong số ứng viên TRIỂN VỌNG → cải thiện bằng tìm kiếm cục bộ → lặp NHIỀU LẦN → trả về tập TỐT
+      NHẤT tìm được — đối phó tính NP-complete, không đảm bảo tối ưu tuyệt đối nhưng thực tế tốt.</p>
+      <table><tr><th>Tập con</th><th>Benefit($)</th><th>Cost($)</th><th>Profit($)</th></tr>
+      <tr><td>A</td><td>100</td><td>40</td><td>60</td></tr>
+      <tr><td>A+C</td><td>150</td><td>60</td><td><b>90</b></td></tr>
+      <tr><td>A+B+C</td><td>160</td><td>90</td><td>70 (VƯỢT ngân sách $70)</td></tr></table>
+      <div class="callout good"><div class="lbl">Kết luận slide (đã verify)</div>
+      Với ngân sách $70: A+C cho profit cao nhất = 90 trong số các tập con hợp lệ (cost≤70) — minh
+      hoạ vì sao greedy đơn giản có thể bỏ lỡ tổ hợp A+C nếu không xét đủ các cặp.</div></div><div class="mdeck-slide"><h2>Nguồn động: Update frequency vs. Freshness (slide 41-42)</h2>
+      <table><tr><th></th><th>Update frequency</th><th>Freshness</th></tr>
+      <tr><td>Là gì</td><td>Nguồn thay đổi thường xuyên ra sao</td><td>Giá trị PHẢN ÁNH ĐÚNG thế giới tới mức nào</td></tr>
+      <tr><td>Bẫy thường gặp</td><td>Cập nhật hằng ngày KHÔNG đảm bảo luôn đúng</td><td>Tập con tốt nhất có thể thay đổi theo thời gian</td></tr></table>
+      <div class="callout good"><div class="lbl">Time-aware selection</div>
+      Mô hình hoá độ phủ, độ chính xác VÀ độ mới theo THỜI GIAN (không chỉ 1 lần tĩnh); chọn tập con
+      nguồn CÙNG tần suất thu thập phù hợp; 1 số trường hợp dùng tối ưu hoá submodular.</div></div><div class="mdeck-slide"><h2>Rủi ro mô hình hoá; Source Profiling (slide 43-44)</h2>
+      <div class="callout warn"><div class="lbl">Rủi ro khi mô hình hoá chọn nguồn</div>
+      Hiện tượng SAO CHÉP/TƯƠNG QUAN giữa nguồn làm yếu giả định độc lập. Chất lượng ƯỚC LƯỢNG trước
+      có thể khác chất lượng THỰC TẾ sau fusion. Schema alignment/record linkage CŨNG ảnh hưởng giá
+      trị tích hợp cuối. Cần ĐÁNH GIÁ LẠI tập nguồn khi nguồn tiếp tục biến đổi.</div>
+      <p>Source Profiling giúp hiểu 1 nguồn còn XA LẠ: gắn thuộc tính với khái niệm/thực thể/quan hệ,
+      định lượng chất lượng, phát hiện cột hữu ích và khả năng join — cung cấp BẰNG CHỨNG cho Source
+      Selection ở sau.</p></div><div class="mdeck-slide"><h2>Bellman; công thức Min-hash (slide 45-46)</h2>
+      <p>Nôm na: khi có hàng ngàn bảng không ai còn nhớ ý nghĩa, Bellman "tóm tắt nhanh" nội dung từng
+      cột bằng "chữ ký" (signature) cô đọng, không cần đọc hết dữ liệu thô.</p>
+      <div class="pd-formula"><div class="pd-formula-label">Min-hash resemblance</div>
+      <div class="pd-formula-math">\rho(A,B) = \dfrac{|A \cap B|}{|A \cup B|}</div></div>
+      <p>Chính là hệ số Jaccard (đã học ở Record Linkage) áp dụng cho 2 TẬP GIÁ TRỊ CỘT. Chữ ký
+      $s_i(A) = \min_{a \in A} h_i(a)$ — ước lượng ρ bằng TỈ LỆ thành phần chữ ký BẰNG NHAU, tránh quét
+      lại toàn bộ cột mỗi lần so sánh.</p></div><div class="mdeck-slide"><h2>Ví dụ worked Min-hash; Schema Summarization (slide 47-48)</h2>
+      <table><tr><th>Đại lượng</th><th>Giá trị</th></tr>
+      <tr><td>A, B</td><td>{1,2,3,4}, {2,3,4,5}</td></tr>
+      <tr><td>Giao/Hợp</td><td>3 / 5</td></tr>
+      <tr><td>ρ chính xác</td><td>3/5 = 0,60</td></tr>
+      <tr><td>Ước lượng (chữ ký 10 thành phần)</td><td>6/10 = 0,60</td></tr></table>
+      <p class="hint">Đã kiểm chứng lại: |A∩B|={2,3,4}=3, |A∪B|={1,2,3,4,5}=5, ρ=3/5=0.60 — khớp đúng
+      công thức Jaccard. Ước lượng MinHash (10 thành phần giả lập) trùng khớp giá trị chính xác.</p>
+      <div class="callout good"><div class="lbl">Schema Summarization</div>
+      Biểu diễn bảng/join dưới dạng ĐỒ THỊ LƯỢC ĐỒ; phân cụm k nhóm; chọn 1 bảng ĐẠI DIỆN/nhóm. Cảnh
+      báo: chỉ dựa KÍCH THƯỚC/BẬC bảng có thể đánh giá SAI mức quan trọng — bảng nhỏ vẫn có thể là
+      điểm nối trung tâm.</div></div><div class="mdeck-slide"><h2>Độ quan trọng, độ mạnh, phân cụm; kết Q&amp;A (slide 49-50)</h2>
+      <table><tr><th>Thành phần</th><th>Mô hình</th></tr>
+      <tr><td>Độ quan trọng bảng</td><td>Phân phối thông tin ỔN ĐỊNH trên đồ thị lược đồ</td></tr>
+      <tr><td>Độ mạnh join-path</td><td>Tích độ mạnh từng cạnh join trên đường đi</td></tr>
+      <tr><td>Khoảng cách 2 bảng</td><td>1 − độ mạnh</td></tr>
+      <tr><td>Phân cụm</td><td>Greedy weighted k-center</td></tr></table>
+      <div class="callout good"><div class="lbl">Nói đơn giản</div>
+      1 bảng "quan trọng" không chỉ vì to/nhiều liên kết, mà vì giữ vị trí ỔN ĐỊNH trong "dòng chảy
+      thông tin" toàn đồ thị (gần giống ý tưởng PageRank). Slide 50 là slide kết Q&amp;A, không mang
+      nội dung học thuật thêm.</div></div></div>
+<div class="mdeck-bar">
+  <button class="mdeck-prev">◀ Trước</button><button class="mdeck-next">Sau ▶</button>
+  <span class="mdeck-count"></span><div class="mdeck-dots"></div>
+  <button class="mdeck-fs">⛶ Toàn màn hình</button>
+</div></div>
+<h2>✍️ Bài tập làm giấy (có lời giải)</h2>
+<div class="exlist-tuluan"><details class="ex-item">
+<summary>Bài 1. Với n=2 thuộc tính cần trích bằng HLRT, cần bao nhiêu chuỗi mốc (delimiter)? Viết công thức tổng quát và áp dụng. <span class="src">[Explain-05-SourcesSelection.md — slide 13-14, công thức gốc]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> Công thức tổng quát $W=(h,t,l_1,r_1,\ldots,l_n,r_n)$ cần $2n+2$ chuỗi mốc. Với $n=2$: $2(2)+2=6$ chuỗi mốc — đúng với ví dụ worked (h,t,l₁,r₁,l₂,r₂) trong slide gốc.</div></details><details class="ex-item">
+<summary>Bài 2. Cho A={1,2,3,4}, B={2,3,4,5}. Tính Min-hash resemblance ρ(A,B). <span class="src">[Explain-05-SourcesSelection.md — slide 46-47, ví dụ số gốc đã verify]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> $A\cap B=\{2,3,4\}\Rightarrow 3$ phần tử. $A\cup B=\{1,2,3,4,5\}\Rightarrow 5$ phần tử. $\rho(A,B)=3/5=0.60$.</div></details><details class="ex-item">
+<summary>Bài 3. Cho bảng benefit/cost: A(100,40), B(80,30), C(60,20), A+C(150,60), A+B+C(160,90). Với ngân sách $70, tập con nào cho profit cao nhất? <span class="src">[Explain-05-SourcesSelection.md — slide 40, ví dụ số gốc đã verify]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> A+B+C có cost=90 > 70 nên KHÔNG hợp lệ dù profit danh nghĩa 70. Trong các tập hợp lệ (cost≤70): A+C có profit=150−60=90, cao nhất. Đáp án: <b>A+C, profit=90</b>.</div></details><details class="ex-item">
+<summary>Bài 4. Đã biết L1: (R2,R3)=match, L2: (R1,R2)=match. Có thể suy ra ngay nhãn của cặp (R1,R3) không, bằng quy tắc nào? <span class="src">[Explain-05-SourcesSelection.md — slide 31-32, ví dụ gốc]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> Có. Áp dụng quy tắc bắc cầu "A=B và B=C ⟹ A=C": từ R2=R3 (L1) và R1=R2 (L2) suy ra <b>R1=R3 (match)</b> — không cần hỏi người gán nhãn thêm.</div></details><details class="ex-item">
+<summary>Bài 5. Vì sao HLRT "bó tay" với lược đồ nhà hàng có danh sách địa chỉ lồng nhau (restaurant → addresses → address), còn Stalker lại xử lý được? <span class="src">[Explain-05-SourcesSelection.md — slide 16-19, liên hệ 2 khái niệm gốc]</span></summary>
+<div class="loi-giai"><b>Lời giải:</b> HLRT giả định lược đồ là tuple PHẲNG, chỉ dùng 1 cặp mốc trái/phải cứng nhắc cho mỗi thuộc tính — không mô hình được quan hệ cha-con lồng nhau. Stalker khắc phục bằng trích xuất PHÂN CẤP: đi xuống dần qua lược đồ, dùng văn bản đã trích của nút CHA (vd đoạn con "addresses") làm ngữ cảnh để tiếp tục trích các nút CON (từng "address" riêng lẻ, rồi street/city/zip/phone).</div></details></div>
+<h2>💬 Bài tập hỏi đáp nhanh</h2>
+<p class="hint">Bấm vào từng câu hỏi để lật xem đáp án — ôn tập nhanh thuật ngữ &amp; khái niệm cốt lõi.</p>
+<div class="flashcard-grid"><details class="flashcard">
+<summary>❓ Wrapper được hình thức hoá thành cặp nào?</summary><div class="dap">💡 (T_W, E_W) — T_W là target schema (lược đồ đích), E_W là extraction program (chương trình trích xuất).</div></details><details class="flashcard">
+<summary>❓ Schema T_S khác Format F_S ở điểm nào?</summary><div class="dap">💡 Schema là các trường logic và cách chúng lồng nhau; Format là cách trang HIỂN THỊ các trường đó. 2 nguồn có thể cùng schema nhưng khác format.</div></details><details class="flashcard">
+<summary>❓ 4 hướng xây dựng Wrapper là gì?</summary><div class="dap">💡 Manual (viết tay), Learning (HLRT/Stalker — học từ trang đã gán nhãn), Automatic (RoadRunner — học từ trang chưa gán nhãn), Interactive (hỏi feedback người dùng).</div></details><details class="flashcard">
+<summary>❓ Vì sao Stalker xử lý được cấu trúc lồng nhau mà HLRT không làm được?</summary><div class="dap">💡 Stalker trích xuất phân cấp, đi xuống dần qua lược đồ, dùng ngữ cảnh của nút cha cho nút con — HLRT chỉ có 1 cặp mốc trái/phải cứng nhắc cho tuple phẳng.</div></details><details class="flashcard">
+<summary>❓ Source Profiling và Source Selection, cái nào làm trước?</summary><div class="dap">💡 Source Profiling luôn làm TRƯỚC — Selection cần input chính là hồ sơ (profile) do Profiling tạo ra.</div></details><details class="flashcard">
+<summary>❓ Vì sao bài toán chọn nguồn tĩnh (static) tổng quát khó giải nhanh?</summary><div class="dap">💡 Vì nó là NP-complete — không có thuật toán đa thức giải đúng tuyệt đối cho mọi trường hợp, phải dùng heuristic như GRASP.</div></details><details class="flashcard">
+<summary>❓ Min-hash resemblance ρ(A,B) dùng công thức nào, và đo gì?</summary><div class="dap">💡 ρ(A,B) = |A∩B|/|A∪B| — chính là Jaccard áp dụng cho 2 tập giá trị cột, ước lượng độ chồng lấp (khả năng join) giữa 2 cột.</div></details></div>
+<h2>📚 Ngân hàng luyện tập sâu</h2>
+<p class="hint">73 câu trắc nghiệm có nguồn gốc rõ ràng (gốc slide hoặc ví dụ số đã verify thủ công —
+ghi rõ từng câu), lọc theo chủ đề &amp; nguồn, chỉ xem câu đã sai, lưu tiến độ trên trình duyệt.</p>
+<a class="mod-card" href="../06-sources-profiling-selection/bank.html" style="display:block">
+<span class="kicker">Luyện tập sâu</span><h3>Mở ngân hàng 73 câu — Sources Profiling &amp; Selection</h3>
+<div class="go">Mở →</div></a>
+<h2>✅ Trắc nghiệm nhanh (tự chấm)</h2>
+<div class="quiz"><div class="quiz-root"></div>
+<script type="application/json">{"items": [{"q": "Wrapper được hình thức hoá thành cặp nào, theo đúng định nghĩa slide gốc?", "opts": ["(T_S, F_S)", "(T_W, E_W)", "(h, t)", "(l_i, r_i)"], "correct": 1, "explain": "Wrapper W = (T_W, E_W): T_W là target schema (lược đồ đích), E_W là extraction program (chương trình trích xuất)."}, {"q": "Schema T_S khác Format F_S ở điểm nào?", "opts": ["Không khác gì, 2 khái niệm đồng nhất", "Schema là trường logic + cách lồng nhau; Format là cách trang hiển thị chúng", "Format là trường logic, Schema là cách hiển thị", "Schema chỉ áp dụng cho XML, Format chỉ áp dụng cho HTML"], "correct": 1, "explain": "2 nguồn có thể CÙNG schema nhưng KHÁC format (cách trình bày trên trang)."}, {"q": "Với n thuộc tính cần trích, mô hình HLRT cần bao nhiêu chuỗi mốc (delimiter)?", "opts": ["n", "n+1", "2n", "2n+2"], "correct": 3, "explain": "W=(h,t,l1,r1,...,ln,rn) — đúng 2n+2 chuỗi mốc: h,t khoanh vùng + li,ri khoanh từng thuộc tính."}, {"q": "Stalker khắc phục giới hạn 'chỉ xử lý tuple phẳng' của HLRT bằng cách nào?", "opts": ["Dùng nhiều delimiter hơn cho cùng 1 cấp lược đồ", "Trích xuất phân cấp, đi xuống dần qua lược đồ, dùng ngữ cảnh nút cha cho nút con", "Bỏ qua hoàn toàn các trường lồng nhau", "Chỉ hoạt động khi lược đồ không có danh sách lặp"], "correct": 1, "explain": "Stalker quét nhiều lần, mỗi lần thu hẹp dần vùng tìm kiếm dựa trên văn bản đã trích của nút cha."}, {"q": "RoadRunner khác Learning (HLRT/Stalker) ở điểm nào?", "opts": ["RoadRunner cần trang đã gán nhãn, Learning thì không", "RoadRunner học tự động cả lược đồ lẫn chương trình trích từ trang CHƯA gán nhãn, Learning cần trang đã gán nhãn", "Không có gì khác biệt, chỉ khác tên gọi", "RoadRunner chỉ hoạt động với dữ liệu số"], "correct": 1, "explain": "RoadRunner khởi tạo bằng 1 trang rồi tổng quát hoá dần, không cần ai gán nhãn trước."}, {"q": "Source Profiling và Source Selection, bước nào làm TRƯỚC?", "opts": ["Selection luôn làm trước", "Profiling luôn làm trước vì Selection cần profile làm input", "Làm đồng thời, không có thứ tự", "Tuỳ nguồn dữ liệu mà đổi thứ tự"], "correct": 1, "explain": "Bảng so sánh slide 27 ghi rõ: đầu vào của Selection chính là 'Source profiles' do Profiling tạo ra."}, {"q": "Vì sao bài toán chọn nguồn tĩnh (static) ở dạng tổng quát được slide gọi là NP-complete?", "opts": ["Vì luôn giải được bằng greedy trong thời gian tuyến tính", "Vì không có thuật toán đa thức giải đúng tuyệt đối cho mọi trường hợp, phải dùng heuristic như GRASP", "Vì chỉ áp dụng được cho đúng 2 nguồn dữ liệu", "Vì chi phí tính toán luôn bằng 0"], "correct": 1, "explain": "Đây là lý do GRASP (metaheuristic) được dùng thay vì tìm lời giải tối ưu tuyệt đối."}, {"q": "Cho A={1,2,3,4}, B={2,3,4,5}. Min-hash resemblance ρ(A,B) = |A∩B|/|A∪B| là bao nhiêu?", "opts": ["4/5 = 0.80", "3/5 = 0.60", "3/4 = 0.75", "2/5 = 0.40"], "correct": 1, "explain": "|A∩B|={2,3,4}=3, |A∪B|={1,2,3,4,5}=5 ⟹ ρ=3/5=0.60."}]}</script></div>
+<div class="callout info" style="display:flex;justify-content:space-between;gap:10px"><a href="../04-record-linkage-entity-resolution/index.html">◀ Buổi 4: Record Linkage & Entity Resolution</a><span></span></div>
+
+</div>
+<footer>
+  <div class="wrap">Hệ thống tự học &quot;IT5427 — Tích hợp và xử lý dữ liệu lớn&quot; (HUST, GV Vũ Tuyết Trinh) ·
+  dựng từ 5 file slide bài giảng gốc. Không backend, chạy hoàn toàn phía trình duyệt.</div>
+</footer>
+<button class="fab" data-open-info title="Thông tin">ℹ️</button>
+<div id="info-modal" hidden><div class="box">
+  <button class="close">✕</button>
+  <h3>Về trang này</h3>
+  <p>Hệ thống tự học mở cho môn <b>IT5427 - Tích hợp và xử lý dữ liệu lớn</b> (HUST, giảng viên Vũ Tuyết Trinh).
+  Module này bám sát bài giảng "Sources Profiling &amp; Selection" (buổi 05), giải thích đầy đủ 25
+  trang/50 slide gốc: Wrapper (String/DOM/HLRT/Stalker/RoadRunner/Interactive), rồi Crowdsourcing,
+  Source Selection (bài toán tối ưu NP-complete, GRASP), Source Profiling (Bellman, Min-hash, Schema
+  Summarization). Toàn bộ nội dung chạy tĩnh, không backend.</p>
+</div></div>
+<script src="../../../_shared/theme.js"></script>
+<script src="../../../_shared/info.js"></script>
+<script src="../../../_shared/deck.js"></script>
+<script src="../../../_shared/quiz.js"></script>
+
+</body></html>

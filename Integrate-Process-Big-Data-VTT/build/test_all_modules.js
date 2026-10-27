@@ -10,6 +10,7 @@ const MODULES = [
   { slug: "03-mediation-query-bigdata", prefix: "m03", sqlCount: 16 },
   { slug: "04-record-linkage-entity-resolution", prefix: "m04", sqlCount: 56 },
   { slug: "05-bai-tap-lon-tich-hop-khi-tuong", prefix: "m05", sqlCount: 32 },
+  { slug: "06-sources-profiling-selection", prefix: "m06", noSandbox: true },
 ];
 
 (async () => {
@@ -25,20 +26,25 @@ const MODULES = [
     console.log(`\n== ${m.slug} ==`);
     try {
       await page.goto(`${BASE}/vi/modules/${m.slug}/index.html`, { waitUntil: "networkidle0", timeout: 30000 });
-      await page.waitForSelector(`#sb-mount-${m.prefix} .sb-main`, { timeout: 15000 });
-      const n = await page.$$eval(`#sb-mount-${m.prefix} .sb-item`, els => els.length);
-      console.log(`  sandbox: ${n} cau (ky vong ${m.sqlCount})`);
-      if (n !== m.sqlCount) { console.log(`  FAIL: so cau sandbox sai`); failures++; }
 
-      // chay + cham 1 cau dau bang chinh loi giai mau
-      await page.click(`#sb-mount-${m.prefix} #sb-show-sol`);
-      const sol = await page.$eval(`#sb-mount-${m.prefix} .sb-sol`, el => el.textContent);
-      await page.evaluate((sql, p) => { document.querySelector(`#sb-mount-${p} #sb-editor`).value = sql; }, sol, m.prefix);
-      await page.click(`#sb-mount-${m.prefix} #sb-grade`);
-      await page.waitForFunction((p) => document.querySelector(`#sb-mount-${p} #sb-out p.ok, #sb-mount-${p} #sb-out p.no`), { timeout: 5000 }, m.prefix);
-      const grade = await page.$eval(`#sb-mount-${m.prefix} #sb-out p`, el => el.textContent);
-      console.log(`  cham cau dau: ${grade.slice(0, 40)}`);
-      if (!grade.includes("Chính xác")) { console.log("  FAIL: cham sai cau dau"); failures++; }
+      if (!m.noSandbox) {
+        await page.waitForSelector(`#sb-mount-${m.prefix} .sb-main`, { timeout: 15000 });
+        const n = await page.$$eval(`#sb-mount-${m.prefix} .sb-item`, els => els.length);
+        console.log(`  sandbox: ${n} cau (ky vong ${m.sqlCount})`);
+        if (n !== m.sqlCount) { console.log(`  FAIL: so cau sandbox sai`); failures++; }
+
+        // chay + cham 1 cau dau bang chinh loi giai mau
+        await page.click(`#sb-mount-${m.prefix} #sb-show-sol`);
+        const sol = await page.$eval(`#sb-mount-${m.prefix} .sb-sol`, el => el.textContent);
+        await page.evaluate((sql, p) => { document.querySelector(`#sb-mount-${p} #sb-editor`).value = sql; }, sol, m.prefix);
+        await page.click(`#sb-mount-${m.prefix} #sb-grade`);
+        await page.waitForFunction((p) => document.querySelector(`#sb-mount-${p} #sb-out p.ok, #sb-mount-${p} #sb-out p.no`), { timeout: 5000 }, m.prefix);
+        const grade = await page.$eval(`#sb-mount-${m.prefix} #sb-out p`, el => el.textContent);
+        console.log(`  cham cau dau: ${grade.slice(0, 40)}`);
+        if (!grade.includes("Chính xác")) { console.log("  FAIL: cham sai cau dau"); failures++; }
+      } else {
+        console.log("  (khong co SQL sandbox cho module nay, bo qua kiem tra sandbox)");
+      }
 
       await page.goto(`${BASE}/vi/modules/${m.slug}/bank.html`, { waitUntil: "networkidle0", timeout: 20000 });
       await page.waitForSelector(".bk-item", { timeout: 10000 });
@@ -58,6 +64,6 @@ const MODULES = [
   }
 
   await browser.close();
-  console.log(failures ? `\n❌ CO ${failures} LOI` : "\n✅ TAT CA 5 MODULE PASS");
+  console.log(failures ? `\n❌ CO ${failures} LOI` : `\n✅ TAT CA ${MODULES.length} MODULE PASS`);
   process.exit(failures ? 1 : 0);
 })();

@@ -1,0 +1,1024 @@
+[
+ {
+  "id": "m06-t1-wrapper",
+  "q": "'Wrapper' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "1 trích xuất có cấu trúc từ các trang của nguồn S, hình thức hoá thành cặp (T_W, E_W): T_W là target schema, E_W là chương trình trích xuất",
+   "Chỉ là 1 giao diện lập trình (API) chuẩn do chính nguồn dữ liệu tự cung cấp sẵn, không cần ai viết thêm chương trình trích xuất",
+   "Một thuật toán Clustering dùng để gộp các bản ghi trùng lặp thành 1 cụm, thuộc giai đoạn Entity Resolution, không liên quan trích xuất Web",
+   "Một bản sao vật lý toàn bộ trang web lưu lại nguyên trạng, không có bất kỳ cấu trúc trích xuất có hệ thống nào đi kèm — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 1 trích xuất có cấu trúc từ các trang của nguồn S, hình thức hoá thành cặp (T_W, E_W): T_W là target schema, E_W là chương trình trích xuất"
+ },
+ {
+  "id": "m06-t1-tw-ew",
+  "q": "'T_W và E_W' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "T_W luôn phải giống hệt lược đồ gốc T_S của trang, không được phép bớt đi bất kỳ thuộc tính nào dù không cần dùng tới — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "T_W (target schema) là lược đồ ĐÍCH wrapper trả về — không nhất thiết giống lược đồ gốc T_S; E_W (extraction program) là chương trình dùng format F_S của trang để trích đúng khuôn T_W",
+   "Cả T_W và E_W đều chỉ là 2 lược đồ dữ liệu, hoàn toàn không có chương trình trích xuất (extraction program) nào tồn tại trong định nghĩa",
+   "E_W là lược đồ đích wrapper trả về, còn T_W mới là chương trình thực hiện việc trích xuất (vai trò của 2 ký hiệu đã bị đảo ngược hoàn toàn)"
+  ],
+  "correct": 1,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: T_W (target schema) là lược đồ ĐÍCH wrapper trả về — không nhất thiết giống lược đồ gốc T_S; E_W (extraction program) là chương trình dùng format F_S của trang để trích đúng khuôn T_W"
+ },
+ {
+  "id": "m06-t1-schema-vs-format",
+  "q": "'Schema T_S vs Format F_S của nguồn Web' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Schema và Format thực chất chỉ là 1 khái niệm duy nhất, không hề có sự phân biệt nào trong thực tế xây dựng wrapper — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Format của 1 trang luôn luôn giống nhau nếu 2 nguồn có cùng schema, không tồn tại ngoại lệ nào về cách trình bày khác nhau",
+   "Schema (T_S) là các TRƯỜNG LOGIC và cách chúng lồng nhau; Format (F_S) là CÁCH trang hiển thị các trường đó (thẻ HTML, nhãn, vùng lặp) — 2 nguồn có thể cùng schema nhưng khác format",
+   "Format mới là các trường logic và cách chúng lồng nhau, còn Schema là cách trang hiển thị chúng (2 định nghĩa đã bị đảo ngược cho nhau)"
+  ],
+  "correct": 2,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Schema (T_S) là các TRƯỜNG LOGIC và cách chúng lồng nhau; Format (F_S) là CÁCH trang hiển thị các trường đó (thẻ HTML, nhãn, vùng lặp) — 2 nguồn có thể cùng schema nhưng khác format"
+ },
+ {
+  "id": "m06-t1-wrapper-challenges",
+  "q": "'Thách thức xây dựng Wrapper' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Không có thách thức thực sự nào đáng kể vì chỉ cần đọc đúng cấu trúc thẻ HTML của trang là coi như xong việc — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Thách thức duy nhất từng được ghi nhận là tốc độ tải trang qua mạng chậm, không liên quan gì tới cấu trúc hay ngữ nghĩa dữ liệu — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Chỉ gặp khó khi trang web không có hình ảnh minh hoạ kèm theo, còn lại mọi trường hợp khác đều dễ xử lý như nhau — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Học cấu trúc không tự động cho biết ý nghĩa trường; nhiều chương trình trích cùng khớp dữ liệu mẫu; optional field/danh sách lặp làm mờ ranh giới; ngoại lệ định dạng; overfitting trên trang huấn luyện"
+  ],
+  "correct": 3,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học cấu trúc không tự động cho biết ý nghĩa trường; nhiều chương trình trích cùng khớp dữ liệu mẫu; optional field/danh sách lặp làm mờ ranh giới; ngoại lệ định dạng; overfitting trên trang huấn luyện"
+ },
+ {
+  "id": "m06-t1-wrapper-approaches",
+  "q": "'4 hướng xây dựng Wrapper' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Manual (tự viết T_W/E_W), Learning (đánh nhãn mẫu rồi học E_W), Automatic (tự học cả T_S lẫn E_W, không cần nhãn), Interactive (học + hỏi feedback người dùng tới khi hội tụ)",
+   "Trên thực tế chỉ có đúng 1 hướng duy nhất được công nhận: viết tay toàn bộ T_W và E_W theo cách Manual truyền thống — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Interactive nghĩa là để máy tự quyết định hoàn toàn mọi thứ, hoàn toàn không cần hỏi lại phản hồi (feedback) từ người dùng trong lúc xây dựng",
+   "Automatic và Manual thực chất là 1 khái niệm hoàn toàn giống nhau, chỉ khác nhau ở cách gọi tên mà không khác gì về bản chất kỹ thuật"
+  ],
+  "correct": 0,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Manual (tự viết T_W/E_W), Learning (đánh nhãn mẫu rồi học E_W), Automatic (tự học cả T_S lẫn E_W, không cần nhãn), Interactive (học + hỏi feedback người dùng tới khi hội tụ)"
+ },
+ {
+  "id": "m06-t1-hlrt",
+  "q": "'HLRT (Head-Left-Right-Tail)' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Một thuật toán Clustering dùng trong bước Entity Resolution để gộp bản ghi trùng, hoàn toàn không liên quan tới việc xây dựng Wrapper",
+   "Mô hình trích xuất bằng delimiter: với n thuộc tính cần 2n+2 chuỗi mốc W=(h,t,l1,r1,...,ln,rn) — h/t khoanh vùng dữ liệu, li/ri khoanh ranh giới giá trị thuộc tính i",
+   "h và t dùng để khoanh ranh giới của 1 thuộc tính riêng lẻ, còn li/ri mới dùng để khoanh toàn vùng dữ liệu (vai trò đã bị đảo ngược hoàn toàn)",
+   "Chỉ cần đúng 2 chuỗi mốc cố định cho mọi số lượng thuộc tính n, hoàn toàn không phụ thuộc vào số thuộc tính cần trích xuất — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 1,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mô hình trích xuất bằng delimiter: với n thuộc tính cần 2n+2 chuỗi mốc W=(h,t,l1,r1,...,ln,rn) — h/t khoanh vùng dữ liệu, li/ri khoanh ranh giới giá trị thuộc tính i"
+ },
+ {
+  "id": "m06-t1-hlrt-limit",
+  "q": "'Giới hạn của mô hình HLRT' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "HLRT chỉ bị giới hạn khi dữ liệu cần trích là giá trị số, trong khi với chuỗi ký tự thì không gặp giới hạn nào cả — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "HLRT thực tế xử lý tốt mọi cấu trúc lồng nhau phức tạp tới bất kỳ mức độ nào, hoàn toàn không có giới hạn kỹ thuật nào được ghi nhận",
+   "Giả định lược đồ là tuple PHẲNG (không xử lý được cấu trúc lồng nhau); mọi trường cần delimiter đáng tin cậy; danh sách lồng nhau và định dạng pha trộn làm HLRT bó tay",
+   "Giới hạn duy nhất từng được nêu ra là tốc độ chạy chương trình chậm, hoàn toàn không liên quan gì tới cấu trúc của dữ liệu cần trích"
+  ],
+  "correct": 2,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giả định lược đồ là tuple PHẲNG (không xử lý được cấu trúc lồng nhau); mọi trường cần delimiter đáng tin cậy; danh sách lồng nhau và định dạng pha trộn làm HLRT bó tay"
+ },
+ {
+  "id": "m06-t1-stalker",
+  "q": "'Stalker' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Stalker luôn phải quét lại toàn bộ trang từ đầu cho mỗi nút con, hoàn toàn không tận dụng ngữ cảnh văn bản đã trích của nút cha — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Một công cụ tự động hoàn toàn không cần người lập trình can thiệp, và cũng hoàn toàn không dùng tới lệnh SkipTo/BackTo/BackUntil nào",
+   "Stalker thực chất chỉ xử lý được tuple phẳng giống hệt HLRT, không mang lại bất kỳ cải tiến kỹ thuật nào so với mô hình trước đó",
+   "Trích xuất PHÂN CẤP (hierarchical) trên lược đồ tuple lồng nhau, đi xuống dần qua lược đồ, dùng văn bản đã trích của nút CHA làm ngữ cảnh cho nút CON; dùng lệnh SkipTo/BackTo/BackUntil + landmark"
+  ],
+  "correct": 3,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Trích xuất PHÂN CẤP (hierarchical) trên lược đồ tuple lồng nhau, đi xuống dần qua lược đồ, dùng văn bản đã trích của nút CHA làm ngữ cảnh cho nút CON; dùng lệnh SkipTo/BackTo/BackUntil + landmark"
+ },
+ {
+  "id": "m06-t1-stalker-learning",
+  "q": "'Học Stalker bằng Sequential Covering' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Học 1 luật phủ đúng 1 phần ví dụ huấn luyện → loại bỏ ví dụ đã phủ → học tiếp luật khác cho phần còn lại → kết hợp các luật bằng phép HOẶC (disjunction)",
+   "Hoàn toàn không cần bất kỳ dữ liệu gán nhãn nào, học tự động 100% từ các trang chưa gán nhãn (đây đúng ra là đặc điểm của RoadRunner)",
+   "Chỉ cần học đúng 1 luật duy nhất là đủ phủ hết toàn bộ ví dụ huấn luyện ngay từ đầu, không cần lặp lại quy trình học thêm lần nào",
+   "Các luật học được sau đó luôn được kết hợp lại bằng phép VÀ (conjunction) thuần logic, hoàn toàn không phải phép HOẶC như đã nêu — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 0,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học 1 luật phủ đúng 1 phần ví dụ huấn luyện → loại bỏ ví dụ đã phủ → học tiếp luật khác cho phần còn lại → kết hợp các luật bằng phép HOẶC (disjunction)"
+ },
+ {
+  "id": "m06-t1-roadrunner",
+  "q": "'RoadRunner' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Chỉ hoạt động được với đúng 1 trang duy nhất mà không hề có khả năng tổng quát hoá khuôn mẫu qua nhiều trang bổ sung tiếp theo — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Học TỰ ĐỘNG cả lược đồ lẫn chương trình trích từ các trang CHƯA GÁN NHÃN cùng 1 template — khởi tạo bằng 1 trang đầu, tổng quát hoá dần để khớp các trang tiếp theo (dùng #PCDATA, (pattern)?, (pattern)+)",
+   "Yêu cầu bắt buộc toàn bộ các trang đầu vào phải được con người gán nhãn thủ công trước khi bắt đầu học (đặc điểm này đúng ra giống nhóm Learning) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Luôn biết trước chính xác tên và ý nghĩa thật của từng trường học được, hoàn toàn không cần suy luận gì thêm từ dữ liệu quan sát — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 1,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học TỰ ĐỘNG cả lược đồ lẫn chương trình trích từ các trang CHƯA GÁN NHÃN cùng 1 template — khởi tạo bằng 1 trang đầu, tổng quát hoá dần để khớp các trang tiếp theo (dùng #PCDATA, (pattern)?, (pattern)+)"
+ },
+ {
+  "id": "m06-t1-interactive-wrapper",
+  "q": "'Xây dựng Wrapper kiểu Interactive' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Chỉ cho phép duy trì đúng 1 wrapper ứng viên duy nhất tại 1 thời điểm, không được phép giữ nhiều ứng viên song song để so sánh — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Không bao giờ cần hỏi lại phản hồi của người dùng trong suốt quá trình xây dựng, toàn bộ quy trình chạy tự động hoàn toàn — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Duy trì nhiều wrapper ứng viên, phát hiện khi máy không chắc chắn, hỏi người dùng feedback ĐÚNG CHỖ còn mơ hồ, dùng câu trả lời tinh chỉnh ứng viên — lựa chọn thiết kế then chốt là khi nào hỏi và hỏi gì",
+   "Luôn hỏi người dùng xác nhận lại toàn bộ nội dung của cả trang, hoàn toàn không có cơ chế chọn lọc đúng chỗ còn mơ hồ cần hỏi thêm — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 2,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Duy trì nhiều wrapper ứng viên, phát hiện khi máy không chắc chắn, hỏi người dùng feedback ĐÚNG CHỖ còn mơ hồ, dùng câu trả lời tinh chỉnh ứng viên — lựa chọn thiết kế then chốt là khi nào hỏi và hỏi gì"
+ },
+ {
+  "id": "m06-t1-profiling-vs-selection",
+  "q": "'Source Profiling vs Source Selection' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "2 khái niệm Profiling và Selection thực chất hoàn toàn giống nhau, chỉ là 2 cách gọi tên khác nhau cho cùng 1 công việc duy nhất — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Profiling chỉ áp dụng được cho dữ liệu có cấu trúc rõ ràng, còn Selection chỉ áp dụng được cho dữ liệu hoàn toàn phi cấu trúc — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Selection thực ra luôn phải làm trước Profiling vì cần biết sẽ chọn gì rồi mới quay lại tìm hiểu nguồn (thứ tự thực hiện đã bị đảo ngược)",
+   "Profiling: hiểu & mô tả đặc điểm nguồn (đầu ra là 1 hồ sơ/profile); Selection: chọn 1 tập con nguồn hữu ích (đầu vào CHÍNH là profile do Profiling tạo ra) — Profiling luôn làm TRƯỚC Selection"
+  ],
+  "correct": 3,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Profiling: hiểu & mô tả đặc điểm nguồn (đầu ra là 1 hồ sơ/profile); Selection: chọn 1 tập con nguồn hữu ích (đầu vào CHÍNH là profile do Profiling tạo ra) — Profiling luôn làm TRƯỚC Selection"
+ },
+ {
+  "id": "m06-t1-crowdsourcing",
+  "q": "'Crowdsourcing trong tích hợp dữ liệu' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Nhờ CON NGƯỜI (đám đông) làm các phán đoán máy chưa làm tốt (vd record linkage/schema alignment); hệ thống phải tuyển/giữ chân người góp, kết hợp đóng góp, đánh giá chất lượng người góp",
+   "Nghĩa là thuê đúng 1 chuyên gia duy nhất đảm nhiệm toàn bộ công việc gán nhãn, không cần huy động số lượng lớn người đóng góp",
+   "Chỉ áp dụng được cho riêng bài toán schema alignment, hoàn toàn không áp dụng được cho bài toán record linkage như đã nêu — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chỉ dùng thuật toán học máy để thay thế hoàn toàn vai trò con người, không có bất kỳ bước nào thực sự cần tới phán đoán của con người"
+  ],
+  "correct": 0,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Nhờ CON NGƯỜI (đám đông) làm các phán đoán máy chưa làm tốt (vd record linkage/schema alignment); hệ thống phải tuyển/giữ chân người góp, kết hợp đóng góp, đánh giá chất lượng người góp"
+ },
+ {
+  "id": "m06-t1-hybrid-rl",
+  "q": "'Hybrid Record Linkage' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Gán nhãn thủ công cho TẤT CẢ các cặp bản ghi có thể, hoàn toàn không có bước lọc bằng tính toán (Blocking) nào diễn ra trước đó",
+   "Lọc bằng tính toán (Blocking) loại cặp chắc chắn không khớp → đám đông chỉ gán nhãn cặp ứng viên còn lại → dùng quan hệ bắc cầu suy ra thêm nhãn mà không cần hỏi người, tránh O(n²) lượt gán nhãn thủ công",
+   "Chỉ dựa vào suy luận bắc cầu (transitive) đơn thuần, hoàn toàn không cần tới Blocking hay bất kỳ ai trong đám đông gán nhãn cả — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Toàn bộ quy trình chạy tự động hoàn toàn bằng máy, không hề có bước nào thực sự cần tới sự tham gia của đám đông con người — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Lọc bằng tính toán (Blocking) loại cặp chắc chắn không khớp → đám đông chỉ gán nhãn cặp ứng viên còn lại → dùng quan hệ bắc cầu suy ra thêm nhãn mà không cần hỏi người, tránh O(n²) lượt gán nhãn thủ công"
+ },
+ {
+  "id": "m06-t1-transitive-inference",
+  "q": "'Suy luận bắc cầu (transitive inference) trong gán nhãn' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Quy tắc suy luận bắc cầu chỉ áp dụng được khi có đúng 2 bản ghi trong hệ thống, không áp dụng được khi có nhiều bản ghi hơn",
+   "Suy luận bắc cầu hoàn toàn không mang theo bất kỳ rủi ro lan truyền lỗi nào, dù 1 nhãn ban đầu có bị gán sai đi chăng nữa — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "A=B và B=C ⟹ A=C (hợp lệ); A=B và B≠C ⟹ A≠C (hợp lệ); A≠B và B≠C ⟹ A?C KHÔNG suy luận được; nhãn sai có thể LAN TRUYỀN qua các suy luận này",
+   "Trường hợp A≠B và B≠C luôn luôn cho phép suy ra chắc chắn A≠C một cách hợp lệ (đây là sai quy tắc logic đã nêu trong bảng suy luận)"
+  ],
+  "correct": 2,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: A=B và B=C ⟹ A=C (hợp lệ); A=B và B≠C ⟹ A≠C (hợp lệ); A≠B và B≠C ⟹ A?C KHÔNG suy luận được; nhãn sai có thể LAN TRUYỀN qua các suy luận này"
+ },
+ {
+  "id": "m06-t1-selection-objectives",
+  "q": "'3 dạng mục tiêu bài toán chọn nguồn' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Chỉ tồn tại đúng 1 dạng mục tiêu duy nhất là tối đa hoá benefit, hoàn toàn không có ràng buộc ngân sách (cost) nào kèm theo — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Mục tiêu của bài toán chọn nguồn luôn luôn là tối thiểu hoá benefit, không bao giờ có mục tiêu tối đa hoá benefit như đã nêu",
+   "Mục tiêu profit hoàn toàn không yêu cầu benefit và cost phải cùng 1 đơn vị đo, cứ trừ trực tiếp 2 đại lượng khác đơn vị là được",
+   "Tối đa benefit với cost≤ngân sách; Tối thiểu cost với benefit≥mục tiêu; Tối đa (benefit−cost) với cost≤ngân sách — mục tiêu profit đòi hỏi benefit và cost cùng đơn vị đo"
+  ],
+  "correct": 3,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Tối đa benefit với cost≤ngân sách; Tối thiểu cost với benefit≥mục tiêu; Tối đa (benefit−cost) với cost≤ngân sách — mục tiêu profit đòi hỏi benefit và cost cùng đơn vị đo"
+ },
+ {
+  "id": "m06-t1-greedy-limit",
+  "q": "'Giới hạn chiến lược Greedy khi chọn nguồn' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Lợi ích biên của 1 nguồn phụ thuộc các nguồn ĐÃ CHỌN trước (do overlap/complement); giả định 'lợi ích giảm dần' không chắc đúng với data fusion; bài toán chọn nguồn tĩnh tổng quát là NP-complete",
+   "Bài toán chọn nguồn tĩnh (static) ở dạng tổng quát luôn giải được trong thời gian đa thức (polynomial), không hề là bài toán NP-complete",
+   "Lợi ích biên (marginal benefit) của 1 nguồn luôn là 1 giá trị cố định, hoàn toàn không phụ thuộc vào các nguồn đã được chọn trước đó — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Chiến lược Greedy luôn luôn tìm ra được tập con nguồn tối ưu tuyệt đối, hoàn toàn không tồn tại bất kỳ giới hạn lý thuyết nào cả — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 0,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Lợi ích biên của 1 nguồn phụ thuộc các nguồn ĐÃ CHỌN trước (do overlap/complement); giả định 'lợi ích giảm dần' không chắc đúng với data fusion; bài toán chọn nguồn tĩnh tổng quát là NP-complete"
+ },
+ {
+  "id": "m06-t1-grasp",
+  "q": "'GRASP (Greedy Randomized Adaptive Search Procedure)' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Chỉ chạy đúng 1 lần xây dựng và tìm kiếm cục bộ duy nhất, hoàn toàn không có bước lặp lại nhiều lần như đã mô tả ở trên — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Xây tập ứng viên bằng lựa chọn ngẫu nhiên (không theo 1 thứ tự tham lam cứng nhắc) → chọn trong số ứng viên triển vọng → cải thiện bằng tìm kiếm cục bộ → lặp nhiều lần → trả về tập tốt nhất tìm được",
+   "Luôn luôn chọn ra đúng 1 ứng viên tốt nhất duy nhất tại mỗi bước xây dựng, hoàn toàn không có yếu tố lựa chọn ngẫu nhiên nào",
+   "GRASP đảm bảo chắc chắn tìm ra được lời giải tối ưu tuyệt đối cho bài toán chọn nguồn vốn đã được chứng minh là NP-complete"
+  ],
+  "correct": 1,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Xây tập ứng viên bằng lựa chọn ngẫu nhiên (không theo 1 thứ tự tham lam cứng nhắc) → chọn trong số ứng viên triển vọng → cải thiện bằng tìm kiếm cục bộ → lặp nhiều lần → trả về tập tốt nhất tìm được"
+ },
+ {
+  "id": "m06-t1-update-vs-freshness",
+  "q": "'Update frequency vs Freshness' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Update frequency đo mức phản ánh đúng thế giới thực còn Freshness đo tần suất thay đổi nội dung (2 định nghĩa đã bị đảo ngược cho nhau) — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Freshness chỉ phụ thuộc duy nhất vào tần suất cập nhật dữ liệu, hoàn toàn không liên quan gì tới việc có xoá bản ghi cũ hay không — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Update frequency: nguồn thay đổi nội dung thường xuyên ra sao; Freshness: giá trị nguồn phản ánh đúng thế giới đang thay đổi tới mức nào — cập nhật liên tục KHÔNG đảm bảo luôn tươi (có thể không xoá bản ghi cũ lỗi thời)",
+   "2 khái niệm Update frequency và Freshness thực chất hoàn toàn đồng nhất, cập nhật thường xuyên luôn luôn đảm bảo dữ liệu tươi mới — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Update frequency: nguồn thay đổi nội dung thường xuyên ra sao; Freshness: giá trị nguồn phản ánh đúng thế giới đang thay đổi tới mức nào — cập nhật liên tục KHÔNG đảm bảo luôn tươi (có thể không xoá bản ghi cũ lỗi thời)"
+ },
+ {
+  "id": "m06-t1-source-selection-risks",
+  "q": "'Rủi ro khi mô hình hoá bài toán chọn nguồn' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Chỉ cần thực hiện việc chọn nguồn đúng 1 lần duy nhất là đủ, hoàn toàn không cần đánh giá lại tập nguồn theo thời gian như đã nêu — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "2 bước schema alignment và record linkage hoàn toàn không liên quan gì tới chất lượng cuối cùng của việc chọn nguồn tích hợp — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Các nguồn dữ liệu trong thực tế luôn luôn độc lập tuyệt đối với nhau, hoàn toàn không tồn tại rủi ro sao chép hay tương quan nào — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Copying/correlation giữa nguồn làm yếu giả định độc lập; chất lượng ước lượng trước có thể khác thực tế sau fusion; schema alignment/record linkage cũng ảnh hưởng giá trị tích hợp; cần đánh giá lại tập nguồn theo thời gian"
+  ],
+  "correct": 3,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Copying/correlation giữa nguồn làm yếu giả định độc lập; chất lượng ước lượng trước có thể khác thực tế sau fusion; schema alignment/record linkage cũng ảnh hưởng giá trị tích hợp; cần đánh giá lại tập nguồn theo thời gian"
+ },
+ {
+  "id": "m06-t1-bellman",
+  "q": "'Bellman (tóm tắt thuộc tính)' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Công cụ tóm tắt nhanh nội dung từng cột bằng các 'chữ ký' (signature) cô đọng khi CSDL có hàng ngàn bảng tài liệu hoá kém — dùng Min-hash (overlap), q-gram/multiset (tương đồng văn bản/số lượng)",
+   "Chỉ hoạt động được khi đã biết trước đầy đủ thông tin khoá ngoại và tài liệu mô tả hoàn chỉnh của mọi bảng trong hệ thống — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Một thuật toán thuộc bước Clustering trong quy trình Record Linkage, hoàn toàn không liên quan gì tới việc tóm tắt nguồn dữ liệu — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Yêu cầu bắt buộc phải đọc hết toàn bộ dữ liệu thô mỗi lần muốn biết nội dung thực sự của 1 cột, không có cơ chế tóm tắt cô đọng nào"
+  ],
+  "correct": 0,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Công cụ tóm tắt nhanh nội dung từng cột bằng các 'chữ ký' (signature) cô đọng khi CSDL có hàng ngàn bảng tài liệu hoá kém — dùng Min-hash (overlap), q-gram/multiset (tương đồng văn bản/số lượng)"
+ },
+ {
+  "id": "m06-t1-minhash",
+  "q": "'Min-hash resemblance' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Chữ ký s_i(A) thực chất là giá trị LỚN NHẤT của hàm băm h_i(a) trên tập A, hoàn toàn không phải giá trị nhỏ nhất như đã mô tả — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "ρ(A,B) = |A∩B|/|A∪B| — hệ số Jaccard áp dụng cho 2 TẬP GIÁ TRỊ CỘT; chữ ký s_i(A) = giá trị nhỏ nhất của h_i(a); ước lượng ρ bằng tỷ lệ thành phần chữ ký bằng nhau, tránh quét lại toàn bộ giá trị cột",
+   "Luôn luôn phải quét lại toàn bộ 2 tập giá trị cột mỗi lần muốn so sánh, hoàn toàn không tiết kiệm được chi phí tính toán nào cả — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Công thức đúng ra phải là ρ(A,B) = |A∪B|/|A∩B|, tức đã bị đảo ngược hoàn toàn vị trí tử số và mẫu số so với định nghĩa Jaccard chuẩn"
+  ],
+  "correct": 1,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: ρ(A,B) = |A∩B|/|A∪B| — hệ số Jaccard áp dụng cho 2 TẬP GIÁ TRỊ CỘT; chữ ký s_i(A) = giá trị nhỏ nhất của h_i(a); ước lượng ρ bằng tỷ lệ thành phần chữ ký bằng nhau, tránh quét lại toàn bộ giá trị cột"
+ },
+ {
+  "id": "m06-t1-schema-summarization",
+  "q": "'Schema Summarization' được định nghĩa như thế nào (theo đúng nội dung slide Sources Profiling & Selection)?",
+  "opts": [
+   "Mức độ quan trọng của 1 bảng chỉ phụ thuộc duy nhất vào kích thước vật lý của nó, 1 bảng nhỏ luôn luôn được coi là không quan trọng — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Hoàn toàn không cần thực hiện bước phân cụm nào cả, mỗi bảng riêng lẻ tự động trở thành 1 nhóm đại diện cho chính nó — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Biểu diễn bảng/quan hệ join dưới dạng đồ thị lược đồ, phân cụm thành k nhóm, chọn 1 bảng đại diện mỗi nhóm; chỉ dựa KÍCH THƯỚC/BẬC bảng có thể đánh giá SAI mức quan trọng (bảng nhỏ vẫn có thể là điểm nối trung tâm quan trọng)",
+   "Kỹ thuật này chỉ áp dụng được cho trường hợp đúng 2 bảng duy nhất, hoàn toàn không áp dụng được khi hệ thống có nhiều bảng hơn — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 2,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Biểu diễn bảng/quan hệ join dưới dạng đồ thị lược đồ, phân cụm thành k nhóm, chọn 1 bảng đại diện mỗi nhóm; chỉ dựa KÍCH THƯỚC/BẬC bảng có thể đánh giá SAI mức quan trọng (bảng nhỏ vẫn có thể là điểm nối trung tâm quan trọng)"
+ },
+ {
+  "id": "m06-t2-wrapper",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"1 trích xuất có cấu trúc từ các trang của nguồn S, hình thức hoá thành cặp (T_W, E_W): T_W là target schema, E_W là chương trình trích xuất\"",
+  "opts": [
+   "GRASP (Greedy Randomized Adaptive Search Procedure)",
+   "4 hướng xây dựng Wrapper",
+   "Source Profiling vs Source Selection",
+   "Wrapper"
+  ],
+  "correct": 3,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Wrapper"
+ },
+ {
+  "id": "m06-t2-tw-ew",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"T_W (target schema) là lược đồ ĐÍCH wrapper trả về — không nhất thiết giống lược đồ gốc T_S; E_W (extraction program) là chương trình dùng format F_S của trang để trích đúng khuôn T_W\"",
+  "opts": [
+   "T_W và E_W",
+   "RoadRunner",
+   "Schema Summarization",
+   "GRASP (Greedy Randomized Adaptive Search Procedure)"
+  ],
+  "correct": 0,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: T_W và E_W"
+ },
+ {
+  "id": "m06-t2-schema-vs-format",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Schema (T_S) là các TRƯỜNG LOGIC và cách chúng lồng nhau; Format (F_S) là CÁCH trang hiển thị các trường đó (thẻ HTML, nhãn, vùng lặp) — 2 nguồn có thể cùng schema nhưng khác format\"",
+  "opts": [
+   "Crowdsourcing trong tích hợp dữ liệu",
+   "Schema T_S vs Format F_S của nguồn Web",
+   "Stalker — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Source Profiling vs Source Selection"
+  ],
+  "correct": 1,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Schema T_S vs Format F_S của nguồn Web"
+ },
+ {
+  "id": "m06-t2-wrapper-challenges",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Học cấu trúc không tự động cho biết ý nghĩa trường; nhiều chương trình trích cùng khớp dữ liệu mẫu; optional field/danh sách lặp làm mờ ranh giới; ngoại lệ định dạng; overfitting trên trang huấn luyện\"",
+  "opts": [
+   "Min-hash resemblance",
+   "Học Stalker bằng Sequential Covering",
+   "Thách thức xây dựng Wrapper",
+   "T_W và E_W"
+  ],
+  "correct": 2,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Thách thức xây dựng Wrapper"
+ },
+ {
+  "id": "m06-t2-wrapper-approaches",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Manual (tự viết T_W/E_W), Learning (đánh nhãn mẫu rồi học E_W), Automatic (tự học cả T_S lẫn E_W, không cần nhãn), Interactive (học + hỏi feedback người dùng tới khi hội tụ)\"",
+  "opts": [
+   "Giới hạn chiến lược Greedy khi chọn nguồn",
+   "Stalker",
+   "3 dạng mục tiêu bài toán chọn nguồn",
+   "4 hướng xây dựng Wrapper"
+  ],
+  "correct": 3,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 4 hướng xây dựng Wrapper"
+ },
+ {
+  "id": "m06-t2-hlrt",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Mô hình trích xuất bằng delimiter: với n thuộc tính cần 2n+2 chuỗi mốc W=(h,t,l1,r1,...,ln,rn) — h/t khoanh vùng dữ liệu, li/ri khoanh ranh giới giá trị thuộc tính i\"",
+  "opts": [
+   "HLRT (Head-Left-Right-Tail)",
+   "Crowdsourcing trong tích hợp dữ liệu",
+   "Xây dựng Wrapper kiểu Interactive",
+   "4 hướng xây dựng Wrapper"
+  ],
+  "correct": 0,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: HLRT (Head-Left-Right-Tail)"
+ },
+ {
+  "id": "m06-t2-hlrt-limit",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Giả định lược đồ là tuple PHẲNG (không xử lý được cấu trúc lồng nhau); mọi trường cần delimiter đáng tin cậy; danh sách lồng nhau và định dạng pha trộn làm HLRT bó tay\"",
+  "opts": [
+   "Học Stalker bằng Sequential Covering",
+   "Giới hạn của mô hình HLRT",
+   "Update frequency vs Freshness",
+   "Bellman (tóm tắt thuộc tính)"
+  ],
+  "correct": 1,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giới hạn của mô hình HLRT"
+ },
+ {
+  "id": "m06-t2-stalker",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Trích xuất PHÂN CẤP (hierarchical) trên lược đồ tuple lồng nhau, đi xuống dần qua lược đồ, dùng văn bản đã trích của nút CHA làm ngữ cảnh cho nút CON; dùng lệnh SkipTo/BackTo/BackUntil + landmark\"",
+  "opts": [
+   "Suy luận bắc cầu (transitive inference) trong gán nhãn",
+   "Thách thức xây dựng Wrapper",
+   "Stalker",
+   "Hybrid Record Linkage"
+  ],
+  "correct": 2,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Stalker"
+ },
+ {
+  "id": "m06-t2-stalker-learning",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Học 1 luật phủ đúng 1 phần ví dụ huấn luyện → loại bỏ ví dụ đã phủ → học tiếp luật khác cho phần còn lại → kết hợp các luật bằng phép HOẶC (disjunction)\"",
+  "opts": [
+   "Update frequency vs Freshness",
+   "Xây dựng Wrapper kiểu Interactive",
+   "Giới hạn của mô hình HLRT — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Học Stalker bằng Sequential Covering"
+  ],
+  "correct": 3,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học Stalker bằng Sequential Covering"
+ },
+ {
+  "id": "m06-t2-roadrunner",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Học TỰ ĐỘNG cả lược đồ lẫn chương trình trích từ các trang CHƯA GÁN NHÃN cùng 1 template — khởi tạo bằng 1 trang đầu, tổng quát hoá dần để khớp các trang tiếp theo (dùng #PCDATA, (pattern)?, (pattern)+)\"",
+  "opts": [
+   "RoadRunner",
+   "GRASP (Greedy Randomized Adaptive Search Procedure)",
+   "Thách thức xây dựng Wrapper",
+   "Bellman (tóm tắt thuộc tính)"
+  ],
+  "correct": 0,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: RoadRunner"
+ },
+ {
+  "id": "m06-t2-interactive-wrapper",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Duy trì nhiều wrapper ứng viên, phát hiện khi máy không chắc chắn, hỏi người dùng feedback ĐÚNG CHỖ còn mơ hồ, dùng câu trả lời tinh chỉnh ứng viên — lựa chọn thiết kế then chốt là khi nào hỏi và hỏi gì\"",
+  "opts": [
+   "Suy luận bắc cầu (transitive inference) trong gán nhãn",
+   "Xây dựng Wrapper kiểu Interactive",
+   "Min-hash resemblance",
+   "Update frequency vs Freshness"
+  ],
+  "correct": 1,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Xây dựng Wrapper kiểu Interactive"
+ },
+ {
+  "id": "m06-t2-profiling-vs-selection",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Profiling: hiểu & mô tả đặc điểm nguồn (đầu ra là 1 hồ sơ/profile); Selection: chọn 1 tập con nguồn hữu ích (đầu vào CHÍNH là profile do Profiling tạo ra) — Profiling luôn làm TRƯỚC Selection\"",
+  "opts": [
+   "Rủi ro khi mô hình hoá bài toán chọn nguồn",
+   "Min-hash resemblance",
+   "Source Profiling vs Source Selection",
+   "T_W và E_W"
+  ],
+  "correct": 2,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Source Profiling vs Source Selection"
+ },
+ {
+  "id": "m06-t2-crowdsourcing",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Nhờ CON NGƯỜI (đám đông) làm các phán đoán máy chưa làm tốt (vd record linkage/schema alignment); hệ thống phải tuyển/giữ chân người góp, kết hợp đóng góp, đánh giá chất lượng người góp\"",
+  "opts": [
+   "Schema T_S vs Format F_S của nguồn Web",
+   "3 dạng mục tiêu bài toán chọn nguồn",
+   "Giới hạn của mô hình HLRT",
+   "Crowdsourcing trong tích hợp dữ liệu"
+  ],
+  "correct": 3,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Crowdsourcing trong tích hợp dữ liệu"
+ },
+ {
+  "id": "m06-t2-hybrid-rl",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Lọc bằng tính toán (Blocking) loại cặp chắc chắn không khớp → đám đông chỉ gán nhãn cặp ứng viên còn lại → dùng quan hệ bắc cầu suy ra thêm nhãn mà không cần hỏi người, tránh O(n²) lượt gán nhãn thủ công\"",
+  "opts": [
+   "Hybrid Record Linkage",
+   "Giới hạn của mô hình HLRT",
+   "T_W và E_W",
+   "Rủi ro khi mô hình hoá bài toán chọn nguồn"
+  ],
+  "correct": 0,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Hybrid Record Linkage"
+ },
+ {
+  "id": "m06-t2-transitive-inference",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"A=B và B=C ⟹ A=C (hợp lệ); A=B và B≠C ⟹ A≠C (hợp lệ); A≠B và B≠C ⟹ A?C KHÔNG suy luận được; nhãn sai có thể LAN TRUYỀN qua các suy luận này\"",
+  "opts": [
+   "Crowdsourcing trong tích hợp dữ liệu",
+   "Suy luận bắc cầu (transitive inference) trong gán nhãn",
+   "Stalker — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Hybrid Record Linkage"
+  ],
+  "correct": 1,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Suy luận bắc cầu (transitive inference) trong gán nhãn"
+ },
+ {
+  "id": "m06-t2-selection-objectives",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Tối đa benefit với cost≤ngân sách; Tối thiểu cost với benefit≥mục tiêu; Tối đa (benefit−cost) với cost≤ngân sách — mục tiêu profit đòi hỏi benefit và cost cùng đơn vị đo\"",
+  "opts": [
+   "Hybrid Record Linkage",
+   "4 hướng xây dựng Wrapper",
+   "3 dạng mục tiêu bài toán chọn nguồn",
+   "Stalker — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 2,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 3 dạng mục tiêu bài toán chọn nguồn"
+ },
+ {
+  "id": "m06-t2-greedy-limit",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Lợi ích biên của 1 nguồn phụ thuộc các nguồn ĐÃ CHỌN trước (do overlap/complement); giả định 'lợi ích giảm dần' không chắc đúng với data fusion; bài toán chọn nguồn tĩnh tổng quát là NP-complete\"",
+  "opts": [
+   "Stalker — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Update frequency vs Freshness",
+   "T_W và E_W",
+   "Giới hạn chiến lược Greedy khi chọn nguồn"
+  ],
+  "correct": 3,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giới hạn chiến lược Greedy khi chọn nguồn"
+ },
+ {
+  "id": "m06-t2-grasp",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Xây tập ứng viên bằng lựa chọn ngẫu nhiên (không theo 1 thứ tự tham lam cứng nhắc) → chọn trong số ứng viên triển vọng → cải thiện bằng tìm kiếm cục bộ → lặp nhiều lần → trả về tập tốt nhất tìm được\"",
+  "opts": [
+   "GRASP (Greedy Randomized Adaptive Search Procedure)",
+   "Học Stalker bằng Sequential Covering",
+   "T_W và E_W — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Hybrid Record Linkage"
+  ],
+  "correct": 0,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: GRASP (Greedy Randomized Adaptive Search Procedure)"
+ },
+ {
+  "id": "m06-t2-update-vs-freshness",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Update frequency: nguồn thay đổi nội dung thường xuyên ra sao; Freshness: giá trị nguồn phản ánh đúng thế giới đang thay đổi tới mức nào — cập nhật liên tục KHÔNG đảm bảo luôn tươi (có thể không xoá bản ghi cũ lỗi thời)\"",
+  "opts": [
+   "Bellman (tóm tắt thuộc tính)",
+   "Update frequency vs Freshness",
+   "Wrapper",
+   "Rủi ro khi mô hình hoá bài toán chọn nguồn"
+  ],
+  "correct": 1,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Update frequency vs Freshness"
+ },
+ {
+  "id": "m06-t2-source-selection-risks",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Copying/correlation giữa nguồn làm yếu giả định độc lập; chất lượng ước lượng trước có thể khác thực tế sau fusion; schema alignment/record linkage cũng ảnh hưởng giá trị tích hợp; cần đánh giá lại tập nguồn theo thời gian\"",
+  "opts": [
+   "Update frequency vs Freshness",
+   "Schema Summarization — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Rủi ro khi mô hình hoá bài toán chọn nguồn",
+   "Thách thức xây dựng Wrapper"
+  ],
+  "correct": 2,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Rủi ro khi mô hình hoá bài toán chọn nguồn"
+ },
+ {
+  "id": "m06-t2-bellman",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Công cụ tóm tắt nhanh nội dung từng cột bằng các 'chữ ký' (signature) cô đọng khi CSDL có hàng ngàn bảng tài liệu hoá kém — dùng Min-hash (overlap), q-gram/multiset (tương đồng văn bản/số lượng)\"",
+  "opts": [
+   "Source Profiling vs Source Selection",
+   "Xây dựng Wrapper kiểu Interactive",
+   "Schema Summarization",
+   "Bellman (tóm tắt thuộc tính)"
+  ],
+  "correct": 3,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Bellman (tóm tắt thuộc tính)"
+ },
+ {
+  "id": "m06-t2-minhash",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"ρ(A,B) = |A∩B|/|A∪B| — hệ số Jaccard áp dụng cho 2 TẬP GIÁ TRỊ CỘT; chữ ký s_i(A) = giá trị nhỏ nhất của h_i(a); ước lượng ρ bằng tỷ lệ thành phần chữ ký bằng nhau, tránh quét lại toàn bộ giá trị cột\"",
+  "opts": [
+   "Min-hash resemblance",
+   "Hybrid Record Linkage",
+   "Suy luận bắc cầu (transitive inference) trong gán nhãn",
+   "Bellman (tóm tắt thuộc tính)"
+  ],
+  "correct": 0,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Min-hash resemblance"
+ },
+ {
+  "id": "m06-t2-schema-summarization",
+  "q": "Định nghĩa sau mô tả đúng khái niệm nào? — \"Biểu diễn bảng/quan hệ join dưới dạng đồ thị lược đồ, phân cụm thành k nhóm, chọn 1 bảng đại diện mỗi nhóm; chỉ dựa KÍCH THƯỚC/BẬC bảng có thể đánh giá SAI mức quan trọng (bảng nhỏ vẫn có thể là điểm nối trung tâm quan trọng)\"",
+  "opts": [
+   "GRASP (Greedy Randomized Adaptive Search Procedure)",
+   "Schema Summarization",
+   "4 hướng xây dựng Wrapper",
+   "Update frequency vs Freshness"
+  ],
+  "correct": 1,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Schema Summarization"
+ },
+ {
+  "id": "m06-t3-wrapper",
+  "q": "Phát biểu nào sau đây về Wrapper là ĐÚNG?",
+  "opts": [
+   "Một bản sao vật lý toàn bộ trang web lưu lại nguyên trạng, không có bất kỳ cấu trúc trích xuất có hệ thống nào đi kèm — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Một thuật toán Clustering dùng để gộp các bản ghi trùng lặp thành 1 cụm, thuộc giai đoạn Entity Resolution, không liên quan trích xuất Web",
+   "1 trích xuất có cấu trúc từ các trang của nguồn S, hình thức hoá thành cặp (T_W, E_W): T_W là target schema, E_W là chương trình trích xuất",
+   "Chỉ là 1 giao diện lập trình (API) chuẩn do chính nguồn dữ liệu tự cung cấp sẵn, không cần ai viết thêm chương trình trích xuất"
+  ],
+  "correct": 2,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: 1 trích xuất có cấu trúc từ các trang của nguồn S, hình thức hoá thành cặp (T_W, E_W): T_W là target schema, E_W là chương trình trích xuất"
+ },
+ {
+  "id": "m06-t3-tw-ew",
+  "q": "Phát biểu nào sau đây về T_W và E_W là ĐÚNG?",
+  "opts": [
+   "E_W là lược đồ đích wrapper trả về, còn T_W mới là chương trình thực hiện việc trích xuất (vai trò của 2 ký hiệu đã bị đảo ngược hoàn toàn)",
+   "Cả T_W và E_W đều chỉ là 2 lược đồ dữ liệu, hoàn toàn không có chương trình trích xuất (extraction program) nào tồn tại trong định nghĩa",
+   "T_W luôn phải giống hệt lược đồ gốc T_S của trang, không được phép bớt đi bất kỳ thuộc tính nào dù không cần dùng tới — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "T_W (target schema) là lược đồ ĐÍCH wrapper trả về — không nhất thiết giống lược đồ gốc T_S; E_W (extraction program) là chương trình dùng format F_S của trang để trích đúng khuôn T_W"
+  ],
+  "correct": 3,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: T_W (target schema) là lược đồ ĐÍCH wrapper trả về — không nhất thiết giống lược đồ gốc T_S; E_W (extraction program) là chương trình dùng format F_S của trang để trích đúng khuôn T_W"
+ },
+ {
+  "id": "m06-t3-schema-vs-format",
+  "q": "Phát biểu nào sau đây về Schema T_S vs Format F_S của nguồn Web là ĐÚNG?",
+  "opts": [
+   "Schema (T_S) là các TRƯỜNG LOGIC và cách chúng lồng nhau; Format (F_S) là CÁCH trang hiển thị các trường đó (thẻ HTML, nhãn, vùng lặp) — 2 nguồn có thể cùng schema nhưng khác format",
+   "Format của 1 trang luôn luôn giống nhau nếu 2 nguồn có cùng schema, không tồn tại ngoại lệ nào về cách trình bày khác nhau",
+   "Schema và Format thực chất chỉ là 1 khái niệm duy nhất, không hề có sự phân biệt nào trong thực tế xây dựng wrapper — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Format mới là các trường logic và cách chúng lồng nhau, còn Schema là cách trang hiển thị chúng (2 định nghĩa đã bị đảo ngược cho nhau)"
+  ],
+  "correct": 0,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Schema (T_S) là các TRƯỜNG LOGIC và cách chúng lồng nhau; Format (F_S) là CÁCH trang hiển thị các trường đó (thẻ HTML, nhãn, vùng lặp) — 2 nguồn có thể cùng schema nhưng khác format"
+ },
+ {
+  "id": "m06-t3-wrapper-challenges",
+  "q": "Phát biểu nào sau đây về Thách thức xây dựng Wrapper là ĐÚNG?",
+  "opts": [
+   "Thách thức duy nhất từng được ghi nhận là tốc độ tải trang qua mạng chậm, không liên quan gì tới cấu trúc hay ngữ nghĩa dữ liệu — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Học cấu trúc không tự động cho biết ý nghĩa trường; nhiều chương trình trích cùng khớp dữ liệu mẫu; optional field/danh sách lặp làm mờ ranh giới; ngoại lệ định dạng; overfitting trên trang huấn luyện",
+   "Chỉ gặp khó khi trang web không có hình ảnh minh hoạ kèm theo, còn lại mọi trường hợp khác đều dễ xử lý như nhau — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Không có thách thức thực sự nào đáng kể vì chỉ cần đọc đúng cấu trúc thẻ HTML của trang là coi như xong việc — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 1,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học cấu trúc không tự động cho biết ý nghĩa trường; nhiều chương trình trích cùng khớp dữ liệu mẫu; optional field/danh sách lặp làm mờ ranh giới; ngoại lệ định dạng; overfitting trên trang huấn luyện"
+ },
+ {
+  "id": "m06-t3-wrapper-approaches",
+  "q": "Phát biểu nào sau đây về 4 hướng xây dựng Wrapper là ĐÚNG?",
+  "opts": [
+   "Trên thực tế chỉ có đúng 1 hướng duy nhất được công nhận: viết tay toàn bộ T_W và E_W theo cách Manual truyền thống — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Interactive nghĩa là để máy tự quyết định hoàn toàn mọi thứ, hoàn toàn không cần hỏi lại phản hồi (feedback) từ người dùng trong lúc xây dựng",
+   "Manual (tự viết T_W/E_W), Learning (đánh nhãn mẫu rồi học E_W), Automatic (tự học cả T_S lẫn E_W, không cần nhãn), Interactive (học + hỏi feedback người dùng tới khi hội tụ)",
+   "Automatic và Manual thực chất là 1 khái niệm hoàn toàn giống nhau, chỉ khác nhau ở cách gọi tên mà không khác gì về bản chất kỹ thuật"
+  ],
+  "correct": 2,
+  "topic": "Wrapper",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Manual (tự viết T_W/E_W), Learning (đánh nhãn mẫu rồi học E_W), Automatic (tự học cả T_S lẫn E_W, không cần nhãn), Interactive (học + hỏi feedback người dùng tới khi hội tụ)"
+ },
+ {
+  "id": "m06-t3-hlrt",
+  "q": "Phát biểu nào sau đây về HLRT (Head-Left-Right-Tail) là ĐÚNG?",
+  "opts": [
+   "Chỉ cần đúng 2 chuỗi mốc cố định cho mọi số lượng thuộc tính n, hoàn toàn không phụ thuộc vào số thuộc tính cần trích xuất — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Một thuật toán Clustering dùng trong bước Entity Resolution để gộp bản ghi trùng, hoàn toàn không liên quan tới việc xây dựng Wrapper",
+   "h và t dùng để khoanh ranh giới của 1 thuộc tính riêng lẻ, còn li/ri mới dùng để khoanh toàn vùng dữ liệu (vai trò đã bị đảo ngược hoàn toàn)",
+   "Mô hình trích xuất bằng delimiter: với n thuộc tính cần 2n+2 chuỗi mốc W=(h,t,l1,r1,...,ln,rn) — h/t khoanh vùng dữ liệu, li/ri khoanh ranh giới giá trị thuộc tính i"
+  ],
+  "correct": 3,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Mô hình trích xuất bằng delimiter: với n thuộc tính cần 2n+2 chuỗi mốc W=(h,t,l1,r1,...,ln,rn) — h/t khoanh vùng dữ liệu, li/ri khoanh ranh giới giá trị thuộc tính i"
+ },
+ {
+  "id": "m06-t3-hlrt-limit",
+  "q": "Phát biểu nào sau đây về Giới hạn của mô hình HLRT là ĐÚNG?",
+  "opts": [
+   "Giả định lược đồ là tuple PHẲNG (không xử lý được cấu trúc lồng nhau); mọi trường cần delimiter đáng tin cậy; danh sách lồng nhau và định dạng pha trộn làm HLRT bó tay",
+   "HLRT chỉ bị giới hạn khi dữ liệu cần trích là giá trị số, trong khi với chuỗi ký tự thì không gặp giới hạn nào cả — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "HLRT thực tế xử lý tốt mọi cấu trúc lồng nhau phức tạp tới bất kỳ mức độ nào, hoàn toàn không có giới hạn kỹ thuật nào được ghi nhận",
+   "Giới hạn duy nhất từng được nêu ra là tốc độ chạy chương trình chậm, hoàn toàn không liên quan gì tới cấu trúc của dữ liệu cần trích"
+  ],
+  "correct": 0,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Giả định lược đồ là tuple PHẲNG (không xử lý được cấu trúc lồng nhau); mọi trường cần delimiter đáng tin cậy; danh sách lồng nhau và định dạng pha trộn làm HLRT bó tay"
+ },
+ {
+  "id": "m06-t3-stalker",
+  "q": "Phát biểu nào sau đây về Stalker là ĐÚNG?",
+  "opts": [
+   "Stalker luôn phải quét lại toàn bộ trang từ đầu cho mỗi nút con, hoàn toàn không tận dụng ngữ cảnh văn bản đã trích của nút cha — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Trích xuất PHÂN CẤP (hierarchical) trên lược đồ tuple lồng nhau, đi xuống dần qua lược đồ, dùng văn bản đã trích của nút CHA làm ngữ cảnh cho nút CON; dùng lệnh SkipTo/BackTo/BackUntil + landmark",
+   "Stalker thực chất chỉ xử lý được tuple phẳng giống hệt HLRT, không mang lại bất kỳ cải tiến kỹ thuật nào so với mô hình trước đó",
+   "Một công cụ tự động hoàn toàn không cần người lập trình can thiệp, và cũng hoàn toàn không dùng tới lệnh SkipTo/BackTo/BackUntil nào"
+  ],
+  "correct": 1,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Trích xuất PHÂN CẤP (hierarchical) trên lược đồ tuple lồng nhau, đi xuống dần qua lược đồ, dùng văn bản đã trích của nút CHA làm ngữ cảnh cho nút CON; dùng lệnh SkipTo/BackTo/BackUntil + landmark"
+ },
+ {
+  "id": "m06-t3-stalker-learning",
+  "q": "Phát biểu nào sau đây về Học Stalker bằng Sequential Covering là ĐÚNG?",
+  "opts": [
+   "Hoàn toàn không cần bất kỳ dữ liệu gán nhãn nào, học tự động 100% từ các trang chưa gán nhãn (đây đúng ra là đặc điểm của RoadRunner)",
+   "Chỉ cần học đúng 1 luật duy nhất là đủ phủ hết toàn bộ ví dụ huấn luyện ngay từ đầu, không cần lặp lại quy trình học thêm lần nào",
+   "Học 1 luật phủ đúng 1 phần ví dụ huấn luyện → loại bỏ ví dụ đã phủ → học tiếp luật khác cho phần còn lại → kết hợp các luật bằng phép HOẶC (disjunction)",
+   "Các luật học được sau đó luôn được kết hợp lại bằng phép VÀ (conjunction) thuần logic, hoàn toàn không phải phép HOẶC như đã nêu — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 2,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học 1 luật phủ đúng 1 phần ví dụ huấn luyện → loại bỏ ví dụ đã phủ → học tiếp luật khác cho phần còn lại → kết hợp các luật bằng phép HOẶC (disjunction)"
+ },
+ {
+  "id": "m06-t3-roadrunner",
+  "q": "Phát biểu nào sau đây về RoadRunner là ĐÚNG?",
+  "opts": [
+   "Chỉ hoạt động được với đúng 1 trang duy nhất mà không hề có khả năng tổng quát hoá khuôn mẫu qua nhiều trang bổ sung tiếp theo — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Yêu cầu bắt buộc toàn bộ các trang đầu vào phải được con người gán nhãn thủ công trước khi bắt đầu học (đặc điểm này đúng ra giống nhóm Learning) — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Luôn biết trước chính xác tên và ý nghĩa thật của từng trường học được, hoàn toàn không cần suy luận gì thêm từ dữ liệu quan sát — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này",
+   "Học TỰ ĐỘNG cả lược đồ lẫn chương trình trích từ các trang CHƯA GÁN NHÃN cùng 1 template — khởi tạo bằng 1 trang đầu, tổng quát hoá dần để khớp các trang tiếp theo (dùng #PCDATA, (pattern)?, (pattern)+)"
+  ],
+  "correct": 3,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Học TỰ ĐỘNG cả lược đồ lẫn chương trình trích từ các trang CHƯA GÁN NHÃN cùng 1 template — khởi tạo bằng 1 trang đầu, tổng quát hoá dần để khớp các trang tiếp theo (dùng #PCDATA, (pattern)?, (pattern)+)"
+ },
+ {
+  "id": "m06-t3-interactive-wrapper",
+  "q": "Phát biểu nào sau đây về Xây dựng Wrapper kiểu Interactive là ĐÚNG?",
+  "opts": [
+   "Duy trì nhiều wrapper ứng viên, phát hiện khi máy không chắc chắn, hỏi người dùng feedback ĐÚNG CHỖ còn mơ hồ, dùng câu trả lời tinh chỉnh ứng viên — lựa chọn thiết kế then chốt là khi nào hỏi và hỏi gì",
+   "Chỉ cho phép duy trì đúng 1 wrapper ứng viên duy nhất tại 1 thời điểm, không được phép giữ nhiều ứng viên song song để so sánh",
+   "Không bao giờ cần hỏi lại phản hồi của người dùng trong suốt quá trình xây dựng, toàn bộ quy trình chạy tự động hoàn toàn — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Luôn hỏi người dùng xác nhận lại toàn bộ nội dung của cả trang, hoàn toàn không có cơ chế chọn lọc đúng chỗ còn mơ hồ cần hỏi thêm"
+  ],
+  "correct": 0,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Duy trì nhiều wrapper ứng viên, phát hiện khi máy không chắc chắn, hỏi người dùng feedback ĐÚNG CHỖ còn mơ hồ, dùng câu trả lời tinh chỉnh ứng viên — lựa chọn thiết kế then chốt là khi nào hỏi và hỏi gì"
+ },
+ {
+  "id": "m06-t3-profiling-vs-selection",
+  "q": "Phát biểu nào sau đây về Source Profiling vs Source Selection là ĐÚNG?",
+  "opts": [
+   "Profiling chỉ áp dụng được cho dữ liệu có cấu trúc rõ ràng, còn Selection chỉ áp dụng được cho dữ liệu hoàn toàn phi cấu trúc — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Profiling: hiểu & mô tả đặc điểm nguồn (đầu ra là 1 hồ sơ/profile); Selection: chọn 1 tập con nguồn hữu ích (đầu vào CHÍNH là profile do Profiling tạo ra) — Profiling luôn làm TRƯỚC Selection",
+   "2 khái niệm Profiling và Selection thực chất hoàn toàn giống nhau, chỉ là 2 cách gọi tên khác nhau cho cùng 1 công việc duy nhất",
+   "Selection thực ra luôn phải làm trước Profiling vì cần biết sẽ chọn gì rồi mới quay lại tìm hiểu nguồn (thứ tự thực hiện đã bị đảo ngược)"
+  ],
+  "correct": 1,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Profiling: hiểu & mô tả đặc điểm nguồn (đầu ra là 1 hồ sơ/profile); Selection: chọn 1 tập con nguồn hữu ích (đầu vào CHÍNH là profile do Profiling tạo ra) — Profiling luôn làm TRƯỚC Selection"
+ },
+ {
+  "id": "m06-t3-crowdsourcing",
+  "q": "Phát biểu nào sau đây về Crowdsourcing trong tích hợp dữ liệu là ĐÚNG?",
+  "opts": [
+   "Nghĩa là thuê đúng 1 chuyên gia duy nhất đảm nhiệm toàn bộ công việc gán nhãn, không cần huy động số lượng lớn người đóng góp",
+   "Chỉ dùng thuật toán học máy để thay thế hoàn toàn vai trò con người, không có bất kỳ bước nào thực sự cần tới phán đoán của con người",
+   "Nhờ CON NGƯỜI (đám đông) làm các phán đoán máy chưa làm tốt (vd record linkage/schema alignment); hệ thống phải tuyển/giữ chân người góp, kết hợp đóng góp, đánh giá chất lượng người góp",
+   "Chỉ áp dụng được cho riêng bài toán schema alignment, hoàn toàn không áp dụng được cho bài toán record linkage như đã nêu — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này"
+  ],
+  "correct": 2,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Nhờ CON NGƯỜI (đám đông) làm các phán đoán máy chưa làm tốt (vd record linkage/schema alignment); hệ thống phải tuyển/giữ chân người góp, kết hợp đóng góp, đánh giá chất lượng người góp"
+ },
+ {
+  "id": "m06-t3-hybrid-rl",
+  "q": "Phát biểu nào sau đây về Hybrid Record Linkage là ĐÚNG?",
+  "opts": [
+   "Gán nhãn thủ công cho TẤT CẢ các cặp bản ghi có thể, hoàn toàn không có bước lọc bằng tính toán (Blocking) nào diễn ra trước đó",
+   "Chỉ dựa vào suy luận bắc cầu (transitive) đơn thuần, hoàn toàn không cần tới Blocking hay bất kỳ ai trong đám đông gán nhãn cả",
+   "Toàn bộ quy trình chạy tự động hoàn toàn bằng máy, không hề có bước nào thực sự cần tới sự tham gia của đám đông con người — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Lọc bằng tính toán (Blocking) loại cặp chắc chắn không khớp → đám đông chỉ gán nhãn cặp ứng viên còn lại → dùng quan hệ bắc cầu suy ra thêm nhãn mà không cần hỏi người, tránh O(n²) lượt gán nhãn thủ công"
+  ],
+  "correct": 3,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Lọc bằng tính toán (Blocking) loại cặp chắc chắn không khớp → đám đông chỉ gán nhãn cặp ứng viên còn lại → dùng quan hệ bắc cầu suy ra thêm nhãn mà không cần hỏi người, tránh O(n²) lượt gán nhãn thủ công"
+ },
+ {
+  "id": "m06-t3-transitive-inference",
+  "q": "Phát biểu nào sau đây về Suy luận bắc cầu (transitive inference) trong gán nhãn là ĐÚNG?",
+  "opts": [
+   "A=B và B=C ⟹ A=C (hợp lệ); A=B và B≠C ⟹ A≠C (hợp lệ); A≠B và B≠C ⟹ A?C KHÔNG suy luận được; nhãn sai có thể LAN TRUYỀN qua các suy luận này",
+   "Trường hợp A≠B và B≠C luôn luôn cho phép suy ra chắc chắn A≠C một cách hợp lệ (đây là sai quy tắc logic đã nêu trong bảng suy luận)",
+   "Suy luận bắc cầu hoàn toàn không mang theo bất kỳ rủi ro lan truyền lỗi nào, dù 1 nhãn ban đầu có bị gán sai đi chăng nữa — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Quy tắc suy luận bắc cầu chỉ áp dụng được khi có đúng 2 bản ghi trong hệ thống, không áp dụng được khi có nhiều bản ghi hơn"
+  ],
+  "correct": 0,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: A=B và B=C ⟹ A=C (hợp lệ); A=B và B≠C ⟹ A≠C (hợp lệ); A≠B và B≠C ⟹ A?C KHÔNG suy luận được; nhãn sai có thể LAN TRUYỀN qua các suy luận này"
+ },
+ {
+  "id": "m06-t3-selection-objectives",
+  "q": "Phát biểu nào sau đây về 3 dạng mục tiêu bài toán chọn nguồn là ĐÚNG?",
+  "opts": [
+   "Mục tiêu của bài toán chọn nguồn luôn luôn là tối thiểu hoá benefit, không bao giờ có mục tiêu tối đa hoá benefit như đã nêu",
+   "Tối đa benefit với cost≤ngân sách; Tối thiểu cost với benefit≥mục tiêu; Tối đa (benefit−cost) với cost≤ngân sách — mục tiêu profit đòi hỏi benefit và cost cùng đơn vị đo",
+   "Mục tiêu profit hoàn toàn không yêu cầu benefit và cost phải cùng 1 đơn vị đo, cứ trừ trực tiếp 2 đại lượng khác đơn vị là được",
+   "Chỉ tồn tại đúng 1 dạng mục tiêu duy nhất là tối đa hoá benefit, hoàn toàn không có ràng buộc ngân sách (cost) nào kèm theo — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau"
+  ],
+  "correct": 1,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Tối đa benefit với cost≤ngân sách; Tối thiểu cost với benefit≥mục tiêu; Tối đa (benefit−cost) với cost≤ngân sách — mục tiêu profit đòi hỏi benefit và cost cùng đơn vị đo"
+ },
+ {
+  "id": "m06-t3-greedy-limit",
+  "q": "Phát biểu nào sau đây về Giới hạn chiến lược Greedy khi chọn nguồn là ĐÚNG?",
+  "opts": [
+   "Lợi ích biên (marginal benefit) của 1 nguồn luôn là 1 giá trị cố định, hoàn toàn không phụ thuộc vào các nguồn đã được chọn trước đó",
+   "Bài toán chọn nguồn tĩnh (static) ở dạng tổng quát luôn giải được trong thời gian đa thức (polynomial), không hề là bài toán NP-complete",
+   "Lợi ích biên của 1 nguồn phụ thuộc các nguồn ĐÃ CHỌN trước (do overlap/complement); giả định 'lợi ích giảm dần' không chắc đúng với data fusion; bài toán chọn nguồn tĩnh tổng quát là NP-complete",
+   "Chiến lược Greedy luôn luôn tìm ra được tập con nguồn tối ưu tuyệt đối, hoàn toàn không tồn tại bất kỳ giới hạn lý thuyết nào cả — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây"
+  ],
+  "correct": 2,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Lợi ích biên của 1 nguồn phụ thuộc các nguồn ĐÃ CHỌN trước (do overlap/complement); giả định 'lợi ích giảm dần' không chắc đúng với data fusion; bài toán chọn nguồn tĩnh tổng quát là NP-complete"
+ },
+ {
+  "id": "m06-t3-grasp",
+  "q": "Phát biểu nào sau đây về GRASP (Greedy Randomized Adaptive Search Procedure) là ĐÚNG?",
+  "opts": [
+   "Luôn luôn chọn ra đúng 1 ứng viên tốt nhất duy nhất tại mỗi bước xây dựng, hoàn toàn không có yếu tố lựa chọn ngẫu nhiên nào — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Chỉ chạy đúng 1 lần xây dựng và tìm kiếm cục bộ duy nhất, hoàn toàn không có bước lặp lại nhiều lần như đã mô tả ở trên — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "GRASP đảm bảo chắc chắn tìm ra được lời giải tối ưu tuyệt đối cho bài toán chọn nguồn vốn đã được chứng minh là NP-complete — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Xây tập ứng viên bằng lựa chọn ngẫu nhiên (không theo 1 thứ tự tham lam cứng nhắc) → chọn trong số ứng viên triển vọng → cải thiện bằng tìm kiếm cục bộ → lặp nhiều lần → trả về tập tốt nhất tìm được"
+  ],
+  "correct": 3,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Xây tập ứng viên bằng lựa chọn ngẫu nhiên (không theo 1 thứ tự tham lam cứng nhắc) → chọn trong số ứng viên triển vọng → cải thiện bằng tìm kiếm cục bộ → lặp nhiều lần → trả về tập tốt nhất tìm được"
+ },
+ {
+  "id": "m06-t3-update-vs-freshness",
+  "q": "Phát biểu nào sau đây về Update frequency vs Freshness là ĐÚNG?",
+  "opts": [
+   "Update frequency: nguồn thay đổi nội dung thường xuyên ra sao; Freshness: giá trị nguồn phản ánh đúng thế giới đang thay đổi tới mức nào — cập nhật liên tục KHÔNG đảm bảo luôn tươi (có thể không xoá bản ghi cũ lỗi thời)",
+   "Update frequency đo mức phản ánh đúng thế giới thực còn Freshness đo tần suất thay đổi nội dung (2 định nghĩa đã bị đảo ngược cho nhau) — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "2 khái niệm Update frequency và Freshness thực chất hoàn toàn đồng nhất, cập nhật thường xuyên luôn luôn đảm bảo dữ liệu tươi mới — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan",
+   "Freshness chỉ phụ thuộc duy nhất vào tần suất cập nhật dữ liệu, hoàn toàn không liên quan gì tới việc có xoá bản ghi cũ hay không — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 0,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Update frequency: nguồn thay đổi nội dung thường xuyên ra sao; Freshness: giá trị nguồn phản ánh đúng thế giới đang thay đổi tới mức nào — cập nhật liên tục KHÔNG đảm bảo luôn tươi (có thể không xoá bản ghi cũ lỗi thời)"
+ },
+ {
+  "id": "m06-t3-source-selection-risks",
+  "q": "Phát biểu nào sau đây về Rủi ro khi mô hình hoá bài toán chọn nguồn là ĐÚNG?",
+  "opts": [
+   "Chỉ cần thực hiện việc chọn nguồn đúng 1 lần duy nhất là đủ, hoàn toàn không cần đánh giá lại tập nguồn theo thời gian như đã nêu — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Copying/correlation giữa nguồn làm yếu giả định độc lập; chất lượng ước lượng trước có thể khác thực tế sau fusion; schema alignment/record linkage cũng ảnh hưởng giá trị tích hợp; cần đánh giá lại tập nguồn theo thời gian",
+   "Các nguồn dữ liệu trong thực tế luôn luôn độc lập tuyệt đối với nhau, hoàn toàn không tồn tại rủi ro sao chép hay tương quan nào — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "2 bước schema alignment và record linkage hoàn toàn không liên quan gì tới chất lượng cuối cùng của việc chọn nguồn tích hợp — cách hiểu sai thường gặp ở người mới bắt đầu học khái niệm này"
+  ],
+  "correct": 1,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Copying/correlation giữa nguồn làm yếu giả định độc lập; chất lượng ước lượng trước có thể khác thực tế sau fusion; schema alignment/record linkage cũng ảnh hưởng giá trị tích hợp; cần đánh giá lại tập nguồn theo thời gian"
+ },
+ {
+  "id": "m06-t3-bellman",
+  "q": "Phát biểu nào sau đây về Bellman (tóm tắt thuộc tính) là ĐÚNG?",
+  "opts": [
+   "Chỉ hoạt động được khi đã biết trước đầy đủ thông tin khoá ngoại và tài liệu mô tả hoàn chỉnh của mọi bảng trong hệ thống — một cách diễn giải hay gặp nhưng không khớp với định nghĩa đã học trong môn này",
+   "Yêu cầu bắt buộc phải đọc hết toàn bộ dữ liệu thô mỗi lần muốn biết nội dung thực sự của 1 cột, không có cơ chế tóm tắt cô đọng nào",
+   "Công cụ tóm tắt nhanh nội dung từng cột bằng các 'chữ ký' (signature) cô đọng khi CSDL có hàng ngàn bảng tài liệu hoá kém — dùng Min-hash (overlap), q-gram/multiset (tương đồng văn bản/số lượng)",
+   "Một thuật toán thuộc bước Clustering trong quy trình Record Linkage, hoàn toàn không liên quan gì tới việc tóm tắt nguồn dữ liệu"
+  ],
+  "correct": 2,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Công cụ tóm tắt nhanh nội dung từng cột bằng các 'chữ ký' (signature) cô đọng khi CSDL có hàng ngàn bảng tài liệu hoá kém — dùng Min-hash (overlap), q-gram/multiset (tương đồng văn bản/số lượng)"
+ },
+ {
+  "id": "m06-t3-minhash",
+  "q": "Phát biểu nào sau đây về Min-hash resemblance là ĐÚNG?",
+  "opts": [
+   "Công thức đúng ra phải là ρ(A,B) = |A∪B|/|A∩B|, tức đã bị đảo ngược hoàn toàn vị trí tử số và mẫu số so với định nghĩa Jaccard chuẩn",
+   "Chữ ký s_i(A) thực chất là giá trị LỚN NHẤT của hàm băm h_i(a) trên tập A, hoàn toàn không phải giá trị nhỏ nhất như đã mô tả — đúng trong 1 ngữ cảnh khác, không đúng với ngữ cảnh đang xét ở đây",
+   "Luôn luôn phải quét lại toàn bộ 2 tập giá trị cột mỗi lần muốn so sánh, hoàn toàn không tiết kiệm được chi phí tính toán nào cả — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "ρ(A,B) = |A∩B|/|A∪B| — hệ số Jaccard áp dụng cho 2 TẬP GIÁ TRỊ CỘT; chữ ký s_i(A) = giá trị nhỏ nhất của h_i(a); ước lượng ρ bằng tỷ lệ thành phần chữ ký bằng nhau, tránh quét lại toàn bộ giá trị cột"
+  ],
+  "correct": 3,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: ρ(A,B) = |A∩B|/|A∪B| — hệ số Jaccard áp dụng cho 2 TẬP GIÁ TRỊ CỘT; chữ ký s_i(A) = giá trị nhỏ nhất của h_i(a); ước lượng ρ bằng tỷ lệ thành phần chữ ký bằng nhau, tránh quét lại toàn bộ giá trị cột"
+ },
+ {
+  "id": "m06-t3-schema-summarization",
+  "q": "Phát biểu nào sau đây về Schema Summarization là ĐÚNG?",
+  "opts": [
+   "Biểu diễn bảng/quan hệ join dưới dạng đồ thị lược đồ, phân cụm thành k nhóm, chọn 1 bảng đại diện mỗi nhóm; chỉ dựa KÍCH THƯỚC/BẬC bảng có thể đánh giá SAI mức quan trọng (bảng nhỏ vẫn có thể là điểm nối trung tâm quan trọng)",
+   "Hoàn toàn không cần thực hiện bước phân cụm nào cả, mỗi bảng riêng lẻ tự động trở thành 1 nhóm đại diện cho chính nó — nhầm lẫn phổ biến giữa 2 khái niệm có tên gần giống nhau",
+   "Kỹ thuật này chỉ áp dụng được cho trường hợp đúng 2 bảng duy nhất, hoàn toàn không áp dụng được khi hệ thống có nhiều bảng hơn — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn",
+   "Mức độ quan trọng của 1 bảng chỉ phụ thuộc duy nhất vào kích thước vật lý của nó, 1 bảng nhỏ luôn luôn được coi là không quan trọng — mô tả gần đúng nhưng đảo ngược vai trò giữa 2 thành phần liên quan"
+  ],
+  "correct": 0,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide",
+  "explain": "Đáp án đúng: Biểu diễn bảng/quan hệ join dưới dạng đồ thị lược đồ, phân cụm thành k nhóm, chọn 1 bảng đại diện mỗi nhóm; chỉ dựa KÍCH THƯỚC/BẬC bảng có thể đánh giá SAI mức quan trọng (bảng nhỏ vẫn có thể là điểm nối trung tâm quan trọng)"
+ },
+ {
+  "id": "m06-t8-00",
+  "q": "Cho A={1,2,3,4}, B={2,3,4,5}. Min-hash resemblance ρ(A,B) = |A∩B|/|A∪B| là bao nhiêu?",
+  "opts": [
+   "3/4 = 0.75",
+   "3/5 = 0.60 (|A∩B|={2,3,4} có 3 phần tử, |A∪B|={1,2,3,4,5} có 5 phần tử)",
+   "2/5 = 0.40",
+   "4/5 = 0.80 — chỉ đúng một phần, còn thiếu điều kiện quan trọng để kết luận chắc chắn"
+  ],
+  "correct": 1,
+  "topic": "Source Profiling & Selection",
+  "src": "gốc-slide (ví dụ số, đã verify thủ công)",
+  "explain": "Đáp án đúng: 3/5 = 0.60 (|A∩B|={2,3,4} có 3 phần tử, |A∪B|={1,2,3,4,5} có 5 phần tử)"
+ },
+ {
+  "id": "m06-t8-01",
+  "q": "Với HLRT, cần trích n=2 thuộc tính (vd tên nước + mã điện thoại). Theo công thức 2n+2, cần bao nhiêu chuỗi mốc (delimiter)?",
+  "opts": [
+   "4 chuỗi mốc (chỉ l1,r1,l2,r2, bỏ h/t)",
+   "2 chuỗi mốc (chỉ h,t)",
+   "6 chuỗi mốc (h, t, l1, r1, l2, r2)",
+   "8 chuỗi mốc (2n+4)"
+  ],
+  "correct": 2,
+  "topic": "HLRT & Stalker",
+  "src": "gốc-slide (ví dụ số, đã verify thủ công)",
+  "explain": "Đáp án đúng: 6 chuỗi mốc (h, t, l1, r1, l2, r2)"
+ },
+ {
+  "id": "m06-t8-02",
+  "q": "Bảng ví dụ: A(benefit=100,cost=40), B(80,30), C(60,20), A+C(150,60). Với ngân sách $70, tập con nào cho profit (benefit−cost) cao nhất trong số các tập hợp lệ (cost≤70)?",
+  "opts": [
+   "A đơn lẻ, profit = 100−40 = 60",
+   "B+C, profit = 120−50 = 70",
+   "A+B+C, profit = 160−90 = 70 nhưng cost=90 VƯỢT ngân sách 70 nên không hợp lệ",
+   "A+C, profit = 150−60 = 90"
+  ],
+  "correct": 3,
+  "topic": "Chọn nguồn (Selection)",
+  "src": "gốc-slide (ví dụ số, đã verify thủ công)",
+  "explain": "Đáp án đúng: A+C, profit = 150−60 = 90"
+ },
+ {
+  "id": "m06-t8-03",
+  "q": "Theo bảng suy luận bắc cầu: đã biết L1 (R2=R3, match) và L2 (R1=R2, match). Có thể suy ra ngay nhãn của cặp (R1,R3) là gì mà KHÔNG cần hỏi người?",
+  "opts": [
+   "Match (A=B và B=C ⟹ A=C, suy luận bắc cầu hợp lệ)",
+   "Possible-match, cần thêm bằng chứng",
+   "Không suy luận được, luôn phải hỏi người với mọi cặp mới",
+   "Non-match"
+  ],
+  "correct": 0,
+  "topic": "Crowdsourcing",
+  "src": "gốc-slide (ví dụ số, đã verify thủ công)",
+  "explain": "Đáp án đúng: Match (A=B và B=C ⟹ A=C, suy luận bắc cầu hợp lệ)"
+ }
+]
